@@ -73,6 +73,21 @@ FIELD_LABELS = {
 }
 
 
+BUILDING_LAYER = {
+    "type_name": "geoportal:edificacao",
+    "geometry": "ge_poligono",
+    "fields": [
+        "cd_identificador",
+        "qt_area_projecao_beiral",
+        "qt_altura_edificacao",
+        "cd_identificador_lote",
+        "tx_escala",
+        "sg_fonte_original",
+        "dt_criacao",
+        "dt_atualizacao",
+    ],
+}
+
 THEMATIC_LAYERS = {
     "zoning": {
         "type_name": "geoportal:perimetro_zona_lei_18177_24",
@@ -217,6 +232,86 @@ def contains_point(feature: dict, lng: float, lat: float) -> bool:
     return False
 
 
+
+def geometry_polygons(geometry: dict) -> list[list]:
+    kind = geometry.get("type")
+    coords = geometry.get("coordinates") or []
+    if kind == "Polygon":
+        return [coords]
+    if kind == "MultiPolygon":
+        return coords
+    return []
+
+
+def geometry_bbox(geometry: dict) -> tuple[float, float, float, float]:
+    points = []
+    for polygon in geometry_polygons(geometry):
+        for ring in polygon:
+            for point in ring:
+                if len(point) >= 2:
+                    points.append((float(point[0]), float(point[1])))
+    if not points:
+        raise ValueError("geometry has no coordinates")
+    xs = [point[0] for point in points]
+    ys = [point[1] for point in points]
+    return min(xs), min(ys), max(xs), max(ys)
+
+
+def orientation(ax, ay, bx, by, cx, cy, eps=1e-12):
+    value = (by - ay) * (cx - bx) - (bx - ax) * (cy - by)
+    if abs(value) <= eps:
+        return 0
+    return 1 if value > 0 else 2
+
+
+def segments_intersect(a, b, c, d) -> bool:
+    ax, ay = a[0], a[1]
+    bx, by = b[0], b[1]
+    cx, cy = c[0], c[1]
+    dx, dy = d[0], d[1]
+    o1 = orientation(ax, ay, bx, by, cx, cy)
+    o2 = orientation(ax, ay, bx, by, dx, dy)
+    o3 = orientation(cx, cy, dx, dy, ax, ay)
+    o4 = orientation(cx, cy, dx, dy, bx, by)
+    if o1 != o2 and o3 != o4:
+        return True
+    return (
+        (o1 == 0 and point_on_segment(cx, cy, ax, ay, bx, by))
+        or (o2 == 0 and point_on_segment(dx, dy, ax, ay, bx, by))
+        or (o3 == 0 and point_on_segment(ax, ay, cx, cy, dx, dy))
+        or (o4 == 0 and point_on_segment(bx, by, cx, cy, dx, dy))
+    )
+
+
+def polygon_intersects_polygon(a: list, b: list) -> bool:
+    if not a or not b or not a[0] or not b[0]:
+        return False
+    for point in a[0]:
+        if point_in_polygon(point[0], point[1], b):
+            return True
+    for point in b[0]:
+        if point_in_polygon(point[0], point[1], a):
+            return True
+    ring_a = a[0]
+    ring_b = b[0]
+    for i in range(len(ring_a) - 1):
+        for j in range(len(ring_b) - 1):
+            if segments_intersect(
+                ring_a[i], ring_a[i + 1],
+                ring_b[j], ring_b[j + 1],
+            ):
+                return True
+    return False
+
+
+def geometry_intersects(a: dict, b: dict) -> bool:
+    for polygon_a in geometry_polygons(a):
+        for polygon_b in geometry_polygons(b):
+            if polygon_intersects_polygon(polygon_a, polygon_b):
+                return True
+    return False
+
+
 def sql_reference(props: dict) -> str | None:
     sector = props.get("cd_setor_fiscal")
     block = props.get("cd_quadra_fiscal")
@@ -262,6 +357,64 @@ def fetch_candidates(lat: float, lng: float) -> dict:
         raise RuntimeError("GeoSampa did not return a FeatureCollection")
     return payload
 
+
+
+
+def fetch_buildings_for_parcel(parcel_geometry: dict) -> list[dict]:
+    min_lng, min_lat, max_lng, max_lat = geometry_bbox(parcel_geometry)
+    bbox = f"{min_lng},{min_lat},{max_lng},{max_lat},EPSG:4326"
+    query = {
+        "service": "WFS",
+        "version": "2.0.0",
+        "request": "GetFeature",
+        "typeNames": BUILDING_LAYER["type_name"],
+        "srsName": "EPSG:4326",
+        "bbox": bbox,
+        "count": "300",
+        "propertyName": ",".join(
+            [BUILDING_LAYER["geometry"], *BUILDING_LAYER["fields"]]
+        ),
+        "outputFormat": "application/json",
+    }
+    url = WFS + "?" + urllib.parse.urlencode(query)
+    request = urllib.request.Request(
+        url,
+        headers={
+            "User-Agent": "LoteDiretor/0.1 (+https://lotediretor.com)",
+            "Accept": "application/json",
+        },
+    )
+    with urllib.request.urlopen(request, timeout=12) as response:
+        body = response.read(6 * 1024 * 1024 + 1)
+        if response.status != 200:
+            raise RuntimeError(
+                f"GeoSampa {BUILDING_LAYER['type_name']} returned HTTP {response.status}"
+            )
+        if len(body) > 6 * 1024 * 1024:
+            raise RuntimeError("GeoSampa building response exceeded safety limit")
+    payload = json.loads(body)
+    if payload.get("type") != "FeatureCollection":
+        raise RuntimeError("GeoSampa building layer did not return FeatureCollection")
+
+    output = []
+    allowed = set(BUILDING_LAYER["fields"])
+    for feature in payload.get("features") or []:
+        geometry = feature.get("geometry") or {}
+        if not geometry_intersects(parcel_geometry, geometry):
+            continue
+        props = feature.get("properties") or {}
+        unexpected = set(props) - allowed
+        if unexpected:
+            raise RuntimeError(
+                "GeoSampa building layer returned unexpected fields: "
+                + ", ".join(sorted(unexpected))
+            )
+        output.append({
+            "id": feature.get("id"),
+            "geometry": geometry,
+            "properties": props,
+        })
+    return output
 
 
 def fetch_point_layer(key: str, lat: float, lng: float) -> list[dict]:
@@ -348,7 +501,7 @@ def load_utility_context() -> dict:
     return output
 
 
-def build_context(lat: float, lng: float) -> dict:
+def build_context(lat: float, lng: float, parcel_geometry: dict) -> dict:
     results = {}
     errors = {}
     with ThreadPoolExecutor(max_workers=8) as pool:
@@ -356,6 +509,7 @@ def build_context(lat: float, lng: float) -> dict:
             pool.submit(fetch_point_layer, key, lat, lng): key
             for key in THEMATIC_LAYERS
         }
+        futures[pool.submit(fetch_buildings_for_parcel, parcel_geometry)] = "__buildings__"
         for future in as_completed(futures):
             key = futures[future]
             try:
@@ -374,6 +528,7 @@ def build_context(lat: float, lng: float) -> dict:
             "macroarea": macroarea,
             "macrozone": macrozone,
         },
+        "buildings": results.get("__buildings__") or [],
         "risk": {
             "geological": results.get("geological_risk") or [],
             "hydrological": results.get("hydrological_risk") or [],
@@ -472,11 +627,44 @@ def actual_values_for_section(
         ]
 
     if section_id == "building_existing":
+        buildings = context.get("buildings") or []
+        heights = [
+            item.get("properties", {}).get("qt_altura_edificacao")
+            for item in buildings
+            if isinstance(
+                item.get("properties", {}).get("qt_altura_edificacao"),
+                (int, float),
+            )
+        ]
+        updates = [
+            item.get("properties", {}).get("dt_atualizacao")
+            for item in buildings
+            if item.get("properties", {}).get("dt_atualizacao")
+        ]
         return [
             {"label": "Área construída fiscal", "value": p.get("built_area_m2"), "unit": "m²"},
             {"label": "Uso cadastral", "value": p.get("use_description")},
             {"label": "Tipo de lote", "value": p.get("parcel_type")},
             {"label": "Situação do lote", "value": p.get("parcel_status")},
+            {"label": "Footprints cartográficos no lote", "value": len(buildings)},
+            {
+                "label": "Maior altura cartográfica entre footprints intersectantes",
+                "value": round(max(heights), 2) if heights else None,
+                "unit": "m",
+            },
+            {
+                "label": "Atualização mais recente do footprint",
+                "value": max(updates) if updates else None,
+            },
+            {
+                "label": "Ressalva temporal",
+                "value": (
+                    "Edificações 2D são cartografia histórica. Footprints são "
+                    "mostrados por interseção espacial e não equivalem "
+                    "automaticamente à geometria predial atual/licenciada nem "
+                    "à área construída fiscal."
+                ),
+            },
         ]
 
     if section_id == "planning_buildability":
@@ -657,7 +845,7 @@ class Handler(BaseHTTPRequestHandler):
                     "source": "GeoSampa lote_cidadao",
                 })
             parcel = public_feature(selected)
-            context = build_context(lat, lng)
+            context = build_context(lat, lng, parcel["geometry"])
             return self.send_json(200, {
                 "found": True,
                 "clicked": {"lat": lat, "lng": lng},
