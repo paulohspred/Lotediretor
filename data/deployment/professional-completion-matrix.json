@@ -1,24 +1,446 @@
 {
-  "schema_version": "0.1.0",
+  "schema_version": "0.2.0",
   "as_of": "2026-09-24",
   "target_level": "L3",
+  "row_contract": [
+    "field",
+    "status",
+    "source_id",
+    "endpoint",
+    "access_class",
+    "license",
+    "connector_status",
+    "missing_fields"
+  ],
+  "status_definitions": {
+    "READY": "Official/approved source is identified and sufficient to begin normalization.",
+    "PARTIAL": "Useful official source exists but material gaps, license review, coverage or normalization remain.",
+    "QUERY_ONLY": "Official query/document flow exists but is not approved as bulk reusable data.",
+    "PRIVATE_ON_DEMAND": "Information belongs to private/restricted due-diligence workflow.",
+    "GAP": "No sufficient approved source is currently registered."
+  },
   "first_wave": [
     {
       "city": "São Paulo",
       "uf": "SP",
       "ibge": "3550308",
       "status": "IN_PROGRESS",
-      "known_strengths": [
-        "IPTU/cadastro aberto",
-        "GeoSampa",
-        "zoneamento/PDE",
-        "ortofotos/LiDAR",
-        "licenciamento GeoSampa"
-      ],
-      "next_gaps": [
-        "ITBI oficial atual em bulk",
-        "licenciamento geral além de camadas específicas",
-        "normalização de edificação"
+      "rows": [
+        {
+          "field": "identity",
+          "status": "READY",
+          "source_id": "sp-sao-paulo-iptu-cadastro-fiscal",
+          "supporting_source_ids": [
+            "sp-sao-paulo-geosampa-wfs"
+          ],
+          "endpoint": "https://geosampa.prefeitura.sp.gov.br/",
+          "access_class": "OPEN_REUSABLE",
+          "license": null,
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "CIB public linkage",
+            "registry reconciliation"
+          ],
+          "notes": null
+        },
+        {
+          "field": "land",
+          "status": "READY",
+          "source_id": "sp-sao-paulo-geosampa-wfs",
+          "supporting_source_ids": [
+            "sp-sao-paulo-iptu-cadastro-fiscal"
+          ],
+          "endpoint": "https://wfs.geosampa.prefeitura.sp.gov.br/geoserver/geoportal/wfs",
+          "access_class": "OPEN_REUSABLE",
+          "license": null,
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "frontage normalization",
+            "official-vs-GIS area reconciliation"
+          ],
+          "notes": null
+        },
+        {
+          "field": "building",
+          "status": "PARTIAL",
+          "source_id": "sp-sao-paulo-iptu-cadastro-fiscal",
+          "supporting_source_ids": [
+            "sp-sao-paulo-licenciamento-geosampa"
+          ],
+          "endpoint": "https://geosampa.prefeitura.sp.gov.br/",
+          "access_class": "OPEN_REUSABLE",
+          "license": null,
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "complete footprint/building join",
+            "licensed-vs-fiscal area reconciliation"
+          ],
+          "notes": null
+        },
+        {
+          "field": "IPTU",
+          "status": "READY",
+          "source_id": "sp-sao-paulo-iptu-cadastro-fiscal",
+          "supporting_source_ids": [],
+          "endpoint": "https://geosampa.prefeitura.sp.gov.br/",
+          "access_class": "OPEN_REUSABLE",
+          "license": null,
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "historical exercise normalizer"
+          ],
+          "notes": null
+        },
+        {
+          "field": "PGV",
+          "status": "PARTIAL",
+          "source_id": "sp-sao-paulo-iptu-cadastro-fiscal",
+          "supporting_source_ids": [],
+          "endpoint": "https://geosampa.prefeitura.sp.gov.br/",
+          "access_class": "OPEN_REUSABLE",
+          "license": null,
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "current PGV legal table/version mapping",
+            "street/zone value normalization"
+          ],
+          "notes": null
+        },
+        {
+          "field": "ITBI",
+          "status": "READY",
+          "source_id": "sp-sao-paulo-itbi-transactions",
+          "supporting_source_ids": [],
+          "endpoint": "https://www2.prefeitura.sp.gov.br/web/fazenda/w/acesso_a_informacao/31501",
+          "access_class": "PUBLIC_QUERY_ONLY",
+          "license": null,
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "schema inspection",
+            "license/terms review",
+            "property linkage confidence"
+          ],
+          "notes": null
+        },
+        {
+          "field": "registry reference",
+          "status": "PRIVATE_ON_DEMAND",
+          "source_id": null,
+          "supporting_source_ids": [],
+          "endpoint": null,
+          "access_class": null,
+          "license": null,
+          "connector_status": "NOT_DISCOVERED",
+          "missing_fields": [
+            "matricula/CNS lookup via legitimate registral flow"
+          ],
+          "notes": "No national open registry reference source approved."
+        },
+        {
+          "field": "zoning",
+          "status": "READY",
+          "source_id": "sp-sao-paulo-geosampa-wfs",
+          "supporting_source_ids": [
+            "sp-sao-paulo-pde-law"
+          ],
+          "endpoint": "https://wfs.geosampa.prefeitura.sp.gov.br/geoserver/geoportal/wfs",
+          "access_class": "OPEN_REUSABLE",
+          "license": null,
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "temporal zoning/version reconciliation"
+          ],
+          "notes": null
+        },
+        {
+          "field": "urban parameters",
+          "status": "PARTIAL",
+          "source_id": "sp-sao-paulo-geosampa-wfs",
+          "supporting_source_ids": [
+            "sp-sao-paulo-pde-law"
+          ],
+          "endpoint": "https://wfs.geosampa.prefeitura.sp.gov.br/geoserver/geoportal/wfs",
+          "access_class": "OPEN_REUSABLE",
+          "license": null,
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "LPUOS parameter parser by zone/overlay",
+            "article/annex citations"
+          ],
+          "notes": null
+        },
+        {
+          "field": "permits",
+          "status": "READY",
+          "source_id": "sp-sao-paulo-licenciamento-geosampa",
+          "supporting_source_ids": [],
+          "endpoint": "https://metadados.geosampa.prefeitura.sp.gov.br/geonetwork/srv/search?orgName=Prefeitura+do+Munic%C3%ADpio+de+S%C3%A3o+Paulo+-+PMSP+%2F+Secretaria+Municipal+de+Urbanismo+e+Licenciamento+-+SMUL",
+          "access_class": "OPEN_REUSABLE",
+          "license": null,
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "layer-by-layer normalization",
+            "legacy process reconciliation"
+          ],
+          "notes": null
+        },
+        {
+          "field": "habite-se",
+          "status": "QUERY_ONLY",
+          "source_id": "sp-sao-paulo-habite-se-cedi",
+          "supporting_source_ids": [
+            "sp-sao-paulo-licenciamento-geosampa"
+          ],
+          "endpoint": "https://www.prefeitura.sp.gov.br/web/licenciamento/w/servicos/365484",
+          "access_class": "PUBLIC_QUERY_ONLY",
+          "license": null,
+          "connector_status": "QUERY_WORKFLOW_ONLY",
+          "missing_fields": [
+            "bulk/public index not confirmed",
+            "document linkage by property"
+          ],
+          "notes": null
+        },
+        {
+          "field": "environment",
+          "status": "PARTIAL",
+          "source_id": "sp-sao-paulo-geosampa-wfs",
+          "supporting_source_ids": [],
+          "endpoint": "https://wfs.geosampa.prefeitura.sp.gov.br/geoserver/geoportal/wfs",
+          "access_class": "OPEN_REUSABLE",
+          "license": null,
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "complete environmental layer allowlist",
+            "state/federal overlays"
+          ],
+          "notes": null
+        },
+        {
+          "field": "risk",
+          "status": "PARTIAL",
+          "source_id": "sp-sao-paulo-geosampa-wfs",
+          "supporting_source_ids": [],
+          "endpoint": "https://wfs.geosampa.prefeitura.sp.gov.br/geoserver/geoportal/wfs",
+          "access_class": "OPEN_REUSABLE",
+          "license": null,
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "flood/landslide/geotechnical source-specific connectors"
+          ],
+          "notes": null
+        },
+        {
+          "field": "heritage",
+          "status": "READY",
+          "source_id": "sp-geosampa-cultural-heritage",
+          "supporting_source_ids": [
+            "br-iphan-geoserver"
+          ],
+          "endpoint": "https://metadados.geosampa.prefeitura.sp.gov.br/geonetwork/srv/search?keyword=Patrim%C3%B4nio+cultural",
+          "access_class": "OPEN_REUSABLE",
+          "license": null,
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "legal-act temporal reconciliation"
+          ],
+          "notes": null
+        },
+        {
+          "field": "electricity",
+          "status": "PARTIAL",
+          "source_id": "br-aneel-bdgd",
+          "supporting_source_ids": [
+            "sp-arsesp-utility-concessions"
+          ],
+          "endpoint": "https://dadosabertos.aneel.gov.br/dataset/base-de-dados-geografica-da-distribuidora-bdgd",
+          "access_class": "OPEN_REUSABLE",
+          "license": "ODbL",
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "BDGD distributor-specific materialization",
+            "do not infer available load"
+          ],
+          "notes": null
+        },
+        {
+          "field": "gas",
+          "status": "QUERY_ONLY",
+          "source_id": "sp-comgas-network-query",
+          "supporting_source_ids": [
+            "sp-arsesp-utility-concessions"
+          ],
+          "endpoint": "https://www.comgas.com.br/nossa-rede/",
+          "access_class": "PUBLIC_QUERY_ONLY",
+          "license": null,
+          "connector_status": "QUERY_WORKFLOW_ONLY",
+          "missing_fields": [
+            "machine-readable network license",
+            "availability confirmation at frontage"
+          ],
+          "notes": null
+        },
+        {
+          "field": "water/sewer",
+          "status": "PARTIAL",
+          "source_id": "sp-arsesp-utility-concessions",
+          "supporting_source_ids": [
+            "br-sinisa-results"
+          ],
+          "endpoint": "https://www.arsesp.sp.gov.br/prefeituras/Paginas/SeuMunicipio.aspx",
+          "access_class": "PUBLIC_QUERY_ONLY",
+          "license": null,
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "Sabesp parcel/street network dataset",
+            "frontage availability evidence"
+          ],
+          "notes": null
+        },
+        {
+          "field": "drainage",
+          "status": "PARTIAL",
+          "source_id": "sp-sao-paulo-geosampa-wfs",
+          "supporting_source_ids": [],
+          "endpoint": "https://wfs.geosampa.prefeitura.sp.gov.br/geoserver/geoportal/wfs",
+          "access_class": "OPEN_REUSABLE",
+          "license": null,
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "stormwater network layer inventory",
+            "asset-level normalization"
+          ],
+          "notes": null
+        },
+        {
+          "field": "telecom",
+          "status": "PARTIAL",
+          "source_id": "br-anatel-open-data",
+          "supporting_source_ids": [],
+          "endpoint": "https://www.gov.br/anatel/pt-br/dados/dados-abertos",
+          "access_class": "OPEN_REUSABLE",
+          "license": null,
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "lot-level service evidence",
+            "provider network availability"
+          ],
+          "notes": null
+        },
+        {
+          "field": "transport",
+          "status": "PARTIAL",
+          "source_id": "sp-sao-paulo-geosampa-wfs",
+          "supporting_source_ids": [
+            "br-dnit-snv",
+            "br-antt-rail-network"
+          ],
+          "endpoint": "https://wfs.geosampa.prefeitura.sp.gov.br/geoserver/geoportal/wfs",
+          "access_class": "OPEN_REUSABLE",
+          "license": null,
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "municipal/federal right-of-way normalization"
+          ],
+          "notes": null
+        },
+        {
+          "field": "imagery",
+          "status": "READY",
+          "source_id": "sp-sao-paulo-geosampa-wms",
+          "supporting_source_ids": [],
+          "endpoint": "https://wms.geosampa.prefeitura.sp.gov.br/geoserver/geoportal/wms",
+          "access_class": "PUBLIC_QUERY_ONLY",
+          "license": null,
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "artifact license/terms per imagery vintage",
+            "snapshot/version manifest"
+          ],
+          "notes": null
+        },
+        {
+          "field": "terrain",
+          "status": "READY",
+          "source_id": "sp-sao-paulo-lidar-terrain",
+          "supporting_source_ids": [],
+          "endpoint": "https://metadados.geosampa.prefeitura.sp.gov.br/geonetwork/geoprodam/search?orgName=Coordenadoria+de+Produ%C3%A7%C3%A3o+e+An%C3%A1lise+da+Informa%C3%A7%C3%A3o+%E2%80%93+GEOINFO",
+          "access_class": "PUBLIC_QUERY_ONLY",
+          "license": null,
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "artifact license review",
+            "tile/index connector",
+            "quality metadata normalization"
+          ],
+          "notes": null
+        },
+        {
+          "field": "public works",
+          "status": "PARTIAL",
+          "source_id": "br-obrasgov-api",
+          "supporting_source_ids": [
+            "br-pncp-open-api"
+          ],
+          "endpoint": "https://api-publica.obrasgov.gestao.gov.br/",
+          "access_class": "OPEN_REUSABLE",
+          "license": null,
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "municipal works source complement",
+            "distance-to-property normalizer"
+          ],
+          "notes": null
+        },
+        {
+          "field": "public processes",
+          "status": "PARTIAL",
+          "source_id": "br-sei-public-search",
+          "supporting_source_ids": [
+            "sp-sao-paulo-licenciamento-geosampa"
+          ],
+          "endpoint": "https://www.gov.br/servicoscompartilhados/pt-br/assuntos/gestao-documental/sistema-eletronico-de-informacoes-sei/pesquisa-publica",
+          "access_class": "PUBLIC_QUERY_ONLY",
+          "license": null,
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "municipal SEI/SIMPROC public-search adapter",
+            "property/process linkage"
+          ],
+          "notes": null
+        },
+        {
+          "field": "official gazette",
+          "status": "QUERY_ONLY",
+          "source_id": "sp-sao-paulo-diario-oficial-api",
+          "supporting_source_ids": [],
+          "endpoint": "https://gateway.apilib.prefeitura.sp.gov.br/sg/dom/v1",
+          "access_class": "AUTHENTICATED_PUBLIC",
+          "license": null,
+          "connector_status": "QUERY_WORKFLOW_ONLY",
+          "missing_fields": [
+            "authorized API token/subscription",
+            "gazette legal-event parser"
+          ],
+          "notes": null
+        },
+        {
+          "field": "historical data",
+          "status": "PARTIAL",
+          "source_id": "sp-sao-paulo-itbi-transactions",
+          "supporting_source_ids": [
+            "sp-sao-paulo-geosampa-wms",
+            "sp-sao-paulo-diario-oficial-api"
+          ],
+          "endpoint": "https://www2.prefeitura.sp.gov.br/web/fazenda/w/acesso_a_informacao/31501",
+          "access_class": "PUBLIC_QUERY_ONLY",
+          "license": null,
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "unified temporal index across imagery/tax/law/permits"
+          ],
+          "notes": null
+        }
       ]
     },
     {
@@ -26,18 +448,385 @@
       "uf": "PE",
       "ibge": "2611606",
       "status": "IN_PROGRESS",
-      "known_strengths": [
-        "lotes",
-        "IPTU rico ODbL",
-        "ITBI ODbL",
-        "licenciamento diário",
-        "outorga onerosa",
-        "restrições ambientais ArcGIS"
-      ],
-      "next_gaps": [
-        "imagem/ortofoto oficial reutilizável",
-        "infraestrutura urbana normalizada",
-        "patrimônio/risco em conectores específicos"
+      "rows": [
+        {
+          "field": "identity",
+          "status": "READY",
+          "source_id": "pe-recife-iptu",
+          "supporting_source_ids": [
+            "pe-recife-financas-lotes"
+          ],
+          "endpoint": "https://dados.recife.pe.gov.br/dataset/imposto-predial-e-territorial-urbano-iptu",
+          "access_class": "OPEN_REUSABLE",
+          "license": "ODbL",
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "property identifier reconciliation"
+          ],
+          "notes": null
+        },
+        {
+          "field": "land",
+          "status": "READY",
+          "source_id": "pe-recife-financas-lotes",
+          "supporting_source_ids": [
+            "pe-recife-iptu"
+          ],
+          "endpoint": "https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Financas",
+          "access_class": "PUBLIC_QUERY_ONLY",
+          "license": null,
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "parcel geometry/fiscal area reconciliation"
+          ],
+          "notes": null
+        },
+        {
+          "field": "building",
+          "status": "READY",
+          "source_id": "pe-recife-iptu",
+          "supporting_source_ids": [],
+          "endpoint": "https://dados.recife.pe.gov.br/dataset/imposto-predial-e-territorial-urbano-iptu",
+          "access_class": "OPEN_REUSABLE",
+          "license": "ODbL",
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "footprint geometry linkage"
+          ],
+          "notes": null
+        },
+        {
+          "field": "IPTU",
+          "status": "READY",
+          "source_id": "pe-recife-iptu",
+          "supporting_source_ids": [],
+          "endpoint": "https://dados.recife.pe.gov.br/dataset/imposto-predial-e-territorial-urbano-iptu",
+          "access_class": "OPEN_REUSABLE",
+          "license": "ODbL",
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [],
+          "notes": null
+        },
+        {
+          "field": "PGV",
+          "status": "PARTIAL",
+          "source_id": "pe-recife-iptu",
+          "supporting_source_ids": [],
+          "endpoint": "https://dados.recife.pe.gov.br/dataset/imposto-predial-e-territorial-urbano-iptu",
+          "access_class": "OPEN_REUSABLE",
+          "license": "ODbL",
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "explicit PGV/value-table source and legal version"
+          ],
+          "notes": null
+        },
+        {
+          "field": "ITBI",
+          "status": "READY",
+          "source_id": "pe-recife-itbi",
+          "supporting_source_ids": [],
+          "endpoint": "https://dados.recife.pe.gov.br/dataset/imposto-sobre-transmissao-de-bens-imoveis-itbi",
+          "access_class": "OPEN_REUSABLE",
+          "license": "ODbL",
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [],
+          "notes": null
+        },
+        {
+          "field": "registry reference",
+          "status": "PRIVATE_ON_DEMAND",
+          "source_id": null,
+          "supporting_source_ids": [],
+          "endpoint": null,
+          "access_class": null,
+          "license": null,
+          "connector_status": "NOT_DISCOVERED",
+          "missing_fields": [
+            "matricula/CNS official workflow"
+          ],
+          "notes": null
+        },
+        {
+          "field": "zoning",
+          "status": "READY",
+          "source_id": "pe-recife-zoning-arcgis",
+          "supporting_source_ids": [],
+          "endpoint": "https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Planejamento/BASES_ZONEAMENTO_G_PD2020/FeatureServer",
+          "access_class": "PUBLIC_QUERY_ONLY",
+          "license": null,
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "license per service"
+          ],
+          "notes": null
+        },
+        {
+          "field": "urban parameters",
+          "status": "PARTIAL",
+          "source_id": "pe-recife-zoning-arcgis",
+          "supporting_source_ids": [
+            "pe-recife-outorga-onerosa"
+          ],
+          "endpoint": "https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Planejamento/BASES_ZONEAMENTO_G_PD2020/FeatureServer",
+          "access_class": "PUBLIC_QUERY_ONLY",
+          "license": null,
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "full parameter/legal-rule parser"
+          ],
+          "notes": null
+        },
+        {
+          "field": "permits",
+          "status": "READY",
+          "source_id": "pe-recife-licenciamento-urbanistico",
+          "supporting_source_ids": [],
+          "endpoint": "https://dados.recife.pe.gov.br/dataset/licenciamento-urbanistico",
+          "access_class": "OPEN_REUSABLE",
+          "license": "ODbL",
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "property join"
+          ],
+          "notes": null
+        },
+        {
+          "field": "habite-se",
+          "status": "PARTIAL",
+          "source_id": "pe-recife-licenciamento-urbanistico",
+          "supporting_source_ids": [],
+          "endpoint": "https://dados.recife.pe.gov.br/dataset/licenciamento-urbanistico",
+          "access_class": "OPEN_REUSABLE",
+          "license": "ODbL",
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "explicit conclusion/habite-se field coverage"
+          ],
+          "notes": null
+        },
+        {
+          "field": "environment",
+          "status": "READY",
+          "source_id": "pe-recife-environment-restrictions",
+          "supporting_source_ids": [],
+          "endpoint": "https://esigportal2.recife.pe.gov.br/arcgis/rest/services/MeioAmbiente",
+          "access_class": "PUBLIC_QUERY_ONLY",
+          "license": null,
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "license per service"
+          ],
+          "notes": null
+        },
+        {
+          "field": "risk",
+          "status": "PARTIAL",
+          "source_id": "pe-recife-macrodrenagem",
+          "supporting_source_ids": [
+            "pe-recife-environment-restrictions"
+          ],
+          "endpoint": "https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Hosted/PAINEL_MACRODRENAGEM_2026/FeatureServer",
+          "access_class": "PUBLIC_QUERY_ONLY",
+          "license": null,
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "landslide/geotechnical coverage"
+          ],
+          "notes": null
+        },
+        {
+          "field": "heritage",
+          "status": "PARTIAL",
+          "source_id": "br-iphan-geoserver",
+          "supporting_source_ids": [],
+          "endpoint": "https://geoserver.iphan.gov.br/geoserver/",
+          "access_class": "PUBLIC_QUERY_ONLY",
+          "license": null,
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "municipal/state heritage datasets"
+          ],
+          "notes": null
+        },
+        {
+          "field": "electricity",
+          "status": "PARTIAL",
+          "source_id": "br-aneel-bdgd",
+          "supporting_source_ids": [],
+          "endpoint": "https://dadosabertos.aneel.gov.br/dataset/base-de-dados-geografica-da-distribuidora-bdgd",
+          "access_class": "OPEN_REUSABLE",
+          "license": "ODbL",
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "local distributor resolver/materialization"
+          ],
+          "notes": null
+        },
+        {
+          "field": "gas",
+          "status": "QUERY_ONLY",
+          "source_id": "pe-copergas-network-map",
+          "supporting_source_ids": [],
+          "endpoint": "https://copergas.com.br/",
+          "access_class": "PUBLIC_QUERY_ONLY",
+          "license": null,
+          "connector_status": "QUERY_WORKFLOW_ONLY",
+          "missing_fields": [
+            "machine-readable licensed network"
+          ],
+          "notes": null
+        },
+        {
+          "field": "water/sewer",
+          "status": "PARTIAL",
+          "source_id": "pe-compesa-gis-ecosystem",
+          "supporting_source_ids": [
+            "br-sinisa-results"
+          ],
+          "endpoint": "https://servicos.compesa.com.br/giscomp/",
+          "access_class": "PUBLIC_QUERY_ONLY",
+          "license": null,
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "public network-layer license/access"
+          ],
+          "notes": null
+        },
+        {
+          "field": "drainage",
+          "status": "READY",
+          "source_id": "pe-recife-macrodrenagem",
+          "supporting_source_ids": [],
+          "endpoint": "https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Hosted/PAINEL_MACRODRENAGEM_2026/FeatureServer",
+          "access_class": "PUBLIC_QUERY_ONLY",
+          "license": null,
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "asset-level completeness"
+          ],
+          "notes": null
+        },
+        {
+          "field": "telecom",
+          "status": "PARTIAL",
+          "source_id": "br-anatel-open-data",
+          "supporting_source_ids": [],
+          "endpoint": "https://www.gov.br/anatel/pt-br/dados/dados-abertos",
+          "access_class": "OPEN_REUSABLE",
+          "license": null,
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "lot-level availability evidence"
+          ],
+          "notes": null
+        },
+        {
+          "field": "transport",
+          "status": "PARTIAL",
+          "source_id": "br-dnit-snv",
+          "supporting_source_ids": [
+            "br-antt-rail-network"
+          ],
+          "endpoint": "https://www.gov.br/dnit/pt-br/assuntos/sistema-nacional-de-viacao",
+          "access_class": "PUBLIC_QUERY_ONLY",
+          "license": null,
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "municipal road hierarchy connector"
+          ],
+          "notes": null
+        },
+        {
+          "field": "imagery",
+          "status": "GAP",
+          "source_id": null,
+          "supporting_source_ids": [],
+          "endpoint": null,
+          "access_class": null,
+          "license": null,
+          "connector_status": "NOT_DISCOVERED",
+          "missing_fields": [
+            "official reusable orthophoto/current imagery"
+          ],
+          "notes": null
+        },
+        {
+          "field": "terrain",
+          "status": "PARTIAL",
+          "source_id": "pe-apac-arcgis",
+          "supporting_source_ids": [],
+          "endpoint": "https://geoportal.apac.pe.gov.br/server/rest/services",
+          "access_class": "PUBLIC_QUERY_ONLY",
+          "license": null,
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "high-resolution terrain source/licence"
+          ],
+          "notes": null
+        },
+        {
+          "field": "public works",
+          "status": "PARTIAL",
+          "source_id": "br-obrasgov-api",
+          "supporting_source_ids": [
+            "br-pncp-open-api"
+          ],
+          "endpoint": "https://api-publica.obrasgov.gestao.gov.br/",
+          "access_class": "OPEN_REUSABLE",
+          "license": null,
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "municipal complement"
+          ],
+          "notes": null
+        },
+        {
+          "field": "public processes",
+          "status": "PARTIAL",
+          "source_id": "pe-recife-licenciamento-urbanistico",
+          "supporting_source_ids": [
+            "br-sei-public-search"
+          ],
+          "endpoint": "https://dados.recife.pe.gov.br/dataset/licenciamento-urbanistico",
+          "access_class": "OPEN_REUSABLE",
+          "license": "ODbL",
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "general municipal public-process adapter"
+          ],
+          "notes": null
+        },
+        {
+          "field": "official gazette",
+          "status": "GAP",
+          "source_id": null,
+          "supporting_source_ids": [],
+          "endpoint": null,
+          "access_class": null,
+          "license": null,
+          "connector_status": "NOT_DISCOVERED",
+          "missing_fields": [
+            "official gazette structured source/API"
+          ],
+          "notes": null
+        },
+        {
+          "field": "historical data",
+          "status": "READY",
+          "source_id": "pe-recife-iptu",
+          "supporting_source_ids": [
+            "pe-recife-itbi"
+          ],
+          "endpoint": "https://dados.recife.pe.gov.br/dataset/imposto-predial-e-territorial-urbano-iptu",
+          "access_class": "OPEN_REUSABLE",
+          "license": "ODbL",
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "unified temporal index"
+          ],
+          "notes": null
+        }
       ]
     },
     {
@@ -45,18 +834,389 @@
       "uf": "RJ",
       "ibge": "3304557",
       "status": "IN_PROGRESS",
-      "known_strengths": [
-        "imóveis territoriais",
-        "matrícula como referência",
-        "IPTU/ITBI CC BY 4.0",
-        "edificações com altura",
-        "GeoPAL",
-        "legislação urbanística"
-      ],
-      "next_gaps": [
-        "infraestrutura/rede",
-        "licença item a item para edificações",
-        "conector de parâmetros LC 270/2024"
+      "rows": [
+        {
+          "field": "identity",
+          "status": "READY",
+          "source_id": "rj-rio-imoveis-territoriais",
+          "supporting_source_ids": [],
+          "endpoint": "https://pgeo3.rio.rj.gov.br/arcgis/rest/services/CadParcel/IMOVEIS_TERRITORIAIS/FeatureServer",
+          "access_class": "PUBLIC_QUERY_ONLY",
+          "license": null,
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "property reconciliation across fiscal/registry refs"
+          ],
+          "notes": null
+        },
+        {
+          "field": "land",
+          "status": "READY",
+          "source_id": "rj-rio-imoveis-territoriais",
+          "supporting_source_ids": [],
+          "endpoint": "https://pgeo3.rio.rj.gov.br/arcgis/rest/services/CadParcel/IMOVEIS_TERRITORIAIS/FeatureServer",
+          "access_class": "PUBLIC_QUERY_ONLY",
+          "license": null,
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "area reconciliation"
+          ],
+          "notes": null
+        },
+        {
+          "field": "building",
+          "status": "READY",
+          "source_id": "rj-rio-edificacoes-2019",
+          "supporting_source_ids": [],
+          "endpoint": "https://pgeo3.rio.rj.gov.br/arcgis/rest/services/CadLog/Edificacoes_2019/FeatureServer/0",
+          "access_class": "PUBLIC_QUERY_ONLY",
+          "license": null,
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "license per item",
+            "refresh/currentness"
+          ],
+          "notes": null
+        },
+        {
+          "field": "IPTU",
+          "status": "READY",
+          "source_id": "rj-rio-iptu",
+          "supporting_source_ids": [],
+          "endpoint": "https://pgeo3.rio.rj.gov.br/arcgis/rest/services/Fazenda/IPTU/MapServer",
+          "access_class": "OPEN_REUSABLE",
+          "license": "CC BY 4.0",
+          "connector_status": "APPROVED_CONNECTOR_CONFIGURED",
+          "missing_fields": [],
+          "notes": null
+        },
+        {
+          "field": "PGV",
+          "status": "PARTIAL",
+          "source_id": "rj-rio-iptu",
+          "supporting_source_ids": [],
+          "endpoint": "https://pgeo3.rio.rj.gov.br/arcgis/rest/services/Fazenda/IPTU/MapServer",
+          "access_class": "OPEN_REUSABLE",
+          "license": "CC BY 4.0",
+          "connector_status": "APPROVED_CONNECTOR_CONFIGURED",
+          "missing_fields": [
+            "explicit current PGV/value table linkage"
+          ],
+          "notes": null
+        },
+        {
+          "field": "ITBI",
+          "status": "READY",
+          "source_id": "rj-rio-itbi",
+          "supporting_source_ids": [],
+          "endpoint": "https://pgeo3.rio.rj.gov.br/arcgis/rest/services/Fazenda/ITBI/MapServer",
+          "access_class": "OPEN_REUSABLE",
+          "license": "CC BY 4.0",
+          "connector_status": "APPROVED_CONNECTOR_CONFIGURED",
+          "missing_fields": [],
+          "notes": null
+        },
+        {
+          "field": "registry reference",
+          "status": "PARTIAL",
+          "source_id": "rj-rio-imoveis-territoriais",
+          "supporting_source_ids": [],
+          "endpoint": "https://pgeo3.rio.rj.gov.br/arcgis/rest/services/CadParcel/IMOVEIS_TERRITORIAIS/FeatureServer",
+          "access_class": "PUBLIC_QUERY_ONLY",
+          "license": null,
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "coverage/completeness of matricula reference",
+            "no ownership indexing"
+          ],
+          "notes": null
+        },
+        {
+          "field": "zoning",
+          "status": "PARTIAL",
+          "source_id": "rj-rio-pgeo3",
+          "supporting_source_ids": [
+            "rj-rio-plan-director"
+          ],
+          "endpoint": "https://pgeo3.rio.rj.gov.br/arcgis/rest/services",
+          "access_class": "PUBLIC_QUERY_ONLY",
+          "license": null,
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "current zoning service/layer identification"
+          ],
+          "notes": null
+        },
+        {
+          "field": "urban parameters",
+          "status": "PARTIAL",
+          "source_id": "rj-rio-plan-director",
+          "supporting_source_ids": [
+            "rj-rio-pgeo3"
+          ],
+          "endpoint": "https://www.rio.rj.gov.br/",
+          "access_class": "OPEN_REUSABLE",
+          "license": null,
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "LC 270/2024 structured parameter parser"
+          ],
+          "notes": null
+        },
+        {
+          "field": "permits",
+          "status": "PARTIAL",
+          "source_id": "rj-rio-geopal",
+          "supporting_source_ids": [],
+          "endpoint": "https://pgeo3.rio.rj.gov.br/arcgis/rest/services/CadParcel/GeoPAL/MapServer",
+          "access_class": "PUBLIC_QUERY_ONLY",
+          "license": null,
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "building licensing/alvaras beyond subdivision projects"
+          ],
+          "notes": null
+        },
+        {
+          "field": "habite-se",
+          "status": "GAP",
+          "source_id": null,
+          "supporting_source_ids": [],
+          "endpoint": null,
+          "access_class": null,
+          "license": null,
+          "connector_status": "NOT_DISCOVERED",
+          "missing_fields": [
+            "official conclusion/habite-se source"
+          ],
+          "notes": null
+        },
+        {
+          "field": "environment",
+          "status": "READY",
+          "source_id": "rj-rio-hidrografia-drenagem",
+          "supporting_source_ids": [
+            "rj-rio-pgeo3"
+          ],
+          "endpoint": "https://pgeo3.rio.rj.gov.br/arcgis/rest/services/Meio_Ambiente/Hidrografia/FeatureServer",
+          "access_class": "PUBLIC_QUERY_ONLY",
+          "license": "CC BY 4.0 (confirmed for related sub-bacias item; verify per service item)",
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "license per service"
+          ],
+          "notes": null
+        },
+        {
+          "field": "risk",
+          "status": "READY",
+          "source_id": "rj-rio-flood-susceptibility",
+          "supporting_source_ids": [],
+          "endpoint": "https://pgeo3.rio.rj.gov.br/arcgis/rest/services/Estudos/ISMFI_Indice_de_Suscetibilidade_do_Meio_Fisico_a_Inundacoes/MapServer",
+          "access_class": "PUBLIC_QUERY_ONLY",
+          "license": null,
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "landslide/geotechnical complements"
+          ],
+          "notes": null
+        },
+        {
+          "field": "heritage",
+          "status": "PARTIAL",
+          "source_id": "rj-rio-pgeo3",
+          "supporting_source_ids": [
+            "br-iphan-geoserver"
+          ],
+          "endpoint": "https://pgeo3.rio.rj.gov.br/arcgis/rest/services",
+          "access_class": "PUBLIC_QUERY_ONLY",
+          "license": null,
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "dedicated heritage layer allowlist"
+          ],
+          "notes": null
+        },
+        {
+          "field": "electricity",
+          "status": "PARTIAL",
+          "source_id": "br-aneel-bdgd",
+          "supporting_source_ids": [],
+          "endpoint": "https://dadosabertos.aneel.gov.br/dataset/base-de-dados-geografica-da-distribuidora-bdgd",
+          "access_class": "OPEN_REUSABLE",
+          "license": "ODbL",
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "local distributor resolver/materialization"
+          ],
+          "notes": null
+        },
+        {
+          "field": "gas",
+          "status": "QUERY_ONLY",
+          "source_id": "rj-naturgy-gas-network",
+          "supporting_source_ids": [],
+          "endpoint": "https://www.naturgy.com.br/o_gas_natural/",
+          "access_class": "PUBLIC_QUERY_ONLY",
+          "license": null,
+          "connector_status": "QUERY_WORKFLOW_ONLY",
+          "missing_fields": [
+            "machine-readable licensed network"
+          ],
+          "notes": null
+        },
+        {
+          "field": "water/sewer",
+          "status": "PARTIAL",
+          "source_id": "rj-cedae-open-data",
+          "supporting_source_ids": [
+            "br-sinisa-results"
+          ],
+          "endpoint": "https://www.cedae.com.br/dadosabertos",
+          "access_class": "PUBLIC_QUERY_ONLY",
+          "license": null,
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "current provider split and sewer network sources"
+          ],
+          "notes": null
+        },
+        {
+          "field": "drainage",
+          "status": "READY",
+          "source_id": "rj-rio-hidrografia-drenagem",
+          "supporting_source_ids": [],
+          "endpoint": "https://pgeo3.rio.rj.gov.br/arcgis/rest/services/Meio_Ambiente/Hidrografia/FeatureServer",
+          "access_class": "PUBLIC_QUERY_ONLY",
+          "license": "CC BY 4.0 (confirmed for related sub-bacias item; verify per service item)",
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "asset-level completeness"
+          ],
+          "notes": null
+        },
+        {
+          "field": "telecom",
+          "status": "PARTIAL",
+          "source_id": "br-anatel-open-data",
+          "supporting_source_ids": [],
+          "endpoint": "https://www.gov.br/anatel/pt-br/dados/dados-abertos",
+          "access_class": "OPEN_REUSABLE",
+          "license": null,
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "lot-level availability"
+          ],
+          "notes": null
+        },
+        {
+          "field": "transport",
+          "status": "PARTIAL",
+          "source_id": "br-dnit-snv",
+          "supporting_source_ids": [
+            "br-antt-rail-network",
+            "rj-rio-pgeo3"
+          ],
+          "endpoint": "https://www.gov.br/dnit/pt-br/assuntos/sistema-nacional-de-viacao",
+          "access_class": "PUBLIC_QUERY_ONLY",
+          "license": null,
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "municipal right-of-way normalizer"
+          ],
+          "notes": null
+        },
+        {
+          "field": "imagery",
+          "status": "PARTIAL",
+          "source_id": "rj-rio-pgeo3",
+          "supporting_source_ids": [],
+          "endpoint": "https://pgeo3.rio.rj.gov.br/arcgis/rest/services",
+          "access_class": "PUBLIC_QUERY_ONLY",
+          "license": null,
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "dedicated imagery source/license/version inventory"
+          ],
+          "notes": null
+        },
+        {
+          "field": "terrain",
+          "status": "PARTIAL",
+          "source_id": "rj-rio-flood-susceptibility",
+          "supporting_source_ids": [
+            "br-sgb-geosgb"
+          ],
+          "endpoint": "https://pgeo3.rio.rj.gov.br/arcgis/rest/services/Estudos/ISMFI_Indice_de_Suscetibilidade_do_Meio_Fisico_a_Inundacoes/MapServer",
+          "access_class": "PUBLIC_QUERY_ONLY",
+          "license": null,
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "high-resolution DTM/LiDAR official source"
+          ],
+          "notes": null
+        },
+        {
+          "field": "public works",
+          "status": "PARTIAL",
+          "source_id": "br-obrasgov-api",
+          "supporting_source_ids": [
+            "br-pncp-open-api"
+          ],
+          "endpoint": "https://api-publica.obrasgov.gestao.gov.br/",
+          "access_class": "OPEN_REUSABLE",
+          "license": null,
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "municipal works complement"
+          ],
+          "notes": null
+        },
+        {
+          "field": "public processes",
+          "status": "PARTIAL",
+          "source_id": "br-sei-public-search",
+          "supporting_source_ids": [],
+          "endpoint": "https://www.gov.br/servicoscompartilhados/pt-br/assuntos/gestao-documental/sistema-eletronico-de-informacoes-sei/pesquisa-publica",
+          "access_class": "PUBLIC_QUERY_ONLY",
+          "license": null,
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "municipal process/licensing public adapter"
+          ],
+          "notes": null
+        },
+        {
+          "field": "official gazette",
+          "status": "GAP",
+          "source_id": null,
+          "supporting_source_ids": [],
+          "endpoint": null,
+          "access_class": null,
+          "license": null,
+          "connector_status": "NOT_DISCOVERED",
+          "missing_fields": [
+            "official structured gazette source/API"
+          ],
+          "notes": null
+        },
+        {
+          "field": "historical data",
+          "status": "PARTIAL",
+          "source_id": "rj-rio-itbi",
+          "supporting_source_ids": [
+            "rj-rio-iptu",
+            "rj-rio-pgeo3"
+          ],
+          "endpoint": "https://pgeo3.rio.rj.gov.br/arcgis/rest/services/Fazenda/ITBI/MapServer",
+          "access_class": "OPEN_REUSABLE",
+          "license": "CC BY 4.0",
+          "connector_status": "APPROVED_CONNECTOR_CONFIGURED",
+          "missing_fields": [
+            "unified temporal index"
+          ],
+          "notes": null
+        }
       ]
     },
     {
@@ -64,18 +1224,389 @@
       "uf": "MG",
       "ibge": "3106200",
       "status": "IN_PROGRESS",
-      "known_strengths": [
-        "LOTE_CTM",
-        "edificações",
-        "parâmetros urbanísticos",
-        "ITBI",
-        "projeto edificação licenciado",
-        "infraestrutura BHMap"
-      ],
-      "next_gaps": [
-        "licença explícita por dataset",
-        "ortofoto/imagem",
-        "risco/ambiente consolidados"
+      "rows": [
+        {
+          "field": "identity",
+          "status": "READY",
+          "source_id": "mg-belo-horizonte-bhgeo",
+          "supporting_source_ids": [],
+          "endpoint": "https://prefeitura.pbh.gov.br/bhgeo/acesso-aos-dados",
+          "access_class": "PUBLIC_QUERY_ONLY",
+          "license": null,
+          "connector_status": "APPROVED_CONNECTOR_CONFIGURED",
+          "missing_fields": [
+            "identifier reconciliation"
+          ],
+          "notes": null
+        },
+        {
+          "field": "land",
+          "status": "READY",
+          "source_id": "mg-belo-horizonte-bhgeo",
+          "supporting_source_ids": [],
+          "endpoint": "https://prefeitura.pbh.gov.br/bhgeo/acesso-aos-dados",
+          "access_class": "PUBLIC_QUERY_ONLY",
+          "license": null,
+          "connector_status": "APPROVED_CONNECTOR_CONFIGURED",
+          "missing_fields": [
+            "license per dataset"
+          ],
+          "notes": null
+        },
+        {
+          "field": "building",
+          "status": "READY",
+          "source_id": "mg-belo-horizonte-bhgeo",
+          "supporting_source_ids": [],
+          "endpoint": "https://prefeitura.pbh.gov.br/bhgeo/acesso-aos-dados",
+          "access_class": "PUBLIC_QUERY_ONLY",
+          "license": null,
+          "connector_status": "APPROVED_CONNECTOR_CONFIGURED",
+          "missing_fields": [
+            "license per dataset"
+          ],
+          "notes": null
+        },
+        {
+          "field": "IPTU",
+          "status": "GAP",
+          "source_id": null,
+          "supporting_source_ids": [],
+          "endpoint": null,
+          "access_class": null,
+          "license": null,
+          "connector_status": "NOT_DISCOVERED",
+          "missing_fields": [
+            "bulk/public IPTU cadastral source with reusable terms"
+          ],
+          "notes": null
+        },
+        {
+          "field": "PGV",
+          "status": "PARTIAL",
+          "source_id": "mg-belo-horizonte-bhgeo",
+          "supporting_source_ids": [],
+          "endpoint": "https://prefeitura.pbh.gov.br/bhgeo/acesso-aos-dados",
+          "access_class": "PUBLIC_QUERY_ONLY",
+          "license": null,
+          "connector_status": "APPROVED_CONNECTOR_CONFIGURED",
+          "missing_fields": [
+            "explicit PGV/value-table source and legal version"
+          ],
+          "notes": null
+        },
+        {
+          "field": "ITBI",
+          "status": "PARTIAL",
+          "source_id": "mg-belo-horizonte-itbi",
+          "supporting_source_ids": [],
+          "endpoint": "https://dados.pbh.gov.br/dataset/itbi-relatorios",
+          "access_class": "PUBLIC_QUERY_ONLY",
+          "license": "NOT_DECLARED_ON_RESOURCE",
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "license review"
+          ],
+          "notes": null
+        },
+        {
+          "field": "registry reference",
+          "status": "PRIVATE_ON_DEMAND",
+          "source_id": null,
+          "supporting_source_ids": [],
+          "endpoint": null,
+          "access_class": null,
+          "license": null,
+          "connector_status": "NOT_DISCOVERED",
+          "missing_fields": [
+            "matricula/CNS official workflow"
+          ],
+          "notes": null
+        },
+        {
+          "field": "zoning",
+          "status": "READY",
+          "source_id": "mg-belo-horizonte-bhgeo",
+          "supporting_source_ids": [
+            "mg-belo-horizonte-plan-director"
+          ],
+          "endpoint": "https://prefeitura.pbh.gov.br/bhgeo/acesso-aos-dados",
+          "access_class": "PUBLIC_QUERY_ONLY",
+          "license": null,
+          "connector_status": "APPROVED_CONNECTOR_CONFIGURED",
+          "missing_fields": [
+            "license per dataset"
+          ],
+          "notes": null
+        },
+        {
+          "field": "urban parameters",
+          "status": "READY",
+          "source_id": "mg-belo-horizonte-bhgeo",
+          "supporting_source_ids": [
+            "mg-belo-horizonte-plan-director"
+          ],
+          "endpoint": "https://prefeitura.pbh.gov.br/bhgeo/acesso-aos-dados",
+          "access_class": "PUBLIC_QUERY_ONLY",
+          "license": null,
+          "connector_status": "APPROVED_CONNECTOR_CONFIGURED",
+          "missing_fields": [
+            "legal citation normalization"
+          ],
+          "notes": null
+        },
+        {
+          "field": "permits",
+          "status": "READY",
+          "source_id": "mg-belo-horizonte-projeto-edificacao-licenciado",
+          "supporting_source_ids": [],
+          "endpoint": "https://dados.pbh.gov.br/dataset/?_organization_limit=0&res_format=PDF&tags=licenciamento",
+          "access_class": "PUBLIC_QUERY_ONLY",
+          "license": null,
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "license review"
+          ],
+          "notes": null
+        },
+        {
+          "field": "habite-se",
+          "status": "PARTIAL",
+          "source_id": "mg-belo-horizonte-projeto-edificacao-licenciado",
+          "supporting_source_ids": [],
+          "endpoint": "https://dados.pbh.gov.br/dataset/?_organization_limit=0&res_format=PDF&tags=licenciamento",
+          "access_class": "PUBLIC_QUERY_ONLY",
+          "license": null,
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "explicit baixa/conclusion semantics and completeness"
+          ],
+          "notes": null
+        },
+        {
+          "field": "environment",
+          "status": "PARTIAL",
+          "source_id": "mg-ide-sisema",
+          "supporting_source_ids": [
+            "mg-belo-horizonte-bhgeo"
+          ],
+          "endpoint": "https://geoserver.meioambiente.mg.gov.br/",
+          "access_class": "PUBLIC_QUERY_ONLY",
+          "license": null,
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "municipal layer allowlist"
+          ],
+          "notes": null
+        },
+        {
+          "field": "risk",
+          "status": "GAP",
+          "source_id": null,
+          "supporting_source_ids": [],
+          "endpoint": null,
+          "access_class": null,
+          "license": null,
+          "connector_status": "NOT_DISCOVERED",
+          "missing_fields": [
+            "municipal risk/flood/landslide authoritative connector"
+          ],
+          "notes": null
+        },
+        {
+          "field": "heritage",
+          "status": "READY",
+          "source_id": "mg-iepha-protected-heritage",
+          "supporting_source_ids": [
+            "br-iphan-geoserver"
+          ],
+          "endpoint": "https://www.mg.gov.br/iepha/pagina/patrimonio-cultural-protegido",
+          "access_class": "PUBLIC_QUERY_ONLY",
+          "license": null,
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "municipal heritage complement"
+          ],
+          "notes": null
+        },
+        {
+          "field": "electricity",
+          "status": "PARTIAL",
+          "source_id": "br-aneel-bdgd",
+          "supporting_source_ids": [],
+          "endpoint": "https://dadosabertos.aneel.gov.br/dataset/base-de-dados-geografica-da-distribuidora-bdgd",
+          "access_class": "OPEN_REUSABLE",
+          "license": "ODbL",
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "local distributor resolver/materialization"
+          ],
+          "notes": null
+        },
+        {
+          "field": "gas",
+          "status": "QUERY_ONLY",
+          "source_id": "mg-gasmig-network-map",
+          "supporting_source_ids": [],
+          "endpoint": "https://www.mg.gov.br/servico/acessar-o-mapa-da-rede-de-gas-natural",
+          "access_class": "PUBLIC_QUERY_ONLY",
+          "license": null,
+          "connector_status": "QUERY_WORKFLOW_ONLY",
+          "missing_fields": [
+            "machine-readable licensed network"
+          ],
+          "notes": null
+        },
+        {
+          "field": "water/sewer",
+          "status": "PARTIAL",
+          "source_id": "br-sinisa-results",
+          "supporting_source_ids": [],
+          "endpoint": "https://www.gov.br/cidades/pt-br/acesso-a-informacao/acoes-e-programas/saneamento/sinisa/resultados-sinisa",
+          "access_class": "PUBLIC_QUERY_ONLY",
+          "license": null,
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "COPASA provider/network technical dataset"
+          ],
+          "notes": null
+        },
+        {
+          "field": "drainage",
+          "status": "PARTIAL",
+          "source_id": "mg-belo-horizonte-bhgeo",
+          "supporting_source_ids": [],
+          "endpoint": "https://prefeitura.pbh.gov.br/bhgeo/acesso-aos-dados",
+          "access_class": "PUBLIC_QUERY_ONLY",
+          "license": null,
+          "connector_status": "APPROVED_CONNECTOR_CONFIGURED",
+          "missing_fields": [
+            "drainage asset inventory/coverage"
+          ],
+          "notes": null
+        },
+        {
+          "field": "telecom",
+          "status": "PARTIAL",
+          "source_id": "br-anatel-open-data",
+          "supporting_source_ids": [],
+          "endpoint": "https://www.gov.br/anatel/pt-br/dados/dados-abertos",
+          "access_class": "OPEN_REUSABLE",
+          "license": null,
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "lot-level availability"
+          ],
+          "notes": null
+        },
+        {
+          "field": "transport",
+          "status": "PARTIAL",
+          "source_id": "br-dnit-snv",
+          "supporting_source_ids": [
+            "br-antt-rail-network",
+            "mg-belo-horizonte-bhgeo"
+          ],
+          "endpoint": "https://www.gov.br/dnit/pt-br/assuntos/sistema-nacional-de-viacao",
+          "access_class": "PUBLIC_QUERY_ONLY",
+          "license": null,
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "municipal road hierarchy connector"
+          ],
+          "notes": null
+        },
+        {
+          "field": "imagery",
+          "status": "PARTIAL",
+          "source_id": "mg-belo-horizonte-ortofotos",
+          "supporting_source_ids": [],
+          "endpoint": "https://dados.pbh.gov.br/dataset/ortofoto-2015",
+          "access_class": "PUBLIC_QUERY_ONLY",
+          "license": null,
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "license review",
+            "current imagery"
+          ],
+          "notes": null
+        },
+        {
+          "field": "terrain",
+          "status": "PARTIAL",
+          "source_id": "mg-belo-horizonte-bhgeo",
+          "supporting_source_ids": [
+            "br-sgb-geosgb"
+          ],
+          "endpoint": "https://prefeitura.pbh.gov.br/bhgeo/acesso-aos-dados",
+          "access_class": "PUBLIC_QUERY_ONLY",
+          "license": null,
+          "connector_status": "APPROVED_CONNECTOR_CONFIGURED",
+          "missing_fields": [
+            "high-resolution DTM/LiDAR source and license"
+          ],
+          "notes": null
+        },
+        {
+          "field": "public works",
+          "status": "PARTIAL",
+          "source_id": "br-obrasgov-api",
+          "supporting_source_ids": [
+            "br-pncp-open-api"
+          ],
+          "endpoint": "https://api-publica.obrasgov.gestao.gov.br/",
+          "access_class": "OPEN_REUSABLE",
+          "license": null,
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "municipal works complement"
+          ],
+          "notes": null
+        },
+        {
+          "field": "public processes",
+          "status": "PARTIAL",
+          "source_id": "br-sei-public-search",
+          "supporting_source_ids": [],
+          "endpoint": "https://www.gov.br/servicoscompartilhados/pt-br/assuntos/gestao-documental/sistema-eletronico-de-informacoes-sei/pesquisa-publica",
+          "access_class": "PUBLIC_QUERY_ONLY",
+          "license": null,
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "municipal public-process adapter"
+          ],
+          "notes": null
+        },
+        {
+          "field": "official gazette",
+          "status": "GAP",
+          "source_id": null,
+          "supporting_source_ids": [],
+          "endpoint": null,
+          "access_class": null,
+          "license": null,
+          "connector_status": "NOT_DISCOVERED",
+          "missing_fields": [
+            "official structured gazette source/API"
+          ],
+          "notes": null
+        },
+        {
+          "field": "historical data",
+          "status": "PARTIAL",
+          "source_id": "mg-belo-horizonte-ortofotos",
+          "supporting_source_ids": [
+            "mg-belo-horizonte-itbi"
+          ],
+          "endpoint": "https://dados.pbh.gov.br/dataset/ortofoto-2015",
+          "access_class": "PUBLIC_QUERY_ONLY",
+          "license": null,
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "unified temporal index"
+          ],
+          "notes": null
+        }
       ]
     },
     {
@@ -83,21 +1614,422 @@
       "uf": "PB",
       "ibge": "2507507",
       "status": "IN_PROGRESS",
-      "known_strengths": [
-        "lotes/quadras/logradouros SHP/CSV",
-        "aerofotos históricas",
-        "zoneamento/PD 2024",
-        "terreno/hidrografia",
-        "serviços de alvará/habite-se"
-      ],
-      "next_gaps": [
-        "IPTU/PGV bulk",
-        "ITBI bulk",
-        "edificações/cadastro predial aberto",
-        "infraestrutura urbana"
+      "rows": [
+        {
+          "field": "identity",
+          "status": "READY",
+          "source_id": "pb-joao-pessoa-filipeia",
+          "supporting_source_ids": [],
+          "endpoint": "https://filipeia.joaopessoa.pb.gov.br/",
+          "access_class": "PUBLIC_QUERY_ONLY",
+          "license": null,
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "fiscal identifier reconciliation"
+          ],
+          "notes": null
+        },
+        {
+          "field": "land",
+          "status": "READY",
+          "source_id": "pb-joao-pessoa-filipeia",
+          "supporting_source_ids": [],
+          "endpoint": "https://filipeia.joaopessoa.pb.gov.br/",
+          "access_class": "PUBLIC_QUERY_ONLY",
+          "license": null,
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "license review"
+          ],
+          "notes": null
+        },
+        {
+          "field": "building",
+          "status": "GAP",
+          "source_id": null,
+          "supporting_source_ids": [],
+          "endpoint": null,
+          "access_class": null,
+          "license": null,
+          "connector_status": "NOT_DISCOVERED",
+          "missing_fields": [
+            "open cadastral building dataset"
+          ],
+          "notes": null
+        },
+        {
+          "field": "IPTU",
+          "status": "GAP",
+          "source_id": null,
+          "supporting_source_ids": [],
+          "endpoint": null,
+          "access_class": null,
+          "license": null,
+          "connector_status": "NOT_DISCOVERED",
+          "missing_fields": [
+            "bulk/public IPTU source"
+          ],
+          "notes": null
+        },
+        {
+          "field": "PGV",
+          "status": "GAP",
+          "source_id": null,
+          "supporting_source_ids": [],
+          "endpoint": null,
+          "access_class": null,
+          "license": null,
+          "connector_status": "NOT_DISCOVERED",
+          "missing_fields": [
+            "PGV/value-table source"
+          ],
+          "notes": null
+        },
+        {
+          "field": "ITBI",
+          "status": "GAP",
+          "source_id": null,
+          "supporting_source_ids": [],
+          "endpoint": null,
+          "access_class": null,
+          "license": null,
+          "connector_status": "NOT_DISCOVERED",
+          "missing_fields": [
+            "bulk/public ITBI source"
+          ],
+          "notes": null
+        },
+        {
+          "field": "registry reference",
+          "status": "PRIVATE_ON_DEMAND",
+          "source_id": null,
+          "supporting_source_ids": [],
+          "endpoint": null,
+          "access_class": null,
+          "license": null,
+          "connector_status": "NOT_DISCOVERED",
+          "missing_fields": [
+            "matricula/CNS official workflow"
+          ],
+          "notes": null
+        },
+        {
+          "field": "zoning",
+          "status": "READY",
+          "source_id": "pb-joao-pessoa-filipeia",
+          "supporting_source_ids": [],
+          "endpoint": "https://filipeia.joaopessoa.pb.gov.br/",
+          "access_class": "PUBLIC_QUERY_ONLY",
+          "license": null,
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "license review"
+          ],
+          "notes": null
+        },
+        {
+          "field": "urban parameters",
+          "status": "PARTIAL",
+          "source_id": "pb-joao-pessoa-filipeia",
+          "supporting_source_ids": [],
+          "endpoint": "https://filipeia.joaopessoa.pb.gov.br/",
+          "access_class": "PUBLIC_QUERY_ONLY",
+          "license": null,
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "structured parameter/legal-rule parser"
+          ],
+          "notes": null
+        },
+        {
+          "field": "permits",
+          "status": "QUERY_ONLY",
+          "source_id": "pb-joao-pessoa-building-permits",
+          "supporting_source_ids": [],
+          "endpoint": "https://www.joaopessoa.pb.gov.br/secretarias/seplan/alvaras-e-licencas/",
+          "access_class": "AUTHENTICATED_PUBLIC",
+          "license": null,
+          "connector_status": "QUERY_WORKFLOW_ONLY",
+          "missing_fields": [
+            "bulk/index availability"
+          ],
+          "notes": null
+        },
+        {
+          "field": "habite-se",
+          "status": "QUERY_ONLY",
+          "source_id": "pb-joao-pessoa-building-permits",
+          "supporting_source_ids": [],
+          "endpoint": "https://www.joaopessoa.pb.gov.br/secretarias/seplan/alvaras-e-licencas/",
+          "access_class": "AUTHENTICATED_PUBLIC",
+          "license": null,
+          "connector_status": "QUERY_WORKFLOW_ONLY",
+          "missing_fields": [
+            "bulk/index availability"
+          ],
+          "notes": null
+        },
+        {
+          "field": "environment",
+          "status": "PARTIAL",
+          "source_id": "pb-joao-pessoa-filipeia",
+          "supporting_source_ids": [
+            "pb-pbgeo-arcgis"
+          ],
+          "endpoint": "https://filipeia.joaopessoa.pb.gov.br/",
+          "access_class": "PUBLIC_QUERY_ONLY",
+          "license": null,
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "environmental overlay completeness"
+          ],
+          "notes": null
+        },
+        {
+          "field": "risk",
+          "status": "PARTIAL",
+          "source_id": "pb-joao-pessoa-filipeia",
+          "supporting_source_ids": [],
+          "endpoint": "https://filipeia.joaopessoa.pb.gov.br/",
+          "access_class": "PUBLIC_QUERY_ONLY",
+          "license": null,
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "formal flood/landslide authoritative datasets"
+          ],
+          "notes": null
+        },
+        {
+          "field": "heritage",
+          "status": "PARTIAL",
+          "source_id": "pb-joao-pessoa-filipeia",
+          "supporting_source_ids": [
+            "br-iphan-geoserver"
+          ],
+          "endpoint": "https://filipeia.joaopessoa.pb.gov.br/",
+          "access_class": "PUBLIC_QUERY_ONLY",
+          "license": null,
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "state/municipal heritage legal acts"
+          ],
+          "notes": null
+        },
+        {
+          "field": "electricity",
+          "status": "PARTIAL",
+          "source_id": "br-aneel-bdgd",
+          "supporting_source_ids": [],
+          "endpoint": "https://dadosabertos.aneel.gov.br/dataset/base-de-dados-geografica-da-distribuidora-bdgd",
+          "access_class": "OPEN_REUSABLE",
+          "license": "ODbL",
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "local distributor resolver/materialization"
+          ],
+          "notes": null
+        },
+        {
+          "field": "gas",
+          "status": "QUERY_ONLY",
+          "source_id": "pb-pbgas-network-map",
+          "supporting_source_ids": [],
+          "endpoint": "https://pbgas.com.br/",
+          "access_class": "PUBLIC_QUERY_ONLY",
+          "license": null,
+          "connector_status": "QUERY_WORKFLOW_ONLY",
+          "missing_fields": [
+            "machine-readable licensed network"
+          ],
+          "notes": null
+        },
+        {
+          "field": "water/sewer",
+          "status": "PARTIAL",
+          "source_id": "br-sinisa-results",
+          "supporting_source_ids": [],
+          "endpoint": "https://www.gov.br/cidades/pt-br/acesso-a-informacao/acoes-e-programas/saneamento/sinisa/resultados-sinisa",
+          "access_class": "PUBLIC_QUERY_ONLY",
+          "license": null,
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "CAGEPA technical network/provider dataset"
+          ],
+          "notes": null
+        },
+        {
+          "field": "drainage",
+          "status": "PARTIAL",
+          "source_id": "pb-joao-pessoa-filipeia",
+          "supporting_source_ids": [],
+          "endpoint": "https://filipeia.joaopessoa.pb.gov.br/",
+          "access_class": "PUBLIC_QUERY_ONLY",
+          "license": null,
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "stormwater asset network"
+          ],
+          "notes": null
+        },
+        {
+          "field": "telecom",
+          "status": "PARTIAL",
+          "source_id": "br-anatel-open-data",
+          "supporting_source_ids": [],
+          "endpoint": "https://www.gov.br/anatel/pt-br/dados/dados-abertos",
+          "access_class": "OPEN_REUSABLE",
+          "license": null,
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "lot-level availability"
+          ],
+          "notes": null
+        },
+        {
+          "field": "transport",
+          "status": "PARTIAL",
+          "source_id": "br-dnit-snv",
+          "supporting_source_ids": [
+            "br-antt-rail-network",
+            "pb-joao-pessoa-filipeia"
+          ],
+          "endpoint": "https://www.gov.br/dnit/pt-br/assuntos/sistema-nacional-de-viacao",
+          "access_class": "PUBLIC_QUERY_ONLY",
+          "license": null,
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "municipal hierarchy/right-of-way"
+          ],
+          "notes": null
+        },
+        {
+          "field": "imagery",
+          "status": "READY",
+          "source_id": "pb-joao-pessoa-filipeia",
+          "supporting_source_ids": [
+            "pb-pbgeo-arcgis"
+          ],
+          "endpoint": "https://filipeia.joaopessoa.pb.gov.br/",
+          "access_class": "PUBLIC_QUERY_ONLY",
+          "license": null,
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "license per imagery vintage"
+          ],
+          "notes": null
+        },
+        {
+          "field": "terrain",
+          "status": "READY",
+          "source_id": "pb-joao-pessoa-filipeia",
+          "supporting_source_ids": [],
+          "endpoint": "https://filipeia.joaopessoa.pb.gov.br/",
+          "access_class": "PUBLIC_QUERY_ONLY",
+          "license": null,
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "resolution/quality metadata normalization"
+          ],
+          "notes": null
+        },
+        {
+          "field": "public works",
+          "status": "PARTIAL",
+          "source_id": "br-obrasgov-api",
+          "supporting_source_ids": [
+            "br-pncp-open-api"
+          ],
+          "endpoint": "https://api-publica.obrasgov.gestao.gov.br/",
+          "access_class": "OPEN_REUSABLE",
+          "license": null,
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "municipal complement"
+          ],
+          "notes": null
+        },
+        {
+          "field": "public processes",
+          "status": "PARTIAL",
+          "source_id": "pb-joao-pessoa-building-permits",
+          "supporting_source_ids": [
+            "br-sei-public-search"
+          ],
+          "endpoint": "https://www.joaopessoa.pb.gov.br/secretarias/seplan/alvaras-e-licencas/",
+          "access_class": "AUTHENTICATED_PUBLIC",
+          "license": null,
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "general municipal process adapter"
+          ],
+          "notes": null
+        },
+        {
+          "field": "official gazette",
+          "status": "GAP",
+          "source_id": null,
+          "supporting_source_ids": [],
+          "endpoint": null,
+          "access_class": null,
+          "license": null,
+          "connector_status": "NOT_DISCOVERED",
+          "missing_fields": [
+            "official structured gazette source/API"
+          ],
+          "notes": null
+        },
+        {
+          "field": "historical data",
+          "status": "READY",
+          "source_id": "pb-joao-pessoa-filipeia",
+          "supporting_source_ids": [],
+          "endpoint": "https://filipeia.joaopessoa.pb.gov.br/",
+          "access_class": "PUBLIC_QUERY_ONLY",
+          "license": null,
+          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "missing_fields": [
+            "unified imagery/legal temporal index"
+          ],
+          "notes": null
+        }
       ]
     }
   ],
+  "summary": {
+    "São Paulo": {
+      "READY": 9,
+      "PARTIAL": 13,
+      "PRIVATE_ON_DEMAND": 1,
+      "QUERY_ONLY": 3
+    },
+    "Recife": {
+      "READY": 10,
+      "PARTIAL": 12,
+      "PRIVATE_ON_DEMAND": 1,
+      "QUERY_ONLY": 1,
+      "GAP": 2
+    },
+    "Rio de Janeiro": {
+      "READY": 8,
+      "PARTIAL": 15,
+      "GAP": 2,
+      "QUERY_ONLY": 1
+    },
+    "Belo Horizonte": {
+      "READY": 7,
+      "GAP": 3,
+      "PARTIAL": 14,
+      "PRIVATE_ON_DEMAND": 1,
+      "QUERY_ONLY": 1
+    },
+    "João Pessoa": {
+      "READY": 6,
+      "GAP": 5,
+      "PRIVATE_ON_DEMAND": 1,
+      "PARTIAL": 11,
+      "QUERY_ONLY": 3
+    }
+  },
   "second_wave": [
     "Santos/SP",
     "São José dos Campos/SP",
