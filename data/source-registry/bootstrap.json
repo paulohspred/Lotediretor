@@ -2003,6 +2003,49 @@
       "notes": "Diretório REST público com dezenas de pastas temáticas, incluindo patrimônio, estrutura fundiária, uso do solo e zoneamento."
     },
     {
+      "id": "sc-balneario-camboriu-public-cadastre",
+      "authority": "Prefeitura de Balneário Camboriú",
+      "scope": "municipality",
+      "municipality_ibge": "4202008",
+      "domain": [
+        "cadastre",
+        "lots",
+        "units",
+        "buildings",
+        "assessed_value",
+        "urban_viability",
+        "plan_director"
+      ],
+      "source_type": "public_GIS_query",
+      "base_url": "https://geo.bc.sc.gov.br/",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PUBLIC_QUERY_TERMS_REVIEW",
+      "notes": "Acesso Público permite identificar lote e unidade, consultar itens cadastrais/edificação, área construída, valor venal do imóvel/terreno/predial e gerar viabilidade com parâmetros urbanísticos. Não espelhar dados ou matrícula sem revisar termos/LGPD."
+    },
+    {
+      "id": "sc-blumenau-geospatial",
+      "authority": "Prefeitura de Blumenau",
+      "scope": "municipality",
+      "municipality_ibge": "4202404",
+      "domain": [
+        "lots",
+        "buildings",
+        "condominiums",
+        "approved_subdivisions",
+        "addresses",
+        "drainage",
+        "risk",
+        "urban_planning"
+      ],
+      "source_type": "ArcGIS_REST_WFS",
+      "base_url": "https://geo.blumenau.sc.gov.br/server/rest/services",
+      "wfs_url": "https://geo.blumenau.sc.gov.br/server/services/publicacao/Publicacao_WFS/MapServer/WFSServer",
+      "discovery_url": "https://geo.blumenau.sc.gov.br/wfs/wfs.html",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_OFFICIAL_WFS_LICENSE_PER_LAYER",
+      "notes": "Metadados oficiais listam GEO.WFS_LOTES, EDIFICACOES, CONDOMINIOS, LOTEAMENTOS_APROVADOS, drenagem e risco. FeatureServer público 'consulta_construir/Consulta_endereco' expõe lotes/endereço. Portal ArcGIS Enterprise declara openData habilitado; revisar licença por item antes de redistribuição."
+    },
+    {
       "id": "sc-florianopolis-geofloripa",
       "authority": "Prefeitura de Florianópolis / Rede de Planejamento",
       "scope": "municipality",
@@ -2099,6 +2142,49 @@
       "notes": "GeoServer público com WFS/WMS/WCS/WMTS/CSW; metadados frequentemente oferecem download Shapefile e lineage detalhado. Servidor se identifica com texto padrão/antigo, portanto autoridade deve ser confirmada pelo catálogo/metadados por camada."
     },
     {
+      "id": "sp-jundiai-geojundiai",
+      "authority": "Prefeitura de Jundiaí",
+      "scope": "municipality",
+      "municipality_ibge": "3525904",
+      "domain": [
+        "lots",
+        "subdivisions",
+        "condominiums",
+        "public_areas",
+        "plan_director",
+        "zoning",
+        "historical_cartography",
+        "orthoimagery",
+        "pgv"
+      ],
+      "source_type": "public_geoportal_mixed_access",
+      "base_url": "https://geo.jundiai.sp.gov.br/geojundiai/",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_MIXED_ACCESS",
+      "notes": "Portal público possui lotes, loteamentos, condomínios, áreas públicas, Plano Diretor, PGV, cartografia histórica e ortofotos 2012/2019/IGC 2023-24. Cadastro Fiscal Imobiliário é explicitamente restrito a funcionários; não contornar. Busca pública inclui matrícula/cartório, portanto revisar dados exibidos antes de ingestão."
+    },
+    {
+      "id": "sp-osasco-ozmundi",
+      "authority": "Prefeitura de Osasco / SETIDE",
+      "scope": "municipality",
+      "municipality_ibge": "3534401",
+      "domain": [
+        "cadastre",
+        "lots",
+        "land_use_certificate",
+        "subdivisions",
+        "registry_reference",
+        "urban_planning",
+        "geospatial"
+      ],
+      "source_type": "GIS_GeoNetwork_download",
+      "base_url": "https://ozmundi.osasco.sp.gov.br/",
+      "catalog_url": "https://metadadosozmundi.osasco.sp.gov.br/geonetwork/srv/eng/catalog.search",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PUBLIC_WITH_PRIVACY_FILTER",
+      "notes": "Acesso visitante público lançado em 14/05/2026; FAQ diz que usuários podem consultar e baixar dados. Decreto municipal determina downloads respeitando LGPD. Como o sistema cita matrículas/cadastros, aplicar bloqueio de campos pessoais/registrários antes de qualquer ingestão pública."
+    },
+    {
       "id": "sp-ribeirao-preto-webgis",
       "authority": "Prefeitura de Ribeirão Preto",
       "scope": "municipality",
@@ -2115,6 +2201,25 @@
       "access_class": "PUBLIC_QUERY_ONLY",
       "verification_status": "VERIFIED_PORTAL_SERVER_ENDPOINT_DISCOVERY",
       "notes": "Portal ArcGIS Enterprise oficial identifica a própria Prefeitura e referencia o servidor REST local. Enumerar serviços públicos e classificar licença/campos no próximo ciclo."
+    },
+    {
+      "id": "sp-santo-andre-siga",
+      "authority": "Prefeitura de Santo André",
+      "scope": "municipality",
+      "municipality_ibge": "3547809",
+      "domain": [
+        "tax_parcels",
+        "blocks",
+        "lots",
+        "urban_planning",
+        "geospatial"
+      ],
+      "source_type": "GeoServer_public_portal_download",
+      "base_url": "https://siga.santoandre.sp.gov.br/",
+      "map_url": "https://sigamapa.santoandre.sp.gov.br/",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PUBLIC_DOWNLOAD_LICENSE_REVIEW",
+      "notes": "SIGA é plataforma oficial municipal, construída com OpenLayers/GeoServer. Setores, quadras e lotes fiscais foram liberados ao público em 2023 e a documentação informa download. A base fiscal é informativa e não substitui levantamento topográfico/certidão."
     },
     {
       "id": "sp-santos-geoserver",
@@ -2272,6 +2377,22 @@
       "access_class": "OPEN_REUSABLE",
       "verification_status": "VERIFIED",
       "notes": "PDE Lei 16.050/2014 com revisão intermediária pela Lei 17.975/2023 e anexos/mapas. Versionar alterações."
+    },
+    {
+      "id": "sp-sorocaba-geospatial-downloads",
+      "authority": "Prefeitura de Sorocaba / SEPLAN",
+      "scope": "municipality",
+      "municipality_ibge": "3552205",
+      "domain": [
+        "zoning",
+        "urban_planning",
+        "geospatial_downloads"
+      ],
+      "source_type": "official_ZIP_download_hub",
+      "discovery_url": "https://planejamento.sorocaba.sp.gov.br/mapas-camadas-simples-consulta/",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_INFORMATIONAL_LICENSE_REVIEW",
+      "notes": "Portal oficial fornece arquivos geoespaciais ZIP para download e declara finalidade exclusivamente informativa, sem valor de documento oficial. Catalogar cada arquivo/camada e respectiva norma."
     },
     {
       "id": "to-geoportal-seplan",
