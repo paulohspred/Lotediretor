@@ -1937,7 +1937,7 @@
       "base_url": "https://geopinhais.pinhais.pr.gov.br/server/rest/services",
       "access_class": "PUBLIC_QUERY_ONLY",
       "verification_status": "VERIFIED_ENDPOINT_LICENSE_PER_SERVICE",
-      "notes": "Diretório REST público inclui ITBI Feature/MapServer, MAPA_CADASTRAL, QUAD_CAD, PLANO_DIRETOR_2022, pasta Edificações, altimetria e imagens/ortofotos históricas incluindo 2023."
+      "notes": "Diretório REST público inclui ITBI Feature/MapServer, MAPA_CADASTRAL, QUAD_CAD, PLANO_DIRETOR_2022, pasta Edificações, altimetria e imagens históricas. ITBI layer expõe cadastro, inscrição, área do lote/construída, fração, VVT/VVP, valor de avaliação declarado/atualizado e data, sem nomes pessoais no schema consultado. Licença permanece pendente."
     },
     {
       "id": "pr-sanepar-arcgis",
@@ -2282,6 +2282,29 @@
       "notes": "Acesso Público permite identificar lote e unidade, consultar itens cadastrais/edificação, área construída, valor venal do imóvel/terreno/predial e gerar viabilidade com parâmetros urbanísticos. Não espelhar dados ou matrícula sem revisar termos/LGPD."
     },
     {
+      "id": "sc-balneario-picarras-cigageo",
+      "authority": "Prefeitura de Balneário Piçarras / CIGA",
+      "scope": "municipality",
+      "municipality_ibge": "4202057",
+      "domain": [
+        "lots",
+        "buildings",
+        "zoning",
+        "car",
+        "risk",
+        "coastal_land",
+        "roads",
+        "gas_pipeline",
+        "sewerage",
+        "environment"
+      ],
+      "source_type": "CIGAGEO_public_tenant",
+      "base_url": "https://balneariopicarras.geo.ciga.sc.gov.br/externo",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PUBLIC_TENANT_LICENSE_REVIEW",
+      "notes": "Ambiente público exibe lote 2017/2025, edificações, terras de marinha, faixas BR-101/SC-414, gasoduto, CAR, APP, manguezais, risco, curvas de nível e saneamento."
+    },
+    {
       "id": "sc-blumenau-geospatial",
       "authority": "Prefeitura de Blumenau",
       "scope": "municipality",
@@ -2317,9 +2340,9 @@
       ],
       "source_type": "CKAN",
       "base_url": "https://dados.ciga.sc.gov.br/",
-      "access_class": "OPEN_REUSABLE",
-      "verification_status": "VERIFIED",
-      "notes": "CIGA Dados disponibiliza de forma estruturada conteúdo e metadados do Diário Oficial dos Municípios de Santa Catarina, com APIs CKAN. Fonte-mãe valiosa para detectar leis, alterações e atos urbanísticos de centenas de entidades municipais."
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PORTAL_LICENSE_PER_DATASET_REQUIRED",
+      "notes": "CIGA Dados é CKAN e declara excluir dados com sigilo/privacidade, mas recursos do DOM/SC consultados exibem 'Nenhuma Licença Fornecida'. Usar API para descoberta/metadados; redistribuição/materialização de conteúdo depende de revisão específica."
     },
     {
       "id": "sc-ciga-geo",
@@ -2343,6 +2366,25 @@
       "notes": "CIGA GEO é CTM web usado por municípios consorciados. Documentação oficial descreve ambiente externo público sem login e camadas como perímetro urbano, zona, setor, localidade, zoneamento, bairro, quadra, lote, logradouro e PGV, selecionadas pelo município. Acesso público não implica redistribuição automática; classificar município/camada/atributo individualmente."
     },
     {
+      "id": "sc-corupa-cigageo",
+      "authority": "Prefeitura de Corupá / CIGA",
+      "scope": "municipality",
+      "municipality_ibge": "4204509",
+      "domain": [
+        "lots",
+        "buildings",
+        "zoning",
+        "streets",
+        "urban_planning",
+        "drainage"
+      ],
+      "source_type": "CIGAGEO_public_tenant",
+      "base_url": "https://corupa.geo.ciga.sc.gov.br/externo",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PUBLIC_TENANT_LICENSE_REVIEW",
+      "notes": "Ambiente externo público CigaGEO indexa perímetro, zona, setor, bairro, quadra, lote, edificações, sistema viário, logradouros e drenagem. Avaliar termos e atributos por camada antes de conector."
+    },
+    {
       "id": "sc-florianopolis-geofloripa",
       "authority": "Prefeitura de Florianópolis / Rede de Planejamento",
       "scope": "municipality",
@@ -2360,6 +2402,24 @@
       "access_class": "PUBLIC_QUERY_ONLY",
       "verification_status": "VERIFIED_OFFICIAL_GEOSERVICE_LICENSE_PER_LAYER",
       "notes": "GeoFloripa integra o Sistema Municipal de Informações Urbanísticas e Cartografia Oficial. Tutorial oficial de 2024 documenta WMS GetCapabilities e downloads/geosserviços. Cadastro territorial interno não deve ser confundido com todas as camadas públicas do GeoPortal."
+    },
+    {
+      "id": "sc-guabiruba-cigageo",
+      "authority": "Prefeitura de Guabiruba / CIGA",
+      "scope": "municipality",
+      "municipality_ibge": "4206306",
+      "domain": [
+        "lots",
+        "buildings",
+        "zoning",
+        "subdivisions",
+        "terrain",
+        "hydrology"
+      ],
+      "source_type": "CIGAGEO_public_tenant",
+      "base_url": "https://guabiruba.geo.ciga.sc.gov.br/externo",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PUBLIC_TENANT_LICENSE_REVIEW"
     },
     {
       "id": "sc-ima-arcgis",
