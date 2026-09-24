@@ -130,6 +130,33 @@
       "mode": "legal_document_metadata_and_annex_discovery",
       "approved": true,
       "notes": "Snapshot official law page first; parser must preserve effective date and annex provenance. Do not silently replace older PGV versions."
+    },
+    {
+      "id": "recife-diario-oficial",
+      "source_id": "pe-recife-official-gazette-open-data",
+      "kind": "json_api",
+      "url": "https://dados.recife.pe.gov.br/api/3/action/package_show?id=diario-oficial",
+      "mode": "dataset_metadata_then_resources",
+      "approved": true,
+      "notes": "ODbL. Snapshot CKAN package metadata/dictionary before resources; preserve edition/PDF links and monthly update lineage."
+    },
+    {
+      "id": "recife-heritage-iep",
+      "source_id": "pe-recife-heritage-iep",
+      "kind": "json_api",
+      "url": "https://dados.recife.pe.gov.br/api/3/action/package_show?id=imoveis-especiais-de-preservacao-ieps",
+      "mode": "dataset_metadata_then_geojson",
+      "approved": true,
+      "notes": "ODbL. GeoJSON/CSV/JSON resources approved for connector; preserve legal act fields and annual version."
+    },
+    {
+      "id": "recife-ortho-2013-2014",
+      "source_id": "pe-recife-ortho-2013-2014",
+      "kind": "arcgis_service",
+      "url": "https://esigportal2.recife.pe.gov.br/arcgis/rest/services/MeioAmbiente/MA_Ortofoto2013_2014MapService/MapServer",
+      "mode": "metadata_only_until_license_review",
+      "approved": true,
+      "notes": "Public ArcGIS service; capture metadata only. Do not cache/materialize imagery until reuse terms are confirmed."
     }
   ]
 }
