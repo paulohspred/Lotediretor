@@ -845,6 +845,22 @@
       "notes": "Servidor público de transferência com diretórios de chuva, clima, nowcasting, oceano e modelos. Pode alimentar risco climático/hidrológico; registrar produto/licença/temporalidade antes de usar em análises do imóvel."
     },
     {
+      "id": "br-inpe-satellite-catalog",
+      "authority": "INPE",
+      "scope": "BR_AND_SATELLITE_COVERAGE",
+      "domain": [
+        "satellite",
+        "imagery",
+        "historical_imagery",
+        "land_monitoring"
+      ],
+      "source_type": "official_satellite_catalog",
+      "discovery_url": "https://www.gov.br/inpe/pt-br/acesso-a-informacao/perguntas-frequentes/principais-produtos-e-servicos-do-inpe/imagem-de-satelite",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED_FREE_IMAGES",
+      "notes": "INPE informa que todas as imagens que possui são gratuitas e acessíveis pelo catálogo, pesquisáveis por município/UF/coordenadas. Registrar sensor, data de aquisição, resolução, processamento e termos específicos do produto quando houver."
+    },
+    {
       "id": "br-inpe-terrabrasilis",
       "authority": "INPE",
       "scope": "BR",
@@ -908,6 +924,26 @@
       "access_class": "OPEN_REUSABLE",
       "verification_status": "VERIFIED",
       "notes": "LexML integra metadados legislativos/jurídicos das três esferas e usa URNs persistentes. O padrão de coleta dos provedores é OAI-PMH; o portal oferece pesquisa SRU. Usar para descoberta, normalização e ligação a ocorrências oficiais, preservando a fonte primária."
+    },
+    {
+      "id": "br-mapbiomas",
+      "authority": "MapBiomas",
+      "scope": "BR",
+      "domain": [
+        "land_cover",
+        "land_use",
+        "fire",
+        "water",
+        "soil_carbon",
+        "environment",
+        "historical_series"
+      ],
+      "source_type": "open_data_catalog",
+      "discovery_url": "https://brasil.mapbiomas.org/termos-de-uso/",
+      "license": "CC BY",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED",
+      "notes": "Dados públicos, abertos e gratuitos sob CC BY com citação da coleção/versão e data de acesso. Excelente para histórico ambiental e uso/cobertura, não para limite cadastral."
     },
     {
       "id": "br-onr-ridigital",
@@ -1364,6 +1400,156 @@
       "access_class": "OPEN_REUSABLE",
       "verification_status": "VERIFIED",
       "notes": "PDU Lei 9.271/2018, com conjunto amplo de anexos."
+    },
+    {
+      "id": "global-copernicus-dem",
+      "authority": "European Union / ESA / Copernicus",
+      "scope": "GLOBAL",
+      "domain": [
+        "terrain",
+        "elevation",
+        "slope",
+        "topography"
+      ],
+      "source_type": "DEM_download_service",
+      "discovery_url": "https://dataspace.copernicus.eu/explore-data/data-collections/copernicus-contributing-missions/collections-description/COP-DEM",
+      "formats": [
+        "DEM raster"
+      ],
+      "access_class": "AUTHENTICATED_PUBLIC",
+      "verification_status": "VERIFIED_FREE_LICENSE_ACCESS_RULES_VARY_BY_RESOLUTION",
+      "notes": "GLO-30 e GLO-90 possuem licença gratuita global, com atribuição específica. Em 2026 o serviço de visualização GLO-30 passou a exigir categoria de usuário autorizada/registro CCM; GLO-90 permanece o fallback mais simples. Adequado a análise preliminar, não substitui levantamento topográfico de engenharia."
+    },
+    {
+      "id": "global-google-earth-engine",
+      "authority": "Google",
+      "scope": "GLOBAL",
+      "domain": [
+        "geospatial_compute",
+        "satellite",
+        "terrain",
+        "land_cover",
+        "environment"
+      ],
+      "source_type": "commercial_geospatial_compute_catalog",
+      "base_url": "https://developers.google.com/earth-engine/",
+      "catalog_url": "https://developers.google.com/earth-engine/datasets/catalog",
+      "access_class": "AUTHENTICATED_PUBLIC",
+      "verification_status": "VERIFIED_COMMERCIAL_PLAN_REQUIRED_FOR_COMMERCIAL_OPERATIONS",
+      "notes": "Earth Engine é infraestrutura de processamento e catálogo, não licença única dos dados. Uso comercial operacional exige configuração/plano comercial; cada dataset mantém seus próprios termos. O catálogo é exportado também em STAC. Não confundir com conteúdo Google Maps, que não é licenciado para análise."
+    },
+    {
+      "id": "global-google-maps-earth-visual-reference",
+      "authority": "Google",
+      "scope": "GLOBAL",
+      "domain": [
+        "imagery",
+        "street_view",
+        "visual_reference",
+        "places"
+      ],
+      "source_type": "commercial_visualization_service",
+      "discovery_url": "https://about.google/brand-resource-center/products-and-services/geo-guidelines/",
+      "terms_url": "https://cloud.google.com/terms/maps-platform/pt-br",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_VISUALIZATION_ONLY_NO_DERIVATION",
+      "notes": "Pode ser integrado/consultado conforme Google Maps Platform e Geo Guidelines, com atribuição. Não usar para scraping, bulk download, cache persistente, digitalização de edifícios/vias, reconstrução 3D ou modelo de terreno. Street View pode ser embutido via API, mas screenshot/armazenamento fora das permissões aplicáveis é restrito. Google Earth tem restrições comerciais específicas e não deve ser nossa imagem persistente padrão em relatórios comerciais."
+    },
+    {
+      "id": "global-google-open-buildings-temporal",
+      "authority": "Google Research",
+      "scope": "LATAM_AND_OTHER_REGIONS",
+      "domain": [
+        "buildings",
+        "building_height",
+        "historical_building_presence",
+        "derived"
+      ],
+      "source_type": "open_raster_download",
+      "discovery_url": "https://sites.research.google/gr/open-buildings/temporal/",
+      "formats": [
+        "raster",
+        "Google Cloud Storage",
+        "Earth Engine"
+      ],
+      "license": "CC BY 4.0 OR ODbL 1.0",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED",
+      "temporal_coverage": "2016-2023",
+      "notes": "Open Buildings 2.5D Temporal fornece presença de edifícios, contagem fracionária e altura estimada com resolução efetiva de 4 m para América Latina e Caribe. É estimativa derivada de Sentinel-2, não altura/legalização oficial. Pode ser baixado diretamente do Google Cloud Storage sem depender do Earth Engine."
+    },
+    {
+      "id": "global-jaxa-aw3d30",
+      "authority": "JAXA / EORC",
+      "scope": "GLOBAL",
+      "domain": [
+        "terrain",
+        "elevation",
+        "surface_model",
+        "topography"
+      ],
+      "source_type": "DSM_download",
+      "discovery_url": "https://www.eorc.jaxa.jp/ALOS/en/dataset/aw3d30/aw3d30_e",
+      "formats": [
+        "DSM raster"
+      ],
+      "license": "Free for commercial and non-commercial use subject to JAXA terms",
+      "access_class": "AUTHENTICATED_PUBLIC",
+      "verification_status": "VERIFIED_FREE_REGISTRATION_REQUIRED",
+      "notes": "AW3D30 é DSM global de aproximadamente 30 m. Download requer cadastro/credenciais fornecidas pela JAXA. Pode ser usado comercialmente e não comercialmente sob os termos publicados. Usar como fallback, não como levantamento topográfico executivo."
+    },
+    {
+      "id": "global-mapillary-imagery",
+      "authority": "Mapillary",
+      "scope": "GLOBAL",
+      "domain": [
+        "street_level_imagery",
+        "facade",
+        "visual_reference"
+      ],
+      "source_type": "street_level_imagery_platform",
+      "discovery_url": "https://help.mapillary.com/hc/en-us/articles/115001770409-CC-BY-SA-license-for-open-data",
+      "license": "CC BY-SA",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED_ATTRIBUTION_REQUIRED",
+      "notes": "Imagens são compartilhadas sob CC BY-SA conforme documentação do Mapillary. Útil para fachada/rua quando houver cobertura, sempre com atribuição e observância dos termos/API."
+    },
+    {
+      "id": "global-openstreetmap",
+      "authority": "OpenStreetMap Foundation / contributors",
+      "scope": "GLOBAL",
+      "domain": [
+        "roads",
+        "places",
+        "buildings",
+        "land_use",
+        "infrastructure",
+        "addresses"
+      ],
+      "source_type": "open_geospatial_database",
+      "discovery_url": "https://www.openstreetmap.org/copyright",
+      "license": "ODbL 1.0",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED_ATTRIBUTION_SHAREALIKE_DATABASE_RULES",
+      "notes": "Dados abertos sob ODbL. Úteis para contexto viário, edificações e POIs como fallback/complemento. Preservar atribuição e analisar obrigações ODbL quando houver banco derivado."
+    },
+    {
+      "id": "global-overture-maps",
+      "authority": "Overture Maps Foundation",
+      "scope": "GLOBAL",
+      "domain": [
+        "buildings",
+        "addresses",
+        "places",
+        "roads",
+        "land_use",
+        "infrastructure"
+      ],
+      "source_type": "open_geospatial_database_monthly",
+      "discovery_url": "https://docs.overturemaps.org/attribution/",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED_LICENSE_BY_THEME",
+      "notes": "Releases mensais; licenças variam por tema. Buildings e vários temas derivados de OSM usam ODbL; Places usa CDLA Permissive/Apache conforme fonte. Brasil inclui contribuições de IBGE no tema addresses. Registrar attribution por tema/source."
     },
     {
       "id": "go-goiania-buildings-pgv",
