@@ -3956,9 +3956,9 @@
         "ODS"
       ],
       "access_class": "PUBLIC_QUERY_ONLY",
-      "verification_status": "VERIFIED_PUBLIC_DOWNLOAD_LICENSE_REVIEW",
-      "update_frequency": "monthly/annual files",
-      "notes": "Página oficial publica transações imobiliárias com recolhimento de ITBI-IV em arquivos anuais, com 2026 disponível e série histórica pelo menos desde 2017. Cada linha representa DTI com ITBI efetivamente pago no mês de referência. Revisar licença/termos e schema antes de espelhamento."
+      "verification_status": "VERIFIED_PUBLIC_DOWNLOAD_MATERIALIZED_PRIVACY_SAFE",
+      "update_frequency": "monthly current-year file; annual historical files",
+      "notes": "Official public ITBI-IV transaction series is available as annual XLSX/ODS and has been materialized for 2006-2026 into a SQL-keyed privacy-safe index. Fields include transaction date/nature/values, VVR/base, financing, registry office/matrícula, SQL status, frontage, ideal fraction, land/built area, IPTU use/pattern and ACC. Buyer/seller names and CPF/CNPJ are intentionally not materialized. Historical matrícula/cartório are references from DTI and do not replace current registry certificates."
     },
     {
       "id": "sp-sao-paulo-habite-se-cedi",
