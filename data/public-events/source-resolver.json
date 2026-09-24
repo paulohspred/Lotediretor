@@ -1,0 +1,251 @@
+{
+  "schema_version": "0.1.0",
+  "as_of": "2026-09-24",
+  "purpose": "Detectar fatos planejados, publicados, contratados, licenciados e em execução antes que necessariamente apareçam fisicamente no mapa.",
+  "privacy_rule": "Nunca descobrir/indexar processos por proprietário, CPF, CNPJ de pessoa vinculada, requerente ou outros identificadores pessoais. Correlacionar por geometria, endereço, identificador público do imóvel, número de processo já legitimamente conhecido ou referência documental.",
+  "match_priority": [
+    "OFFICIAL_GEOMETRY",
+    "OFFICIAL_PROPERTY_IDENTIFIER",
+    "OFFICIAL_ADDRESS",
+    "SPATIAL_PROXIMITY",
+    "DOCUMENT_REFERENCE",
+    "TEXT_ONLY"
+  ],
+  "federal": [
+    {
+      "source_id": "br-obrasgov-api",
+      "role": "PUBLIC_WORKS_PRIMARY",
+      "ingest_mode": "OPEN_API",
+      "event_types": [
+        "PROJECT_PLANNED",
+        "WORK_STARTED",
+        "WORK_PAUSED",
+        "WORK_RESUMED",
+        "WORK_COMPLETED"
+      ],
+      "expected_fields": [
+        "project_id",
+        "name",
+        "geometry",
+        "status",
+        "physical_progress",
+        "financial_progress",
+        "value",
+        "authority",
+        "dates"
+      ],
+      "notes": "Usar apenas a nova API pública ObrasGov; ambiente legado não deve ser novo alvo de integração."
+    },
+    {
+      "source_id": "br-pncp-open-api",
+      "role": "PROCUREMENT_CONTRACT_PRIMARY",
+      "ingest_mode": "PUBLIC_GET_API",
+      "event_types": [
+        "PROCUREMENT_PUBLISHED",
+        "CONTRACTED"
+      ],
+      "expected_fields": [
+        "pncp_control_number",
+        "authority",
+        "object",
+        "dates",
+        "contract_ids",
+        "document_urls"
+      ],
+      "notes": "Somente consultas GET públicas. APIs de inserção/retificação/exclusão ficam fora do LoteDiretor."
+    },
+    {
+      "source_id": "br-sei-public-search",
+      "role": "FEDERAL_PUBLIC_PROCESS_EVIDENCE",
+      "ingest_mode": "QUERY_ONLY",
+      "event_types": [
+        "PROCESS_OPENED",
+        "PROCESS_MOVEMENT"
+      ],
+      "expected_fields": [
+        "process_number",
+        "authority",
+        "subject",
+        "public_status",
+        "document_urls"
+      ],
+      "notes": "Usar quando processo já é conhecido/relevante; não realizar descoberta por pessoa."
+    }
+  ],
+  "municipalities": [
+    {
+      "ibge": "3550308",
+      "city": "São Paulo",
+      "sources": [
+        {
+          "source_id": "sp-sao-paulo-licenciamento-geosampa",
+          "role": "LICENSING",
+          "ingest_mode": "OPEN_GEODATA",
+          "event_types": [
+            "LICENSED",
+            "APPROVED"
+          ]
+        },
+        {
+          "source_id": "sp-sao-paulo-diario-oficial-api",
+          "role": "GAZETTE",
+          "ingest_mode": "AUTH_REQUIRED_NO_USE_UNTIL_CREDENTIAL",
+          "event_types": [
+            "LEGAL_ACT_PUBLISHED",
+            "PROCUREMENT_PUBLISHED"
+          ]
+        },
+        {
+          "source_id": "sp-sao-paulo-processos-administrativos",
+          "role": "PROCESS_QUERY",
+          "ingest_mode": "QUERY_BY_KNOWN_PROCESS_NUMBER",
+          "event_types": [
+            "PROCESS_OPENED",
+            "PROCESS_MOVEMENT"
+          ]
+        }
+      ]
+    },
+    {
+      "ibge": "2611606",
+      "city": "Recife",
+      "sources": [
+        {
+          "source_id": "pe-recife-licenciamento-urbanistico",
+          "role": "LICENSING",
+          "ingest_mode": "OPEN_DATA",
+          "event_types": [
+            "LICENSED",
+            "APPROVED"
+          ]
+        },
+        {
+          "source_id": "pe-recife-official-gazette-open-data",
+          "role": "GAZETTE",
+          "ingest_mode": "OPEN_DATA",
+          "event_types": [
+            "LEGAL_ACT_PUBLISHED",
+            "PROCUREMENT_PUBLISHED"
+          ]
+        },
+        {
+          "source_id": "pe-recife-sei-public-search",
+          "role": "PROCESS_QUERY",
+          "ingest_mode": "QUERY_ONLY",
+          "event_types": [
+            "PROCESS_OPENED",
+            "PROCESS_MOVEMENT"
+          ]
+        }
+      ]
+    },
+    {
+      "ibge": "3304557",
+      "city": "Rio de Janeiro",
+      "sources": [
+        {
+          "source_id": "rj-rio-licenses-habite-se",
+          "role": "LICENSING",
+          "ingest_mode": "QUERY_AND_REPORTS",
+          "event_types": [
+            "LICENSED",
+            "APPROVED",
+            "WORK_COMPLETED"
+          ]
+        },
+        {
+          "source_id": "rj-rio-official-gazette-doweb",
+          "role": "GAZETTE",
+          "ingest_mode": "QUERY_METADATA_DOCUMENTS",
+          "event_types": [
+            "LEGAL_ACT_PUBLISHED",
+            "PROCUREMENT_PUBLISHED"
+          ]
+        },
+        {
+          "source_id": "rj-rio-processos-administrativos",
+          "role": "PROCESS_QUERY",
+          "ingest_mode": "QUERY_BY_KNOWN_PROCESS_NUMBER",
+          "event_types": [
+            "PROCESS_OPENED",
+            "PROCESS_MOVEMENT"
+          ]
+        }
+      ]
+    },
+    {
+      "ibge": "3106200",
+      "city": "Belo Horizonte",
+      "sources": [
+        {
+          "source_id": "mg-belo-horizonte-projeto-edificacao-licenciado",
+          "role": "LICENSING",
+          "ingest_mode": "METADATA_UNTIL_LICENSE_REVIEW",
+          "event_types": [
+            "LICENSED",
+            "APPROVED"
+          ]
+        },
+        {
+          "source_id": "mg-belo-horizonte-dom",
+          "role": "GAZETTE",
+          "ingest_mode": "QUERY_ONLY",
+          "event_types": [
+            "LEGAL_ACT_PUBLISHED",
+            "PROCUREMENT_PUBLISHED"
+          ]
+        },
+        {
+          "source_id": "mg-belo-horizonte-processos-protocolos",
+          "role": "PROCESS_QUERY",
+          "ingest_mode": "QUERY_BY_KNOWN_PROTOCOL",
+          "event_types": [
+            "PROCESS_OPENED",
+            "PROCESS_MOVEMENT"
+          ]
+        }
+      ]
+    },
+    {
+      "ibge": "2507507",
+      "city": "João Pessoa",
+      "sources": [
+        {
+          "source_id": "pb-joao-pessoa-building-permits",
+          "role": "LICENSING",
+          "ingest_mode": "AUTHENTICATED_QUERY_ONLY",
+          "event_types": [
+            "LICENSED",
+            "APPROVED",
+            "WORK_COMPLETED"
+          ]
+        },
+        {
+          "source_id": "pb-joao-pessoa-official-gazette",
+          "role": "GAZETTE",
+          "ingest_mode": "PUBLIC_ARCHIVE_QUERY",
+          "event_types": [
+            "LEGAL_ACT_PUBLISHED",
+            "PROCUREMENT_PUBLISHED"
+          ]
+        },
+        {
+          "source_id": "pb-joao-pessoa-processo-online",
+          "role": "PROCESS_QUERY",
+          "ingest_mode": "MANUAL_OR_AUTHORIZED_QUERY_CAPTCHA",
+          "event_types": [
+            "PROCESS_OPENED",
+            "PROCESS_MOVEMENT"
+          ]
+        }
+      ]
+    }
+  ],
+  "correlation_rules": [
+    "ObrasGov geometry can produce spatial proximity to parcel, but distance alone remains contextual.",
+    "PNCP object text without geometry/address is TEXT_ONLY and must not be attached to a parcel as confirmed.",
+    "Gazette text becomes property-related only through explicit address/public property identifier/legal perimeter/document relation.",
+    "Process number may be stored when the process is public and property-relevant; do not ingest unrelated personal documents.",
+    "Licensing records should preserve permit/process/document identifiers and source dates."
+  ]
+}
