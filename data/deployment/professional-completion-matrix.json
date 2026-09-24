@@ -86,11 +86,12 @@
           "endpoint": "https://geosampa.prefeitura.sp.gov.br/",
           "access_class": "OPEN_REUSABLE",
           "license": null,
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "connector_status": "MATERIALIZER_VALIDATED_END_TO_END",
           "missing_fields": [
-            "historical exercise normalizer"
+            "historical exercises if multi-year cadastral history is required",
+            "full final IPTU tax calculation/reconciliation"
           ],
-          "notes": null
+          "notes": "Official GeoSampa IPTU_INTER 2026 bulk materializer is validated and deployed. The parcel dossier resolves by 11-digit SQL and exposes privacy-filtered fiscal attributes including land/built/occupied area, frontage, ideal fraction, floors, corrected construction year, use, construction pattern, terrain type, obsolescence factor and unit values. No owner/person fields are materialized."
         },
         {
           "field": "PGV",
@@ -378,13 +379,12 @@
           "endpoint": "https://metadados.geosampa.prefeitura.sp.gov.br/geonetwork/geoprodam/search?orgName=Coordenadoria+de+Produ%C3%A7%C3%A3o+e+An%C3%A1lise+da+Informa%C3%A7%C3%A3o+%E2%80%93+GEOINFO",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "LIDAR_MDT_PROPERTY_PROFILE_IMPLEMENTED",
+          "connector_status": "LIDAR_TERRAIN_RESOLVER_VALIDATED_END_TO_END",
           "missing_fields": [
-            "multi-tile parcel stitching for parcels crossing MDT quadrícula boundaries",
-            "terrain result persistence/version history beyond runtime cache",
-            "field-survey confirmation for executive/topographic decisions"
+            "multi-tile parcel handling where a lot crosses sheet boundaries",
+            "field-survey confirmation for executive design decisions"
           ],
-          "notes": "GeoSampa MDT 2020 parcel resolver is live. It resolves the official 2020 quadrícula by parcel point, downloads the official MDT_2020 LAZ tile into a hardened cache with SHA-256, reads SIRGAS 2000 / UTM 23S coordinates and Imbituba/MAPGEO2015 vertical datum, interpolates a 1 m parcel grid, and generates A-A longest-axis and B-B perpendicular elevation profiles. Results explicitly remain derived from official LiDAR and do not replace RTK/total-station survey."
+          "notes": "GeoSampa MDT/LiDAR 2020 tile resolver is deployed. It identifies the official sheet, downloads/caches the LAZ artifact with hashes, transforms to SIRGAS 2000 / UTM 23S, uses ground returns to interpolate parcel elevations and produces min/max/mean elevation plus A-A and B-B profiles. Output is DERIVED and explicitly does not substitute RTK/total-station survey."
         },
         {
           "field": "public works",
