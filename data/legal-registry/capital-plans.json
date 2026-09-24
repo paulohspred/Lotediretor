@@ -1,0 +1,325 @@
+{
+  "schema_version": "0.1.0",
+  "as_of": "2026-09-24",
+  "purpose": "Bootstrap jurídico das 27 capitais. Não usar diretamente para conclusões legais sem materializar texto consolidado, anexos, vigência e alterações.",
+  "capitals": [
+    {
+      "uf": "AC",
+      "capital": "Rio Branco",
+      "ibge": "1200401",
+      "plan_law": "Lei 2.222/2016",
+      "amendments": [
+        "LC 160/2022",
+        "LC 262/2023",
+        "LC 299/2024"
+      ],
+      "status": "IN_FORCE_AMENDED",
+      "official_url": "https://portalcgm.riobranco.ac.gov.br/portal/legislacao/plano-diretor/",
+      "verification": "VERIFIED"
+    },
+    {
+      "uf": "AL",
+      "capital": "Maceió",
+      "ibge": "2704302",
+      "plan_law": "Lei 5.486/2005",
+      "status": "IN_FORCE_REVISION_BILL_PENDING",
+      "official_url": "https://www.planodiretor.maceio.al.gov.br/",
+      "notes": "Nova minuta entregue à Câmara em 04/04/2026 e ainda descrita pela Prefeitura como em tramitação em agosto de 2026.",
+      "verification": "VERIFIED"
+    },
+    {
+      "uf": "AP",
+      "capital": "Macapá",
+      "ibge": "1600303",
+      "plan_law": "LC 026/2004-PMM",
+      "status": "IN_FORCE_VERIFY_AMENDMENTS",
+      "official_url": "https://mapa.macapa.ap.gov.br/",
+      "notes": "SIT Macapá expõe Plano Diretor, cadastro imobiliário e temáticos de ITBI; catalogar endpoints internos separadamente.",
+      "verification": "VERIFIED"
+    },
+    {
+      "uf": "AM",
+      "capital": "Manaus",
+      "ibge": "1302603",
+      "plan_law": "LC 002/2014",
+      "status": "IN_FORCE_UNDER_REVIEW",
+      "official_url": "https://www.manaus.am.gov.br/",
+      "notes": "Prefeitura informou força-tarefa de revisão em 2026.",
+      "verification": "VERIFIED"
+    },
+    {
+      "uf": "BA",
+      "capital": "Salvador",
+      "ibge": "2927408",
+      "plan_law": "Lei 9.069/2016",
+      "status": "IN_FORCE_VERIFY_AMENDMENTS",
+      "official_url": "https://www.salvador.ba.gov.br/",
+      "verification": "VERIFIED"
+    },
+    {
+      "uf": "CE",
+      "capital": "Fortaleza",
+      "ibge": "2304400",
+      "plan_law": "LC 450/2025",
+      "status": "IN_FORCE",
+      "official_url": "https://planodiretor.fortaleza.ce.gov.br/",
+      "notes": "Portal publica texto, mapas e KMZ do PDPS.",
+      "verification": "VERIFIED"
+    },
+    {
+      "uf": "DF",
+      "capital": "Brasília",
+      "ibge": "5300108",
+      "plan_law": "LC 803/2009",
+      "amendments": [
+        "LC 854/2012"
+      ],
+      "complementary_laws": [
+        "LC 948/2019 - LUOS"
+      ],
+      "status": "IN_FORCE_AMENDED",
+      "official_url": "https://seduh.df.gov.br/",
+      "notes": "PDOT e LUOS devem ser modelados juntos; Geoportal/GeoNetwork é fonte espacial prioritária.",
+      "verification": "VERIFIED"
+    },
+    {
+      "uf": "ES",
+      "capital": "Vitória",
+      "ibge": "3205309",
+      "plan_law": "Lei 9.271/2018",
+      "status": "IN_FORCE_VERIFY_AMENDMENTS",
+      "official_url": "https://www.vitoria.es.gov.br/",
+      "verification": "VERIFIED"
+    },
+    {
+      "uf": "GO",
+      "capital": "Goiânia",
+      "ibge": "5208707",
+      "plan_law": "LC 349/2022",
+      "complementary_laws": [
+        "LC 363/2023 - parcelamento",
+        "LC 364/2023 - obras e edificações",
+        "LC 373/2024 - OODC"
+      ],
+      "status": "IN_FORCE",
+      "official_url": "https://www.goiania.go.gov.br/html/gabinete_civil/sileg/dados/legis/2022/lc_20220304_000000349.html",
+      "verification": "VERIFIED"
+    },
+    {
+      "uf": "MA",
+      "capital": "São Luís",
+      "ibge": "2111300",
+      "plan_law": "Lei 7.122/2023",
+      "amendments": [
+        "altera Lei 4.669/2006"
+      ],
+      "status": "IN_FORCE",
+      "official_url": "https://www.saoluis.ma.gov.br/plano-diretor-incid",
+      "notes": "Portal preserva versões 2023, 2006 e 1992.",
+      "verification": "VERIFIED"
+    },
+    {
+      "uf": "MT",
+      "capital": "Cuiabá",
+      "ibge": "5103403",
+      "plan_law": "LC 150/2007",
+      "complementary_laws": [
+        "LC 389/2015 - uso e ocupação do solo"
+      ],
+      "status": "IN_FORCE_UNDER_REVIEW",
+      "official_url": "https://www.cuiaba.mt.gov.br/plano-diretor",
+      "verification": "VERIFIED"
+    },
+    {
+      "uf": "MS",
+      "capital": "Campo Grande",
+      "ibge": "5002704",
+      "plan_law": "LC 341/2018",
+      "status": "IN_FORCE_VERIFY_AMENDMENTS",
+      "official_url": "https://www.campogrande.ms.gov.br/",
+      "verification": "VERIFIED"
+    },
+    {
+      "uf": "MG",
+      "capital": "Belo Horizonte",
+      "ibge": "3106200",
+      "plan_law": "Lei 11.181/2019",
+      "status": "IN_FORCE",
+      "official_url": "https://prefeitura.pbh.gov.br/politica-urbana/planejamento-urbano/plano-diretor",
+      "verification": "VERIFIED"
+    },
+    {
+      "uf": "PA",
+      "capital": "Belém",
+      "ibge": "1501402",
+      "plan_law": "Lei 8.655/2008",
+      "status": "IN_FORCE_REVIEW_REQUIRED",
+      "official_url": "https://prefeitura.belem.pa.gov.br/",
+      "notes": "Validar processo de revisão e todas as alterações posteriores antes de cálculo urbanístico.",
+      "verification": "VERIFIED_BASE_LAW"
+    },
+    {
+      "uf": "PB",
+      "capital": "João Pessoa",
+      "ibge": "2507507",
+      "plan_law": "LC 164/2024",
+      "amendments": [
+        "LC 171/2025"
+      ],
+      "complementary_laws": [
+        "LC 166/2024 - LUOS",
+        "LC 169/2024 - altera LUOS"
+      ],
+      "status": "IN_FORCE",
+      "official_url": "https://planodiretor.joaopessoa.pb.gov.br/legislacaovigente/",
+      "verification": "VERIFIED"
+    },
+    {
+      "uf": "PR",
+      "capital": "Curitiba",
+      "ibge": "4106902",
+      "plan_law": "Lei 14.771/2015",
+      "complementary_laws": [
+        "Lei 15.511/2019 - zoneamento"
+      ],
+      "status": "IN_FORCE_UNDER_REVIEW_2026",
+      "official_url": "https://ippuc.org.br/",
+      "verification": "VERIFIED"
+    },
+    {
+      "uf": "PE",
+      "capital": "Recife",
+      "ibge": "2611606",
+      "plan_law": "LC 02/2021",
+      "status": "IN_FORCE_VERIFY_AMENDMENTS",
+      "official_url": "https://planodiretor.recife.pe.gov.br/",
+      "notes": "Complementar com zoneamento, GIS e bases abertas do Recife Dados.",
+      "verification": "VERIFIED"
+    },
+    {
+      "uf": "PI",
+      "capital": "Teresina",
+      "ibge": "2211001",
+      "plan_law": "LC 5.481/2019",
+      "amendments": [
+        "LC 5.806/2022"
+      ],
+      "complementary_laws": [
+        "LC 5.807/2022 - zoneamento, parcelamento e uso do solo",
+        "LC 5.918/2023 - OODC",
+        "LC 5.980/2023 - altera zoneamento/código tributário"
+      ],
+      "status": "IN_FORCE_AMENDED",
+      "official_url": "https://antigo-semplan.pmt.pi.gov.br/uso-e-ocupacao-do-solo-leis-vigentes/",
+      "verification": "VERIFIED"
+    },
+    {
+      "uf": "RJ",
+      "capital": "Rio de Janeiro",
+      "ibge": "3304557",
+      "plan_law": "LC 270/2024",
+      "status": "IN_FORCE",
+      "official_url": "https://www.rio.rj.gov.br/",
+      "verification": "VERIFIED"
+    },
+    {
+      "uf": "RN",
+      "capital": "Natal",
+      "ibge": "2408102",
+      "plan_law": "LC 208/2022",
+      "status": "IN_FORCE",
+      "official_url": "https://planodiretor.natal.rn.gov.br/",
+      "verification": "VERIFIED"
+    },
+    {
+      "uf": "RS",
+      "capital": "Porto Alegre",
+      "ibge": "4314902",
+      "plan_law": "LC 1.075/2026 - PDUS",
+      "complementary_laws": [
+        "LC 1.076/2026 - LUOS"
+      ],
+      "status": "ENACTED_TRANSITION",
+      "official_url": "https://prefeitura.poa.br/gp/noticias/prefeito-sanciona-novo-plano-diretor-e-lei-de-uso-e-ocupacao-do-solo",
+      "notes": "LUOS LC 1.076/2026 prevê vigência 180 dias após publicação; motor deve manter regime anterior durante transição conforme disposições de cada norma.",
+      "verification": "VERIFIED"
+    },
+    {
+      "uf": "RO",
+      "capital": "Porto Velho",
+      "ibge": "1100205",
+      "plan_law": "LC 838/2021",
+      "status": "IN_FORCE",
+      "official_url": "https://planodiretor.portovelho.ro.gov.br/",
+      "notes": "Portal guarda PDs de 1990, 2008, 2021, mapas e relatórios de acompanhamento.",
+      "verification": "VERIFIED"
+    },
+    {
+      "uf": "RR",
+      "capital": "Boa Vista",
+      "ibge": "1400100",
+      "plan_law": "Lei 924/2006",
+      "complementary_laws": [
+        "Lei 925/2006 - parcelamento",
+        "Lei 926/2006 - uso e ocupação"
+      ],
+      "status": "IN_FORCE_REVISION_PRODUCTS_AVAILABLE",
+      "official_url": "https://boavista.rr.gov.br/plano-diretor",
+      "notes": "Revisão produziu anteprojetos e produto final em 2024; verificar se houve aprovação posterior antes de substituir lei de 2006.",
+      "verification": "VERIFIED"
+    },
+    {
+      "uf": "SC",
+      "capital": "Florianópolis",
+      "ibge": "4205407",
+      "plan_law": "LC 482/2014",
+      "amendments": [
+        "LC 739/2023"
+      ],
+      "status": "IN_FORCE_AMENDED",
+      "official_url": "https://redeplanejamento.pmf.sc.gov.br/pt-BR/planos/plano-diretor",
+      "verification": "VERIFIED"
+    },
+    {
+      "uf": "SP",
+      "capital": "São Paulo",
+      "ibge": "3550308",
+      "plan_law": "Lei 16.050/2014",
+      "amendments": [
+        "Lei 17.975/2023"
+      ],
+      "complementary_laws": [
+        "Lei 16.402/2016 - LPUOS",
+        "Lei 18.177/2024 - revisão/alterações LPUOS"
+      ],
+      "status": "IN_FORCE_AMENDED",
+      "official_url": "https://gestaourbana.prefeitura.sp.gov.br/marco-regulatorio/plano-diretor/",
+      "verification": "VERIFIED"
+    },
+    {
+      "uf": "SE",
+      "capital": "Aracaju",
+      "ibge": "2800308",
+      "plan_law": "LC 42/2000",
+      "amendments": [
+        "LC 75/2008"
+      ],
+      "status": "IN_FORCE_NEW_PROJECT_UNDER_DISCUSSION",
+      "official_url": "https://transparencia.aracaju.se.gov.br/prefeitura/planejamento-e-orcamento/",
+      "verification": "VERIFIED"
+    },
+    {
+      "uf": "TO",
+      "capital": "Palmas",
+      "ibge": "1721000",
+      "plan_law": "LC 400/2018",
+      "amendments": [
+        "LC 411/2018",
+        "LC 429/2023"
+      ],
+      "status": "IN_FORCE_AMENDED",
+      "official_url": "https://legislativo.palmas.to.gov.br/todas-leis/",
+      "verification": "VERIFIED"
+    }
+  ]
+}
