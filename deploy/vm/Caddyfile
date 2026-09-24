@@ -1,0 +1,13 @@
+{$DOMAIN:localhost} {
+    encode zstd gzip
+
+    reverse_proxy zola:80
+
+    header {
+        X-Content-Type-Options nosniff
+        X-Frame-Options SAMEORIGIN
+        Referrer-Policy strict-origin-when-cross-origin
+    }
+
+    log
+}
