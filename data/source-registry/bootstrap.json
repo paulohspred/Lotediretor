@@ -2341,6 +2341,23 @@
       "notes": "Atlas Filipeia oficial publica lotes, quadras, logradouros e setores cartográficos em SHP/CSV; curvas de nível/hidrografia; MUB em DWG; aerofotogrametria 1976/1989/1998/2012/2021; mapas do zoneamento, macrozoneamento e restrições do Plano Diretor 2024. Também oferece dados do imóvel via localização cartográfica/ficha cadastral. Revisar licença/termos por recurso antes de espelhar."
     },
     {
+      "id": "pb-pbgas-network-map",
+      "authority": "Companhia Paraibana de Gás - PBGÁS",
+      "scope": "PB",
+      "uf": "PB",
+      "domain": [
+        "gas_distribution",
+        "gas_network",
+        "utility_availability_context",
+        "safe_excavation"
+      ],
+      "source_type": "public_interactive_network_map",
+      "discovery_url": "https://pbgas.com.br/",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PUBLIC_MAP",
+      "notes": "Portal oficial inclui mapa da rede e orientação específica para escavação segura. Não tratar proximidade da linha como confirmação de ligação."
+    },
+    {
       "id": "pb-pbgeo-arcgis",
       "authority": "Governo da Paraíba / PBGeo",
       "scope": "state",
@@ -2372,6 +2389,41 @@
       "access_class": "PUBLIC_QUERY_ONLY",
       "verification_status": "VERIFIED_ENDPOINT_LICENSE_REVIEW",
       "notes": "Diretório inclui APACGEO, SIRH, PE3D, Topodata, MDT e serviços de reservatórios/chuva/outorgas."
+    },
+    {
+      "id": "pe-compesa-gis-ecosystem",
+      "authority": "COMPESA",
+      "scope": "PE",
+      "uf": "PE",
+      "domain": [
+        "water_supply",
+        "sewerage",
+        "network_maintenance",
+        "environment",
+        "sanitation"
+      ],
+      "source_type": "corporate_GIS_portal_mixed_access",
+      "discovery_url": "https://servicos.compesa.com.br/giscomp/",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PORTAL_MIXED_ACCESS",
+      "notes": "GISCOMP lista módulos de hidrometria, manutenção de redes de esgoto, GIS ambiental, saneamento rural e outros; há solicitação de acesso e parte do conteúdo é corporativo. Não contornar autenticação. Para dossiê público usar SINISA/planos/mapas públicos e solicitar cadastro técnico apenas quando autorizado."
+    },
+    {
+      "id": "pe-copergas-network-map",
+      "authority": "Companhia Pernambucana de Gás - Copergás",
+      "scope": "PE",
+      "uf": "PE",
+      "domain": [
+        "gas_distribution",
+        "gas_network",
+        "utility_availability_context",
+        "safe_excavation"
+      ],
+      "source_type": "public_interactive_network_map",
+      "discovery_url": "https://copergas.com.br/",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PUBLIC_MAP",
+      "notes": "Portal oficial exibe rede de distribuição de gás natural e distingue rede em baixa/alta pressão. Usar como contexto; ligação/capacidade e cadastro técnico devem ser confirmados com a concessionária."
     },
     {
       "id": "pe-recife-environment-restrictions",
@@ -2707,6 +2759,40 @@
       "access_class": "PUBLIC_QUERY_ONLY",
       "verification_status": "VERIFIED_ENDPOINT_LICENSE_REVIEW",
       "notes": "GeoServer oficial com acesso anônimo, 34 workspaces e 144 camadas na data da pesquisa; licença precisa ser validada por camada."
+    },
+    {
+      "id": "rj-cedae-open-data",
+      "authority": "CEDAE",
+      "scope": "RJ",
+      "uf": "RJ",
+      "domain": [
+        "water_supply",
+        "sanitation",
+        "open_data",
+        "water_infrastructure"
+      ],
+      "source_type": "state_open_data_portal",
+      "discovery_url": "https://www.cedae.com.br/dadosabertos",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_OPEN_DATA_PORTAL_RESOURCES_TO_CATALOG",
+      "notes": "CEDAE mantém página oficial de dados abertos. Atualmente atua principalmente na produção/upstream de água em grande parte da região atendida; concessionárias locais podem operar distribuição/esgoto downstream. Catalogar datasets individualmente e resolver prestador por município."
+    },
+    {
+      "id": "rj-naturgy-gas-network",
+      "authority": "Naturgy Brasil / CEG e CEG Rio",
+      "scope": "RJ",
+      "uf": "RJ",
+      "domain": [
+        "gas_distribution",
+        "gas_network",
+        "safe_excavation",
+        "utility_provider"
+      ],
+      "source_type": "official_network_registry_on_request",
+      "discovery_url": "https://www.naturgy.com.br/o_gas_natural/",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_TECHNICAL_CADASTRE_ON_REQUEST",
+      "notes": "Naturgy informa que mantém mapeamento digital das redes e que o cadastro da rede deve ser solicitado antes de qualquer escavação. Áreas/municípios atendidos são públicos, mas o cadastro técnico detalhado é fornecido por fluxo oficial."
     },
     {
       "id": "rj-niteroi-geoservices",
