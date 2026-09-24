@@ -439,6 +439,85 @@
         "define event allowlist",
         "preserve edition/act identifiers and official document hashes"
       ]
+    },
+    {
+      "id": "cand-pb-joao-pessoa-ficha-cadastral",
+      "status": "SCHEMA_REVIEW",
+      "category": "property_fiscal_query",
+      "authority": "Prefeitura de João Pessoa / Secretaria da Receita Municipal",
+      "url": "https://receita.joaopessoa.pb.gov.br/dsf_jpa_portal/inicial.do?acronym=COMPROVANTEINSCRICAOESITUACAOMUNICIPAL&evento=montaMenu",
+      "discovered_via": "official Portal de Serviços",
+      "goal": "Determine which property/building/IPTU/PGV fields are legitimately exposed by the Ficha Cadastral Imóvel and define a query-only field allowlist.",
+      "risks": [
+        "fiscal secrecy and personal-data boundaries",
+        "possible CAPTCHA/session requirements",
+        "service interface is not bulk open data"
+      ],
+      "next_checks": [
+        "manual schema/field inventory",
+        "terms and access-control review",
+        "identify stable property key requirements",
+        "approve query-only projection with no person fields"
+      ]
+    },
+    {
+      "id": "cand-pb-joao-pessoa-pgv-publication",
+      "status": "DISCOVERED",
+      "category": "pgv",
+      "authority": "Prefeitura de João Pessoa / SEREM / SEPLAN",
+      "url": "https://www.joaopessoa.pb.gov.br/joao-pessoa-sustentavel/joao-pessoa-sustentavel-avanca-no-desenvolvimento-urbano-com-economia-superior-a-us-40-milhoes/",
+      "discovered_via": "official João Pessoa Sustentável documentation",
+      "goal": "Locate the authoritative published PGV tables/maps/legal act used by the modernized municipal tax system.",
+      "risks": [
+        "project documentation proves existence but not public dataset access",
+        "valuation tables may be embedded in legislation or internal fiscal systems",
+        "version/effective date must be preserved"
+      ],
+      "next_checks": [
+        "search municipal legislation/DOE for PGV approval act",
+        "Filipeia layer/catalog search",
+        "Portal da Receita publication/downloads",
+        "terms/license review"
+      ]
+    },
+    {
+      "id": "cand-pb-joao-pessoa-doe",
+      "status": "TERMS_REVIEW",
+      "category": "official_gazette",
+      "authority": "Prefeitura de João Pessoa",
+      "url": "https://www.joaopessoa.pb.gov.br/doe-jp/",
+      "discovered_via": "official municipal Diário Oficial archive",
+      "goal": "Define an incremental edition/document connector and legal-event extraction contract.",
+      "risks": [
+        "bulk reuse/API terms not identified",
+        "edition pages may expose PDFs through changing URLs",
+        "documents can contain irrelevant personal data"
+      ],
+      "next_checks": [
+        "inspect pagination/document links",
+        "look for feed/API/documented export",
+        "review reuse terms",
+        "define urban/property legal-event allowlist"
+      ]
+    },
+    {
+      "id": "cand-pb-joao-pessoa-itbi-service",
+      "status": "APPROVED_QUERY_ONLY",
+      "category": "itbi",
+      "authority": "Prefeitura de João Pessoa / Secretaria da Receita Municipal",
+      "url": "https://receita.joaopessoa.pb.gov.br/portal-serem",
+      "discovered_via": "official Portal do Contribuinte and municipal ITBI service documentation",
+      "goal": "Represent ITBI as an authorized per-transaction/per-property due-diligence query, not bulk public data.",
+      "risks": [
+        "authenticated fiscal workflow",
+        "transaction documents contain personal data",
+        "no bulk public dataset confirmed"
+      ],
+      "next_checks": [
+        "document authorized user flow",
+        "define evidence/document retention class",
+        "do not automate without legitimate credentials and terms"
+      ]
     }
   ]
 }
