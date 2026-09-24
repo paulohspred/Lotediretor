@@ -4718,6 +4718,74 @@
       "access_class": "PUBLIC_QUERY_ONLY",
       "verification_status": "VERIFIED_PUBLIC_SERVICE_TECHNICAL_DATA_PENDING",
       "notes": "SEINFRA executa manutenção da rede de drenagem municipal. Serve para resolver a autoridade/operador do serviço; o inventário técnico georreferenciado da rede ainda precisa ser localizado/aprovado separadamente."
+    },
+    {
+      "id": "sp-sao-paulo-processos-administrativos",
+      "authority": "Prefeitura de São Paulo / Secretaria Municipal de Gestão / Arquivo Público Municipal",
+      "scope": "municipality",
+      "municipality_ibge": "3550308",
+      "domain": [
+        "administrative_processes",
+        "public_documents",
+        "procedural_status",
+        "licensing_process_context"
+      ],
+      "source_type": "official_public_process_portal",
+      "portal_url": "https://processos.prefeitura.sp.gov.br/Forms/Principal.aspx",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PUBLIC_NUMBER_QUERY",
+      "notes": "Portal centraliza processos administrativos municipais e permite consulta por número de localização/andamento, comunique-se e despachos. O portal também oferece pesquisa por CPF/CNPJ, mas o LoteDiretor NÃO deve usar esse eixo para descoberta de pessoas. Vincular processo somente quando número/relação com imóvel já for conhecida."
+    },
+    {
+      "id": "rj-rio-processos-administrativos",
+      "authority": "Prefeitura do Rio de Janeiro",
+      "scope": "municipality",
+      "municipality_ibge": "3304557",
+      "domain": [
+        "administrative_processes",
+        "public_documents",
+        "procedural_status",
+        "historical_process_systems"
+      ],
+      "source_type": "official_multi_system_process_query",
+      "portal_url": "https://transparencia.prefeitura.rio/consulta-a-processos/",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PUBLIC_NUMBER_QUERY",
+      "notes": "Consulta oficial orienta: SEI!RIO para processos autuados a partir de 05/12/2025; Processo.Rio e SICOP permanecem para processos legados. Consulta pública usa número do processo e pode exigir código de verificação. Resolver sistema por data/identificador e nunca contornar CAPTCHA."
+    },
+    {
+      "id": "mg-belo-horizonte-processos-protocolos",
+      "authority": "Prefeitura de Belo Horizonte",
+      "scope": "municipality",
+      "municipality_ibge": "3106200",
+      "domain": [
+        "administrative_processes",
+        "public_documents",
+        "procedural_status",
+        "tax_processes"
+      ],
+      "source_type": "official_multi_system_protocol_query",
+      "portal_url": "https://prefeitura.pbh.gov.br/FAZENDa/sigede",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PUBLIC_QUERY_MULTIPLE_SYSTEMS",
+      "notes": "PBH mantém página oficial para consultar andamento por diferentes sistemas/protocolos (Portal de Serviços, IPTU, ITBI, OPUS, SIGESP etc.). É um resolvedor de consulta por processo/protocolo conhecido, não um bulk dataset."
+    },
+    {
+      "id": "pb-joao-pessoa-processo-online",
+      "authority": "Prefeitura de João Pessoa",
+      "scope": "municipality",
+      "municipality_ibge": "2507507",
+      "domain": [
+        "administrative_processes",
+        "public_documents",
+        "procedural_status",
+        "licensing_process_context"
+      ],
+      "source_type": "official_process_query_with_captcha",
+      "portal_url": "https://www.joaopessoa.pb.gov.br/processoonline/acompanhar_processo.do",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_QUERY_WITH_CAPTCHA_NO_AUTOMATION",
+      "notes": "Processo On Line permite acompanhamento por número/identificação, com CAPTCHA. Não automatizar nem burlar CAPTCHA. Seplan também usa Aprova Digital e 1Doc para protocolos de licenciamento; integrar apenas por fluxo autorizado/documentado."
     }
   ]
 }
