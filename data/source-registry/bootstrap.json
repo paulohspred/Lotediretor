@@ -4114,6 +4114,26 @@
       "license": "CC BY-SA 4.0 for PMSP-produced geospatial layers",
       "verification_status": "VERIFIED_CATALOG_MULTIPLE_LEGAL_INSTRUMENTS",
       "notes": "GeoSampa publica camadas e dicionários de parâmetros urbanísticos vinculados a instrumentos legais, inclusive PIUs/OUCs. Há datasets com CA máximo, gabarito, cota-parte, quadro/mapa e links para lei/anexos. Não assumir que uma única camada cobre toda a cidade: o normalizador deve resolver regra por instrumento, perímetro e vigência."
+    },
+    {
+      "id": "sp-sao-paulo-pgv-2026",
+      "authority": "Prefeitura de São Paulo / Catálogo de Legislação Municipal",
+      "scope": "municipality",
+      "municipality_ibge": "3550308",
+      "domain": [
+        "pgv",
+        "valuation",
+        "iptu",
+        "tax",
+        "law",
+        "historical_tax_record"
+      ],
+      "source_type": "official_law_with_annexes",
+      "discovery_url": "https://legislacao.prefeitura.sp.gov.br/lei-18330-de-11-de-novembro-de-2025",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED_OFFICIAL_LAW_EFFECTIVE_2026",
+      "update_frequency": "by legal amendment",
+      "notes": "Lei 18.330/2025 atualiza a Planta Genérica de Valores a partir de 01/01/2026. O art. 1º remete ao Anexo I (valores unitários de m² de construção) e Anexo II (listagem de valores unitários de m² de terreno). Normalizar com vigência temporal e manter vínculo ao texto/anexos oficiais."
     }
   ]
 }
