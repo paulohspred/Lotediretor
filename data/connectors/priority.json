@@ -130,11 +130,12 @@
     {
       "id": "sp-pgv-2026-law",
       "source_id": "sp-sao-paulo-pgv-2026",
-      "kind": "public_page",
+      "kind": "custom_legal_annex_materializer",
       "url": "https://legislacao.prefeitura.sp.gov.br/lei-18330-de-11-de-novembro-de-2025",
-      "mode": "legal_document_metadata_and_annex_discovery",
+      "mode": "official_pdf_snapshot_hash_and_annex_ii_index",
       "approved": true,
-      "notes": "Snapshot official law page first; parser must preserve effective date and annex provenance. Do not silently replace older PGV versions."
+      "notes": "Validated end-to-end on official Lei 18.330/2025 annex PDF. Parser produces 184,281 unique Codlog+SQ -> vm2t terrain-unit-value keys with zero conflicts; preserve PDF/hash and effective date. This value is not by itself assessed value or IPTU.",
+      "tool": "tools/ingestion/sp_pgv_2026.py"
     },
     {
       "id": "recife-diario-oficial",
