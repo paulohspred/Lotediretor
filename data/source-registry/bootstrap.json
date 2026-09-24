@@ -4788,6 +4788,159 @@
       "access_class": "PUBLIC_QUERY_ONLY",
       "verification_status": "VERIFIED_QUERY_WITH_CAPTCHA_NO_AUTOMATION",
       "notes": "Processo On Line permite acompanhamento por número/identificação, com CAPTCHA. Não automatizar nem burlar CAPTCHA. Seplan também usa Aprova Digital e 1Doc para protocolos de licenciamento; integrar apenas por fluxo autorizado/documentado."
+    },
+    {
+      "id": "sp-condephaat-protected-heritage",
+      "authority": "Governo do Estado de São Paulo / Secretaria da Cultura / CONDEPHAAT",
+      "scope": "state",
+      "domain": [
+        "heritage",
+        "protected_assets",
+        "pending_tombamento",
+        "heritage_buffer",
+        "archaeology",
+        "legal_restriction",
+        "heritage_approval"
+      ],
+      "source_type": "official_heritage_portal_and_state_gis",
+      "portal_url": "https://www.cultura.sp.gov.br/sec_cultura/CONDEPHAAT/Bens_Protegidos",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PUBLIC_PORTAL_GIS_TERMS_REVIEW",
+      "notes": "CONDEPHAAT mantém portal de bens protegidos, CEDOC/SISEP e mapa/IDE-SP. GeoSampa municipal também integra bens estaduais e áreas envoltórias, com links às resoluções. Usar o portal estadual como autoridade jurídica e GeoSampa/IDE-SP como geometria quando aplicável; materialização de geodados estaduais requer revisão dos termos do IDE-SP."
+    },
+    {
+      "id": "pe-fundarpe-protected-heritage",
+      "authority": "Governo de Pernambuco / Secult-PE / Fundarpe",
+      "scope": "state",
+      "domain": [
+        "heritage",
+        "protected_assets",
+        "pending_tombamento",
+        "archaeology",
+        "heritage_buffer",
+        "legal_restriction",
+        "heritage_approval"
+      ],
+      "source_type": "official_heritage_portal_documents",
+      "portal_url": "https://www.cultura.pe.gov.br/pagina/patrimonio-cultural/acervo/processos-de-tombamento/",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_CURRENT_LISTS_DOCUMENTS_LICENSE_REVIEW",
+      "notes": "Portal oficial publica listas de bens tombados e processos de tombamento estaduais. A proteção provisória passa a existir após publicação do edital de tombamento no Diário Oficial, antes da homologação final. Documentos/listas podem ser usados como evidência jurídica; redistribuição em massa e geometria devem ser revistas separadamente."
+    },
+    {
+      "id": "pe-recife-zeph",
+      "authority": "Prefeitura do Recife / SEDUL",
+      "scope": "municipality",
+      "municipality_ibge": "2611606",
+      "domain": [
+        "heritage",
+        "zeph",
+        "protected_area",
+        "urban_parameters",
+        "legal_restriction",
+        "heritage_buffer"
+      ],
+      "source_type": "ArcGIS_FeatureServer",
+      "service_url": "https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Planejamento/BASES_ZONEAMENTO_G_PD2020/FeatureServer/3",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PUBLIC_SERVICE_LICENSE_REVIEW",
+      "notes": "Camada oficial de Zona Especial de Preservação do Patrimônio Histórico-Cultural (ZEPH), vinculada ao Plano Diretor/legislação urbanística. Complementar com IEPs municipais e Fundarpe/IPHAN. Licença do serviço ArcGIS deve ser confirmada antes de espelhamento."
+    },
+    {
+      "id": "rj-inepac-protected-heritage",
+      "authority": "Governo do Estado do Rio de Janeiro / SECEC-RJ / INEPAC",
+      "scope": "state",
+      "domain": [
+        "heritage",
+        "protected_assets",
+        "pending_tombamento",
+        "heritage_approval",
+        "legal_restriction",
+        "official_acts"
+      ],
+      "source_type": "official_state_heritage_authority_and_acts",
+      "portal_url": "https://cultura.rj.gov.br/estrutura/",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_AUTHORITY_PUBLIC_ACTS_INVENTORY_CHANNEL_REVIEW",
+      "notes": "INEPAC é o órgão estadual responsável por identificar, cadastrar, inventariar, tombar, fiscalizar e manter arquivo dos bens protegidos e processos de tombamento. Atos recentes são publicados pela SECEC/Diário Oficial. O inventário/portal legado de bens deve ser tratado como consulta até haver interface atual e termos estáveis."
+    },
+    {
+      "id": "rj-rio-irph-apac",
+      "authority": "Prefeitura do Rio de Janeiro / Instituto Rio Patrimônio da Humanidade (IRPH) / SMDU",
+      "scope": "municipality",
+      "municipality_ibge": "3304557",
+      "domain": [
+        "heritage",
+        "apac",
+        "protected_area",
+        "legal_restriction",
+        "heritage_approval",
+        "urban_planning"
+      ],
+      "source_type": "ArcGIS_FeatureServer_and_IRPH_legal_guides",
+      "service_url": "https://pgeo3.rio.rj.gov.br/arcgis/rest/services/Urbanismo/LBB_APAC/FeatureServer",
+      "portal_url": "https://irph.prefeitura.rio/area-de-protecao-do-ambiente-cultural-2/",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PUBLIC_GEOMETRY_LEGAL_GUIDES_LICENSE_REVIEW",
+      "notes": "Serviço oficial fornece geometrias das APACs; portal IRPH publica guias, mapas e atos/decretos por APAC. Usar geometria + ato jurídico para incidência. Licença de redistribuição do FeatureServer não está explícita."
+    },
+    {
+      "id": "rj-rio-heritage-protected-areas",
+      "authority": "Prefeitura do Rio de Janeiro / SMDU",
+      "scope": "municipality",
+      "municipality_ibge": "3304557",
+      "domain": [
+        "heritage",
+        "protected_area",
+        "archaeology",
+        "environmental_heritage",
+        "legal_restriction"
+      ],
+      "source_type": "ArcGIS_FeatureServer",
+      "service_url": "https://pgeo3.rio.rj.gov.br/arcgis/rest/services/Urbanismo/LBB_Areas_Protegidas/FeatureServer",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PUBLIC_SERVICE_LICENSE_REVIEW",
+      "notes": "Camada oficial 'Áreas Protegidas' contém polígonos de áreas protegidas e inclui ocorrências de interesse biológico/arqueológico e paisagístico. Deve ser classificada por tipo/ato antes de uso; não substituir APAC/tombamento específico nem inferir órgão aprovador sem campo ou ato oficial."
+    },
+    {
+      "id": "mg-belo-horizonte-heritage-open-data",
+      "authority": "Prefeitura de Belo Horizonte / Fundação Municipal de Cultura / PRODABEL",
+      "scope": "municipality",
+      "municipality_ibge": "3106200",
+      "domain": [
+        "heritage",
+        "protected_assets",
+        "pending_tombamento",
+        "protected_area",
+        "legal_restriction",
+        "heritage_buffer",
+        "historical_series"
+      ],
+      "source_type": "CKAN_heritage_datasets",
+      "portal_url": "https://dados.pbh.gov.br/dataset/?_tags_limit=0&res_format=CSV&tags=cultural&tags=patrim%C3%B4nio",
+      "access_class": "OPEN_REUSABLE",
+      "license": "CC BY",
+      "verification_status": "VERIFIED",
+      "update_frequency": "monthly",
+      "notes": "Portal publica sob CC BY Área de Proteção Cultural e bens culturais municipais, além de datasets específicos para bens IEPHA e IPHAN. 'Bem Cultural Imóvel' distingue tombado, processo de tombamento aberto e registros documentais. Preservar versão mensal e grau de proteção."
+    },
+    {
+      "id": "pb-iphaep-protected-heritage",
+      "authority": "Governo da Paraíba / IPHAEP",
+      "scope": "state",
+      "domain": [
+        "heritage",
+        "protected_assets",
+        "historic_center",
+        "protected_area",
+        "legal_restriction",
+        "heritage_approval"
+      ],
+      "source_type": "official_heritage_portal_and_legal_rules",
+      "portal_url": "https://iphaep.pb.gov.br/municipios-com-centros-historicos-tombados",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PUBLIC_LEGAL_INFORMATION",
+      "notes": "IPHAEP identifica João Pessoa como centro histórico tombado pelo Decreto 9.484/1982. Orientação oficial informa que imóveis em Área de Preservação têm grau de classificação/preservação e intervenções dependem de aprovação técnica; para João Pessoa cita Decreto Estadual 25.138/2004. Geometria municipal complementar está no Filipeia."
     }
   ]
 }
