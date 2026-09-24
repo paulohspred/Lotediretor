@@ -410,6 +410,68 @@
       "notes": "Desde 17/03/2026 o Cemaden monitora 1.295 municípios. O fato de um município estar monitorado indica existência de mapeamento de áreas de risco, mas não implica que o vetor detalhado esteja disponível em API pública. Integrar com SGB/Defesa Civil/local quando houver geometria."
     },
     {
+      "id": "br-cenprot",
+      "authority": "Central Nacional de Serviços Eletrônicos Compartilhados dos Tabeliães de Protesto / IEPTB",
+      "scope": "BR",
+      "domain": [
+        "protest_registry",
+        "credit_due_diligence"
+      ],
+      "source_type": "national_registry_service",
+      "discovery_url": "https://atos.cnj.jus.br/atos/detalhar/6979",
+      "access_class": "PAID_ON_DEMAND",
+      "verification_status": "VERIFIED_RESTRICTED_CONTEXT",
+      "notes": "CENPROT é infraestrutura nacional regulada para consultas/certidões de protesto. Pode ser relevante em due diligence privada de pessoa/empresa relacionada ao imóvel, mas não pertence ao cadastro público property-centric."
+    },
+    {
+      "id": "br-censec-api",
+      "authority": "Colégio Notarial do Brasil - Conselho Federal",
+      "scope": "BR",
+      "domain": [
+        "notarial_acts",
+        "interoperability",
+        "municipal_transaction_communication"
+      ],
+      "source_type": "authenticated_API_documentation",
+      "discovery_url": "https://suporte.notariado.org.br/support/solutions/articles/43000708963-transmiss%C3%A3o-das-cargas-censec-por-api",
+      "access_class": "AUTHENTICATED_PUBLIC",
+      "verification_status": "VERIFIED_DOCUMENTATION_ONLY",
+      "notes": "Documentação técnica pública descreve transmissão por API das cargas CEP, CESDI, RCTO e CTP (Comunicação de Transações às Prefeituras). API é para cartórios/atores autorizados; registrar schema/interoperabilidade, não tentar acesso não autorizado."
+    },
+    {
+      "id": "br-censec-cep-public",
+      "authority": "Colégio Notarial do Brasil - Conselho Federal",
+      "scope": "BR",
+      "domain": [
+        "notarial_acts",
+        "deeds",
+        "powers_of_attorney",
+        "estate_inventory"
+      ],
+      "source_type": "paid_public_search",
+      "discovery_url": "https://suporte.notariado.org.br/support/solutions/articles/43000759444-busca-cep-manual-de-opera%C3%A7%C3%A3o",
+      "access_class": "PAID_ON_DEMAND",
+      "verification_status": "VERIFIED_PRIVACY_CONTROLLED",
+      "notes": "Busca CEP/CENSEC permite pesquisa paga de escrituras e procurações. Desde 2025 a consulta pública retorna metadados limitados como tabelionato, data, livro/folha e tipo do ato, sem detalhar negócio/partes. Não usar para indexação massiva de pessoas."
+    },
+    {
+      "id": "br-cnj-justica-aberta-serventias",
+      "authority": "Conselho Nacional de Justiça",
+      "scope": "BR",
+      "domain": [
+        "notary_registry_directory",
+        "registry_offices",
+        "productivity",
+        "revenue",
+        "cns"
+      ],
+      "source_type": "public_panel_export",
+      "discovery_url": "https://www.cnj.jus.br/justica-aberta/",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED_PUBLIC_EXPORT",
+      "notes": "Painel público do Sistema Justiça Aberta com informações cadastrais, produtividade e arrecadação das serventias extrajudiciais; atualização diária e relatórios customizados CSV/XLSX. Usar como diretório oficial de serventias/CNS, não como fonte de conteúdo de matrículas."
+    },
+    {
       "id": "br-cnuc",
       "authority": "Ministério do Meio Ambiente e Mudança do Clima",
       "scope": "BR",
@@ -830,6 +892,69 @@
       "notes": "LexML integra metadados legislativos/jurídicos das três esferas e usa URNs persistentes. O padrão de coleta dos provedores é OAI-PMH; o portal oferece pesquisa SRU. Usar para descoberta, normalização e ligação a ocorrências oficiais, preservando a fonte primária."
     },
     {
+      "id": "br-onr-ridigital",
+      "authority": "Operador Nacional do Sistema de Registro Eletrônico de Imóveis (ONR)",
+      "scope": "BR",
+      "domain": [
+        "property_registry",
+        "matricula",
+        "certificates",
+        "registry_services"
+      ],
+      "source_type": "official_service_portal",
+      "base_url": "https://ridigital.org.br/",
+      "access_class": "PAID_ON_DEMAND",
+      "verification_status": "VERIFIED",
+      "notes": "Canal oficial nacional de serviços do Registro de Imóveis. Certidões/matrículas e pesquisas devem ser obtidas pelos fluxos oficiais; não criar mirror público de dados registrais pessoais."
+    },
+    {
+      "id": "br-onr-technical-interoperability",
+      "authority": "Operador Nacional do Sistema de Registro Eletrônico de Imóveis (ONR)",
+      "scope": "BR",
+      "domain": [
+        "property_registry",
+        "interoperability",
+        "matricula",
+        "technical_standards"
+      ],
+      "source_type": "public_technical_docs_authenticated_api",
+      "discovery_url": "https://ridigital.org.br/Downloads/Especificacao_WS_vm.pdf",
+      "api_documentation_url": "https://api-sas.onr.org.br/index.html",
+      "access_class": "AUTHENTICATED_PUBLIC",
+      "verification_status": "VERIFIED_DOCUMENTATION_ONLY",
+      "notes": "Documentação pública descreve web services de validação/obtenção de matrícula e integração entre cartórios e ONR. Swagger público identificado para serviço de atualização de matrículas, mas operações exigem autenticação. Não testar POSTs nem tentar credenciais; usar apenas documentação de contrato/modelo."
+    },
+    {
+      "id": "br-onrcpn-registrocivil",
+      "authority": "Operador Nacional do Registro Civil de Pessoas Naturais (ON-RCPN)",
+      "scope": "BR",
+      "domain": [
+        "civil_registry",
+        "certificates",
+        "registry_search"
+      ],
+      "source_type": "official_service_portal",
+      "base_url": "https://registrocivil.org.br/",
+      "access_class": "PAID_ON_DEMAND",
+      "verification_status": "VERIFIED",
+      "notes": "CRC Nacional permite localização de registros e solicitação de certidões. Dados pessoais/civis não são parte do dossiê público do imóvel; integração somente em fluxos autorizados e quando materialmente necessária."
+    },
+    {
+      "id": "br-onrtdpj-national-base",
+      "authority": "Operador Nacional do Registro de Títulos e Documentos e Civil de Pessoas Jurídicas (ON-RTDPJ)",
+      "scope": "BR",
+      "domain": [
+        "rtd",
+        "legal_entities",
+        "registry_interoperability"
+      ],
+      "source_type": "national_registry_base_regulated",
+      "discovery_url": "https://atos.cnj.jus.br/atos/detalhar/1111",
+      "access_class": "AUTHENTICATED_PUBLIC",
+      "verification_status": "VERIFIED_REGULATED_ACCESS",
+      "notes": "Provimento CNJ 242/2026 disciplina base nacional estruturada do RTDPJ, identificadores nacionais e interoperabilidade. Não presumir consulta pública irrestrita nem usar dados pessoais/empresariais fora da finalidade."
+    },
+    {
       "id": "br-repositorio-dados-gov",
       "authority": "Governo Federal",
       "scope": "BR",
@@ -856,6 +981,23 @@
       "access_class": "PUBLIC_QUERY_ONLY",
       "verification_status": "VERIFIED",
       "notes": "CIB é identificador nacional em implantação. Consulta pública não equivale a acesso aos campos pessoais/restritos existentes na origem."
+    },
+    {
+      "id": "br-serp-meu-registro",
+      "authority": "Corregedoria Nacional de Justiça / ONSERP e Operadores Nacionais",
+      "scope": "BR",
+      "domain": [
+        "registry_services",
+        "property_registry",
+        "civil_registry",
+        "rtdpj",
+        "interoperability"
+      ],
+      "source_type": "national_registry_service_portal",
+      "discovery_url": "https://www.cnj.jus.br/agendas/lancamento-da-plataforma-meu-registro-a-evolucao-do-sistema-eletronico-dos-registros-publicos-serp/",
+      "access_class": "PAID_ON_DEMAND",
+      "verification_status": "VERIFIED",
+      "notes": "Plataforma Meu Registro lançada em 22/06/2026 como interface do SERP. Provimento CNJ 229/2026 organiza interoperabilidade entre ONSERP, ONR, ON-RCPN e ON-RTDPJ. Serviços e documentos seguem regras, autenticação e emolumentos próprios."
     },
     {
       "id": "br-sgb-geosgb",
@@ -1122,6 +1264,24 @@
       "access_class": "OPEN_REUSABLE",
       "verification_status": "VERIFIED",
       "notes": "Termos oficiais dizem que consulta e download são livres e descrevem dados geoespaciais abertos; IDE exibia 1.387 camadas na pesquisa."
+    },
+    {
+      "id": "es-vitoria-gis",
+      "authority": "Prefeitura de Vitória",
+      "scope": "municipality",
+      "municipality_ibge": "3205309",
+      "domain": [
+        "cadastre",
+        "property",
+        "land_domain",
+        "imagery",
+        "urban_planning"
+      ],
+      "source_type": "ArcGIS_REST",
+      "base_url": "https://gis.vitoria.es.gov.br/arcgis/rest/services",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_ENDPOINT_LICENSE_PER_SERVICE",
+      "notes": "ArcGIS oficial com MapaBaseImobiliario, DominioFundiario, ImoveisCentro, Imagens e pasta Opendata. Enumerar serviços e licenças item a item; domínio fundiário pode exigir tratamento especial de atributos."
     },
     {
       "id": "es-vitoria-plan-director",
@@ -2100,6 +2260,25 @@
       "access_class": "PUBLIC_QUERY_ONLY",
       "verification_status": "VERIFIED_ENDPOINT_LICENSE_REVIEW",
       "notes": "Diretório público possui SEFAZ com lotes urbanos, certidão cadastral, SEPUR com macrozoneamento, EIV, outorga onerosa, TDC, IPTU progressivo, topografia e histórico do perímetro. ImageServer publica ortofotos 2007/2010, imagens 2016/2021/2022 e pastas 2025/2026. Pasta 'itbi' redireciona para login e NÃO deve ser contornada."
+    },
+    {
+      "id": "sc-sao-bento-sul-cadastro-imobiliario",
+      "authority": "Prefeitura de São Bento do Sul",
+      "scope": "municipality",
+      "municipality_ibge": "4215802",
+      "domain": [
+        "lots",
+        "buildings",
+        "cadastre",
+        "itbi",
+        "zoning",
+        "property_attributes"
+      ],
+      "source_type": "ArcGIS_MapServer",
+      "base_url": "https://geo.saobentodosul.sc.gov.br/server/rest/services/integracao/Cadastro_Imobiliario/MapServer",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_SENSITIVE_TABLES_BLOCKED",
+      "notes": "Serviço público lista camadas Lotes/Edificações e tabelas cadastrais, ITBI e Proprietários. Apenas camadas/campos aprovados devem ser ingeridos. Tabela Proprietários e quaisquer campos pessoais/documentais ficam BLOCKED por padrão; exposição técnica do endpoint não equivale a autorização de republicação."
     },
     {
       "id": "sp-campinas-spatial-data",
