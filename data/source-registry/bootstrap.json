@@ -13,6 +13,23 @@
   ],
   "sources": [
     {
+      "id": "ac-open-data",
+      "authority": "Governo do Estado do Acre",
+      "scope": "state",
+      "uf": "AC",
+      "domain": [
+        "open_data",
+        "socioeconomic",
+        "agriculture",
+        "territorial"
+      ],
+      "source_type": "CKAN_like_open_data_portal",
+      "base_url": "https://dados.ac.gov.br/",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED",
+      "notes": "Portal oficial declara livre reutilização e redistribuição com crédito à fonte; catalogar datasets espaciais relevantes."
+    },
+    {
       "id": "am-manaus-arcgis",
       "authority": "Prefeitura de Manaus",
       "scope": "municipality",
@@ -446,6 +463,45 @@
       "access_class": "OPEN_REUSABLE",
       "verification_status": "VERIFIED",
       "notes": "Portal disponibiliza LC 450/2025, macrozoneamento, zonas especiais e KMZ."
+    },
+    {
+      "id": "ce-ipece-i3geo",
+      "authority": "IPECE / Governo do Ceará",
+      "scope": "state",
+      "uf": "CE",
+      "domain": [
+        "geospatial",
+        "socioeconomic",
+        "planning",
+        "environment"
+      ],
+      "source_type": "i3Geo_OGC",
+      "base_url": "https://mapas.ipece.ce.gov.br/i3geo/ogc.php",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_ENDPOINT_LICENSE_REVIEW",
+      "notes": "Endpoint oficial i3Geo expõe temas e temas WFS via parâmetro lista=temas/temaswfs; útil para descoberta automatizada."
+    },
+    {
+      "id": "df-ide-seduh-arcgis",
+      "authority": "SEDUH Distrito Federal",
+      "scope": "state_district",
+      "uf": "DF",
+      "domain": [
+        "cadastre",
+        "buildings",
+        "iptu_related",
+        "plan_director",
+        "urban_control",
+        "roads",
+        "topography",
+        "rural"
+      ],
+      "source_type": "ArcGIS_REST_GeoNetwork",
+      "base_url": "https://www.geoservicos.ide.df.gov.br/arcgis/rest/services",
+      "catalog_url": "https://metadados.seduh.df.gov.br/",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_ENDPOINT_LICENSE_REVIEW",
+      "notes": "Serviços públicos incluem CADASTRO_TERRITORIAL com lotes, edificações e tabelas de normas/IPTU/alvarás/habite-se; PDOT; controle urbano/rural; cartografia e topografia. Catálogo GeoNetwork expõe dezenas de registros shapefile. Licença não é declarada uniformemente por serviço."
     },
     {
       "id": "es-geobases",
@@ -943,6 +999,24 @@
       "notes": "Plano Diretor: Lei Complementar 270/2024. Localizar endpoint oficial consolidado e anexos no próximo ciclo."
     },
     {
+      "id": "ro-porto-velho-geoportal",
+      "authority": "Prefeitura de Porto Velho",
+      "scope": "municipality",
+      "municipality_ibge": "1100205",
+      "domain": [
+        "cadastre",
+        "zoneamento",
+        "urban_planning",
+        "multifinalitary_cadastre",
+        "territorial_information"
+      ],
+      "source_type": "GeoPortal_WMS_WFS_download",
+      "base_url": "https://geoportal.portovelho.ro.gov.br/",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_ENDPOINT_DISCOVERY_PENDING",
+      "notes": "GeoPortal oficial integra Cadastro Técnico Multifinalitário Municipal; tutorial documenta consulta de imóvel/lote, zoneamento, metadados, downloads shapefile e WMS/WFS. Extrair URLs concretas dos botões e revisar licença por camada."
+    },
+    {
       "id": "rs-caxias-cadastro-territorial",
       "authority": "Prefeitura de Caxias do Sul",
       "scope": "municipality",
@@ -1194,6 +1268,23 @@
       "access_class": "OPEN_REUSABLE",
       "verification_status": "VERIFIED",
       "notes": "PDE Lei 16.050/2014 com revisão intermediária pela Lei 17.975/2023 e anexos/mapas. Versionar alterações."
+    },
+    {
+      "id": "to-geoportal-seplan",
+      "authority": "Governo do Tocantins / SEPLAN",
+      "scope": "state",
+      "uf": "TO",
+      "domain": [
+        "geospatial",
+        "environment",
+        "territorial_planning",
+        "protected_areas"
+      ],
+      "source_type": "GeoPortal_OGC_GeoNetwork",
+      "base_url": "https://geoportal.to.gov.br/",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_ENDPOINT_LICENSE_REVIEW",
+      "notes": "Manual oficial documenta WMS, WMTS, WFS, WCS e CSW, além de catálogo/metadados e downloads. Registrar endpoints concretos por serviço durante a colheita."
     }
   ]
 }
