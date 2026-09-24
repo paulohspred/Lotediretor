@@ -408,3 +408,97 @@ Para o LoteDiretor, um endpoint só sai de `DISCOVERY` quando:
 3. schema é inspecionado;
 4. campos pessoais são filtrados;
 5. ingestão/materialização é explicitamente aprovada.
+
+
+## Cobertura orientada por lacunas e primeiros conectores
+
+### Coverage Report
+
+Foi criado um analisador reprodutível:
+- `tools/discovery/analyze_coverage.py`;
+- `data/source-registry/coverage-report.json`;
+- `docs/COVERAGE_REPORT.md`.
+
+Na fotografia desta rodada:
+- 169 fontes-mãe;
+- 50 municípios com ao menos uma fonte municipal catalogada;
+- prioridade passa a ser profundidade por domínio, não simples contagem de URLs.
+
+As UFs com maiores lacunas operacionais são RR, MT, AP, AL, RO, RN, PI, BA e PA.
+
+### João Pessoa — Atlas Filipeia
+
+O Atlas Filipeia foi promovido como fonte municipal de alto valor. O portal oficial oferece:
+- lotes em SHP/CSV;
+- quadras em SHP/CSV;
+- logradouros em SHP/CSV;
+- setores cartográficos;
+- curvas de nível e hidrografia;
+- MUB em DWG;
+- aerofotogrametria de 1976, 1989, 1998, 2012 e 2021;
+- zoneamento/macrozoneamento do Plano Diretor 2024;
+- restrições ambientais e de orla;
+- cones de voo;
+- dados do imóvel por localização cartográfica/ficha cadastral.
+
+A licença de redistribuição de cada recurso ainda deve ser confirmada antes de espelhamento.
+
+### São Luís — cadastro fiscal
+
+SEMFAZ mantém consulta de nova inscrição imobiliária, ficha de imóvel, IPTU, ITBI e BCI. O município explica que a inscrição de 17 dígitos codifica localização (distrito/setor/quadra/lote).
+
+Consultas que usam CAPTCHA permanecem query-only: não automatizar nem contornar.
+
+### Belém
+
+SEFIN oferece IPTU e Certidão de Cadastro Imobiliário; histórico oficial confirma SIAT para ITBI/cadastro. Ainda não foi encontrado canal oficial de bulk/open data cadastral, portanto permanece serviço de consulta.
+
+### Aracaju
+
+Carta de Serviços oficial confirma localização/revisão/unificação de inscrição imobiliária, planta de quadra, IPTU/ITBI e fluxos ligados a habite-se/desmembramento. Próximo passo é localizar endpoints públicos documentados, não inferir APIs.
+
+### Campo Grande
+
+A Prefeitura lançou nova plataforma SIMGEO/CTM em 06/12/2024. Há ArcGIS REST público e serviços do Plano Diretor com GeoJSON. O próprio município descreve o SIMGEO como repositório centralizado de informações de imóveis, infraestrutura e geografia.
+
+### Porto Velho
+
+GeoServer oficial municipal expõe WFS/WMS/WCS/WMTS. A descoberta de capabilities é permitida; cada layer ainda precisa de licença/metadados antes de materialização.
+
+### Palmas
+
+Portal municipal oferece IPTU e Planta de Valores por CCI. A consulta para descobrir CCI usa CPF/CNPJ como controle de acesso e não deve ser automatizada.
+
+Em 2026 a Prefeitura informou uso de aerofotogrametria e perfilamento LiDAR executados em 2024 para atualizar cadastro/área construída. O dataset foi colocado na Candidate Queue até ser localizado um canal oficial reutilizável.
+
+### Teresina
+
+Serviços oficiais do Cadastro Imobiliário Fiscal documentam certidão histórica de integração contendo áreas tributadas de terreno e construção por exercício de IPTU. É aquisição sob demanda/autenticada, não open data.
+
+A busca por um endpoint GIS público da PRODATER permanece candidato em descoberta.
+
+### Candidate Queue
+
+A fila agora separa claramente:
+- fonte aprovada;
+- consulta apenas;
+- autenticação exigida;
+- licença pendente;
+- risco de dados pessoais;
+- descoberta que ainda não prova disponibilidade pública.
+
+### Snapshot pipeline
+
+Foram definidos conectores iniciais somente leitura para:
+- Gov360 Imóveis da União;
+- Rio IPTU;
+- Rio ITBI;
+- Blumenau WFS;
+- BHGeo WFS;
+- Recife CKAN;
+- Fortaleza CKAN;
+- Porto Alegre CKAN;
+- dados.gov.br;
+- IBGE GeoFTP.
+
+`tools/ingestion/snapshot.py` grava resposta bruta, timestamp, URL final, headers relevantes e SHA-256 antes de qualquer ETL.
