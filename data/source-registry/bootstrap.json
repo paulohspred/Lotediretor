@@ -4429,6 +4429,277 @@
       "access_class": "PUBLIC_QUERY_ONLY",
       "verification_status": "VERIFIED_PUBLIC_ARCHIVE_LICENSE_REVIEW",
       "notes": "Arquivo oficial do Diário Oficial/Semanário apresenta listagem pública de edições, datas, suplementos e páginas individuais com acesso aos documentos. Licença/API de reutilização em massa não identificada; usar como consulta/snapshot documental até revisão."
+    },
+    {
+      "id": "sp-enel-distribuicao-provider",
+      "authority": "Enel Distribuição São Paulo",
+      "scope": "SP_CONCESSION_AREA",
+      "domain": [
+        "electricity_distribution",
+        "utility_provider",
+        "service_territory",
+        "power_network_context"
+      ],
+      "source_type": "official_distribution_company",
+      "portal_url": "https://www.enel.com.br/pt-saopaulo/cidades-atendidas-pela-enel-distribuicao.html",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PROVIDER_SERVICE_TERRITORY",
+      "notes": "Enel Distribuição São Paulo atende 24 municípios da Região Metropolitana de São Paulo, incluindo a capital. Usar para resolver prestador; ativos técnicos normalizados devem vir prioritariamente da BDGD/ANEEL. Presença da distribuidora não prova capacidade disponível no lote."
+    },
+    {
+      "id": "sp-sabesp-provider",
+      "authority": "ARSESP / Sabesp",
+      "scope": "SP",
+      "domain": [
+        "water_supply",
+        "sewerage",
+        "utility_provider",
+        "service_territory",
+        "sanitation"
+      ],
+      "source_type": "official_regulatory_provider_registry",
+      "portal_url": "https://www.arsesp.sp.gov.br/SitePages/saneamento/municipios-conveniados-saneamento.aspx",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PROVIDER_SERVICE_TERRITORY",
+      "notes": "ARSESP confirma que a Sabesp presta água/esgoto na Capital Paulista entre os municípios regulados. Resolver prestador pelo município; confirmação de rede/disponibilidade na testada exige fonte técnica específica da prestadora."
+    },
+    {
+      "id": "sp-sao-paulo-public-lighting",
+      "authority": "Prefeitura de São Paulo / SP Regula / ILUME",
+      "scope": "municipality",
+      "municipality_ibge": "3550308",
+      "domain": [
+        "public_lighting",
+        "utility_provider",
+        "infrastructure",
+        "street_assets"
+      ],
+      "source_type": "official_public_service",
+      "portal_url": "https://prefeitura.sp.gov.br/web/spregula/iluminacao_publica/",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PUBLIC_SERVICE",
+      "notes": "SP Regula/ILUME gerem e regulam serviços de iluminação pública e o GeoSampa referencia pontos modernizados com LED. Identifica responsável e fluxo de serviço; inventário técnico reutilizável de luminárias deve ser validado separadamente."
+    },
+    {
+      "id": "pe-recife-public-lighting",
+      "authority": "Prefeitura do Recife / EMLURB",
+      "scope": "municipality",
+      "municipality_ibge": "2611606",
+      "domain": [
+        "public_lighting",
+        "utility_provider",
+        "infrastructure",
+        "street_assets"
+      ],
+      "source_type": "official_public_service",
+      "portal_url": "https://emlurb.recife.pe.gov.br/iluminacao-publica-2",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PUBLIC_SERVICE",
+      "notes": "EMLURB é responsável por planejar, supervisionar, controlar, restaurar, manter e ampliar a iluminação pública do Recife e monitora os pontos luminosos. Inventário técnico/telegestão não é presumido como open data."
+    },
+    {
+      "id": "rj-light-distribuicao-provider",
+      "authority": "Light Serviços de Eletricidade S.A.",
+      "scope": "RJ_CONCESSION_AREA",
+      "domain": [
+        "electricity_distribution",
+        "utility_provider",
+        "service_territory",
+        "power_network_context"
+      ],
+      "source_type": "official_distribution_company",
+      "portal_url": "https://www.light.com.br/SitePages/page-distribuicao.aspx",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PROVIDER_SERVICE_TERRITORY",
+      "notes": "Light publica mapa da área de concessão e atende a Região Metropolitana do Rio, incluindo a capital. Usar como resolver de prestador; ativos técnicos devem ser reconciliados com BDGD/ANEEL."
+    },
+    {
+      "id": "rj-aguas-do-rio-provider",
+      "authority": "Águas do Rio / Aegea",
+      "scope": "RJ_SUBMUNICIPAL_AND_MULTI_MUNICIPAL",
+      "domain": [
+        "water_supply",
+        "sewerage",
+        "utility_provider",
+        "service_territory",
+        "sanitation"
+      ],
+      "source_type": "official_sanitation_concessionaire",
+      "portal_url": "https://www.aguasdorio.com.br/quem-somos/",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PROVIDER_SERVICE_TERRITORY",
+      "notes": "Águas do Rio informa responsabilidade por água e esgoto em 27 municípios e 124 bairros da capital; na cidade do Rio cobre principalmente zonas Norte, Sul e Centro. O resolvedor deve operar abaixo do nível municipal porque a capital possui outras concessionárias."
+    },
+    {
+      "id": "rj-igua-rio-provider",
+      "authority": "Iguá Rio",
+      "scope": "RJ_SUBMUNICIPAL_AND_MULTI_MUNICIPAL",
+      "domain": [
+        "water_supply",
+        "sewerage",
+        "utility_provider",
+        "service_territory",
+        "sanitation"
+      ],
+      "source_type": "official_sanitation_concessionaire",
+      "portal_url": "https://www.igua.com.br/rio-de-janeiro/informacoes-para-voce",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PROVIDER_SERVICE_TERRITORY",
+      "notes": "Na capital, Iguá opera distribuição de água e esgotamento na região da Barra/Jacarepaguá, atualmente descrita em 19 bairros/áreas; captação e tratamento de água permanecem com CEDAE. Praça Seca possui cobertura parcial. Resolver por bairro/polígono, não somente IBGE."
+    },
+    {
+      "id": "rj-rio-mais-saneamento-provider",
+      "authority": "Rio+Saneamento",
+      "scope": "RJ_SUBMUNICIPAL_AND_MULTI_MUNICIPAL",
+      "domain": [
+        "water_supply",
+        "sewerage",
+        "utility_provider",
+        "service_territory",
+        "sanitation"
+      ],
+      "source_type": "official_sanitation_concessionaire",
+      "portal_url": "https://www.riomaissaneamento.com.br/",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PROVIDER_SERVICE_TERRITORY",
+      "notes": "Rio+Saneamento atua em 18 municípios e 24 bairros da Zona Oeste da capital. O resolvedor deve usar território submunicipal; não assumir que 'Rio de Janeiro/RJ' identifica um único prestador de saneamento."
+    },
+    {
+      "id": "rj-rio-public-lighting",
+      "authority": "Prefeitura do Rio de Janeiro / RioLuz",
+      "scope": "municipality",
+      "municipality_ibge": "3304557",
+      "domain": [
+        "public_lighting",
+        "utility_provider",
+        "infrastructure",
+        "street_assets"
+      ],
+      "source_type": "official_public_service",
+      "portal_url": "https://rioluz.prefeitura.rio/iluminacao-publica/",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PUBLIC_SERVICE",
+      "notes": "RioLuz é responsável por gerir, planejar, manter e modernizar a iluminação pública municipal. Há relatórios de modernização por mês/ano; inventário técnico por ponto exige revisão específica."
+    },
+    {
+      "id": "mg-cemig-distribuicao-provider",
+      "authority": "CEMIG Distribuição S.A. / ANEEL",
+      "scope": "MG_CONCESSION_AREA",
+      "domain": [
+        "electricity_distribution",
+        "utility_provider",
+        "service_territory",
+        "power_network_context"
+      ],
+      "source_type": "official_distribution_concession",
+      "discovery_url": "https://www.cemig.com.br/",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PROVIDER_SERVICE_TERRITORY",
+      "notes": "CEMIG Distribuição é concessionária de energia em Belo Horizonte, conforme concessão/área regulada. Usar para resolver prestador e combinar com BDGD/ANEEL para ativos técnicos."
+    },
+    {
+      "id": "mg-cemig-load-availability-map",
+      "authority": "CEMIG Distribuição",
+      "scope": "MG_CONCESSION_AREA",
+      "domain": [
+        "electricity_distribution",
+        "grid_capacity_context",
+        "utility_availability_context",
+        "power_network_context"
+      ],
+      "source_type": "official_interactive_map",
+      "portal_url": "https://www.cemig.com.br/geracao-distribuida/mapas-de-disponibilidade/",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PUBLIC_MAP",
+      "notes": "CEMIG publica mapa de disponibilidade de cargas, que indica regiões onde há capacidade de rede para atender novas cargas. É contexto preliminar e não substitui estudo/consulta formal de acesso ou orçamento de conexão."
+    },
+    {
+      "id": "mg-belo-horizonte-copasa-provider",
+      "authority": "ARSAE-MG / Copasa",
+      "scope": "municipality",
+      "municipality_ibge": "3106200",
+      "domain": [
+        "water_supply",
+        "sewerage",
+        "utility_provider",
+        "service_territory",
+        "sanitation"
+      ],
+      "source_type": "official_regulatory_provider_profile",
+      "discovery_url": "https://arsae.mg.gov.br/panoramas/belo_horizonte_copasa.pdf",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PROVIDER_SERVICE_TERRITORY",
+      "notes": "Panorama regulatório ARSAE-MG identifica Copasa como prestadora de abastecimento de água e esgotamento sanitário em Belo Horizonte, com contrato informado até 30/04/2034 no documento regulatório. Usar como resolvedor; rede/disponibilidade exige fonte técnica atual."
+    },
+    {
+      "id": "mg-belo-horizonte-public-lighting",
+      "authority": "Prefeitura de Belo Horizonte / Sudecap / BHIP",
+      "scope": "municipality",
+      "municipality_ibge": "3106200",
+      "domain": [
+        "public_lighting",
+        "utility_provider",
+        "infrastructure",
+        "street_assets",
+        "smart_city"
+      ],
+      "source_type": "official_ppp_public_service",
+      "portal_url": "https://prefeitura.pbh.gov.br/sudecap/ilumina-bh",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PUBLIC_SERVICE",
+      "notes": "Programa Ilumina BH é executado pela Sudecap com a BHIP, concessionária responsável pela PPP da iluminação pública. A cidade informa parque modernizado em LED e telegestão; dados técnicos ponto a ponto não são presumidos como open data."
+    },
+    {
+      "id": "pb-energisa-paraiba-provider",
+      "authority": "Energisa Paraíba",
+      "scope": "PB_CONCESSION_AREA",
+      "domain": [
+        "electricity_distribution",
+        "utility_provider",
+        "service_territory",
+        "power_network_context"
+      ],
+      "source_type": "official_distribution_company",
+      "portal_url": "https://www.energisa.com.br/regioes/paraiba",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PROVIDER_SERVICE_TERRITORY",
+      "notes": "Energisa Paraíba opera distribuição na região de João Pessoa e publica investimentos/subestações na região metropolitana; serviços da companhia listam João Pessoa entre localidades da Energisa Paraíba. Combinar com BDGD/ANEEL para ativos."
+    },
+    {
+      "id": "pb-joao-pessoa-cagepa-provider",
+      "authority": "Prefeitura de João Pessoa / CAGEPA",
+      "scope": "municipality",
+      "municipality_ibge": "2507507",
+      "domain": [
+        "water_supply",
+        "sewerage",
+        "utility_provider",
+        "service_territory",
+        "sanitation"
+      ],
+      "source_type": "official_municipal_concession_evidence",
+      "discovery_url": "https://www.joaopessoa.pb.gov.br/noticias/prefeito-e-governador-renovam-concessao-para-que-cagepa-opere-sistema-de-agua-e-esgoto-da-capital/",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PROVIDER_SERVICE_TERRITORY",
+      "notes": "Município renovou em 2023 por 30 anos a concessão para CAGEPA operar água e esgoto de João Pessoa. Plano Diretor municipal também identifica CAGEPA como responsável por captação, tratamento, distribuição de água e coleta/tratamento de esgoto."
+    },
+    {
+      "id": "pb-joao-pessoa-public-lighting",
+      "authority": "Prefeitura de João Pessoa / SEINFRA",
+      "scope": "municipality",
+      "municipality_ibge": "2507507",
+      "domain": [
+        "public_lighting",
+        "utility_provider",
+        "infrastructure",
+        "street_assets",
+        "smart_city"
+      ],
+      "source_type": "official_public_service",
+      "portal_url": "https://www.joaopessoa.pb.gov.br/noticias/secretarias-e-orgaos/seinfra/cicero-lucena-entrega-iluminacao-em-led-em-mais-15-bairros-e-joao-pessoa-chega-a-48-localidades-contempladas/",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PUBLIC_SERVICE",
+      "notes": "SEINFRA mantém a iluminação pública e a Prefeitura informa modernização LED georreferenciada com monitoramento individual das luminárias. Não presumir acesso ao inventário técnico sem canal/documentação pública específica."
     }
   ]
 }
