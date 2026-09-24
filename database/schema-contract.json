@@ -1,0 +1,94 @@
+{
+  "schema_version": "0.1.0",
+  "as_of": "2026-09-24",
+  "migration": "database/migrations/001_initial_postgis.sql",
+  "spatial_reference": {
+    "canonical_geometry_srid": 4674,
+    "name": "SIRGAS 2000",
+    "rule": "Source CRS is preserved in provenance/asset metadata. Canonical national vector geometries are normalized to SRID 4674 without simplifying the authoritative shape.",
+    "metric_rule": "Area/distance calculations must use an appropriate projected CRS/geography method; never treat angular coordinates as meters."
+  },
+  "schemas": {
+    "ld_catalog": {
+      "purpose": "Sources, connectors, immutable snapshots and normalized upstream records.",
+      "tables": [
+        "source",
+        "connector",
+        "snapshot",
+        "normalized_record"
+      ]
+    },
+    "ld_core": {
+      "purpose": "Property identity and geometry reconciliation.",
+      "tables": [
+        "subject",
+        "subject_identifier",
+        "subject_relation",
+        "address",
+        "parcel_geometry_version",
+        "building"
+      ]
+    },
+    "ld_evidence": {
+      "purpose": "Property-level facts, derived lineage and explicit unknowns.",
+      "tables": [
+        "assertion",
+        "assertion_lineage",
+        "unknown"
+      ]
+    },
+    "ld_domain": {
+      "purpose": "Typed normalized datasets used for spatial/legal/fiscal queries.",
+      "tables": [
+        "planning_area",
+        "planning_parameter",
+        "fiscal_record",
+        "transaction_record",
+        "permit_event",
+        "spatial_constraint",
+        "heritage_feature",
+        "utility_context",
+        "public_event",
+        "imagery_asset",
+        "terrain_asset"
+      ]
+    },
+    "ld_api": {
+      "purpose": "Public-safe read-model foundation only; HTTP API comes later.",
+      "views": [
+        "public_assertion"
+      ]
+    }
+  },
+  "invariants": [
+    "Every normalized domain row must reference ld_catalog.normalized_record.",
+    "Every normalized_record must reference an immutable snapshot and source.",
+    "Fiscal unit, parcel, building, condominium unit and registry reference remain distinct subjects/identifiers.",
+    "No owner/person name or CPF/CNPJ is required by the public schema.",
+    "L4 registry documents/ownership/encumbrances are intentionally excluded from the public database schema.",
+    "Assertions marked AVAILABLE require a value.",
+    "DERIVED_ANALYSIS requires a method and DERIVED access class; lineage connects upstream assertions.",
+    "Unknown facts are stored explicitly with reason and next_action.",
+    "Public API view exposes only assertions with public_release_allowed=true and a public-safe access class.",
+    "Utility status distinguishes provider territory/network context from technical availability.",
+    "Heritage status distinguishes tombed, pending, surrounding area, protected area and archaeological status.",
+    "Temporal fields are append/version oriented; new snapshots/versions must not silently overwrite history.",
+    "Raw bytes belong in object storage; PostgreSQL stores manifest/hash/object key and normalized records."
+  ],
+  "private_data_boundary": {
+    "excluded_from_public_schema": [
+      "owner names",
+      "CPF/CNPJ associated with private ownership or applicant identity",
+      "full registry certificates",
+      "liens/encumbrances from private due-diligence documents",
+      "user-uploaded confidential documents"
+    ],
+    "future_storage": "Separate private/restricted store and authorization boundary for L4, linked only by opaque references when needed."
+  },
+  "report_alignment": {
+    "spec": "data/property-dossier/report-spec.json",
+    "assertions": "ld_evidence.assertion",
+    "unknowns": "ld_evidence.unknown",
+    "source_provenance": "ld_catalog.source + ld_catalog.snapshot + ld_catalog.normalized_record"
+  }
+}
