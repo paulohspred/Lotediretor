@@ -1270,6 +1270,25 @@
       "notes": "Endpoint oficial i3Geo expõe temas e temas WFS via parâmetro lista=temas/temaswfs; útil para descoberta automatizada."
     },
     {
+      "id": "df-controle-urbano",
+      "authority": "SEDUH Distrito Federal",
+      "scope": "state_district",
+      "uf": "DF",
+      "domain": [
+        "building_permits",
+        "habite_se",
+        "approved_projects",
+        "eiv",
+        "urban_control",
+        "aviation_constraints"
+      ],
+      "source_type": "ArcGIS_MapServer",
+      "base_url": "https://www.geoservicos.ide.df.gov.br/arcgis/rest/services/Publico/CONTROLE_URBANO/MapServer",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PUBLIC_SERVICE_LICENSE_REVIEW",
+      "notes": "Camadas públicas incluem alvarás de construção, carta de habite-se, cotas de soleira, EIV, informativo de aprovação de projeto, projetos especiais/aprovados, parcelamentos/desdobros e zona de proteção aérea."
+    },
+    {
       "id": "df-ide-seduh-arcgis",
       "authority": "SEDUH Distrito Federal",
       "scope": "state_district",
@@ -1541,6 +1560,23 @@
       "access_class": "PUBLIC_QUERY_ONLY",
       "verification_status": "VERIFIED",
       "notes": "GeoServer oficial com WMS/WFS/WCS/WMTS; catálogo GeoNetwork retornava 215 registros WFS na pesquisa. Licença deve ser verificada por camada/metadado."
+    },
+    {
+      "id": "mg-juiz-de-fora-projetos-aprovados",
+      "authority": "Prefeitura de Juiz de Fora / SESMAUR",
+      "scope": "municipality",
+      "municipality_ibge": "3136702",
+      "domain": [
+        "approved_projects",
+        "building_regularization",
+        "construction",
+        "geocoding_quality"
+      ],
+      "source_type": "ArcGIS_MapServer",
+      "base_url": "https://sisurb.pjf.mg.gov.br/server/rest/services/uso_cad_projetos_aprovados/MapServer",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PUBLIC_SERVICE_LICENSE_REVIEW",
+      "notes": "Projetos aprovados/regularizações/construções espacializados para 2008–2023. A documentação informa aproximações por endereço e 444 projetos sem geocodificação; o LoteDiretor deve carregar quality flags e não tratar todos os pontos como posição exata."
     },
     {
       "id": "mg-juiz-de-fora-sisurb",
@@ -2028,6 +2064,22 @@
       "access_class": "OPEN_REUSABLE",
       "verification_status": "DISCOVERY",
       "notes": "Catalogar cadastros, imóveis, ITBI/IPTU e GIS em profundidade."
+    },
+    {
+      "id": "rj-rio-geopal",
+      "authority": "Prefeitura do Rio de Janeiro / SMPU",
+      "scope": "municipality",
+      "municipality_ibge": "3304557",
+      "domain": [
+        "approved_subdivision_projects",
+        "parceling",
+        "urban_planning"
+      ],
+      "source_type": "ArcGIS_MapServer",
+      "base_url": "https://pgeo3.rio.rj.gov.br/arcgis/rest/services/CadParcel/GeoPAL/MapServer",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PUBLIC_SERVICE_LICENSE_REVIEW",
+      "notes": "Serviço oficial de consulta de Projetos Aprovados de Loteamento (PAL). ItemInfo não declara licença; usar como consulta/evidência até revisão."
     },
     {
       "id": "rj-rio-imoveis-territoriais",
