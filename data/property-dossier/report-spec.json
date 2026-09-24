@@ -1,0 +1,387 @@
+{
+  "schema_version": "0.1.0",
+  "as_of": "2026-09-24",
+  "title": "LoteDiretor Professional Property Report",
+  "target_completion_level": "L3",
+  "principle": "Every material assertion must be traceable to evidence; absence of evidence must never be rendered as evidence of absence.",
+  "audiences": [
+    "architect",
+    "civil_engineer",
+    "environmental_engineer",
+    "urban_planner",
+    "broker",
+    "appraiser",
+    "real_estate_lawyer",
+    "developer",
+    "investor",
+    "expert_witness"
+  ],
+  "assertion_classes": {
+    "OFFICIAL_FACT": "Value or status read from an official public source/document.",
+    "OFFICIAL_QUERY_RESULT": "Property-specific result obtained through a legitimate official query flow.",
+    "USER_DOCUMENT_FACT": "Fact extracted from a private document supplied or legitimately obtained for the user.",
+    "DERIVED_ANALYSIS": "Calculation/spatial analysis derived from upstream evidence; method and upstream references are mandatory.",
+    "INDICATIVE_CONTEXT": "Useful context that cannot prove parcel-specific availability or legal status.",
+    "UNKNOWN": "The system does not have sufficient evidence.",
+    "NOT_PUBLICLY_AVAILABLE": "Known category of information that is not publicly accessible through an approved source.",
+    "REQUIRES_PROFESSIONAL_CONFIRMATION": "Preliminary evidence exists but an engineering/legal/technical confirmation is required."
+  },
+  "confidence_levels": [
+    "CONFIRMED",
+    "SUPPORTED",
+    "INDICATIVE",
+    "UNKNOWN",
+    "CONFLICTING"
+  ],
+  "access_badges": [
+    "OPEN_REUSABLE",
+    "PUBLIC_QUERY_ONLY",
+    "AUTHENTICATED_PUBLIC",
+    "USER_PRIVATE",
+    "RESTRICTED",
+    "DERIVED"
+  ],
+  "source_badge_fields": [
+    "source_id",
+    "authority",
+    "captured_at",
+    "valid_from",
+    "valid_to",
+    "access_class",
+    "license",
+    "document_or_url",
+    "snapshot_hash",
+    "method",
+    "confidence"
+  ],
+  "global_rules": [
+    "Never display UNKNOWN as 'none', 'free', 'regular', 'available' or 'no restriction'.",
+    "Show source date and temporal validity next to legal, fiscal, licensing, imagery and infrastructure assertions.",
+    "Keep municipal parcel, fiscal unit, registry record, building, condominium unit and rural identifiers distinct.",
+    "Do not expose owner names, CPF/CNPJ, applicant identity or other personal fields in the public/property report.",
+    "Registry ownership, liens and private certificates belong to L4/private due diligence.",
+    "Network proximity never means connection capacity or service availability.",
+    "Heritage incidence must preserve protection level, authority and legal act; APAC/ZEPH/surrounding area is not individual tombamento.",
+    "A public procurement/process event is not attached to a parcel without a defensible spatial/document relationship.",
+    "Derived terrain from coarse DEM must carry the terrain quality level and engineering-use warning.",
+    "Google Maps/Street View may be linked or used under permitted product terms; it is not ingested as LoteDiretor-owned imagery."
+  ],
+  "sections": [
+    {
+      "id": "executive_summary",
+      "title": "Resumo executivo",
+      "order": 1,
+      "source_matrix_fields": [
+        "identity",
+        "land",
+        "zoning",
+        "urban parameters",
+        "environment",
+        "risk",
+        "heritage",
+        "infrastructure"
+      ],
+      "panels": [
+        "property_identity",
+        "key_dimensions",
+        "planning_status",
+        "critical_restrictions",
+        "critical_unknowns",
+        "recommended_next_actions"
+      ],
+      "rule": "Summary may only restate facts/derived findings present in detailed sections."
+    },
+    {
+      "id": "identity_location",
+      "title": "Identidade e localização",
+      "order": 2,
+      "source_matrix_fields": [
+        "identity",
+        "land"
+      ],
+      "panels": [
+        "parcel_map",
+        "address_and_ids",
+        "geometry_and_area",
+        "frontage",
+        "identity_reconciliation"
+      ],
+      "required_for_l3": [
+        "property geometry or spatial reference",
+        "municipal identifier",
+        "location/address"
+      ]
+    },
+    {
+      "id": "building_existing",
+      "title": "Edificações existentes",
+      "order": 3,
+      "source_matrix_fields": [
+        "building"
+      ],
+      "panels": [
+        "footprints",
+        "fiscal_building_attributes",
+        "licensed_attributes",
+        "building_area_reconciliation",
+        "construction_history"
+      ],
+      "rule": "Fiscal footprint/area and licensed/observed footprint/area must remain separate when they diverge."
+    },
+    {
+      "id": "planning_buildability",
+      "title": "Plano Diretor, zoneamento e potencial construtivo",
+      "order": 4,
+      "source_matrix_fields": [
+        "zoning",
+        "urban parameters"
+      ],
+      "panels": [
+        "current_zone",
+        "overlays",
+        "legal_parameters",
+        "allowed_uses",
+        "development_rights",
+        "legal_citations",
+        "temporal_validity"
+      ],
+      "rule": "Each parameter requires the rule/act and applicable geometry; derived buildable area must show assumptions."
+    },
+    {
+      "id": "fiscal_market",
+      "title": "Fiscal, PGV e transações",
+      "order": 5,
+      "source_matrix_fields": [
+        "IPTU",
+        "PGV",
+        "ITBI"
+      ],
+      "panels": [
+        "fiscal_assessment",
+        "pgv_inputs",
+        "tax_history",
+        "transactions",
+        "market_context"
+      ],
+      "rule": "Do not expose taxpayer/person identifiers. ITBI transaction evidence is property-centric or aggregated."
+    },
+    {
+      "id": "licensing_history",
+      "title": "Licenciamento, habite-se e processos",
+      "order": 6,
+      "source_matrix_fields": [
+        "permits",
+        "habite-se",
+        "public processes",
+        "official gazette"
+      ],
+      "panels": [
+        "permits",
+        "completion_certificates",
+        "regularization",
+        "administrative_processes",
+        "gazette_events",
+        "timeline"
+      ],
+      "rule": "CAPTCHA/authenticated sources stay query/manual unless an authorized machine interface exists."
+    },
+    {
+      "id": "environment_risk_heritage",
+      "title": "Ambiental, risco e patrimônio",
+      "order": 7,
+      "source_matrix_fields": [
+        "environment",
+        "risk",
+        "heritage"
+      ],
+      "panels": [
+        "environmental_overlays",
+        "hydrology",
+        "risk_overlays",
+        "heritage_three_levels",
+        "archaeology",
+        "required_approvals"
+      ],
+      "rule": "Screening layers do not replace site-specific environmental/geotechnical/heritage approvals."
+    },
+    {
+      "id": "infrastructure_utilities",
+      "title": "Infraestrutura e concessionárias",
+      "order": 8,
+      "source_matrix_fields": [
+        "electricity",
+        "gas",
+        "water/sewer",
+        "drainage",
+        "telecom",
+        "transport"
+      ],
+      "panels": [
+        "provider_resolver",
+        "electricity_context",
+        "gas_context",
+        "water_sewer_context",
+        "drainage",
+        "telecom",
+        "transport_right_of_way"
+      ],
+      "statuses": [
+        "UNKNOWN",
+        "PROVIDER_IDENTIFIED",
+        "CONCESSION_AREA",
+        "NETWORK_OBSERVED_NEARBY",
+        "SERVICE_REPORTED_IN_AREA",
+        "TECHNICAL_AVAILABILITY_CONFIRMED",
+        "CONNECTION_REQUEST_REQUIRED",
+        "TECHNICAL_DRAWING_REQUIRED",
+        "NOT_AVAILABLE",
+        "RESTRICTED_INFORMATION"
+      ]
+    },
+    {
+      "id": "terrain_visual",
+      "title": "Terreno, imagens e leitura visual",
+      "order": 9,
+      "source_matrix_fields": [
+        "imagery",
+        "terrain",
+        "historical data"
+      ],
+      "panels": [
+        "current_orthophoto",
+        "historical_orthophoto",
+        "building_footprint_comparison",
+        "hillshade",
+        "hypsometry",
+        "contours",
+        "slope",
+        "profiles",
+        "source_accuracy"
+      ],
+      "terrain_quality_required": true
+    },
+    {
+      "id": "public_change_context",
+      "title": "Obras públicas e mudanças futuras",
+      "order": 10,
+      "source_matrix_fields": [
+        "public works"
+      ],
+      "panels": [
+        "nearby_projects",
+        "project_status",
+        "physical_progress",
+        "procurement_contract_context",
+        "distance_to_parcel",
+        "timeline"
+      ],
+      "rule": "Text-only PNCP matches cannot be shown as parcel-confirmed projects."
+    },
+    {
+      "id": "registry_due_diligence",
+      "title": "Registro e due diligence privada",
+      "order": 11,
+      "source_matrix_fields": [
+        "registry reference"
+      ],
+      "panels": [
+        "registry_reference_if_known",
+        "cartorio_cns",
+        "private_documents_needed",
+        "l4_checklist"
+      ],
+      "public_release_default": false,
+      "rule": "Ownership, liens and certificates are private/on-demand unless lawfully supplied for the user's case."
+    },
+    {
+      "id": "evidence_unknowns",
+      "title": "Fontes, evidências e lacunas",
+      "order": 12,
+      "source_matrix_fields": [
+        "identity",
+        "land",
+        "building",
+        "IPTU",
+        "PGV",
+        "ITBI",
+        "registry reference",
+        "zoning",
+        "urban parameters",
+        "permits",
+        "habite-se",
+        "environment",
+        "risk",
+        "heritage",
+        "electricity",
+        "gas",
+        "water/sewer",
+        "drainage",
+        "telecom",
+        "transport",
+        "imagery",
+        "terrain",
+        "public works",
+        "public processes",
+        "official gazette",
+        "historical data"
+      ],
+      "panels": [
+        "source_register",
+        "evidence_hashes",
+        "capture_dates",
+        "licenses",
+        "confidence",
+        "conflicts",
+        "unknowns",
+        "next_actions"
+      ],
+      "required": true
+    }
+  ],
+  "visual_requirements": {
+    "source_file": "data/property-dossier/visual-report-sections.json",
+    "mandatory_at_l3": [
+      "parcel_location_map",
+      "urban_zoning_overlays",
+      "risk_environment_overlays",
+      "source_and_accuracy_panel"
+    ],
+    "optional_when_available": [
+      "official_orthophoto_current",
+      "official_orthophoto_historical_if_available",
+      "street_level_facade_if_licensed",
+      "terrain_hillshade",
+      "terrain_hypsometry",
+      "contours",
+      "slope_map",
+      "profile_AA",
+      "profile_BB",
+      "front_to_rear_profile"
+    ]
+  },
+  "output_modes": {
+    "PUBLIC_PROPERTY_REPORT": {
+      "allowed_access_classes": [
+        "OPEN_REUSABLE",
+        "PUBLIC_QUERY_ONLY",
+        "DERIVED"
+      ],
+      "private_sections_hidden": [
+        "registry_due_diligence"
+      ],
+      "personal_data": "BLOCKED"
+    },
+    "USER_PRIVATE_L4_REPORT": {
+      "allowed_access_classes": [
+        "OPEN_REUSABLE",
+        "PUBLIC_QUERY_ONLY",
+        "AUTHENTICATED_PUBLIC",
+        "USER_PRIVATE",
+        "RESTRICTED",
+        "DERIVED"
+      ],
+      "private_sections_hidden": [],
+      "personal_data": "MINIMIZED_AND_PURPOSE_BOUND"
+    }
+  }
+}
