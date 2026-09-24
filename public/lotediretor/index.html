@@ -162,13 +162,44 @@ const spZoningWms=L.tileLayer.wms("https://wms.geosampa.prefeitura.sp.gov.br/geo
   attribution:"Zoneamento vigente · Prefeitura de São Paulo · GeoSampa"
 }).setZIndex(380);
 
+const spGeoRiskWms=L.tileLayer.wms("https://wms.geosampa.prefeitura.sp.gov.br/geoserver/geoportal/wms",{
+  layers:"area_risco_geologico",
+  format:"image/png",
+  transparent:true,
+  version:"1.1.1",
+  opacity:.48,
+  attribution:"Risco geológico · Prefeitura de São Paulo · GeoSampa"
+}).setZIndex(360);
+
+const spHydroRiskWms=L.tileLayer.wms("https://wms.geosampa.prefeitura.sp.gov.br/geoserver/geoportal/wms",{
+  layers:"risco_hidrologico",
+  format:"image/png",
+  transparent:true,
+  version:"1.1.1",
+  opacity:.48,
+  attribution:"Risco hidrológico · Prefeitura de São Paulo · GeoSampa"
+}).setZIndex(361);
+
+const spHeritageWms=L.tileLayer.wms("https://wms.geosampa.prefeitura.sp.gov.br/geoserver/geoportal/wms",{
+  layers:"patrimonio_cultural_bem_tombado,patrimonio_cultural_area_envoltoria_CONPRESP",
+  format:"image/png",
+  transparent:true,
+  version:"1.1.1",
+  opacity:.46,
+  attribution:"Patrimônio cultural · Prefeitura de São Paulo · GeoSampa"
+}).setZIndex(370);
+
 L.control.layers(null,{
   "Lotes fiscais · GeoSampa":spParcelWms,
-  "Zoneamento vigente · Lei 18.177/2024":spZoningWms
+  "Zoneamento vigente · Lei 18.177/2024":spZoningWms,
+  "Risco geológico":spGeoRiskWms,
+  "Risco hidrológico":spHydroRiskWms,
+  "Patrimônio · tombamento/envoltória":spHeritageWms
 },{collapsed:true,position:"topright"}).addTo(map);
 
 const markers=[];
 let selectedParcelLayer=null;
+let selectedBuildingLayer=null;
 let parcelRequestSeq=0;
 cities.forEach((c,i)=>{
   const marker=L.circleMarker([c.lat,c.lng],{
@@ -187,6 +218,9 @@ function applyCity(idx,fly=true){
   }else{
     if(map.hasLayer(spParcelWms))map.removeLayer(spParcelWms);
     if(map.hasLayer(spZoningWms))map.removeLayer(spZoningWms);
+    if(map.hasLayer(spGeoRiskWms))map.removeLayer(spGeoRiskWms);
+    if(map.hasLayer(spHydroRiskWms))map.removeLayer(spHydroRiskWms);
+    if(map.hasLayer(spHeritageWms))map.removeLayer(spHeritageWms);
   }
   document.getElementById("cityName").textContent=`${c.name} · ${c.uf}`;
   document.getElementById("ibge").textContent=`IBGE ${c.ibge}`;
@@ -209,6 +243,7 @@ function setParcelMessage(state,message){
 }
 function clearSelectedParcel(){
   if(selectedParcelLayer){map.removeLayer(selectedParcelLayer);selectedParcelLayer=null}
+  if(selectedBuildingLayer){map.removeLayer(selectedBuildingLayer);selectedBuildingLayer=null}
 }
 
 function statusClass(status){return "status-"+String(status||"").toLowerCase()}
@@ -257,6 +292,20 @@ function renderParcel(payload){
   selectedParcelLayer=L.geoJSON(payload.feature,{
     style:{color:"#3bd790",weight:4,fillColor:"#3bd790",fillOpacity:.18}
   }).addTo(map);
+  const buildings=(payload.context&&Array.isArray(payload.context.buildings))?payload.context.buildings:[];
+  if(buildings.length){
+    selectedBuildingLayer=L.geoJSON({
+      type:"FeatureCollection",
+      features:buildings.map(item=>({
+        type:"Feature",
+        geometry:item.geometry,
+        properties:item.properties||{}
+      }))
+    },{
+      style:{color:"#f1b84b",weight:2,fillColor:"#f1b84b",fillOpacity:.08}
+    }).addTo(map);
+    selectedBuildingLayer.bringToFront();
+  }
   selectedParcelLayer.bringToFront();
   document.getElementById("parcelState").textContent="lote oficial";
   document.getElementById("parcelBody").innerHTML=`
