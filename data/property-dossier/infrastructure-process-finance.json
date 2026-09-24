@@ -1,0 +1,217 @@
+{
+  "schema_version": "0.1.0",
+  "as_of": "2026-09-24",
+  "principle": "Infrastructure proximity is evidence of context, not proof of connection capacity or service availability.",
+  "service_statuses": [
+    "UNKNOWN",
+    "PROVIDER_IDENTIFIED",
+    "CONCESSION_AREA",
+    "NETWORK_OBSERVED_NEARBY",
+    "SERVICE_REPORTED_IN_AREA",
+    "TECHNICAL_AVAILABILITY_CONFIRMED",
+    "CONNECTION_REQUEST_REQUIRED",
+    "TECHNICAL_DRAWING_REQUIRED",
+    "NOT_AVAILABLE",
+    "RESTRICTED_INFORMATION"
+  ],
+  "utilities": {
+    "electricity": {
+      "target_fields": [
+        "distributor",
+        "concession_area",
+        "network_asset_distance_m",
+        "network_voltage_class",
+        "nearest_transformer",
+        "nearest_substation",
+        "distribution_feeder_context",
+        "microgeneration_nearby",
+        "continuity_indicators",
+        "tariff_reference",
+        "connection_capacity_status",
+        "technical_request_reference"
+      ],
+      "preferred_sources": [
+        "ANEEL_BDGD",
+        "ANEEL_SIGET_GCEM",
+        "distributor_official_service"
+      ],
+      "caveat": "BDGD/network proximity does not confirm available load or connection feasibility."
+    },
+    "gas": {
+      "target_fields": [
+        "distributor",
+        "concession_area",
+        "network_nearby",
+        "network_material_if_published",
+        "pressure_class_if_published",
+        "safe_excavation_requirement",
+        "technical_cadastre_request",
+        "connection_availability_status"
+      ],
+      "preferred_sources": [
+        "state_regulator",
+        "official_distributor_map",
+        "ANP_transport_pipelines",
+        "EPE"
+      ],
+      "caveat": "Exact underground network drawings may require professional/request workflow and revalidation close to excavation date."
+    },
+    "water_sewer": {
+      "target_fields": [
+        "provider",
+        "service_area",
+        "water_coverage_indicator",
+        "sewer_coverage_indicator",
+        "network_nearby_if_public",
+        "connection_status",
+        "treatment_system_context",
+        "pressure_or_supply_constraints_if_public",
+        "outage_or_rodizio_context",
+        "technical_request"
+      ],
+      "preferred_sources": [
+        "SINISA",
+        "regulator",
+        "provider_open_data",
+        "municipal_GIS"
+      ],
+      "caveat": "Municipal/provider coverage does not prove a service connection exists at the parcel frontage."
+    },
+    "telecom": {
+      "target_fields": [
+        "licensed_station_distance_m",
+        "mobile_technologies",
+        "fixed_broadband_providers",
+        "fixed_broadband_access_density",
+        "fiber_backhaul_municipality",
+        "electromagnetic_measurements",
+        "provider_presence",
+        "site_specific_availability_status"
+      ],
+      "preferred_sources": [
+        "Anatel_open_data",
+        "provider_official_availability_check"
+      ],
+      "caveat": "Antenna/provider presence or municipal access counts do not guarantee fiber/mobile performance at the exact parcel."
+    }
+  },
+  "public_projects": {
+    "target_fields": [
+      "project_id",
+      "project_name",
+      "project_type",
+      "geometry",
+      "distance_to_parcel",
+      "status",
+      "physical_progress_percent",
+      "financial_progress",
+      "planned_value",
+      "executed_value",
+      "funding_source",
+      "responsible_body",
+      "start_date",
+      "forecast_end_date",
+      "contract_ids",
+      "procurement_ids",
+      "documents"
+    ],
+    "preferred_sources": [
+      "ObrasGov",
+      "PNCP",
+      "municipal_state_public_works_portals"
+    ]
+  },
+  "processes": {
+    "target_fields": [
+      "process_number",
+      "system",
+      "authority",
+      "process_type",
+      "subject",
+      "public_status",
+      "current_unit",
+      "last_movement",
+      "related_license_or_project",
+      "related_property_identifier",
+      "document_links",
+      "access_class"
+    ],
+    "preferred_sources": [
+      "SEI_Public_Search",
+      "municipal_process_portal",
+      "environmental_licensing_system",
+      "DataJud_when_known_process"
+    ],
+    "caveat": "Do not discover or index cases by owner/person identity. Link only when a legitimate property/document/process relationship is known."
+  },
+  "heritage": {
+    "target_fields": [
+      "protection_level",
+      "authority",
+      "protected_asset",
+      "protection_geometry",
+      "buffer_or_surrounding_area",
+      "archaeological_interest",
+      "process_pending",
+      "resolution_or_act",
+      "publication_date",
+      "restrictions",
+      "approval_authority"
+    ],
+    "preferred_sources": [
+      "IPHAN",
+      "state_heritage_body",
+      "municipal_heritage_body",
+      "official_GIS",
+      "official_gazette"
+    ]
+  },
+  "construction_costs": {
+    "target_fields": [
+      "reference_system",
+      "uf",
+      "competence_month",
+      "input_cost_index",
+      "composition_reference",
+      "labor_reference",
+      "material_reference",
+      "estimated_area_m2",
+      "preliminary_reference_cost",
+      "methodology"
+    ],
+    "preferred_sources": [
+      "SINAPI",
+      "SICRO_when_infrastructure_relevant"
+    ],
+    "caveat": "Reference cost is not a contractor quote and must specify date, UF, composition assumptions and tax/desoneration regime."
+  },
+  "finance_market": {
+    "target_fields": [
+      "mortgage_credit_context",
+      "state_market_series",
+      "financed_property_indicators",
+      "interest_rate_context",
+      "credit_volume",
+      "market_index_context"
+    ],
+    "preferred_sources": [
+      "Banco_Central_real_estate_market"
+    ],
+    "caveat": "Market/credit context is not a valuation of the specific property."
+  },
+  "evidence_fields": [
+    "source_id",
+    "authority",
+    "captured_at",
+    "valid_from",
+    "valid_to",
+    "access_class",
+    "license",
+    "method",
+    "confidence",
+    "distance_m",
+    "geometry",
+    "document_id",
+    "hash"
+  ]
+}
