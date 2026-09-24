@@ -1117,6 +1117,11 @@ def resolve_itbi_history(parcel: dict, limit: int = 12) -> dict:
     db = sqlite3.connect(uri, uri=True, timeout=3)
     db.row_factory = sqlite3.Row
     try:
+        coverage_years = [
+            row[0] for row in db.execute(
+                "SELECT year FROM source_files ORDER BY year"
+            ).fetchall()
+        ]
         count = db.execute(
             "SELECT COUNT(*) FROM transactions WHERE sql = ?",
             (sql,),
@@ -1166,7 +1171,7 @@ def resolve_itbi_history(parcel: dict, limit: int = 12) -> dict:
     return {
         "available": True,
         "count": count,
-        "coverage_years": [2022, 2023, 2024, 2025, 2026],
+        "coverage_years": coverage_years,
         "transactions": transactions,
         "registry_references": registry_refs,
         "source_id": "sp-sao-paulo-itbi-transactions",
@@ -1515,8 +1520,17 @@ def actual_values_for_section(
             })
 
         txs = itbi.get("transactions") or []
+        coverage_years = itbi.get("coverage_years") or []
+        if coverage_years:
+            coverage_label = (
+                f"{min(coverage_years)}–{max(coverage_years)}"
+                if len(coverage_years) > 1
+                else str(coverage_years[0])
+            )
+        else:
+            coverage_label = "sem índice"
         values.append({
-            "label": "DTIs/ITBI encontradas · 2022–2026",
+            "label": f"DTIs/ITBI encontradas · {coverage_label}",
             "value": itbi.get("count", 0),
         })
         if not txs:
@@ -1524,7 +1538,7 @@ def actual_values_for_section(
                 "label": "Histórico ITBI",
                 "value": (
                     "Nenhuma DTI paga encontrada para este SQL no índice "
-                    "público materializado de 2022 a 2026."
+                    f"público materializado de {coverage_label}."
                 ),
             })
         for idx, tx in enumerate(txs[:5], start=1):
@@ -1674,6 +1688,12 @@ def actual_values_for_section(
     if section_id == "registry_due_diligence":
         itbi = (context.get("fiscal") or {}).get("itbi") or {}
         refs = itbi.get("registry_references") or []
+        registry_years = itbi.get("coverage_years") or []
+        registry_coverage_label = (
+            f"{min(registry_years)}–{max(registry_years)}"
+            if len(registry_years) > 1
+            else (str(registry_years[0]) if registry_years else "sem índice")
+        )
         values = []
         for idx, ref in enumerate(refs[:8], start=1):
             values.extend([
@@ -1695,7 +1715,7 @@ def actual_values_for_section(
                 "label": "Referência matrícula/cartório via ITBI",
                 "value": (
                     "Nenhuma referência encontrada para este SQL no índice "
-                    "ITBI público de 2022–2026."
+                    f"ITBI público de {registry_coverage_label}."
                 ),
             })
         values.append({
