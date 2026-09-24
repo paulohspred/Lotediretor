@@ -1359,6 +1359,27 @@
       "notes": "Servidor público muito amplo: SISURB_cadastro/fazenda/planejamento/obras, PDP, lotes, edificações/divisas e altimetria 2024, APP, risco hidrológico, patrimônio e anexos do Plano Diretor. Revisar licença e campos por serviço."
     },
     {
+      "id": "mg-uberlandia-plan-cartography",
+      "authority": "Prefeitura de Uberlândia",
+      "scope": "municipality",
+      "municipality_ibge": "3170206",
+      "domain": [
+        "plan_director",
+        "zoning",
+        "terrain",
+        "hydrology",
+        "risk",
+        "rural_properties",
+        "land_use",
+        "utilities"
+      ],
+      "source_type": "official_documents_maps",
+      "discovery_url": "https://www.uberlandia.mg.gov.br/prefeitura/secretarias/planejamento-urbano/plano-diretor/",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_DOCUMENTS_LICENSE_REVIEW",
+      "notes": "Portal publica extensa planta cartográfica/diagnóstico: relevo, declividade, geologia, bacias, APP, propriedades rurais, grandes propriedades urbanas, zoneamento, macrozoneamento, vazios, loteamentos irregulares, água/esgoto, alagamentos/risco e hierarquia viária."
+    },
+    {
       "id": "ms-pinms-arcgis",
       "authority": "Governo do Mato Grosso do Sul",
       "scope": "state",
@@ -2094,6 +2115,89 @@
       "access_class": "PUBLIC_QUERY_ONLY",
       "verification_status": "VERIFIED_PORTAL_SERVER_ENDPOINT_DISCOVERY",
       "notes": "Portal ArcGIS Enterprise oficial identifica a própria Prefeitura e referencia o servidor REST local. Enumerar serviços públicos e classificar licença/campos no próximo ciclo."
+    },
+    {
+      "id": "sp-santos-geoserver",
+      "authority": "Prefeitura de Santos",
+      "scope": "municipality",
+      "municipality_ibge": "3548500",
+      "domain": [
+        "geospatial",
+        "zoning",
+        "urban_planning"
+      ],
+      "source_type": "GeoServer_WFS",
+      "base_url": "https://egov.santos.sp.gov.br/geoserver/ows",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "OFFICIAL_DOMAIN_ENDPOINT_DISCOVERY_LICENSE_REVIEW",
+      "notes": "Endpoint GeoServer em domínio oficial municipal identificado para consumo WFS; exemplo público conhecido inclui camada de zoneamento SEMAM. Enumerar GetCapabilities diretamente com o harvester e validar licença/metadados por camada."
+    },
+    {
+      "id": "sp-santos-mapas-urbanos",
+      "authority": "Prefeitura de Santos",
+      "scope": "municipality",
+      "municipality_ibge": "3548500",
+      "domain": [
+        "lots",
+        "blocks",
+        "zoning",
+        "plan_director",
+        "land_use",
+        "risk",
+        "archaeology",
+        "urban_instruments"
+      ],
+      "source_type": "official_download_hub",
+      "discovery_url": "https://www.santos.sp.gov.br/?q=node%2F170920",
+      "formats": [
+        "SHP",
+        "GPKG",
+        "DWG",
+        "DXF",
+        "KMZ",
+        "PDF"
+      ],
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_DOWNLOAD_LICENSE_REVIEW",
+      "notes": "Hub oficial atualizado em 2026. Publica lotes 2022/2023/2024/2026, quadras, zoneamento, macroáreas, macrozonas, hierarquia viária, PEUC, uso do solo, risco e arqueologia. Preserva ligação entre mapa e norma legal; registrar versão/lei de cada arquivo."
+    },
+    {
+      "id": "sp-sao-jose-campos-ctm-sinter",
+      "authority": "Prefeitura de São José dos Campos",
+      "scope": "municipality",
+      "municipality_ibge": "3549904",
+      "domain": [
+        "multifinalitary_cadastre",
+        "sinter",
+        "property_identity",
+        "tax"
+      ],
+      "source_type": "legal_and_system_integration",
+      "discovery_url": "https://servicos.sjc.sp.gov.br/Legislacao/compilada/32425",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED",
+      "notes": "Decreto 20.316/2026 formaliza adesão ao SINTER e coordenação pela área tributária imobiliária. CTM municipal já havia sido instituído em 2023. Usar como caso de reconciliação CTM→SINTER/CIB."
+    },
+    {
+      "id": "sp-sao-jose-campos-geosanja",
+      "authority": "Prefeitura de São José dos Campos",
+      "scope": "municipality",
+      "municipality_ibge": "3549904",
+      "domain": [
+        "cadastre",
+        "property",
+        "zoning",
+        "plan_director",
+        "imagery",
+        "urban_planning",
+        "environment"
+      ],
+      "source_type": "GeoPortal_OGC_download",
+      "base_url": "https://geosanja.sjc.sp.gov.br/",
+      "discovery_url": "https://www.sjc.sp.gov.br/carta-de-servicos/empresas/municipio/dados/portal-de-dados-geograficos/",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PUBLIC_DOWNLOAD_LICENSE_PER_LAYER",
+      "notes": "GeoSanja oferece WMS/WFS/WCS, metadados e exportação/download em shapefile/KML/DWG-DXF conforme camada. A documentação pública menciona imóveis, endereço, zoneamento e inscrição imobiliária em consultas. Login existe para funções restritas da equipe e não deve ser contornado."
     },
     {
       "id": "sp-sao-paulo-geosampa-wfs",
