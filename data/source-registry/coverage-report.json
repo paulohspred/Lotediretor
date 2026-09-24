@@ -1,0 +1,2109 @@
+{
+  "schema_version": "0.1.0",
+  "as_of": "2026-09-24",
+  "source_count": 165,
+  "municipality_count": 48,
+  "key_domains": [
+    "cadastre",
+    "lots",
+    "buildings",
+    "iptu",
+    "itbi",
+    "plan_director",
+    "zoning",
+    "urban_planning",
+    "building_permits",
+    "licensing",
+    "habite_se",
+    "imagery",
+    "terrain",
+    "risk",
+    "environment",
+    "heritage",
+    "official_gazette"
+  ],
+  "coverage_by_uf": {
+    "AC": {
+      "sources": 2,
+      "municipalities": 1,
+      "key_domains_present": [
+        "cadastre",
+        "lots",
+        "imagery",
+        "terrain",
+        "risk",
+        "heritage"
+      ],
+      "key_domains_missing": [
+        "buildings",
+        "iptu",
+        "itbi",
+        "plan_director",
+        "zoning",
+        "urban_planning",
+        "building_permits",
+        "licensing",
+        "habite_se",
+        "environment",
+        "official_gazette"
+      ],
+      "source_ids": [
+        "ac-open-data",
+        "ac-rio-branco-rbgeo"
+      ]
+    },
+    "AL": {
+      "sources": 2,
+      "municipalities": 1,
+      "key_domains_present": [
+        "cadastre",
+        "lots",
+        "zoning"
+      ],
+      "key_domains_missing": [
+        "buildings",
+        "iptu",
+        "itbi",
+        "plan_director",
+        "urban_planning",
+        "building_permits",
+        "licensing",
+        "habite_se",
+        "imagery",
+        "terrain",
+        "risk",
+        "environment",
+        "heritage",
+        "official_gazette"
+      ],
+      "source_ids": [
+        "al-maceio-iplam-cartography",
+        "al-maceio-massayo360"
+      ]
+    },
+    "AP": {
+      "sources": 1,
+      "municipalities": 1,
+      "key_domains_present": [
+        "cadastre",
+        "itbi",
+        "plan_director"
+      ],
+      "key_domains_missing": [
+        "lots",
+        "buildings",
+        "iptu",
+        "zoning",
+        "urban_planning",
+        "building_permits",
+        "licensing",
+        "habite_se",
+        "imagery",
+        "terrain",
+        "risk",
+        "environment",
+        "heritage",
+        "official_gazette"
+      ],
+      "source_ids": [
+        "ap-macapa-sit"
+      ]
+    },
+    "AM": {
+      "sources": 2,
+      "municipalities": 1,
+      "key_domains_present": [
+        "cadastre",
+        "plan_director",
+        "urban_planning",
+        "building_permits",
+        "imagery",
+        "heritage"
+      ],
+      "key_domains_missing": [
+        "lots",
+        "buildings",
+        "iptu",
+        "itbi",
+        "zoning",
+        "licensing",
+        "habite_se",
+        "terrain",
+        "risk",
+        "environment",
+        "official_gazette"
+      ],
+      "source_ids": [
+        "am-manaus-arcgis",
+        "am-manaus-plan-director"
+      ]
+    },
+    "BA": {
+      "sources": 3,
+      "municipalities": 1,
+      "key_domains_present": [
+        "cadastre",
+        "urban_planning",
+        "imagery",
+        "heritage"
+      ],
+      "key_domains_missing": [
+        "lots",
+        "buildings",
+        "iptu",
+        "itbi",
+        "plan_director",
+        "zoning",
+        "building_permits",
+        "licensing",
+        "habite_se",
+        "terrain",
+        "risk",
+        "environment",
+        "official_gazette"
+      ],
+      "source_ids": [
+        "ba-conder-arcgis",
+        "ba-salvador-geo",
+        "ba-sei-arcgis"
+      ]
+    },
+    "CE": {
+      "sources": 5,
+      "municipalities": 1,
+      "key_domains_present": [
+        "cadastre",
+        "iptu",
+        "itbi",
+        "plan_director",
+        "zoning",
+        "urban_planning",
+        "environment"
+      ],
+      "key_domains_missing": [
+        "lots",
+        "buildings",
+        "building_permits",
+        "licensing",
+        "habite_se",
+        "imagery",
+        "terrain",
+        "risk",
+        "heritage",
+        "official_gazette"
+      ],
+      "source_ids": [
+        "ce-fortaleza-iptu",
+        "ce-fortaleza-itbi",
+        "ce-fortaleza-open-data",
+        "ce-fortaleza-plan-director-2025",
+        "ce-ipece-i3geo"
+      ]
+    },
+    "DF": {
+      "sources": 2,
+      "municipalities": 0,
+      "key_domains_present": [
+        "cadastre",
+        "buildings",
+        "plan_director",
+        "building_permits",
+        "habite_se"
+      ],
+      "key_domains_missing": [
+        "lots",
+        "iptu",
+        "itbi",
+        "zoning",
+        "urban_planning",
+        "licensing",
+        "imagery",
+        "terrain",
+        "risk",
+        "environment",
+        "heritage",
+        "official_gazette"
+      ],
+      "source_ids": [
+        "df-controle-urbano",
+        "df-ide-seduh-arcgis"
+      ]
+    },
+    "ES": {
+      "sources": 3,
+      "municipalities": 1,
+      "key_domains_present": [
+        "cadastre",
+        "plan_director",
+        "zoning",
+        "urban_planning",
+        "imagery",
+        "environment"
+      ],
+      "key_domains_missing": [
+        "lots",
+        "buildings",
+        "iptu",
+        "itbi",
+        "building_permits",
+        "licensing",
+        "habite_se",
+        "terrain",
+        "risk",
+        "heritage",
+        "official_gazette"
+      ],
+      "source_ids": [
+        "es-geobases",
+        "es-vitoria-gis",
+        "es-vitoria-plan-director"
+      ]
+    },
+    "GO": {
+      "sources": 4,
+      "municipalities": 1,
+      "key_domains_present": [
+        "cadastre",
+        "buildings",
+        "iptu",
+        "plan_director",
+        "environment"
+      ],
+      "key_domains_missing": [
+        "lots",
+        "itbi",
+        "zoning",
+        "urban_planning",
+        "building_permits",
+        "licensing",
+        "habite_se",
+        "imagery",
+        "terrain",
+        "risk",
+        "heritage",
+        "official_gazette"
+      ],
+      "source_ids": [
+        "go-goiania-buildings-pgv",
+        "go-goiania-plan-director",
+        "go-goiania-tributario-mapserver",
+        "go-sieg-geoservices"
+      ]
+    },
+    "MA": {
+      "sources": 4,
+      "municipalities": 1,
+      "key_domains_present": [
+        "cadastre",
+        "iptu",
+        "itbi",
+        "plan_director",
+        "zoning",
+        "official_gazette"
+      ],
+      "key_domains_missing": [
+        "lots",
+        "buildings",
+        "urban_planning",
+        "building_permits",
+        "licensing",
+        "habite_se",
+        "imagery",
+        "terrain",
+        "risk",
+        "environment",
+        "heritage"
+      ],
+      "source_ids": [
+        "ma-sao-luis-official-gazette",
+        "ma-sao-luis-plan-director",
+        "ma-sao-luis-semfa-cadastro",
+        "ma-sao-luis-zoning-review"
+      ]
+    },
+    "MT": {
+      "sources": 2,
+      "municipalities": 1,
+      "key_domains_present": [
+        "zoning",
+        "environment"
+      ],
+      "key_domains_missing": [
+        "cadastre",
+        "lots",
+        "buildings",
+        "iptu",
+        "itbi",
+        "plan_director",
+        "urban_planning",
+        "building_permits",
+        "licensing",
+        "habite_se",
+        "imagery",
+        "terrain",
+        "risk",
+        "heritage",
+        "official_gazette"
+      ],
+      "source_ids": [
+        "mt-cuiaba-urban-law-maps",
+        "mt-sema-geospatial"
+      ]
+    },
+    "MS": {
+      "sources": 1,
+      "municipalities": 0,
+      "key_domains_present": [
+        "licensing",
+        "imagery",
+        "environment"
+      ],
+      "key_domains_missing": [
+        "cadastre",
+        "lots",
+        "buildings",
+        "iptu",
+        "itbi",
+        "plan_director",
+        "zoning",
+        "urban_planning",
+        "building_permits",
+        "habite_se",
+        "terrain",
+        "risk",
+        "heritage",
+        "official_gazette"
+      ],
+      "source_ids": [
+        "ms-pinms-arcgis"
+      ]
+    },
+    "MG": {
+      "sources": 11,
+      "municipalities": 5,
+      "key_domains_present": [
+        "cadastre",
+        "lots",
+        "buildings",
+        "itbi",
+        "plan_director",
+        "zoning",
+        "urban_planning",
+        "licensing",
+        "terrain",
+        "risk",
+        "environment",
+        "heritage"
+      ],
+      "key_domains_missing": [
+        "iptu",
+        "building_permits",
+        "habite_se",
+        "imagery",
+        "official_gazette"
+      ],
+      "source_ids": [
+        "mg-belo-horizonte-bhgeo",
+        "mg-belo-horizonte-itbi",
+        "mg-belo-horizonte-open-data",
+        "mg-belo-horizonte-plan-director",
+        "mg-contagem-geoprocessamento",
+        "mg-ide-sisema",
+        "mg-juiz-de-fora-projetos-aprovados",
+        "mg-juiz-de-fora-sisurb",
+        "mg-pocos-caldas-open-data-api",
+        "mg-pocos-caldas-urban-law-archive",
+        "mg-uberlandia-plan-cartography"
+      ]
+    },
+    "PA": {
+      "sources": 3,
+      "municipalities": 1,
+      "key_domains_present": [
+        "cadastre",
+        "iptu",
+        "itbi",
+        "plan_director"
+      ],
+      "key_domains_missing": [
+        "lots",
+        "buildings",
+        "zoning",
+        "urban_planning",
+        "building_permits",
+        "licensing",
+        "habite_se",
+        "imagery",
+        "terrain",
+        "risk",
+        "environment",
+        "heritage",
+        "official_gazette"
+      ],
+      "source_ids": [
+        "pa-belem-codem-maps",
+        "pa-belem-financas-imobiliario",
+        "pa-belem-plan-director"
+      ]
+    },
+    "PB": {
+      "sources": 2,
+      "municipalities": 1,
+      "key_domains_present": [
+        "cadastre",
+        "lots",
+        "plan_director",
+        "zoning",
+        "urban_planning",
+        "imagery",
+        "terrain",
+        "heritage"
+      ],
+      "key_domains_missing": [
+        "buildings",
+        "iptu",
+        "itbi",
+        "building_permits",
+        "licensing",
+        "habite_se",
+        "risk",
+        "environment",
+        "official_gazette"
+      ],
+      "source_ids": [
+        "pb-joao-pessoa-filipeia",
+        "pb-pbgeo-arcgis"
+      ]
+    },
+    "PR": {
+      "sources": 6,
+      "municipalities": 3,
+      "key_domains_present": [
+        "cadastre",
+        "buildings",
+        "itbi",
+        "plan_director",
+        "zoning",
+        "urban_planning",
+        "imagery",
+        "terrain",
+        "environment",
+        "heritage"
+      ],
+      "key_domains_missing": [
+        "lots",
+        "iptu",
+        "building_permits",
+        "licensing",
+        "habite_se",
+        "risk",
+        "official_gazette"
+      ],
+      "source_ids": [
+        "pr-curitiba-geocuritiba",
+        "pr-curitiba-plan-director",
+        "pr-londrina-gis",
+        "pr-pinhais-geopinhais",
+        "pr-sanepar-arcgis",
+        "pr-state-geoserver"
+      ]
+    },
+    "PE": {
+      "sources": 9,
+      "municipalities": 1,
+      "key_domains_present": [
+        "cadastre",
+        "iptu",
+        "itbi",
+        "plan_director",
+        "zoning",
+        "urban_planning",
+        "building_permits",
+        "licensing",
+        "terrain"
+      ],
+      "key_domains_missing": [
+        "lots",
+        "buildings",
+        "habite_se",
+        "imagery",
+        "risk",
+        "environment",
+        "heritage",
+        "official_gazette"
+      ],
+      "source_ids": [
+        "pe-apac-arcgis",
+        "pe-recife-financas-lotes",
+        "pe-recife-iptu",
+        "pe-recife-itbi",
+        "pe-recife-licenciamento-urbanistico",
+        "pe-recife-open-data",
+        "pe-recife-outorga-onerosa",
+        "pe-recife-parcelamento-solo",
+        "pe-recife-zoning-arcgis"
+      ]
+    },
+    "PI": {
+      "sources": 1,
+      "municipalities": 1,
+      "key_domains_present": [
+        "plan_director",
+        "zoning"
+      ],
+      "key_domains_missing": [
+        "cadastre",
+        "lots",
+        "buildings",
+        "iptu",
+        "itbi",
+        "urban_planning",
+        "building_permits",
+        "licensing",
+        "habite_se",
+        "imagery",
+        "terrain",
+        "risk",
+        "environment",
+        "heritage",
+        "official_gazette"
+      ],
+      "source_ids": [
+        "pi-teresina-urban-law"
+      ]
+    },
+    "RJ": {
+      "sources": 8,
+      "municipalities": 2,
+      "key_domains_present": [
+        "cadastre",
+        "lots",
+        "iptu",
+        "itbi",
+        "plan_director",
+        "urban_planning",
+        "imagery",
+        "environment",
+        "heritage"
+      ],
+      "key_domains_missing": [
+        "buildings",
+        "zoning",
+        "building_permits",
+        "licensing",
+        "habite_se",
+        "terrain",
+        "risk",
+        "official_gazette"
+      ],
+      "source_ids": [
+        "rj-niteroi-geoservices",
+        "rj-rio-data-rio",
+        "rj-rio-geopal",
+        "rj-rio-imoveis-territoriais",
+        "rj-rio-iptu",
+        "rj-rio-itbi",
+        "rj-rio-pgeo3",
+        "rj-rio-plan-director"
+      ]
+    },
+    "RN": {
+      "sources": 1,
+      "municipalities": 1,
+      "key_domains_present": [
+        "plan_director",
+        "zoning",
+        "building_permits",
+        "habite_se"
+      ],
+      "key_domains_missing": [
+        "cadastre",
+        "lots",
+        "buildings",
+        "iptu",
+        "itbi",
+        "urban_planning",
+        "licensing",
+        "imagery",
+        "terrain",
+        "risk",
+        "environment",
+        "heritage",
+        "official_gazette"
+      ],
+      "source_ids": [
+        "rn-natal-plano-mapas"
+      ]
+    },
+    "RS": {
+      "sources": 8,
+      "municipalities": 2,
+      "key_domains_present": [
+        "cadastre",
+        "iptu",
+        "itbi",
+        "plan_director",
+        "zoning",
+        "urban_planning",
+        "building_permits",
+        "licensing",
+        "risk",
+        "environment",
+        "heritage"
+      ],
+      "key_domains_missing": [
+        "lots",
+        "buildings",
+        "habite_se",
+        "imagery",
+        "terrain",
+        "official_gazette"
+      ],
+      "source_ids": [
+        "rs-caxias-cadastro-territorial",
+        "rs-caxias-projetos-aprovados",
+        "rs-defesa-civil-arcgis",
+        "rs-porto-alegre-iptu",
+        "rs-porto-alegre-itbi",
+        "rs-porto-alegre-plan-director-2026",
+        "rs-porto-alegre-smamus-arcgis",
+        "rs-sema-arcgis"
+      ]
+    },
+    "RO": {
+      "sources": 1,
+      "municipalities": 1,
+      "key_domains_present": [
+        "cadastre",
+        "urban_planning"
+      ],
+      "key_domains_missing": [
+        "lots",
+        "buildings",
+        "iptu",
+        "itbi",
+        "plan_director",
+        "zoning",
+        "building_permits",
+        "licensing",
+        "habite_se",
+        "imagery",
+        "terrain",
+        "risk",
+        "environment",
+        "heritage",
+        "official_gazette"
+      ],
+      "source_ids": [
+        "ro-porto-velho-geoportal"
+      ]
+    },
+    "RR": {
+      "sources": 1,
+      "municipalities": 1,
+      "key_domains_present": [
+        "urban_planning"
+      ],
+      "key_domains_missing": [
+        "cadastre",
+        "lots",
+        "buildings",
+        "iptu",
+        "itbi",
+        "plan_director",
+        "zoning",
+        "building_permits",
+        "licensing",
+        "habite_se",
+        "imagery",
+        "terrain",
+        "risk",
+        "environment",
+        "heritage",
+        "official_gazette"
+      ],
+      "source_ids": [
+        "rr-boa-vista-cartografia"
+      ]
+    },
+    "SC": {
+      "sources": 11,
+      "municipalities": 8,
+      "key_domains_present": [
+        "cadastre",
+        "lots",
+        "buildings",
+        "itbi",
+        "plan_director",
+        "zoning",
+        "urban_planning",
+        "licensing",
+        "terrain",
+        "risk",
+        "environment",
+        "heritage",
+        "official_gazette"
+      ],
+      "key_domains_missing": [
+        "iptu",
+        "building_permits",
+        "habite_se",
+        "imagery"
+      ],
+      "source_ids": [
+        "sc-balneario-camboriu-public-cadastre",
+        "sc-balneario-picarras-cigageo",
+        "sc-blumenau-geospatial",
+        "sc-ciga-dados-dom",
+        "sc-ciga-geo",
+        "sc-corupa-cigageo",
+        "sc-florianopolis-geofloripa",
+        "sc-guabiruba-cigageo",
+        "sc-ima-arcgis",
+        "sc-joinville-simgeo-arcgis",
+        "sc-sao-bento-sul-cadastro-imobiliario"
+      ]
+    },
+    "SP": {
+      "sources": 16,
+      "municipalities": 10,
+      "key_domains_present": [
+        "cadastre",
+        "lots",
+        "iptu",
+        "plan_director",
+        "zoning",
+        "urban_planning",
+        "imagery",
+        "risk",
+        "environment"
+      ],
+      "key_domains_missing": [
+        "buildings",
+        "itbi",
+        "building_permits",
+        "licensing",
+        "habite_se",
+        "terrain",
+        "heritage",
+        "official_gazette"
+      ],
+      "source_ids": [
+        "sp-campinas-spatial-data",
+        "sp-datageo",
+        "sp-jundiai-geojundiai",
+        "sp-osasco-ozmundi",
+        "sp-praia-grande-geopg",
+        "sp-ribeirao-preto-webgis",
+        "sp-santo-andre-siga",
+        "sp-santos-geoserver",
+        "sp-santos-mapas-urbanos",
+        "sp-sao-jose-campos-ctm-sinter",
+        "sp-sao-jose-campos-geosanja",
+        "sp-sao-paulo-geosampa-wfs",
+        "sp-sao-paulo-geosampa-wms",
+        "sp-sao-paulo-iptu-cadastro-fiscal",
+        "sp-sao-paulo-pde-law",
+        "sp-sorocaba-geospatial-downloads"
+      ]
+    },
+    "SE": {
+      "sources": 2,
+      "municipalities": 1,
+      "key_domains_present": [
+        "cadastre",
+        "iptu",
+        "itbi",
+        "plan_director",
+        "licensing"
+      ],
+      "key_domains_missing": [
+        "lots",
+        "buildings",
+        "zoning",
+        "urban_planning",
+        "building_permits",
+        "habite_se",
+        "imagery",
+        "terrain",
+        "risk",
+        "environment",
+        "heritage",
+        "official_gazette"
+      ],
+      "source_ids": [
+        "se-aracaju-fiscal-services",
+        "se-aracaju-slim-urban-law"
+      ]
+    },
+    "TO": {
+      "sources": 1,
+      "municipalities": 0,
+      "key_domains_present": [
+        "environment"
+      ],
+      "key_domains_missing": [
+        "cadastre",
+        "lots",
+        "buildings",
+        "iptu",
+        "itbi",
+        "plan_director",
+        "zoning",
+        "urban_planning",
+        "building_permits",
+        "licensing",
+        "habite_se",
+        "imagery",
+        "terrain",
+        "risk",
+        "heritage",
+        "official_gazette"
+      ],
+      "source_ids": [
+        "to-geoportal-seplan"
+      ]
+    }
+  },
+  "municipalities": [
+    {
+      "ibge": "1200401",
+      "uf": "AC",
+      "source_count": 1,
+      "source_ids": [
+        "ac-rio-branco-rbgeo"
+      ],
+      "domains": [
+        "cadastre",
+        "flood",
+        "heritage",
+        "imagery",
+        "lidar",
+        "lots",
+        "risk",
+        "streets",
+        "terrain",
+        "urban_perimeter"
+      ]
+    },
+    {
+      "ibge": "2704302",
+      "uf": "AL",
+      "source_count": 2,
+      "source_ids": [
+        "al-maceio-iplam-cartography",
+        "al-maceio-massayo360"
+      ],
+      "domains": [
+        "3d",
+        "cadastre",
+        "cartography",
+        "lots",
+        "planning",
+        "property_location",
+        "urban_parameters",
+        "zoning"
+      ]
+    },
+    {
+      "ibge": "1302603",
+      "uf": "AM",
+      "source_count": 2,
+      "source_ids": [
+        "am-manaus-arcgis",
+        "am-manaus-plan-director"
+      ],
+      "domains": [
+        "3d",
+        "building_permits",
+        "cadastre",
+        "finance",
+        "heritage",
+        "imagery",
+        "law",
+        "plan_director",
+        "urban_planning"
+      ]
+    },
+    {
+      "ibge": "1600303",
+      "uf": "AP",
+      "source_count": 1,
+      "source_ids": [
+        "ap-macapa-sit"
+      ],
+      "domains": [
+        "cadastre",
+        "itbi",
+        "pgv",
+        "plan_director",
+        "urban_law"
+      ]
+    },
+    {
+      "ibge": "2927408",
+      "uf": "BA",
+      "source_count": 1,
+      "source_ids": [
+        "ba-salvador-geo"
+      ],
+      "domains": [
+        "cadastre",
+        "geospatial",
+        "neighborhoods",
+        "public_facilities",
+        "urban_planning"
+      ]
+    },
+    {
+      "ibge": "2304400",
+      "uf": "CE",
+      "source_count": 4,
+      "source_ids": [
+        "ce-fortaleza-iptu",
+        "ce-fortaleza-itbi",
+        "ce-fortaleza-open-data",
+        "ce-fortaleza-plan-director-2025"
+      ],
+      "domains": [
+        "building_area",
+        "cadastre",
+        "environment",
+        "iptu",
+        "itbi",
+        "law",
+        "plan_director",
+        "property_attributes",
+        "transactions",
+        "urban_planning",
+        "zoning"
+      ]
+    },
+    {
+      "ibge": "3205309",
+      "uf": "ES",
+      "source_count": 2,
+      "source_ids": [
+        "es-vitoria-gis",
+        "es-vitoria-plan-director"
+      ],
+      "domains": [
+        "cadastre",
+        "imagery",
+        "land_domain",
+        "law",
+        "plan_director",
+        "property",
+        "urban_planning",
+        "zoning"
+      ]
+    },
+    {
+      "ibge": "5208707",
+      "uf": "GO",
+      "source_count": 3,
+      "source_ids": [
+        "go-goiania-buildings-pgv",
+        "go-goiania-plan-director",
+        "go-goiania-tributario-mapserver"
+      ],
+      "domains": [
+        "buildings",
+        "cadastre",
+        "height",
+        "iptu",
+        "law",
+        "pgv",
+        "plan_director",
+        "tax_parcel",
+        "valuation"
+      ]
+    },
+    {
+      "ibge": "2111300",
+      "uf": "MA",
+      "source_count": 4,
+      "source_ids": [
+        "ma-sao-luis-official-gazette",
+        "ma-sao-luis-plan-director",
+        "ma-sao-luis-semfa-cadastro",
+        "ma-sao-luis-zoning-review"
+      ],
+      "domains": [
+        "bci",
+        "cadastre",
+        "historical_law",
+        "iptu",
+        "itbi",
+        "land_use",
+        "law",
+        "legal_publication",
+        "legal_revision",
+        "official_gazette",
+        "parceling",
+        "plan_director",
+        "property_identity",
+        "property_query",
+        "urban_law",
+        "urban_parameters",
+        "zoning",
+        "zoning_revision"
+      ]
+    },
+    {
+      "ibge": "3106200",
+      "uf": "MG",
+      "source_count": 4,
+      "source_ids": [
+        "mg-belo-horizonte-bhgeo",
+        "mg-belo-horizonte-itbi",
+        "mg-belo-horizonte-open-data",
+        "mg-belo-horizonte-plan-director"
+      ],
+      "domains": [
+        "addresses",
+        "building",
+        "buildings",
+        "cadastre",
+        "cartography",
+        "itbi",
+        "law",
+        "lots",
+        "multifinalitary_cadastre",
+        "plan_director",
+        "transactions",
+        "urban_data",
+        "urban_parameters",
+        "utilities",
+        "valuation",
+        "zoning"
+      ]
+    },
+    {
+      "ibge": "3118601",
+      "uf": "MG",
+      "source_count": 1,
+      "source_ids": [
+        "mg-contagem-geoprocessamento"
+      ],
+      "domains": [
+        "environment",
+        "geospatial",
+        "hydrology",
+        "risk",
+        "sewerage",
+        "urban_planning"
+      ]
+    },
+    {
+      "ibge": "3136702",
+      "uf": "MG",
+      "source_count": 2,
+      "source_ids": [
+        "mg-juiz-de-fora-projetos-aprovados",
+        "mg-juiz-de-fora-sisurb"
+      ],
+      "domains": [
+        "approved_projects",
+        "building_regularization",
+        "buildings",
+        "cadastre",
+        "construction",
+        "environment",
+        "geocoding_quality",
+        "heritage",
+        "legal_annexes",
+        "lots",
+        "plan_director",
+        "risk",
+        "terrain",
+        "utilities"
+      ]
+    },
+    {
+      "ibge": "3151800",
+      "uf": "MG",
+      "source_count": 2,
+      "source_ids": [
+        "mg-pocos-caldas-open-data-api",
+        "mg-pocos-caldas-urban-law-archive"
+      ],
+      "domains": [
+        "finance",
+        "historical_maps",
+        "legal_annexes",
+        "legislation",
+        "municipal_services",
+        "open_data",
+        "plan_director",
+        "planning",
+        "urban_law",
+        "zoning"
+      ]
+    },
+    {
+      "ibge": "3170206",
+      "uf": "MG",
+      "source_count": 1,
+      "source_ids": [
+        "mg-uberlandia-plan-cartography"
+      ],
+      "domains": [
+        "hydrology",
+        "land_use",
+        "plan_director",
+        "risk",
+        "rural_properties",
+        "terrain",
+        "utilities",
+        "zoning"
+      ]
+    },
+    {
+      "ibge": "5103403",
+      "uf": "MT",
+      "source_count": 1,
+      "source_ids": [
+        "mt-cuiaba-urban-law-maps"
+      ],
+      "domains": [
+        "land_use",
+        "neighborhoods",
+        "road_hierarchy",
+        "urban_law",
+        "zoning"
+      ]
+    },
+    {
+      "ibge": "1501402",
+      "uf": "PA",
+      "source_count": 3,
+      "source_ids": [
+        "pa-belem-codem-maps",
+        "pa-belem-financas-imobiliario",
+        "pa-belem-plan-director"
+      ],
+      "domains": [
+        "administrative_districts",
+        "cadastre",
+        "cartography",
+        "hydrology",
+        "iptu",
+        "islands",
+        "itbi",
+        "law",
+        "neighborhoods",
+        "parks",
+        "plan_director",
+        "property_certificate",
+        "property_services",
+        "public_facilities"
+      ]
+    },
+    {
+      "ibge": "2507507",
+      "uf": "PB",
+      "source_count": 1,
+      "source_ids": [
+        "pb-joao-pessoa-filipeia"
+      ],
+      "domains": [
+        "aviation_constraints",
+        "blocks",
+        "cadastre",
+        "heritage",
+        "historical_imagery",
+        "hydrology",
+        "imagery",
+        "lots",
+        "plan_director",
+        "streets",
+        "terrain",
+        "urban_planning",
+        "zoning"
+      ]
+    },
+    {
+      "ibge": "2611606",
+      "uf": "PE",
+      "source_count": 8,
+      "source_ids": [
+        "pe-recife-financas-lotes",
+        "pe-recife-iptu",
+        "pe-recife-itbi",
+        "pe-recife-licenciamento-urbanistico",
+        "pe-recife-open-data",
+        "pe-recife-outorga-onerosa",
+        "pe-recife-parcelamento-solo",
+        "pe-recife-zoning-arcgis"
+      ],
+      "domains": [
+        "building",
+        "building_permits",
+        "cadastre",
+        "construction",
+        "development_rights",
+        "finance",
+        "iptu",
+        "itbi",
+        "land",
+        "licensing",
+        "plan_director",
+        "planning",
+        "property",
+        "property_attributes",
+        "subdivision",
+        "tax_parcel",
+        "transactions",
+        "urban_instrument",
+        "urban_planning",
+        "valuation",
+        "zoning"
+      ]
+    },
+    {
+      "ibge": "2211001",
+      "uf": "PI",
+      "source_count": 1,
+      "source_ids": [
+        "pi-teresina-urban-law"
+      ],
+      "domains": [
+        "land_use",
+        "legal_annexes",
+        "parceling",
+        "plan_director",
+        "urban_law",
+        "zoning"
+      ]
+    },
+    {
+      "ibge": "4106902",
+      "uf": "PR",
+      "source_count": 2,
+      "source_ids": [
+        "pr-curitiba-geocuritiba",
+        "pr-curitiba-plan-director"
+      ],
+      "domains": [
+        "cadastral_blocks",
+        "law",
+        "legal_boundaries",
+        "multifinalitary_cadastre",
+        "parceling",
+        "plan_director",
+        "road_classification",
+        "zoning"
+      ]
+    },
+    {
+      "ibge": "4113700",
+      "uf": "PR",
+      "source_count": 1,
+      "source_ids": [
+        "pr-londrina-gis"
+      ],
+      "domains": [
+        "cadastre",
+        "cartography",
+        "environment",
+        "heritage",
+        "imagery",
+        "plan_director",
+        "registry_reference",
+        "zoning"
+      ]
+    },
+    {
+      "ibge": "4119152",
+      "uf": "PR",
+      "source_count": 1,
+      "source_ids": [
+        "pr-pinhais-geopinhais"
+      ],
+      "domains": [
+        "buildings",
+        "cadastre",
+        "imagery",
+        "itbi",
+        "plan_director",
+        "terrain",
+        "urban_planning"
+      ]
+    },
+    {
+      "ibge": "3303302",
+      "uf": "RJ",
+      "source_count": 1,
+      "source_ids": [
+        "rj-niteroi-geoservices"
+      ],
+      "domains": [
+        "cadastre",
+        "imagery",
+        "lot",
+        "open_data",
+        "plan_director",
+        "urban_process"
+      ]
+    },
+    {
+      "ibge": "3304557",
+      "uf": "RJ",
+      "source_count": 7,
+      "source_ids": [
+        "rj-rio-data-rio",
+        "rj-rio-geopal",
+        "rj-rio-imoveis-territoriais",
+        "rj-rio-iptu",
+        "rj-rio-itbi",
+        "rj-rio-pgeo3",
+        "rj-rio-plan-director"
+      ],
+      "domains": [
+        "approved_subdivision_projects",
+        "cadastre",
+        "environment",
+        "geospatial",
+        "geotechnics",
+        "heritage",
+        "imagery",
+        "iptu",
+        "itbi",
+        "law",
+        "lots",
+        "market_dynamics",
+        "open_data",
+        "parceling",
+        "plan_director",
+        "property_attributes",
+        "property_identity",
+        "property_use",
+        "registry_reference",
+        "tax",
+        "transactions",
+        "urban_planning",
+        "urbanism"
+      ]
+    },
+    {
+      "ibge": "2408102",
+      "uf": "RN",
+      "source_count": 1,
+      "source_ids": [
+        "rn-natal-plano-mapas"
+      ],
+      "domains": [
+        "building_permits",
+        "habite_se",
+        "infrastructure",
+        "land_use",
+        "plan_director",
+        "urban_parameters",
+        "zoning"
+      ]
+    },
+    {
+      "ibge": "1100205",
+      "uf": "RO",
+      "source_count": 1,
+      "source_ids": [
+        "ro-porto-velho-geoportal"
+      ],
+      "domains": [
+        "cadastre",
+        "multifinalitary_cadastre",
+        "territorial_information",
+        "urban_planning",
+        "zoneamento"
+      ]
+    },
+    {
+      "ibge": "1400100",
+      "uf": "RR",
+      "source_count": 1,
+      "source_ids": [
+        "rr-boa-vista-cartografia"
+      ],
+      "domains": [
+        "cadastre_context",
+        "cartography",
+        "iptu_services",
+        "itbi_services",
+        "urban_planning"
+      ]
+    },
+    {
+      "ibge": "4305108",
+      "uf": "RS",
+      "source_count": 2,
+      "source_ids": [
+        "rs-caxias-cadastro-territorial",
+        "rs-caxias-projetos-aprovados"
+      ],
+      "domains": [
+        "approved_projects",
+        "building",
+        "building_permits",
+        "cadastre",
+        "lot",
+        "registry_boundary",
+        "street_number",
+        "subdivision",
+        "urban_planning"
+      ]
+    },
+    {
+      "ibge": "4314902",
+      "uf": "RS",
+      "source_count": 4,
+      "source_ids": [
+        "rs-porto-alegre-iptu",
+        "rs-porto-alegre-itbi",
+        "rs-porto-alegre-plan-director-2026",
+        "rs-porto-alegre-smamus-arcgis"
+      ],
+      "domains": [
+        "buildings_3d",
+        "cadastre",
+        "drainage",
+        "height",
+        "heritage",
+        "iptu",
+        "itbi",
+        "law",
+        "licensing",
+        "plan_director",
+        "rural_properties",
+        "transactions",
+        "urban_parameters",
+        "utilities",
+        "zoning"
+      ]
+    },
+    {
+      "ibge": "4202008",
+      "uf": "SC",
+      "source_count": 1,
+      "source_ids": [
+        "sc-balneario-camboriu-public-cadastre"
+      ],
+      "domains": [
+        "assessed_value",
+        "buildings",
+        "cadastre",
+        "lots",
+        "plan_director",
+        "units",
+        "urban_viability"
+      ]
+    },
+    {
+      "ibge": "4202057",
+      "uf": "SC",
+      "source_count": 1,
+      "source_ids": [
+        "sc-balneario-picarras-cigageo"
+      ],
+      "domains": [
+        "buildings",
+        "car",
+        "coastal_land",
+        "environment",
+        "gas_pipeline",
+        "lots",
+        "risk",
+        "roads",
+        "sewerage",
+        "zoning"
+      ]
+    },
+    {
+      "ibge": "4202404",
+      "uf": "SC",
+      "source_count": 1,
+      "source_ids": [
+        "sc-blumenau-geospatial"
+      ],
+      "domains": [
+        "addresses",
+        "approved_subdivisions",
+        "buildings",
+        "condominiums",
+        "drainage",
+        "lots",
+        "risk",
+        "urban_planning"
+      ]
+    },
+    {
+      "ibge": "4204509",
+      "uf": "SC",
+      "source_count": 1,
+      "source_ids": [
+        "sc-corupa-cigageo"
+      ],
+      "domains": [
+        "buildings",
+        "drainage",
+        "lots",
+        "streets",
+        "urban_planning",
+        "zoning"
+      ]
+    },
+    {
+      "ibge": "4205407",
+      "uf": "SC",
+      "source_count": 1,
+      "source_ids": [
+        "sc-florianopolis-geofloripa"
+      ],
+      "domains": [
+        "environment",
+        "multifinalitary_cadastre",
+        "official_cartography",
+        "urban_planning",
+        "zoning"
+      ]
+    },
+    {
+      "ibge": "4206306",
+      "uf": "SC",
+      "source_count": 1,
+      "source_ids": [
+        "sc-guabiruba-cigageo"
+      ],
+      "domains": [
+        "buildings",
+        "hydrology",
+        "lots",
+        "subdivisions",
+        "terrain",
+        "zoning"
+      ]
+    },
+    {
+      "ibge": "4209102",
+      "uf": "SC",
+      "source_count": 1,
+      "source_ids": [
+        "sc-joinville-simgeo-arcgis"
+      ],
+      "domains": [
+        "cadastre",
+        "development_rights",
+        "heritage",
+        "itbi",
+        "tax_parcel",
+        "terrain",
+        "urban_planning"
+      ]
+    },
+    {
+      "ibge": "4215802",
+      "uf": "SC",
+      "source_count": 1,
+      "source_ids": [
+        "sc-sao-bento-sul-cadastro-imobiliario"
+      ],
+      "domains": [
+        "buildings",
+        "cadastre",
+        "itbi",
+        "lots",
+        "property_attributes",
+        "zoning"
+      ]
+    },
+    {
+      "ibge": "2800308",
+      "uf": "SE",
+      "source_count": 2,
+      "source_ids": [
+        "se-aracaju-fiscal-services",
+        "se-aracaju-slim-urban-law"
+      ],
+      "domains": [
+        "blocks",
+        "building_code",
+        "cadastre",
+        "iptu",
+        "itbi",
+        "legal_annexes",
+        "licensing",
+        "parceling",
+        "plan_director",
+        "property_certificate",
+        "property_services",
+        "road_system",
+        "urban_law"
+      ]
+    },
+    {
+      "ibge": "3509502",
+      "uf": "SP",
+      "source_count": 1,
+      "source_ids": [
+        "sp-campinas-spatial-data"
+      ],
+      "domains": [
+        "cadastre",
+        "geospatial",
+        "zoning"
+      ]
+    },
+    {
+      "ibge": "3525904",
+      "uf": "SP",
+      "source_count": 1,
+      "source_ids": [
+        "sp-jundiai-geojundiai"
+      ],
+      "domains": [
+        "condominiums",
+        "historical_cartography",
+        "lots",
+        "orthoimagery",
+        "pgv",
+        "plan_director",
+        "public_areas",
+        "subdivisions",
+        "zoning"
+      ]
+    },
+    {
+      "ibge": "3534401",
+      "uf": "SP",
+      "source_count": 1,
+      "source_ids": [
+        "sp-osasco-ozmundi"
+      ],
+      "domains": [
+        "cadastre",
+        "geospatial",
+        "land_use_certificate",
+        "lots",
+        "registry_reference",
+        "subdivisions",
+        "urban_planning"
+      ]
+    },
+    {
+      "ibge": "3541000",
+      "uf": "SP",
+      "source_count": 1,
+      "source_ids": [
+        "sp-praia-grande-geopg"
+      ],
+      "domains": [
+        "cadastral_map",
+        "geospatial",
+        "orthophoto",
+        "urban_planning"
+      ]
+    },
+    {
+      "ibge": "3543402",
+      "uf": "SP",
+      "source_count": 1,
+      "source_ids": [
+        "sp-ribeirao-preto-webgis"
+      ],
+      "domains": [
+        "cadastre",
+        "geospatial",
+        "hosted_services",
+        "urban_planning"
+      ]
+    },
+    {
+      "ibge": "3547809",
+      "uf": "SP",
+      "source_count": 1,
+      "source_ids": [
+        "sp-santo-andre-siga"
+      ],
+      "domains": [
+        "blocks",
+        "geospatial",
+        "lots",
+        "tax_parcels",
+        "urban_planning"
+      ]
+    },
+    {
+      "ibge": "3548500",
+      "uf": "SP",
+      "source_count": 2,
+      "source_ids": [
+        "sp-santos-geoserver",
+        "sp-santos-mapas-urbanos"
+      ],
+      "domains": [
+        "archaeology",
+        "blocks",
+        "geospatial",
+        "land_use",
+        "lots",
+        "plan_director",
+        "risk",
+        "urban_instruments",
+        "urban_planning",
+        "zoning"
+      ]
+    },
+    {
+      "ibge": "3549904",
+      "uf": "SP",
+      "source_count": 2,
+      "source_ids": [
+        "sp-sao-jose-campos-ctm-sinter",
+        "sp-sao-jose-campos-geosanja"
+      ],
+      "domains": [
+        "cadastre",
+        "environment",
+        "imagery",
+        "multifinalitary_cadastre",
+        "plan_director",
+        "property",
+        "property_identity",
+        "sinter",
+        "tax",
+        "urban_planning",
+        "zoning"
+      ]
+    },
+    {
+      "ibge": "3550308",
+      "uf": "SP",
+      "source_count": 4,
+      "source_ids": [
+        "sp-sao-paulo-geosampa-wfs",
+        "sp-sao-paulo-geosampa-wms",
+        "sp-sao-paulo-iptu-cadastro-fiscal",
+        "sp-sao-paulo-pde-law"
+      ],
+      "domains": [
+        "basemap",
+        "cadastre",
+        "environment",
+        "infrastructure",
+        "iptu",
+        "law",
+        "orthophoto",
+        "plan_director",
+        "property_attributes",
+        "thematic_layers",
+        "urban_planning",
+        "zoning"
+      ]
+    },
+    {
+      "ibge": "3552205",
+      "uf": "SP",
+      "source_count": 1,
+      "source_ids": [
+        "sp-sorocaba-geospatial-downloads"
+      ],
+      "domains": [
+        "geospatial_downloads",
+        "urban_planning",
+        "zoning"
+      ]
+    }
+  ],
+  "domain_counts": {
+    "cadastre": 37,
+    "zoning": 32,
+    "plan_director": 28,
+    "environment": 25,
+    "urban_planning": 24,
+    "lots": 17,
+    "geospatial": 16,
+    "itbi": 15,
+    "imagery": 12,
+    "risk": 11,
+    "heritage": 11,
+    "law": 11,
+    "land_use": 11,
+    "iptu": 11,
+    "buildings": 11,
+    "terrain": 10,
+    "planning": 10,
+    "cartography": 8,
+    "licensing": 8,
+    "hydrology": 7,
+    "protected_areas": 7,
+    "urban_law": 6,
+    "water": 6,
+    "property_attributes": 6,
+    "multifinalitary_cadastre": 6,
+    "open_data": 5,
+    "urban_parameters": 5,
+    "building_permits": 5,
+    "roads": 5,
+    "legal_annexes": 5,
+    "transactions": 5,
+    "parceling": 5,
+    "blocks": 5,
+    "flood": 4,
+    "streets": 4,
+    "pgv": 4,
+    "transmission": 4,
+    "substations": 4,
+    "valuation": 4,
+    "property_identity": 4,
+    "sewerage": 4,
+    "infrastructure": 4,
+    "utilities": 4,
+    "socioeconomic": 3,
+    "agriculture": 3,
+    "finance": 3,
+    "neighborhoods": 3,
+    "restriction": 3,
+    "interoperability": 3,
+    "land": 3,
+    "federal_property": 3,
+    "official_gazette": 3,
+    "geospatial_catalog": 3,
+    "property_registry": 3,
+    "approved_projects": 3,
+    "addresses": 3,
+    "property": 3,
+    "tax_parcel": 3,
+    "building": 3,
+    "registry_reference": 3,
+    "drainage": 3,
+    "subdivisions": 3,
+    "3d": 2,
+    "public_facilities": 2,
+    "geodesy": 2,
+    "climate": 2,
+    "water_rights": 2,
+    "electromagnetic_fields": 2,
+    "oil_gas": 2,
+    "ports": 2,
+    "waterways": 2,
+    "transport_infrastructure": 2,
+    "landslide": 2,
+    "notarial_acts": 2,
+    "federal_highways": 2,
+    "soil": 2,
+    "indigenous_lands": 2,
+    "public_property": 2,
+    "embargo": 2,
+    "biodiversity": 2,
+    "rural_parcel": 2,
+    "rainfall": 2,
+    "archaeology": 2,
+    "legislation": 2,
+    "legal_metadata": 2,
+    "matricula": 2,
+    "certificates": 2,
+    "registry_services": 2,
+    "civil_registry": 2,
+    "geology": 2,
+    "susceptibility": 2,
+    "geodiversity": 2,
+    "rural": 2,
+    "sanitation": 2,
+    "habite_se": 2,
+    "urban_control": 2,
+    "aviation_constraints": 2,
+    "height": 2,
+    "construction": 2,
+    "rural_properties": 2,
+    "car": 2,
+    "property_certificate": 2,
+    "property_services": 2,
+    "development_rights": 2,
+    "subdivision": 2,
+    "lot": 2,
+    "market_dynamics": 2,
+    "tax": 2,
+    "condominiums": 2,
+    "orthophoto": 2,
+    "territorial": 1,
+    "lidar": 1,
+    "urban_perimeter": 1,
+    "property_location": 1,
+    "housing": 1,
+    "urban_projects": 1,
+    "aerodromes": 1,
+    "runways": 1,
+    "aviation_infrastructure": 1,
+    "planning_constraint_context": 1,
+    "environmental_context": 1,
+    "electricity": 1,
+    "generation": 1,
+    "power_generation": 1,
+    "power_plants": 1,
+    "power_lines": 1,
+    "grid": 1,
+    "mining": 1,
+    "exploration_blocks": 1,
+    "production_fields": 1,
+    "wells": 1,
+    "geophysics": 1,
+    "terminals": 1,
+    "ferry_crossings": 1,
+    "aquatic_transport": 1,
+    "railway": 1,
+    "right_of_way_context": 1,
+    "disaster_risk": 1,
+    "monitoring": 1,
+    "protest_registry": 1,
+    "credit_due_diligence": 1,
+    "municipal_transaction_communication": 1,
+    "deeds": 1,
+    "powers_of_attorney": 1,
+    "estate_inventory": 1,
+    "notary_registry_directory": 1,
+    "registry_offices": 1,
+    "productivity": 1,
+    "revenue": 1,
+    "cns": 1,
+    "open_data_catalog": 1,
+    "dataset_discovery": 1,
+    "metadata": 1,
+    "energy": 1,
+    "gas": 1,
+    "pipelines": 1,
+    "biofuels": 1,
+    "historical_snapshots": 1,
+    "public_administration": 1,
+    "enforcement": 1,
+    "address": 1,
+    "geocoding": 1,
+    "census_geography": 1,
+    "territorial_divisions": 1,
+    "infraction": 1,
+    "caves": 1,
+    "federal_law": 1,
+    "regulation": 1,
+    "acts": 1,
+    "sigef": 1,
+    "snci": 1,
+    "settlements": 1,
+    "quilombola": 1,
+    "land_tenure": 1,
+    "survey": 1,
+    "railways": 1,
+    "rail_yards": 1,
+    "rail_terminals": 1,
+    "airports": 1,
+    "gas_pipelines": 1,
+    "oil_pipelines": 1,
+    "mineral_pipelines": 1,
+    "right_of_way": 1,
+    "weather": 1,
+    "nowcasting": 1,
+    "ocean": 1,
+    "forecast_models": 1,
+    "satellite": 1,
+    "deforestation": 1,
+    "municipal_law": 1,
+    "state_law": 1,
+    "bills": 1,
+    "amendments": 1,
+    "legislative_process": 1,
+    "protected_assets": 1,
+    "legal_urn": 1,
+    "federal_state_municipal_law": 1,
+    "technical_standards": 1,
+    "registry_search": 1,
+    "rtd": 1,
+    "legal_entities": 1,
+    "registry_interoperability": 1,
+    "federal_open_data_repository": 1,
+    "public_directories": 1,
+    "rtdpj": 1,
+    "groundwater": 1,
+    "siagas": 1,
+    "geomorphology": 1,
+    "federal_assets": 1,
+    "asset_management": 1,
+    "water_supply": 1,
+    "solid_waste": 1,
+    "stormwater": 1,
+    "municipal_management": 1,
+    "union_land": 1,
+    "terrenos_marinha": 1,
+    "federal_river_margins": 1,
+    "public_works": 1,
+    "infrastructure_projects": 1,
+    "geocoded_projects": 1,
+    "building_area": 1,
+    "eiv": 1,
+    "iptu_related": 1,
+    "topography": 1,
+    "transport": 1,
+    "land_domain": 1,
+    "legal_publication": 1,
+    "zoning_revision": 1,
+    "historical_law": 1,
+    "property_query": 1,
+    "bci": 1,
+    "legal_revision": 1,
+    "urban_data": 1,
+    "building_regularization": 1,
+    "geocoding_quality": 1,
+    "municipal_services": 1,
+    "historical_maps": 1,
+    "road_hierarchy": 1,
+    "administrative_districts": 1,
+    "islands": 1,
+    "parks": 1,
+    "historical_imagery": 1,
+    "reservoirs": 1,
+    "urban_instrument": 1,
+    "cadastral_blocks": 1,
+    "road_classification": 1,
+    "legal_boundaries": 1,
+    "technical_cadastre": 1,
+    "works": 1,
+    "water_resources": 1,
+    "urban_process": 1,
+    "approved_subdivision_projects": 1,
+    "property_use": 1,
+    "urbanism": 1,
+    "geotechnics": 1,
+    "zoneamento": 1,
+    "territorial_information": 1,
+    "cadastre_context": 1,
+    "iptu_services": 1,
+    "itbi_services": 1,
+    "registry_boundary": 1,
+    "street_number": 1,
+    "disaster": 1,
+    "sigef_reference": 1,
+    "buildings_3d": 1,
+    "units": 1,
+    "assessed_value": 1,
+    "urban_viability": 1,
+    "coastal_land": 1,
+    "gas_pipeline": 1,
+    "approved_subdivisions": 1,
+    "municipal_acts": 1,
+    "municipal_geospatial": 1,
+    "official_cartography": 1,
+    "building_code": 1,
+    "road_system": 1,
+    "vegetation": 1,
+    "public_areas": 1,
+    "historical_cartography": 1,
+    "orthoimagery": 1,
+    "land_use_certificate": 1,
+    "cadastral_map": 1,
+    "hosted_services": 1,
+    "tax_parcels": 1,
+    "urban_instruments": 1,
+    "sinter": 1,
+    "basemap": 1,
+    "thematic_layers": 1,
+    "geospatial_downloads": 1,
+    "territorial_planning": 1
+  }
+}
