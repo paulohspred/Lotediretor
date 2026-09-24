@@ -4278,6 +4278,84 @@
       "access_class": "PUBLIC_QUERY_ONLY",
       "verification_status": "VERIFIED_PUBLIC_SERVICE_LICENSE_REVIEW",
       "notes": "Serviço oficial espacializa atividades/usos permitidos com base inicialmente na LC 270/2024 e Decreto 56.561/2025, sendo atualizado conforme novas normas entram em vigor. Possui camada de áreas e tabelas de atividades/usos/relacionamentos; suporta JSON/GeoJSON/PBF. A própria descrição alerta que a camada isolada não contém a informação completa, exigindo resolver os códigos nas tabelas e preservar vigência normativa."
+    },
+    {
+      "id": "mg-belo-horizonte-cadastro-imobiliario-regionais",
+      "authority": "Prefeitura de Belo Horizonte / SMFA / PRODABEL",
+      "scope": "municipality",
+      "municipality_ibge": "3106200",
+      "domain": [
+        "iptu",
+        "cadastre",
+        "property_attributes",
+        "building",
+        "historical_tax_record"
+      ],
+      "source_type": "CKAN_multi_dataset_monthly",
+      "discovery_url": "https://dados.pbh.gov.br/dataset/?license_id=cc-by&organization=smfa&res_format=CSV&tags=IPTU&tags=cadastro+imobili%C3%A1rio",
+      "access_class": "OPEN_REUSABLE",
+      "license": "CC BY",
+      "verification_status": "VERIFIED",
+      "update_frequency": "monthly",
+      "notes": "Nove conjuntos regionais cobrem os imóveis ativos do Cadastro Tributário Imobiliário e publicam dados cadastrais em CSV/API, com dicionário de dados. Licença Creative Commons Attribution. Tratar como cadastro/IPTU-base; confirmar no schema quais valores tributários são por imóvel e não inferir o imposto lançado quando o campo não existir."
+    },
+    {
+      "id": "mg-belo-horizonte-zona-homogenea-iptu",
+      "authority": "Prefeitura de Belo Horizonte / SMFA / PRODABEL",
+      "scope": "municipality",
+      "municipality_ibge": "3106200",
+      "domain": [
+        "pgv",
+        "iptu",
+        "valuation",
+        "tax",
+        "historical_tax_record"
+      ],
+      "source_type": "CKAN_dataset",
+      "discovery_url": "https://dados.pbh.gov.br/dataset/zona-homogenea-iptu",
+      "access_class": "OPEN_REUSABLE",
+      "license": "CC BY",
+      "verification_status": "VERIFIED",
+      "update_frequency": "monthly",
+      "notes": "Zona Homogênea do IPTU é usada no cálculo do valor venal conforme Anexo V da Lei 9.795/2009. CSV com histórico de publicações e dicionário. Deve ser combinada com legislação/valores unitários vigentes, preservando versão temporal."
+    },
+    {
+      "id": "mg-belo-horizonte-risk-geologico",
+      "authority": "Prefeitura de Belo Horizonte / PRODABEL / URBEL",
+      "scope": "municipality",
+      "municipality_ibge": "3106200",
+      "domain": [
+        "risk",
+        "geotechnics",
+        "landslide",
+        "flood",
+        "historical_series"
+      ],
+      "source_type": "CKAN_dataset",
+      "discovery_url": "https://dados.pbh.gov.br/dataset/area-risco-geologico",
+      "access_class": "OPEN_REUSABLE",
+      "license": "CC BY",
+      "verification_status": "VERIFIED",
+      "update_frequency": "eventual",
+      "notes": "Camada oficial de Área de Risco Geológico, com risco geológico significativo e áreas de risco de inundação, publicada em JSON/CSV com dicionário. O mapeamento inclui base técnica histórica; usar data/metodologia como parte da evidência e complementar com vistorias PEAR mais recentes quando aplicável."
+    },
+    {
+      "id": "mg-belo-horizonte-dom",
+      "authority": "Prefeitura de Belo Horizonte / Secretaria-Geral",
+      "scope": "municipality",
+      "municipality_ibge": "3106200",
+      "domain": [
+        "official_gazette",
+        "legal_publication",
+        "municipal_acts",
+        "historical_law",
+        "public_documents"
+      ],
+      "source_type": "official_public_search",
+      "portal_url": "https://dom-web.pbh.gov.br/",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PUBLIC_SEARCH_LICENSE_REVIEW",
+      "notes": "DOM oficial permite pesquisa por termo com busca avançada, período, edição e categoria, além de visualização de atos. A própria PBH orienta esse uso. Não foi identificada licença/API pública de reutilização em massa; tratar como consulta/evidência até revisão."
     }
   ]
 }
