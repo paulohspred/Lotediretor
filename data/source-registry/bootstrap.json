@@ -132,6 +132,109 @@
       "verification_status": "VERIFIED"
     },
     {
+      "id": "br-anac-aerodromes",
+      "authority": "ANAC",
+      "scope": "BR",
+      "domain": [
+        "aerodromes",
+        "runways",
+        "aviation_infrastructure",
+        "planning_constraint_context"
+      ],
+      "source_type": "open_data_download",
+      "discovery_url": "https://www.anac.gov.br/acesso-a-informacao/dados-abertos/areas-de-atuacao/todos-os-dados-abertos",
+      "formats": [
+        "CSV",
+        "JSON",
+        "XLS"
+      ],
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_OPEN_DATA_LICENSE_REVIEW",
+      "notes": "Listas de aeródromos públicos/privados, pistas, taxiways, pátios e posições. Para superfícies limitadoras/zoneamento aeronáutico, buscar DECEA/SAGA separadamente."
+    },
+    {
+      "id": "br-aneel-gcem",
+      "authority": "ANEEL",
+      "scope": "BR",
+      "domain": [
+        "transmission",
+        "substations",
+        "electromagnetic_fields",
+        "environmental_context"
+      ],
+      "source_type": "CKAN_dataset",
+      "discovery_url": "https://dadosabertos.aneel.gov.br/dataset/gcem-gestao-de-informacoes-de-campos-eletromagneticos",
+      "formats": [
+        "CSV",
+        "PDF dictionary"
+      ],
+      "license": "ODbL",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED",
+      "notes": "Linhas de transmissão e subestações, incluindo faixa de servidão e medições/cálculos de campos elétricos e magnéticos."
+    },
+    {
+      "id": "br-aneel-open-data",
+      "authority": "ANEEL",
+      "scope": "BR",
+      "domain": [
+        "electricity",
+        "generation",
+        "transmission",
+        "substations",
+        "electromagnetic_fields"
+      ],
+      "source_type": "CKAN",
+      "base_url": "https://dadosabertos.aneel.gov.br/",
+      "license": "ODbL",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED",
+      "notes": "Catálogo-mãe. SIGA, SIGET e GCEM confirmados sob ODbL. Recursos tinham atualização em 01/09/2026 e 23/09/2026."
+    },
+    {
+      "id": "br-aneel-siga",
+      "authority": "ANEEL",
+      "scope": "BR",
+      "domain": [
+        "power_generation",
+        "power_plants"
+      ],
+      "source_type": "CKAN_dataset",
+      "discovery_url": "https://dadosabertos.aneel.gov.br/dataset/siga-sistema-de-informacoes-de-geracao-da-aneel",
+      "formats": [
+        "CSV",
+        "XML",
+        "PDF dictionary"
+      ],
+      "license": "ODbL",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED",
+      "update_frequency": "daily_and_monthly",
+      "notes": "Empreendimentos de geração em diversas fases; inclui coordenadas e municípios."
+    },
+    {
+      "id": "br-aneel-siget",
+      "authority": "ANEEL",
+      "scope": "BR",
+      "domain": [
+        "transmission",
+        "power_lines",
+        "substations",
+        "grid"
+      ],
+      "source_type": "CKAN_dataset",
+      "discovery_url": "https://dadosabertos.aneel.gov.br/dataset/sistema-de-gestao-da-transmissao-siget",
+      "formats": [
+        "CSV",
+        "PDF dictionary"
+      ],
+      "license": "ODbL",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED",
+      "update_frequency": "daily",
+      "notes": "Linhas, subestações, equipamentos, contratos/outorgas e pontos de conexão; recursos atualizados em 23/09/2026."
+    },
+    {
       "id": "br-anm-sigmine-open-data",
       "authority": "Agência Nacional de Mineração",
       "scope": "BR",
@@ -151,6 +254,47 @@
       ]
     },
     {
+      "id": "br-anp-geospatial",
+      "authority": "ANP",
+      "scope": "BR",
+      "domain": [
+        "oil_gas",
+        "exploration_blocks",
+        "production_fields",
+        "wells",
+        "geophysics"
+      ],
+      "source_type": "download_GeoMaps",
+      "discovery_url": "https://www.gov.br/anp/pt-br/centrais-de-conteudo/dados-abertos/dados-georreferenciados-das-bacias-sedimentares-brasileiras",
+      "formats": [
+        "SHP-ZIP",
+        "PDF metadata"
+      ],
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_OPEN_DATA_LICENSE_REVIEW",
+      "update_frequency": "monthly_for_blocks_and_fields",
+      "notes": "Shapefiles de blocos exploratórios, campos, poços, programas geofísicos, sísmica e levantamentos geoquímicos; metadados atualizados em março de 2026 e arquivos sísmicos atualizados em julho de 2026."
+    },
+    {
+      "id": "br-antt-rail-network",
+      "authority": "ANTT",
+      "scope": "BR",
+      "domain": [
+        "railway",
+        "transport_infrastructure",
+        "right_of_way_context"
+      ],
+      "source_type": "download",
+      "discovery_url": "https://www.gov.br/antt/pt-br/assuntos/ferrovias/declaracao-de-rede/declaracao-de-rede-2025",
+      "formats": [
+        "SHP-ZIP",
+        "XLSX"
+      ],
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_DOWNLOAD_LICENSE_REVIEW",
+      "notes": "Declaração de Rede 2025 publica Malha Ferroviária Federal em shapefile; página atualizada em 06/03/2026. Validar licença específica do arquivo antes de espelhar."
+    },
+    {
       "id": "br-cnuc",
       "authority": "Ministério do Meio Ambiente e Mudança do Clima",
       "scope": "BR",
@@ -166,6 +310,46 @@
       ],
       "access_class": "OPEN_REUSABLE",
       "verification_status": "VERIFIED"
+    },
+    {
+      "id": "br-dnit-profas",
+      "authority": "DNIT",
+      "scope": "BR_PARTIAL",
+      "domain": [
+        "roads",
+        "environment",
+        "federal_highways"
+      ],
+      "source_type": "download",
+      "discovery_url": "https://www.gov.br/dnit/pt-br/assuntos/planejamento-e-pesquisa/meio-ambiente/regularizacao-informacao-e-ambiental/regularizacao-ambiental",
+      "formats": [
+        "SHP",
+        "PDF",
+        "tables"
+      ],
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_DOWNLOAD_LICENSE_REVIEW",
+      "notes": "PROFAS disponibiliza shapefiles dos segmentos rodoviários federais abrangidos pelo programa de regularização ambiental."
+    },
+    {
+      "id": "br-dnit-snv",
+      "authority": "DNIT",
+      "scope": "BR",
+      "domain": [
+        "roads",
+        "federal_highways",
+        "transport_infrastructure"
+      ],
+      "source_type": "download_GIS",
+      "discovery_url": "https://www.gov.br/dnit/pt-br/assuntos/sistema-nacional-de-viacao",
+      "formats": [
+        "SHP",
+        "KML",
+        "spreadsheets"
+      ],
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_DOWNLOAD_LICENSE_REVIEW",
+      "notes": "SNV possui base georreferenciada em Shapefile/KML e atributos por rodovia/UF/trecho. Versionar cada edição; não assumir que notícia antiga seja versão corrente."
     },
     {
       "id": "br-embrapa-geoinfo",
@@ -203,6 +387,28 @@
       ],
       "access_class": "OPEN_REUSABLE",
       "verification_status": "VERIFIED"
+    },
+    {
+      "id": "br-ibama-embargos",
+      "authority": "IBAMA",
+      "scope": "BR",
+      "domain": [
+        "environment",
+        "embargo",
+        "restriction",
+        "enforcement"
+      ],
+      "source_type": "CKAN_SHP_ArcGIS",
+      "discovery_url": "https://dadosabertos.ibama.gov.br/dataset/termos-de-embargo",
+      "service_url": "https://pamgia.ibama.gov.br/server/rest/services/01_Publicacoes_Bases/embargos_siscom_brasil/FeatureServer",
+      "formats": [
+        "SHP-ZIP",
+        "FeatureServer"
+      ],
+      "license": "ODbL",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED_WITH_PERSONAL_DATA_FILTER",
+      "notes": "Polígonos de áreas embargadas. Serviços podem conter nome/documentos de pessoas; aplicação pública deve minimizar/bloquear campos pessoais e ser property-centric."
     },
     {
       "id": "br-ibge-cnefe",
@@ -317,6 +523,20 @@
       "notes": "IPHAN informa que dados geoespaciais de sítios arqueológicos do SICG podem ser acessados e baixados diretamente no GeoServer. Revisar licença por camada."
     },
     {
+      "id": "br-repositorio-dados-gov",
+      "authority": "Governo Federal",
+      "scope": "BR",
+      "domain": [
+        "federal_open_data_repository",
+        "public_directories"
+      ],
+      "source_type": "public_directory_mother_source",
+      "base_url": "https://repositorio.dados.gov.br/",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_DIRECTORY_LICENSE_PER_DATASET",
+      "notes": "Repositório HTTP com diretórios e arquivos governamentais. Usar crawler em modo metadados; licença e semântica devem ser verificadas por coleção."
+    },
+    {
       "id": "br-rfb-sinter-cib",
       "authority": "Receita Federal do Brasil",
       "scope": "BR",
@@ -369,6 +589,24 @@
       "notes": "815 municípios listados na cartografia de suscetibilidade na data da pesquisa; cobertura deve ser registrada por município e versão."
     },
     {
+      "id": "br-siads-public-directory",
+      "authority": "SEGES / Governo Federal",
+      "scope": "BR",
+      "domain": [
+        "federal_assets",
+        "asset_management"
+      ],
+      "source_type": "public_directory",
+      "base_url": "https://repositorio.dados.gov.br/seges/siads/",
+      "formats": [
+        "ZIP",
+        "DOCX data dictionary"
+      ],
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "SEMANTIC_REVIEW_REQUIRED",
+      "notes": "Diretório público contém séries de 'bens da União' em uso/não uso/doados/incorporados. Não assumir que sejam imóveis: inspecionar dicionário e granularidade antes de vincular ao domínio imobiliário."
+    },
+    {
       "id": "br-sicar-car",
       "authority": "Serviço Florestal Brasileiro / SICAR",
       "scope": "BR",
@@ -381,6 +619,45 @@
       "access_class": "PUBLIC_QUERY_ONLY",
       "verification_status": "VERIFIED",
       "notes": "CAR é declaratório; não prova domínio."
+    },
+    {
+      "id": "br-sinisa",
+      "authority": "Ministério das Cidades",
+      "scope": "BR",
+      "domain": [
+        "sanitation",
+        "water_supply",
+        "sewerage",
+        "solid_waste",
+        "stormwater",
+        "municipal_management"
+      ],
+      "source_type": "download_tables_reports",
+      "discovery_url": "https://www.gov.br/cidades/pt-br/acesso-a-informacao/acoes-e-programas/saneamento/sinisa/resultados-sinisa",
+      "formats": [
+        "spreadsheets",
+        "PDF"
+      ],
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_DOWNLOAD_LICENSE_REVIEW",
+      "notes": "Resultados SINISA por módulos. É contexto territorial/municipal e de prestadores, não cadastro predial individual."
+    },
+    {
+      "id": "br-spu-geoportal",
+      "authority": "Secretaria do Patrimônio da União / MGI",
+      "scope": "BR",
+      "domain": [
+        "federal_property",
+        "union_land",
+        "terrenos_marinha",
+        "federal_river_margins",
+        "public_property"
+      ],
+      "source_type": "GeoPortal_catalog_download",
+      "discovery_url": "https://www.gov.br/gestao/pt-br/assuntos/patrimonio-da-uniao/geoinformacao",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_DOWNLOAD_LICENSE_REVIEW",
+      "notes": "Geoportal SPU disponível ao cidadão para visualizar e baixar localização de imóveis da União, Terrenos de Marinha e Terrenos Marginais de Rios Federais. Confirmar licença de cada camada antes de espelhamento. SPIUNET/SISREI foram desativados em 09/03/2026 e fluxos migraram ao SPUnet."
     },
     {
       "id": "ce-fortaleza-iptu",
