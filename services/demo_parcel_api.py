@@ -1719,6 +1719,14 @@ def actual_values_for_section(
                 ),
             })
         values.append({
+            "label": "Titular / proprietário atual",
+            "value": (
+                "Não publicado na ficha pública. Obter somente por certidão/"
+                "matrícula atualizada ou documento fornecido pelo usuário em "
+                "fluxo privado/autorizado."
+            ),
+        })
+        values.append({
             "label": "Limite registral",
             "value": (
                 "A matrícula informada em DTI é uma referência histórica "
