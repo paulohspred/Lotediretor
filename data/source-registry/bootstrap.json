@@ -276,6 +276,29 @@
       "notes": "Shapefiles de blocos exploratórios, campos, poços, programas geofísicos, sísmica e levantamentos geoquímicos; metadados atualizados em março de 2026 e arquivos sísmicos atualizados em julho de 2026."
     },
     {
+      "id": "br-antaq-geospatial",
+      "authority": "ANTAQ",
+      "scope": "BR",
+      "domain": [
+        "ports",
+        "terminals",
+        "waterways",
+        "ferry_crossings",
+        "aquatic_transport"
+      ],
+      "source_type": "open_data_download",
+      "discovery_url": "https://www.gov.br/antaq/pt-br/central-de-conteudos/informacoes-geograficas",
+      "formats": [
+        "SHP",
+        "KML",
+        "ZIP",
+        "XLSX"
+      ],
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED_OPEN_DATA",
+      "notes": "Instalações portuárias outorgadas, linhas de travessia e vias interiores economicamente navegadas. PDA 2026-2028 afirma abertura de dados inclusive geoespacializados para facilitar reutilização."
+    },
+    {
       "id": "br-antt-rail-network",
       "authority": "ANTT",
       "scope": "BR",
@@ -293,6 +316,22 @@
       "access_class": "PUBLIC_QUERY_ONLY",
       "verification_status": "VERIFIED_DOWNLOAD_LICENSE_REVIEW",
       "notes": "Declaração de Rede 2025 publica Malha Ferroviária Federal em shapefile; página atualizada em 06/03/2026. Validar licença específica do arquivo antes de espelhar."
+    },
+    {
+      "id": "br-cemaden-monitoring",
+      "authority": "CEMADEN/MCTI",
+      "scope": "BR_PARTIAL_MUNICIPAL",
+      "domain": [
+        "disaster_risk",
+        "landslide",
+        "flood",
+        "monitoring"
+      ],
+      "source_type": "public_lists_maps",
+      "discovery_url": "https://www.gov.br/cemaden/pt-br/assuntos/noticias-cemaden/cemaden-expande-rede-de-monitoramento-e-passa-a-monitorar-1-295-municipios",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_COVERAGE_ENDPOINT_DISCOVERY_REQUIRED",
+      "notes": "Desde 17/03/2026 o Cemaden monitora 1.295 municípios. O fato de um município estar monitorado indica existência de mapeamento de áreas de risco, mas não implica que o vetor detalhado esteja disponível em API pública. Integrar com SGB/Defesa Civil/local quando houver geometria."
     },
     {
       "id": "br-cnuc",
@@ -367,6 +406,31 @@
       "access_class": "OPEN_REUSABLE",
       "verification_status": "VERIFIED",
       "notes": "Plataforma oficial para mapas, estudos, zoneamentos e dados georreferenciados, com acesso automatizado em formatos abertos."
+    },
+    {
+      "id": "br-epe-webmap",
+      "authority": "Empresa de Pesquisa Energética (EPE)",
+      "scope": "BR",
+      "domain": [
+        "energy",
+        "transmission",
+        "substations",
+        "gas",
+        "pipelines",
+        "oil_gas",
+        "biofuels",
+        "environment"
+      ],
+      "source_type": "WebMap_WMS_download",
+      "discovery_url": "https://www.epe.gov.br/pt/publicacoes-dados-abertos/publicacoes/webmap-epe",
+      "formats": [
+        "WMS",
+        "vector_download",
+        "raster_download"
+      ],
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_DOWNLOAD_LICENSE_REVIEW",
+      "notes": "WEBMAP EPE permite consultas, downloads vetoriais/raster e compartilhamento de camadas via WMS. Conteúdo inclui sistema elétrico existente/planejado, gás natural, combustíveis líquidos, petróleo/gás, biocombustíveis e meio ambiente."
     },
     {
       "id": "br-funai-geospatial",
@@ -462,6 +526,24 @@
       "notes": "WFS/WMS oficial via INDE e downloads SHP/KML/XLSX para UCs, cavernas, áreas embargadas, autos de infração e PANs."
     },
     {
+      "id": "br-incra-acervo-fundiario",
+      "authority": "INCRA",
+      "scope": "BR",
+      "domain": [
+        "rural_parcel",
+        "sigef",
+        "snci",
+        "settlements",
+        "quilombola",
+        "land_tenure"
+      ],
+      "source_type": "authenticated_catalog_WMS_WFS_download",
+      "discovery_url": "https://acervofundiario.incra.gov.br/acervo/login.php",
+      "access_class": "AUTHENTICATED_PUBLIC",
+      "verification_status": "VERIFIED",
+      "notes": "Acervo Fundiário exige autenticação gov.br, mas o serviço oficial afirma que os dados são livres e inclui áreas certificadas SIGEF/SNCI, assentamentos e territórios quilombolas, com download e WMS/WFS. Não contornar autenticação."
+    },
+    {
       "id": "br-incra-sigef",
       "authority": "INCRA",
       "scope": "BR",
@@ -492,6 +574,29 @@
       ],
       "access_class": "OPEN_REUSABLE",
       "verification_status": "VERIFIED"
+    },
+    {
+      "id": "br-infrasa-arcgis",
+      "authority": "Infra S.A.",
+      "scope": "BR",
+      "domain": [
+        "roads",
+        "railways",
+        "rail_yards",
+        "rail_terminals",
+        "ports",
+        "waterways",
+        "airports",
+        "gas_pipelines",
+        "oil_pipelines",
+        "mineral_pipelines",
+        "right_of_way"
+      ],
+      "source_type": "ArcGIS_REST",
+      "base_url": "https://geo.infrasa.gov.br/server/rest/services",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_ENDPOINT_LICENSE_PER_LAYER",
+      "notes": "ArcGIS REST público com múltiplos modais. Serviços confirmados incluem Rodovias Federais, Ferrovias Concedidas, Pro Trilhos, pátios/terminais ferroviários, terminais portuários, hidrovias, gasodutos, oleodutos e minerodutos. Algumas camadas agregam dados de ANTT, DNIT, ANTAQ, EPE/ANP; preservar lineage."
     },
     {
       "id": "br-inpe-terrabrasilis",
@@ -864,6 +969,23 @@
       "access_class": "PUBLIC_QUERY_ONLY",
       "verification_status": "VERIFIED_ENDPOINT_LICENSE_REVIEW",
       "notes": "Layer Unidade Territorial expõe inscrição, área de banco, área geométrica e inscrição de lotes em polígonos consultáveis via REST/GeoJSON."
+    },
+    {
+      "id": "go-sieg-geoservices",
+      "authority": "Instituto Mauro Borges / Governo de Goiás",
+      "scope": "state",
+      "uf": "GO",
+      "domain": [
+        "geospatial_catalog",
+        "planning",
+        "environment",
+        "infrastructure"
+      ],
+      "source_type": "WMS_WFS_catalog",
+      "discovery_url": "https://goias.gov.br/imb/geoservicos/",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_CATALOG_ENDPOINTS_TO_HARVEST",
+      "notes": "SIEG/IMB distribui pacote de geosserviços WMS/WFS e manual QGIS. Extrair e testar endpoints atuais antes de promover camadas."
     },
     {
       "id": "ma-sao-luis-plan-director",
@@ -1471,6 +1593,27 @@
       "access_class": "OPEN_REUSABLE",
       "verification_status": "VERIFIED",
       "notes": "Portal de metadados e camadas municipais; validar cada licença e atualização."
+    },
+    {
+      "id": "sp-datageo",
+      "authority": "Sistema Ambiental Paulista / SEMIL",
+      "scope": "state",
+      "uf": "SP",
+      "domain": [
+        "environment",
+        "water",
+        "sanitation",
+        "land_use",
+        "vegetation",
+        "protected_areas",
+        "geospatial_catalog"
+      ],
+      "source_type": "GeoServer_metadata_catalog",
+      "base_url": "https://datageo.ambiente.sp.gov.br/geoserver/",
+      "catalog_url": "https://datageo.ambiente.sp.gov.br/geoportal/",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_ENDPOINT_LICENSE_PER_LAYER",
+      "notes": "GeoServer público com WFS/WMS/WCS/WMTS/CSW; metadados frequentemente oferecem download Shapefile e lineage detalhado. Servidor se identifica com texto padrão/antigo, portanto autoridade deve ser confirmada pelo catálogo/metadados por camada."
     },
     {
       "id": "sp-sao-paulo-geosampa-wfs",
