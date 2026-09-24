@@ -25,7 +25,7 @@ jobs:
 
       - name: Replace repository contents with ZoLa baseline
         run: |
-          rsync -a --delete --exclude='.git/' /tmp/labs-zola/ ./
+          rsync -a --delete --exclude='.git/' --exclude='.github/workflows/' /tmp/labs-zola/ ./
 
       - name: Remove upstream embedded credentials
         run: |
