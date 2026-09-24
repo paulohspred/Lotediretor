@@ -294,6 +294,12 @@ function formatReportValue(item){
   if(item.unit==="%" && typeof item.value==="number"){
     return new Intl.NumberFormat("pt-BR",{maximumFractionDigits:4}).format(item.value)+"%";
   }
+  if(item.unit==="ratio_percent" && typeof item.value==="number"){
+    return new Intl.NumberFormat("pt-BR",{style:"percent",maximumFractionDigits:1}).format(item.value);
+  }
+  if(typeof item.value==="boolean"){
+    return item.value?"Sim":"Não";
+  }
   if(item.unit==="°" && typeof item.value==="number"){
     return new Intl.NumberFormat("pt-BR",{maximumFractionDigits:1}).format(item.value)+"°";
   }
