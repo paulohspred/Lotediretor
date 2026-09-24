@@ -1464,6 +1464,26 @@
       "notes": "Plano Diretor Lei 7.122/2023; portal preserva documentos históricos úteis para versionamento."
     },
     {
+      "id": "ma-sao-luis-semfa-cadastro",
+      "authority": "Prefeitura de São Luís / SEMFAZ",
+      "scope": "municipality",
+      "municipality_ibge": "2111300",
+      "domain": [
+        "cadastre",
+        "iptu",
+        "itbi",
+        "property_query",
+        "bci",
+        "property_identity"
+      ],
+      "source_type": "public_tax_service_portal",
+      "base_url": "https://www.semfaz.saoluis.ma.gov.br/",
+      "query_url": "https://stm.semfaz.saoluis.ma.gov.br/credenciamento/jsp/consultaBCI/consultaBCI.jsf",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_QUERY_WITH_CAPTCHA_NO_AUTOMATION",
+      "notes": "Portal oficial oferece consulta de nova inscrição imobiliária, ficha de imóvel, IPTU, ITBI e Boletim de Cadastro Imobiliário por inscrição. Consultas usam CAPTCHA em partes do fluxo; não automatizar/burlar CAPTCHA nem indexar dados pessoais. A inscrição imobiliária de 17 dígitos codifica distrito/setor/quadra/lote segundo a SEMFAZ."
+    },
+    {
       "id": "ma-sao-luis-zoning-review",
       "authority": "Prefeitura de São Luís / INCID",
       "scope": "municipality",
@@ -1778,6 +1798,24 @@
       "notes": "CODEM oferece mapas digitais em PDF de bairros, equipamentos, distritos, ilhas, bacias e parques. Cadastro imobiliário e base cartográfica mais rica existem institucionalmente, mas não foram confirmados como dados abertos atuais."
     },
     {
+      "id": "pa-belem-financas-imobiliario",
+      "authority": "Prefeitura de Belém / Secretaria Municipal de Finanças",
+      "scope": "municipality",
+      "municipality_ibge": "1501402",
+      "domain": [
+        "cadastre",
+        "iptu",
+        "itbi",
+        "property_certificate",
+        "property_services"
+      ],
+      "source_type": "public_tax_service_portal",
+      "discovery_url": "https://financas.belem.pa.gov.br/areas/iptu/",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PUBLIC_SERVICES_ENDPOINT_DISCOVERY",
+      "notes": "Portal oficial oferece IPTU, Certidão de Cadastro Imobiliário e outros serviços imobiliários; histórico municipal confirma SIAT para ITBI/cadastro imobiliário. Ainda falta confirmar endpoint/dataset de leitura em massa e termos, portanto tratar como serviço de consulta, não open data."
+    },
+    {
       "id": "pa-belem-plan-director",
       "authority": "Prefeitura de Belém",
       "scope": "municipality",
@@ -1791,6 +1829,32 @@
       "access_class": "OPEN_REUSABLE",
       "verification_status": "DISCOVERY",
       "notes": "Lei 8.655/2008 localizada; validar revisão/consolidação vigente."
+    },
+    {
+      "id": "pb-joao-pessoa-filipeia",
+      "authority": "Prefeitura de João Pessoa / SEPLAN",
+      "scope": "municipality",
+      "municipality_ibge": "2507507",
+      "domain": [
+        "cadastre",
+        "lots",
+        "blocks",
+        "streets",
+        "zoning",
+        "plan_director",
+        "imagery",
+        "historical_imagery",
+        "terrain",
+        "hydrology",
+        "heritage",
+        "aviation_constraints",
+        "urban_planning"
+      ],
+      "source_type": "official_geoportal_downloads",
+      "base_url": "https://filipeia.joaopessoa.pb.gov.br/",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PUBLIC_DOWNLOAD_LICENSE_REVIEW",
+      "notes": "Atlas Filipeia oficial publica lotes, quadras, logradouros e setores cartográficos em SHP/CSV; curvas de nível/hidrografia; MUB em DWG; aerofotogrametria 1976/1989/1998/2012/2021; mapas do zoneamento, macrozoneamento e restrições do Plano Diretor 2024. Também oferece dados do imóvel via localização cartográfica/ficha cadastral. Revisar licença/termos por recurso antes de espelhar."
     },
     {
       "id": "pb-pbgeo-arcgis",
@@ -2665,6 +2729,25 @@
       "access_class": "PUBLIC_QUERY_ONLY",
       "verification_status": "VERIFIED_SENSITIVE_TABLES_BLOCKED",
       "notes": "Serviço público lista camadas Lotes/Edificações e tabelas cadastrais, ITBI e Proprietários. Apenas camadas/campos aprovados devem ser ingeridos. Tabela Proprietários e quaisquer campos pessoais/documentais ficam BLOCKED por padrão; exposição técnica do endpoint não equivale a autorização de republicação."
+    },
+    {
+      "id": "se-aracaju-fiscal-services",
+      "authority": "Prefeitura de Aracaju / SEMFAZ",
+      "scope": "municipality",
+      "municipality_ibge": "2800308",
+      "domain": [
+        "cadastre",
+        "iptu",
+        "itbi",
+        "property_services",
+        "property_certificate",
+        "blocks"
+      ],
+      "source_type": "official_service_catalog",
+      "discovery_url": "https://transparencia.aracaju.se.gov.br/",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_SERVICE_CATALOG_ENDPOINT_DISCOVERY",
+      "notes": "Carta de Serviços oficial lista localização/revisão/unificação de inscrição imobiliária, planta de quadra, IPTU, ITBI, regularidade tributária e fluxos de habite-se/desmembramento. É catálogo de serviços, não dataset; localizar interfaces públicas documentadas separadamente."
     },
     {
       "id": "se-aracaju-slim-urban-law",
