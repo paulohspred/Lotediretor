@@ -1,0 +1,60 @@
+{
+  "schema_version": "0.1.0",
+  "as_of": "2026-09-24",
+  "source_id": "br-pncp-open-api",
+  "discovery_base_url": "https://pncp.gov.br/api/consulta",
+  "authentication": "NONE_FOR_PUBLIC_QUERY",
+  "endpoints": {
+    "publications": {
+      "path": "/v1/contratacoes/publicacao",
+      "method": "GET",
+      "required_query": [
+        "dataInicial",
+        "dataFinal",
+        "codigoModalidadeContratacao",
+        "pagina"
+      ],
+      "optional_query": [
+        "codigoModoDisputa",
+        "uf",
+        "codigoMunicipioIbge",
+        "cnpj",
+        "codigoUnidadeAdministrativa",
+        "idUsuario",
+        "tamanhoPagina"
+      ],
+      "date_format": "YYYYMMDD",
+      "use": "Discover procurements published in a period, optionally scoped to municipality."
+    },
+    "contracts": {
+      "path": "/v1/contratos",
+      "method": "GET",
+      "required_query": [
+        "dataInicial",
+        "dataFinal",
+        "pagina"
+      ],
+      "optional_query": [
+        "cnpjOrgao",
+        "codigoUnidadeAdministrativa",
+        "usuarioId",
+        "tamanhoPagina"
+      ],
+      "date_format": "YYYYMMDD",
+      "use": "Discover contracts/empenhos published in a period. Municipality is not a documented filter here; prefer linking contracts from an identified procurement."
+    }
+  },
+  "detail_api": {
+    "base_url": "https://pncp.gov.br/api/pncp",
+    "method": "GET_ONLY",
+    "documented_paths": [
+      "/v1/orgaos/{cnpj}/contratos/{ano}/{sequencial}",
+      "/v1/orgaos/{cnpj}/contratos/{ano}/{sequencial}/arquivos",
+      "/v1/orgaos/{cnpj}/contratos/{ano}/{sequencial}/historico",
+      "/v1/orgaos/{cnpj}/contratos/contratacao/{anoContratacao}/{sequencialContratacao}"
+    ],
+    "rule": "Use only after a procurement/contract is already identified. No write endpoints, credentials, or maintenance APIs."
+  },
+  "privacy_rule": "Do not use supplier/person identity to discover property relationships. Link by public project/procurement identifiers, location, object text with explicit locality, or known process/property references.",
+  "page_policy": "Use conservative page sizes and explicit date windows; do not crawl the entire national corpus by default."
+}
