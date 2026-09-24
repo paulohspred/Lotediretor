@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import json
 import math
+import re
 import urllib.parse
 import urllib.request
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -323,6 +324,92 @@ def sql_reference(props: dict) -> str | None:
     if lot == "0000" or condominium not in (None, "", "00"):
         return None
     return f"{sector}{block}{lot}{digit}"
+
+
+
+def representative_point(geometry: dict) -> tuple[float, float]:
+    polygons = geometry_polygons(geometry)
+    if not polygons or not polygons[0] or not polygons[0][0]:
+        raise ValueError("parcel geometry has no representative ring")
+    ring = polygons[0][0]
+    points = ring[:-1] if len(ring) > 1 and ring[0] == ring[-1] else ring
+    if points:
+        lng = sum(float(point[0]) for point in points) / len(points)
+        lat = sum(float(point[1]) for point in points) / len(points)
+        if point_in_polygon(lng, lat, polygons[0]):
+            return lat, lng
+    min_lng, min_lat, max_lng, max_lat = geometry_bbox(geometry)
+    lng = (min_lng + max_lng) / 2
+    lat = (min_lat + max_lat) / 2
+    if point_in_polygon(lng, lat, polygons[0]):
+        return lat, lng
+    first = ring[0]
+    return float(first[1]), float(first[0])
+
+
+def fetch_parcels_by_cql(cql_filter: str, count: int = 8) -> list[dict]:
+    query = {
+        "service": "WFS",
+        "version": "2.0.0",
+        "request": "GetFeature",
+        "typeNames": TYPE_NAME,
+        "srsName": "EPSG:4326",
+        "cql_filter": cql_filter,
+        "count": str(count),
+        "propertyName": ",".join(FIELDS),
+        "outputFormat": "application/json",
+    }
+    url = WFS + "?" + urllib.parse.urlencode(query)
+    request = urllib.request.Request(
+        url,
+        headers={
+            "User-Agent": "LoteDiretor/0.1 (+https://lotediretor.com)",
+            "Accept": "application/json",
+        },
+    )
+    with urllib.request.urlopen(request, timeout=12) as response:
+        body = response.read(4 * 1024 * 1024 + 1)
+        if response.status != 200:
+            raise RuntimeError(f"GeoSampa search returned HTTP {response.status}")
+        if len(body) > 4 * 1024 * 1024:
+            raise RuntimeError("GeoSampa search exceeded safety limit")
+    payload = json.loads(body)
+    if payload.get("type") != "FeatureCollection":
+        raise RuntimeError("GeoSampa search did not return FeatureCollection")
+    return payload.get("features") or []
+
+
+def search_parcel(query_text: str) -> list[dict]:
+    compact = re.sub(r"[^A-Za-z0-9]", "", query_text or "").upper()
+    if not compact:
+        raise ValueError("empty_search")
+
+    if compact.isdigit() and len(compact) == 11:
+        sector = compact[0:3]
+        block = compact[3:6]
+        lot = compact[6:10]
+        digit = compact[10:11]
+        cql = (
+            f"cd_setor_fiscal='{sector}' AND "
+            f"cd_quadra_fiscal='{block}' AND "
+            f"cd_lote='{lot}' AND "
+            f"cd_digito_sql='{digit}'"
+        )
+    elif re.fullmatch(r"[A-Z0-9]{6,20}", compact):
+        cql = f"cd_cib='{compact}'"
+    else:
+        raise ValueError("unsupported_search_format")
+
+    features = fetch_parcels_by_cql(cql)
+    output = []
+    for feature in features:
+        parcel = public_feature(feature)
+        lat, lng = representative_point(parcel["geometry"])
+        output.append({
+            "feature": parcel,
+            "representative_point": {"lat": lat, "lng": lng},
+        })
+    return output
 
 
 def fetch_candidates(lat: float, lng: float) -> dict:
@@ -817,10 +904,32 @@ class Handler(BaseHTTPRequestHandler):
         parsed = urllib.parse.urlsplit(self.path)
         if parsed.path == "/healthz":
             return self.send_json(200, {"ok": True, "service": "parcel-click"})
+
+        params = urllib.parse.parse_qs(parsed.query)
+
+        if parsed.path == "/v1/sp/search":
+            query_text = params.get("q", [""])[0]
+            try:
+                matches = search_parcel(query_text)
+            except ValueError as exc:
+                return self.send_json(400, {"error": str(exc)})
+            except Exception as exc:
+                print(f"search upstream error: {exc!r}", flush=True)
+                return self.send_json(502, {"error": "upstream_unavailable"})
+            return self.send_json(200, {
+                "query": query_text,
+                "count": len(matches),
+                "matches": matches,
+                "source": {
+                    "id": "sp-sao-paulo-geosampa-wfs",
+                    "layer": TYPE_NAME,
+                    "authority": "Prefeitura de São Paulo / GeoSampa",
+                },
+            })
+
         if parsed.path != "/v1/sp/parcel":
             return self.send_json(404, {"error": "not_found"})
 
-        params = urllib.parse.parse_qs(parsed.query)
         try:
             lat = float(params.get("lat", [""])[0])
             lng = float(params.get("lng", [""])[0])
