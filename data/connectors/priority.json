@@ -121,11 +121,11 @@
     {
       "id": "sp-itbi-index",
       "source_id": "sp-sao-paulo-itbi-transactions",
-      "kind": "privacy_safe_public_query_materializer",
+      "kind": "custom_public_xlsx_sqlite_materializer",
       "url": "https://www2.prefeitura.sp.gov.br/web/fazenda/w/acesso_a_informacao/31501",
-      "mode": "official_xlsx_snapshot_hash_sql_index",
+      "mode": "official_annual_workbooks_snapshot_hash_sql_index",
       "approved": true,
-      "notes": "Validated end-to-end for 2022-2026 official workbooks: 828,583 DTI rows and 472,057 distinct SQLs. Closed public field mapping only; no buyer/seller names or CPF/CNPJ. SQLite index supports parcel query by SQL and historical matrícula/cartório references. Keep PUBLIC_QUERY_ONLY/reuse caveat until a separate open-data license determination is documented.",
+      "notes": "Validated on the official annual Excel workbooks. Full 2006-2026 series materialized into privacy-safe SQLite: 2,641,502 DTI rows / 1,524,854 distinct SQLs. Public fields only; buyer/seller names and CPF/CNPJ are not collected. Keep monthly refresh/diff and condominium-unit reconciliation as follow-up work.",
       "tool": "tools/ingestion/sp_itbi_history.py"
     },
     {
