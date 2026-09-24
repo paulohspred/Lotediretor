@@ -4134,6 +4134,95 @@
       "verification_status": "VERIFIED_OFFICIAL_LAW_EFFECTIVE_2026",
       "update_frequency": "by legal amendment",
       "notes": "Lei 18.330/2025 atualiza a Planta Genérica de Valores a partir de 01/01/2026. O art. 1º remete ao Anexo I (valores unitários de m² de construção) e Anexo II (listagem de valores unitários de m² de terreno). Normalizar com vigência temporal e manter vínculo ao texto/anexos oficiais."
+    },
+    {
+      "id": "pe-recife-official-gazette-open-data",
+      "authority": "Prefeitura do Recife / Secretaria de Governo e Participação Social / EMPREL",
+      "scope": "municipality",
+      "municipality_ibge": "2611606",
+      "domain": [
+        "official_gazette",
+        "legal_publication",
+        "municipal_acts",
+        "historical_law",
+        "public_documents"
+      ],
+      "source_type": "CKAN_dataset",
+      "discovery_url": "https://dados.recife.pe.gov.br/dataset/diario-oficial",
+      "access_class": "OPEN_REUSABLE",
+      "license": "ODbL",
+      "verification_status": "VERIFIED",
+      "update_frequency": "monthly",
+      "notes": "Dataset oficial do Diário Oficial com recursos CSV/ZIP/JSON, dicionário e API CKAN. Série publicada desde 2004, com arquivos atuais no portal em 2025 e atualização de metadados em 2026. Usar para eventos legais/urbanísticos mantendo vínculo ao PDF/edição oficial."
+    },
+    {
+      "id": "pe-recife-heritage-iep",
+      "authority": "Prefeitura do Recife / SEDUL / Diretoria de Preservação do Patrimônio Cultural",
+      "scope": "municipality",
+      "municipality_ibge": "2611606",
+      "domain": [
+        "heritage",
+        "protected_assets",
+        "legal_restriction",
+        "historical_building_presence"
+      ],
+      "source_type": "CKAN_dataset",
+      "discovery_url": "https://dados.recife.pe.gov.br/dataset/imoveis-especiais-de-preservacao-ieps",
+      "access_class": "OPEN_REUSABLE",
+      "license": "ODbL",
+      "verification_status": "VERIFIED",
+      "update_frequency": "annual",
+      "notes": "Relação oficial dos Imóveis Especiais de Preservação (IEPs), com GeoJSON/CSV/JSON. Campos observados incluem código IEP, ano de construção, logradouro, ano de tombamento, lei, bairro e regional. Complementar com ZEPH e IPHAN."
+    },
+    {
+      "id": "pe-recife-ortho-2013-2014",
+      "authority": "Prefeitura do Recife / SEMOC / SELCA / UIG",
+      "scope": "municipality",
+      "municipality_ibge": "2611606",
+      "domain": [
+        "imagery",
+        "orthophoto",
+        "historical_imagery",
+        "visual_reference"
+      ],
+      "source_type": "ArcGIS_MapServer_cached",
+      "service_url": "https://esigportal2.recife.pe.gov.br/arcgis/rest/services/MeioAmbiente/MA_Ortofoto2013_2014MapService/MapServer",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PUBLIC_SERVICE_LICENSE_REVIEW",
+      "notes": "Ortofoto oficial 2013/2014 publicada em serviço ArcGIS cacheado, EPSG:31985, níveis até escala 1:500. Copyright atribuído à Prefeitura do Recife/SEMOC/SELCA/UIG. Licença de reutilização/materialização não identificada; manter query/render-only até revisão."
+    },
+    {
+      "id": "pe-recife-sei-public-search",
+      "authority": "Prefeitura do Recife",
+      "scope": "municipality",
+      "municipality_ibge": "2611606",
+      "domain": [
+        "administrative_processes",
+        "public_documents",
+        "licensing_process_context",
+        "procedural_status"
+      ],
+      "source_type": "official_public_process_search",
+      "portal_url": "https://portalsei.recife.pe.gov.br/",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PUBLIC_SEARCH",
+      "notes": "Portal SEI municipal oferece 'Pesquisar Processos' e validação de documentos. Automatização só deve usar interfaces públicas documentadas; não contornar autenticação nem indexar conteúdo restrito."
+    },
+    {
+      "id": "pe-neoenergia-pernambuco-provider",
+      "authority": "Neoenergia Pernambuco",
+      "scope": "PE",
+      "domain": [
+        "electricity_distribution",
+        "utility_provider",
+        "service_territory",
+        "power_network_context"
+      ],
+      "source_type": "official_distribution_company",
+      "portal_url": "https://www.neoenergia.com/web/pernambuco",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PROVIDER_SERVICE_TERRITORY",
+      "notes": "Distribuidora de energia em Pernambuco; documentos operacionais oficiais incluem Recife na área de concessão. Usar como resolvedor de prestador e para contexto/consultas oficiais; ativos técnicos geoespaciais devem vir preferencialmente da BDGD/ANEEL ou de publicação expressamente licenciada."
     }
   ]
 }
