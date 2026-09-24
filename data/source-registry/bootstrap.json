@@ -1267,7 +1267,7 @@
       "catalog_url": "https://metadados.seduh.df.gov.br/",
       "access_class": "PUBLIC_QUERY_ONLY",
       "verification_status": "VERIFIED_ENDPOINT_LICENSE_REVIEW",
-      "notes": "Serviços públicos incluem CADASTRO_TERRITORIAL com lotes, edificações e tabelas de normas/IPTU/alvarás/habite-se; PDOT; controle urbano/rural; cartografia e topografia. Catálogo GeoNetwork expõe dezenas de registros shapefile. Licença não é declarada uniformemente por serviço."
+      "notes": "Serviços públicos incluem CADASTRO_TERRITORIAL com lotes registrados, unidades autônomas, edificações, piscinas, quadras, tabelas de normas, área construída, alvarás e habite-se. Lote registrado expõe parâmetros urbanísticos como norma vigente/anterior e altura máxima. Licença e atributos devem ser validados por camada."
     },
     {
       "id": "es-geobases",
@@ -1498,7 +1498,7 @@
       "base_url": "https://geoprocessamento.contagem.mg.gov.br/arcgis/rest/services",
       "access_class": "PUBLIC_QUERY_ONLY",
       "verification_status": "VERIFIED_PUBLIC_SERVICES_LICENSE_PER_LAYER",
-      "notes": "Serviços REST públicos confirmados com saneamento, nascentes, drenagem e outros temas; expandir árvore do servidor com harvester e procurar cadastro/zoneamento."
+      "notes": "ArcGIS público confirmado com Base Urbanística, Parcelamento Territorial, Zoneamento e lotes de utilidade/patrimônio. Algumas camadas públicas expõem campo 'Proprietario'; aplicar privacy filter e não materializar esse atributo sem base jurídica/termos explícitos."
     },
     {
       "id": "mg-ide-sisema",
@@ -1920,6 +1920,26 @@
       "notes": "Diretório público inclui PlanoDiretor, zoneamento aberto, cartografia, imagens, IPPUL e pasta SmfMatriculaCartorio. A presença de pasta com referência cartorial não autoriza ingestão de dados pessoais/registrários; aplicar revisão de campos e termos."
     },
     {
+      "id": "pr-pinhais-geopinhais",
+      "authority": "Prefeitura de Pinhais",
+      "scope": "municipality",
+      "municipality_ibge": "4119152",
+      "domain": [
+        "cadastre",
+        "itbi",
+        "plan_director",
+        "buildings",
+        "imagery",
+        "terrain",
+        "urban_planning"
+      ],
+      "source_type": "ArcGIS_REST",
+      "base_url": "https://geopinhais.pinhais.pr.gov.br/server/rest/services",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_ENDPOINT_LICENSE_PER_SERVICE",
+      "notes": "Diretório REST público inclui ITBI Feature/MapServer, MAPA_CADASTRAL, QUAD_CAD, PLANO_DIRETOR_2022, pasta Edificações, altimetria e imagens/ortofotos históricas incluindo 2023."
+    },
+    {
       "id": "pr-sanepar-arcgis",
       "authority": "Sanepar",
       "scope": "state",
@@ -1986,6 +2006,23 @@
       "access_class": "OPEN_REUSABLE",
       "verification_status": "DISCOVERY",
       "notes": "Catalogar cadastros, imóveis, ITBI/IPTU e GIS em profundidade."
+    },
+    {
+      "id": "rj-rio-imoveis-territoriais",
+      "authority": "Prefeitura do Rio de Janeiro / IPP",
+      "scope": "municipality",
+      "municipality_ibge": "3304557",
+      "domain": [
+        "cadastre",
+        "lots",
+        "property_identity",
+        "registry_reference"
+      ],
+      "source_type": "ArcGIS_FeatureServer",
+      "base_url": "https://pgeo3.rio.rj.gov.br/arcgis/rest/services/CadParcel/IMOVEIS_TERRITORIAIS/FeatureServer",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_SCHEMA_PRIVACY_REVIEW",
+      "notes": "Camada pública de imóveis territoriais contém inscrição imobiliária, matrícula, origem, tipo do lote, classificação e quadra. Matrícula é identificador registral, não autorização para indexar titularidade; revisar licença/itemInfo e atributos antes de materialização."
     },
     {
       "id": "rj-rio-iptu",
@@ -2268,6 +2305,44 @@
       "notes": "Metadados oficiais listam GEO.WFS_LOTES, EDIFICACOES, CONDOMINIOS, LOTEAMENTOS_APROVADOS, drenagem e risco. FeatureServer público 'consulta_construir/Consulta_endereco' expõe lotes/endereço. Portal ArcGIS Enterprise declara openData habilitado; revisar licença por item antes de redistribuição."
     },
     {
+      "id": "sc-ciga-dados-dom",
+      "authority": "Consórcio de Inovação na Gestão Pública (CIGA)",
+      "scope": "state_municipal_network",
+      "uf": "SC",
+      "domain": [
+        "official_gazette",
+        "municipal_acts",
+        "legal_metadata",
+        "open_data"
+      ],
+      "source_type": "CKAN",
+      "base_url": "https://dados.ciga.sc.gov.br/",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED",
+      "notes": "CIGA Dados disponibiliza de forma estruturada conteúdo e metadados do Diário Oficial dos Municípios de Santa Catarina, com APIs CKAN. Fonte-mãe valiosa para detectar leis, alterações e atos urbanísticos de centenas de entidades municipais."
+    },
+    {
+      "id": "sc-ciga-geo",
+      "authority": "Consórcio de Inovação na Gestão Pública (CIGA)",
+      "scope": "state_municipal_network",
+      "uf": "SC",
+      "domain": [
+        "multifinalitary_cadastre",
+        "lots",
+        "blocks",
+        "zoning",
+        "streets",
+        "pgv",
+        "municipal_geospatial"
+      ],
+      "source_type": "multi_municipality_public_GIS",
+      "base_url": "https://geo.ciga.sc.gov.br/",
+      "discovery_url": "https://consorciociga.gov.br/cigageo/",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PUBLIC_ENVIRONMENT_PER_MUNICIPALITY_REVIEW",
+      "notes": "CIGA GEO é CTM web usado por municípios consorciados. Documentação oficial descreve ambiente externo público sem login e camadas como perímetro urbano, zona, setor, localidade, zoneamento, bairro, quadra, lote, logradouro e PGV, selecionadas pelo município. Acesso público não implica redistribuição automática; classificar município/camada/atributo individualmente."
+    },
+    {
       "id": "sc-florianopolis-geofloripa",
       "authority": "Prefeitura de Florianópolis / Rede de Planejamento",
       "scope": "municipality",
@@ -2424,6 +2499,24 @@
       "access_class": "PUBLIC_QUERY_ONLY",
       "verification_status": "VERIFIED_PUBLIC_WITH_PRIVACY_FILTER",
       "notes": "Acesso visitante público lançado em 14/05/2026; FAQ diz que usuários podem consultar e baixar dados. Decreto municipal determina downloads respeitando LGPD. Como o sistema cita matrículas/cadastros, aplicar bloqueio de campos pessoais/registrários antes de qualquer ingestão pública."
+    },
+    {
+      "id": "sp-praia-grande-geopg",
+      "authority": "Prefeitura de Praia Grande",
+      "scope": "municipality",
+      "municipality_ibge": "3541000",
+      "domain": [
+        "cadastral_map",
+        "geospatial",
+        "orthophoto",
+        "urban_planning"
+      ],
+      "source_type": "GeoServer_WMS_WMTS",
+      "base_url": "https://geoserver.praiagrande.sp.gov.br/PraiaGrandeProducao/wms",
+      "portal_url": "https://plantacadastral.praiagrande.sp.gov.br/",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PUBLIC_PORTAL_LICENSE_PER_LAYER",
+      "notes": "Planta Cadastral oficial referencia WMS e WMTS públicos do GeoServer. A interface também mostra referências WFS internas RFC1918; essas URLs internas não são alvo de tentativa de acesso. Enumerar apenas serviços publicamente roteáveis/documentados."
     },
     {
       "id": "sp-ribeirao-preto-webgis",
