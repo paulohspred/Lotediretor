@@ -1980,6 +1980,25 @@
       "verification_status": "VERIFIED"
     },
     {
+      "id": "pi-teresina-urban-law",
+      "authority": "Prefeitura de Teresina / SEMPLAN",
+      "scope": "municipality",
+      "municipality_ibge": "2211001",
+      "domain": [
+        "plan_director",
+        "zoning",
+        "parceling",
+        "land_use",
+        "urban_law",
+        "legal_annexes"
+      ],
+      "source_type": "official_legal_document_hub",
+      "discovery_url": "https://antigo-semplan.pmt.pi.gov.br/uso-e-ocupacao-do-solo-leis-vigentes/",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED_PUBLIC_LEGAL_DOCUMENTS",
+      "notes": "Portal oficial preserva PDOT LC 5.481/2019, alterações e legislação de zoneamento/parcelamento/uso do solo, incluindo LC 5.807/2022 e normas relacionadas. A base cartográfica técnica da PRODATER é conhecida institucionalmente, mas endpoint público ainda precisa ser descoberto."
+    },
+    {
       "id": "pr-curitiba-geocuritiba",
       "authority": "Prefeitura de Curitiba / IPPUC",
       "scope": "municipality",
