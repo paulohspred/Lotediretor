@@ -1,7 +1,7 @@
 # Coverage Report — Source Registry
 
 **Data:** 24/09/2026  
-**Fontes-mãe:** 169  
+**Fontes-mãe:** 210  
 **Municípios com ao menos uma fonte municipal identificada:** 50
 
 Este relatório é calculado a partir de `data/source-registry/bootstrap.json`. Presença de domínio não implica completude, licença para redistribuição ou qualidade suficiente.
