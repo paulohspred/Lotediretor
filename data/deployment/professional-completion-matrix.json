@@ -99,14 +99,15 @@
           "supporting_source_ids": [
             "sp-sao-paulo-iptu-cadastro-fiscal"
           ],
-          "endpoint": "https://geosampa.prefeitura.sp.gov.br/",
+          "endpoint": "https://legislacao.prefeitura.sp.gov.br/lei-18330-de-11-de-novembro-de-2025",
           "access_class": "OPEN_REUSABLE",
           "license": null,
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "connector_status": "MATERIALIZER_VALIDATED_END_TO_END",
           "missing_fields": [
-            "annex parser and temporal version chain"
+            "historical PGV temporal version chain",
+            "full assessed-value/IPTU formula resolver"
           ],
-          "notes": "Lei 18.330/2025 sets the PGV effective from 2026-01-01; preserve historical PGV versions instead of overwriting."
+          "notes": "Lei 18.330/2025 sets the PGV effective from 2026-01-01. Annex II materializer is validated end-to-end: official PDF snapshot + SHA-256 + strict Codlog/SQ/vm2t parser produced 184,281 unique keys with zero conflicts. PGV land-unit value is an input to valuation and must not be presented as assessed value or IPTU."
         },
         {
           "field": "ITBI",
