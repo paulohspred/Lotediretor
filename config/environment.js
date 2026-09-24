@@ -1,39 +1,19 @@
-const HOST = process.env.API_HOST || 'https://labs-layers-api.herokuapp.com';
-const CARTO_USER = process.env.CARTO_USER || 'planninglabs';
+const HOST = process.env.API_HOST || '';
+const CARTO_USER = process.env.CARTO_USER || '';
 
 module.exports = function (environment) {
   const ENV = {
-    metricsAdapters: [
-      {
-        name: 'MatomoTagManager',
-        environments: ['development', 'production', 'test'],
-        config: {
-          matomoUrl: 'nycplanning.matomo.cloud',
-          containerId: 'FkkxRc58',
-        },
-      },
-    ],
+    metricsAdapters: [],
     modulePrefix: 'labs-zola',
     environment,
     rootURL: '/',
     locationType: 'auto',
     host: HOST,
     namespace: 'v1',
-    zapApiHost: 'https://zap-api-production.herokuapp.com',
-
-    gReCaptcha: {
-      jsUrl: 'https://www.google.com/recaptcha/api.js?render=explicit',
-      siteKey: '6LeOMr0ZAAAAAD2O8q7y7JjJKiN-zkBGZIIjp1mL',
-    },
+    zapApiHost: process.env.ZAP_API_HOST || '',
 
     fastboot: {
-      hostWhitelist: [
-        'https://carto.nycplanningdigital.com/**',
-        'nycplanningdigital.com',
-        'carto.nycplanningdigital.com',
-        /^localhost:\d+$/,
-        'dry-thicket-91267.herokuapp.com',
-      ],
+      hostWhitelist: [/^localhost:\\d+$/],
     },
 
     defaultLayerGroupState: [
@@ -348,7 +328,7 @@ module.exports = function (environment) {
     },
 
     carto: {
-      domain: `https://carto.nycplanningdigital.com`,
+      domain: process.env.CARTO_DOMAIN || '',
       username: CARTO_USER,
     },
 
