@@ -489,6 +489,22 @@
       "verification_status": "VERIFIED"
     },
     {
+      "id": "br-dados-gov-api",
+      "authority": "Portal Brasileiro de Dados Abertos / CGU",
+      "scope": "BR",
+      "domain": [
+        "open_data_catalog",
+        "dataset_discovery",
+        "metadata"
+      ],
+      "source_type": "OpenAPI_REST_catalog",
+      "base_url": "https://dados.gov.br/dados/api/publico/conjuntos-dados",
+      "api_documentation_url": "https://dados.gov.br/swagger-ui/index.html",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED",
+      "notes": "API REST oficial OAS 3.1 para listar/detalhar conjuntos de dados do Portal Brasileiro de Dados Abertos. Usar como fonte-mãe de descoberta; licenças continuam sendo avaliadas por dataset/recurso."
+    },
+    {
       "id": "br-dnit-profas",
       "authority": "DNIT",
       "scope": "BR_PARTIAL",
@@ -1517,6 +1533,43 @@
       "access_class": "PUBLIC_QUERY_ONLY",
       "verification_status": "VERIFIED_ENDPOINT_LICENSE_PER_SERVICE",
       "notes": "Servidor público muito amplo: SISURB_cadastro/fazenda/planejamento/obras, PDP, lotes, edificações/divisas e altimetria 2024, APP, risco hidrológico, patrimônio e anexos do Plano Diretor. Revisar licença e campos por serviço."
+    },
+    {
+      "id": "mg-pocos-caldas-open-data-api",
+      "authority": "Prefeitura de Poços de Caldas",
+      "scope": "municipality",
+      "municipality_ibge": "3151800",
+      "domain": [
+        "open_data",
+        "municipal_services",
+        "finance",
+        "planning",
+        "legislation"
+      ],
+      "source_type": "official_REST_API",
+      "base_url": "https://servicos.pocosdecaldas.mg.gov.br/api/dados_abertos",
+      "discovery_url": "https://servicos.pocosdecaldas.mg.gov.br/guia_dados_abertos",
+      "access_class": "AUTHENTICATED_PUBLIC",
+      "verification_status": "VERIFIED_VISITOR_TOKEN",
+      "notes": "API oficial REST/JSON com exportações CSV/XML. O portal permite gerar token temporário de visitante (1 hora/50 requisições) e documenta uso por X-API-Token/Bearer. Consumir apenas endpoints de dados abertos documentados; não reutilizar credenciais fora do fluxo oficial."
+    },
+    {
+      "id": "mg-pocos-caldas-urban-law-archive",
+      "authority": "Câmara Municipal de Poços de Caldas",
+      "scope": "municipality",
+      "municipality_ibge": "3151800",
+      "domain": [
+        "plan_director",
+        "zoning",
+        "urban_law",
+        "historical_maps",
+        "legal_annexes"
+      ],
+      "source_type": "legislative_archive_structured",
+      "discovery_url": "https://www.pocosdecaldas.mg.leg.br/legislacao/plano-diretor-1",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED",
+      "notes": "Acervo do Plano Diretor preserva diagnóstico 2006, conjuntos ZIP de mapas, projeto hidrogeoambiental/DWG, leis complementares, processo participativo e LC 225/2022 com mapas. SIAVE informa situação/vínculos/anexos da legislação urbanística, útil para genealogia normativa."
     },
     {
       "id": "mg-uberlandia-plan-cartography",
