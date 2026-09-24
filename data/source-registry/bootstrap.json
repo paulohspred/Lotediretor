@@ -3930,6 +3930,86 @@
       "access_class": "PUBLIC_QUERY_ONLY",
       "verification_status": "VERIFIED_QUERY_PRIVACY_CONTROLS",
       "notes": "Consulta de IPTU e Planta de Valores por CCI. Consulta de CCI usa CPF/CNPJ como controle de acesso e não deve ser automatizada para descoberta de imóveis. Resolve Palmas documenta revisão cadastral, alvará/habite-se e vínculo com matrícula/cadastro municipal."
+    },
+    {
+      "id": "sp-sao-paulo-itbi-transactions",
+      "authority": "Prefeitura de São Paulo / Secretaria Municipal da Fazenda",
+      "scope": "municipality",
+      "municipality_ibge": "3550308",
+      "domain": [
+        "itbi",
+        "transactions",
+        "property_attributes",
+        "historical_series"
+      ],
+      "source_type": "official_public_download",
+      "discovery_url": "https://www2.prefeitura.sp.gov.br/web/fazenda/w/acesso_a_informacao/31501",
+      "formats": [
+        "XLSX",
+        "ODS"
+      ],
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PUBLIC_DOWNLOAD_LICENSE_REVIEW",
+      "update_frequency": "monthly/annual files",
+      "notes": "Página oficial publica transações imobiliárias com recolhimento de ITBI-IV em arquivos anuais, com 2026 disponível e série histórica pelo menos desde 2017. Cada linha representa DTI com ITBI efetivamente pago no mês de referência. Revisar licença/termos e schema antes de espelhamento."
+    },
+    {
+      "id": "sp-sao-paulo-habite-se-cedi",
+      "authority": "Prefeitura de São Paulo / Secretaria Municipal de Urbanismo e Licenciamento",
+      "scope": "municipality",
+      "municipality_ibge": "3550308",
+      "domain": [
+        "habite_se",
+        "building_regularization",
+        "building_history",
+        "licensing",
+        "property_documents"
+      ],
+      "source_type": "official_query_and_document_service",
+      "discovery_url": "https://www.prefeitura.sp.gov.br/web/licenciamento/w/servicos/365484",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_SERVICE_NOT_BULK_DATA",
+      "notes": "Certificado de Conclusão (antigo Habite-se) atesta conclusão de obra licenciada. Fluxos atuais dependem do sistema de origem do alvará (Aprova Digital/SLCe/SLC). CEDI também mantém histórico/regularidade de edificações. Tratar como consulta/documento por imóvel, não como bulk open data."
+    },
+    {
+      "id": "sp-sao-paulo-diario-oficial-api",
+      "authority": "Prefeitura de São Paulo / Secretaria Municipal de Gestão",
+      "scope": "municipality",
+      "municipality_ibge": "3550308",
+      "domain": [
+        "official_gazette",
+        "legal_publication",
+        "municipal_acts",
+        "historical_law"
+      ],
+      "source_type": "documented_API",
+      "developer_url": "https://www.apilib.prefeitura.sp.gov.br/store/apis/info?name=Diario_Oficial&provider=admin&version=v1",
+      "service_url": "https://gateway.apilib.prefeitura.sp.gov.br/sg/dom/v1",
+      "access_class": "AUTHENTICATED_PUBLIC",
+      "verification_status": "VERIFIED_DOCUMENTED_API_TOKEN_REQUIRED",
+      "notes": "API oficial publicada para dados do Diário Oficial da Cidade de São Paulo. O portal documenta endpoint e Swagger, mas exige token/subscrição; não testar ou contornar sem credencial legítima. Útil para alterações legais, editais, licenciamento, desapropriação e atos urbanísticos."
+    },
+    {
+      "id": "sp-sao-paulo-lidar-terrain",
+      "authority": "Prefeitura de São Paulo / SMUL / GEOINFO",
+      "scope": "municipality",
+      "municipality_ibge": "3550308",
+      "domain": [
+        "terrain",
+        "lidar",
+        "elevation",
+        "surface_model",
+        "topography"
+      ],
+      "source_type": "GeoSampa_metadata_and_download",
+      "discovery_url": "https://metadados.geosampa.prefeitura.sp.gov.br/geonetwork/geoprodam/search?orgName=Coordenadoria+de+Produ%C3%A7%C3%A3o+e+An%C3%A1lise+da+Informa%C3%A7%C3%A3o+%E2%80%93+GEOINFO",
+      "formats": [
+        "LAZ",
+        "raster/grid metadata"
+      ],
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PUBLIC_DOWNLOAD_LICENSE_REVIEW",
+      "notes": "GeoSampa documenta MDT/MDS e nuvens LiDAR 2017 e 2020. O levantamento 2020 possui nuvem com cerca de 10 pontos/m² e produtos MDT/MDS de 0,50 m; metadados indicam PEC-PCD Classe A. Confirmar licença/termos específicos do artefato antes de materialização."
     }
   ]
 }
