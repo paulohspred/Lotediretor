@@ -1185,6 +1185,25 @@
       "notes": "Lei 11.181/2019 e regulamentos; BHMAP/GeoSiurbe complementam a geometria."
     },
     {
+      "id": "mg-contagem-geoprocessamento",
+      "authority": "Prefeitura de Contagem",
+      "scope": "municipality",
+      "municipality_ibge": "3118601",
+      "domain": [
+        "environment",
+        "sewerage",
+        "risk",
+        "hydrology",
+        "urban_planning",
+        "geospatial"
+      ],
+      "source_type": "ArcGIS_REST",
+      "base_url": "https://geoprocessamento.contagem.mg.gov.br/arcgis/rest/services",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PUBLIC_SERVICES_LICENSE_PER_LAYER",
+      "notes": "Serviços REST públicos confirmados com saneamento, nascentes, drenagem e outros temas; expandir árvore do servidor com harvester e procurar cadastro/zoneamento."
+    },
+    {
       "id": "mg-ide-sisema",
       "authority": "Governo de Minas Gerais / SISEMA",
       "scope": "state",
@@ -1203,6 +1222,29 @@
       "access_class": "PUBLIC_QUERY_ONLY",
       "verification_status": "VERIFIED",
       "notes": "GeoServer oficial com WMS/WFS/WCS/WMTS; catálogo GeoNetwork retornava 215 registros WFS na pesquisa. Licença deve ser verificada por camada/metadado."
+    },
+    {
+      "id": "mg-juiz-de-fora-sisurb",
+      "authority": "Prefeitura de Juiz de Fora",
+      "scope": "municipality",
+      "municipality_ibge": "3136702",
+      "domain": [
+        "cadastre",
+        "lots",
+        "buildings",
+        "plan_director",
+        "legal_annexes",
+        "risk",
+        "environment",
+        "heritage",
+        "terrain",
+        "utilities"
+      ],
+      "source_type": "ArcGIS_REST",
+      "base_url": "https://sisurb.pjf.mg.gov.br/server/rest/services",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_ENDPOINT_LICENSE_PER_SERVICE",
+      "notes": "Servidor público muito amplo: SISURB_cadastro/fazenda/planejamento/obras, PDP, lotes, edificações/divisas e altimetria 2024, APP, risco hidrológico, patrimônio e anexos do Plano Diretor. Revisar licença e campos por serviço."
     },
     {
       "id": "ms-pinms-arcgis",
@@ -1500,6 +1542,27 @@
       "access_class": "OPEN_REUSABLE",
       "verification_status": "VERIFIED",
       "notes": "Plano Diretor Lei 14.771/2015; zoneamento Lei 15.511/2019. Revisão em curso em 2026."
+    },
+    {
+      "id": "pr-londrina-gis",
+      "authority": "Prefeitura de Londrina",
+      "scope": "municipality",
+      "municipality_ibge": "4113700",
+      "domain": [
+        "cadastre",
+        "zoning",
+        "plan_director",
+        "cartography",
+        "imagery",
+        "registry_reference",
+        "environment",
+        "heritage"
+      ],
+      "source_type": "ArcGIS_REST",
+      "base_url": "https://geo.londrina.pr.gov.br/server/rest/services",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_ENDPOINT_LICENSE_PER_SERVICE",
+      "notes": "Diretório público inclui PlanoDiretor, zoneamento aberto, cartografia, imagens, IPPUL e pasta SmfMatriculaCartorio. A presença de pasta com referência cartorial não autoriza ingestão de dados pessoais/registrários; aplicar revisão de campos e termos."
     },
     {
       "id": "pr-sanepar-arcgis",
@@ -1807,6 +1870,25 @@
       "notes": "Diretório REST público com dezenas de pastas temáticas, incluindo patrimônio, estrutura fundiária, uso do solo e zoneamento."
     },
     {
+      "id": "sc-florianopolis-geofloripa",
+      "authority": "Prefeitura de Florianópolis / Rede de Planejamento",
+      "scope": "municipality",
+      "municipality_ibge": "4205407",
+      "domain": [
+        "multifinalitary_cadastre",
+        "official_cartography",
+        "zoning",
+        "urban_planning",
+        "environment"
+      ],
+      "source_type": "GeoServer_WMS_download_portal",
+      "base_url": "https://geofloripa.pmf.sc.gov.br/geoserver/Geoportal/ows",
+      "discovery_url": "https://redeplanejamento.pmf.sc.gov.br/pt-BR/gestao-territorial/geofloripa",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_OFFICIAL_GEOSERVICE_LICENSE_PER_LAYER",
+      "notes": "GeoFloripa integra o Sistema Municipal de Informações Urbanísticas e Cartografia Oficial. Tutorial oficial de 2024 documenta WMS GetCapabilities e downloads/geosserviços. Cadastro territorial interno não deve ser confundido com todas as camadas públicas do GeoPortal."
+    },
+    {
       "id": "sc-ima-arcgis",
       "authority": "Instituto do Meio Ambiente de Santa Catarina",
       "scope": "state",
@@ -1882,6 +1964,24 @@
       "access_class": "PUBLIC_QUERY_ONLY",
       "verification_status": "VERIFIED_ENDPOINT_LICENSE_PER_LAYER",
       "notes": "GeoServer público com WFS/WMS/WCS/WMTS/CSW; metadados frequentemente oferecem download Shapefile e lineage detalhado. Servidor se identifica com texto padrão/antigo, portanto autoridade deve ser confirmada pelo catálogo/metadados por camada."
+    },
+    {
+      "id": "sp-ribeirao-preto-webgis",
+      "authority": "Prefeitura de Ribeirão Preto",
+      "scope": "municipality",
+      "municipality_ibge": "3543402",
+      "domain": [
+        "geospatial",
+        "urban_planning",
+        "cadastre",
+        "hosted_services"
+      ],
+      "source_type": "ArcGIS_Enterprise",
+      "base_url": "https://webgis.ribeiraopreto.sp.gov.br/server/rest/services",
+      "portal_url": "https://webgis.ribeiraopreto.sp.gov.br/portal/",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PORTAL_SERVER_ENDPOINT_DISCOVERY",
+      "notes": "Portal ArcGIS Enterprise oficial identifica a própria Prefeitura e referencia o servidor REST local. Enumerar serviços públicos e classificar licença/campos no próximo ciclo."
     },
     {
       "id": "sp-sao-paulo-geosampa-wfs",
