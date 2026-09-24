@@ -1,0 +1,210 @@
+{
+  "schema_version": "0.1.0",
+  "as_of": "2026-09-24",
+  "summary": {
+    "registry_sources": 169,
+    "registry_municipalities": 50,
+    "ufs_with_any_catalogued_source": 27,
+    "zola_ready_now_cities": 18,
+    "zola_ready_now_ufs": 10,
+    "near_ready_cities": 12
+  },
+  "criteria": {
+    "ready_now": [
+      "public/official technical geospatial source",
+      "usable lot/cadastral geometry or equivalent parcel layer",
+      "urban planning/zoning source sufficient for map pilot",
+      "no dependency on bypassing authentication",
+      "can be integrated through read-only connector or approved download"
+    ],
+    "near_ready": [
+      "most required sources exist",
+      "one important gap remains: parcel geometry, licensing, endpoint discovery, or adapter"
+    ]
+  },
+  "ready_now": [
+    {
+      "ibge": "3550308",
+      "city": "São Paulo",
+      "uf": "SP",
+      "reason": "GeoSampa WFS/WMS + cadastro fiscal/IPTU + PDE/LPUOS"
+    },
+    {
+      "ibge": "3548500",
+      "city": "Santos",
+      "uf": "SP",
+      "reason": "lotes SHP/DXF + zoneamento SHP/GPKG + Plano Diretor e histórico legal"
+    },
+    {
+      "ibge": "3549904",
+      "city": "São José dos Campos",
+      "uf": "SP",
+      "reason": "GeoSanja + CTM/SINTER + zoneamento/Plano Diretor"
+    },
+    {
+      "ibge": "3525904",
+      "city": "Jundiaí",
+      "uf": "SP",
+      "reason": "GeoJundiaí com lotes, zoneamento, PGV e ortofotos"
+    },
+    {
+      "ibge": "2611606",
+      "city": "Recife",
+      "uf": "PE",
+      "reason": "lotes/ArcGIS + IPTU/ITBI CKAN + Plano Diretor + licenciamento"
+    },
+    {
+      "ibge": "3304557",
+      "city": "Rio de Janeiro",
+      "uf": "RJ",
+      "reason": "parcelas/imóveis territoriais + IPTU/ITBI CC BY 4.0 + GeoPAL + planejamento"
+    },
+    {
+      "ibge": "3303302",
+      "city": "Niterói",
+      "uf": "RJ",
+      "reason": "quadra/lote + Plano Diretor + serviços urbanísticos; aplicar field allowlist"
+    },
+    {
+      "ibge": "3106200",
+      "city": "Belo Horizonte",
+      "uf": "MG",
+      "reason": "IDE-BHGEO WFS/WMS com lote CTM, edificação e parâmetros urbanísticos"
+    },
+    {
+      "ibge": "3136702",
+      "city": "Juiz de Fora",
+      "uf": "MG",
+      "reason": "SISURB com lotes, edificações, Plano Diretor, risco e projetos aprovados"
+    },
+    {
+      "ibge": "5208707",
+      "city": "Goiânia",
+      "uf": "GO",
+      "reason": "Mapa Tributário com unidade territorial + edifícios/PGV + Plano Diretor"
+    },
+    {
+      "ibge": "2507507",
+      "city": "João Pessoa",
+      "uf": "PB",
+      "reason": "Atlas Filipeia com lotes SHP/CSV + zoneamento/PD 2024 + aerofotos"
+    },
+    {
+      "ibge": "4119152",
+      "city": "Pinhais",
+      "uf": "PR",
+      "reason": "Mapa Cadastral/ITBI + Plano Diretor 2022 + edificações e ortofotos"
+    },
+    {
+      "ibge": "4113700",
+      "city": "Londrina",
+      "uf": "PR",
+      "reason": "ArcGIS municipal com cadastro, zoneamento, Plano Diretor e imagens"
+    },
+    {
+      "ibge": "4209102",
+      "city": "Joinville",
+      "uf": "SC",
+      "reason": "SIMGeo/ArcGIS com lotes fiscais, cadastro e planejamento urbano"
+    },
+    {
+      "ibge": "4202404",
+      "city": "Blumenau",
+      "uf": "SC",
+      "reason": "WFS oficial com lotes, edificações, condomínios e consulta para construir"
+    },
+    {
+      "ibge": "4205407",
+      "city": "Florianópolis",
+      "uf": "SC",
+      "reason": "GeoFloripa/GeoServer + CTM/cartografia oficial + zoneamento"
+    },
+    {
+      "ibge": "5002704",
+      "city": "Campo Grande",
+      "uf": "MS",
+      "reason": "SIMGEO/CTM ArcGIS público + Plano Diretor/zoneamento"
+    },
+    {
+      "ibge": "3205309",
+      "city": "Vitória",
+      "uf": "ES",
+      "reason": "ArcGIS municipal com mapa imobiliário + PDU/zoneamento"
+    }
+  ],
+  "near_ready": [
+    {
+      "ibge": "4314902",
+      "city": "Porto Alegre",
+      "uf": "RS",
+      "gap": "confirmar/normalizar parcel geometry no conector principal"
+    },
+    {
+      "ibge": "2304400",
+      "city": "Fortaleza",
+      "uf": "CE",
+      "gap": "fiscal e PD fortes; confirmar camada vetorial de lote para seleção ZoLa"
+    },
+    {
+      "ibge": "1302603",
+      "city": "Manaus",
+      "uf": "AM",
+      "gap": "ArcGIS forte, mas acesso é misto e parcela pública precisa ser isolada"
+    },
+    {
+      "ibge": "4305108",
+      "city": "Caxias do Sul",
+      "uf": "RS",
+      "gap": "cadastro territorial forte; completar zoneamento/lei no adapter"
+    },
+    {
+      "ibge": "4106902",
+      "city": "Curitiba",
+      "uf": "PR",
+      "gap": "GeoCuritiba + zoneamento prontos; completar atributos prediais/fiscais do piloto"
+    },
+    {
+      "ibge": "3509502",
+      "city": "Campinas",
+      "uf": "SP",
+      "gap": "camadas SHP/metadados; consolidar lote + atributos de ficha"
+    },
+    {
+      "ibge": "3547809",
+      "city": "Santo André",
+      "uf": "SP",
+      "gap": "lotes fiscais públicos; completar zoneamento/ficha normalizada"
+    },
+    {
+      "ibge": "3534401",
+      "city": "Osasco",
+      "uf": "SP",
+      "gap": "OzMundi público; revisar campos registrais/LGPD e endpoints"
+    },
+    {
+      "ibge": "3541000",
+      "city": "Praia Grande",
+      "uf": "SP",
+      "gap": "GeoServer público; enumerar camada vetorial de lote e licença"
+    },
+    {
+      "ibge": "1100205",
+      "city": "Porto Velho",
+      "uf": "RO",
+      "gap": "GeoServer confirmado; enumerar/validar lotes, zoneamento e atributos"
+    },
+    {
+      "ibge": "1200401",
+      "city": "Rio Branco",
+      "uf": "AC",
+      "gap": "cadastro/lotes excelentes; completar zoneamento/Plano Diretor vetorial"
+    },
+    {
+      "ibge": "1501402",
+      "city": "Belém",
+      "uf": "PA",
+      "gap": "cadastro/serviços e PD existem; falta parcel dataset vetorial reutilizável confirmado"
+    }
+  ],
+  "architecture_note": "ZoLa should consume a normalized LoteDiretor API instead of connecting directly to each municipality. Municipal connectors ingest/query heterogeneous sources and expose a common parcel/zoning/property contract."
+}
