@@ -547,6 +547,22 @@
       "notes": "Busca CEP/CENSEC permite pesquisa paga de escrituras e procurações. Desde 2025 a consulta pública retorna metadados limitados como tabelionato, data, livro/folha e tipo do ato, sem detalhar negócio/partes. Não usar para indexação massiva de pessoas."
     },
     {
+      "id": "br-cnj-datajud-public-api",
+      "authority": "Conselho Nacional de Justiça",
+      "scope": "BR",
+      "domain": [
+        "judicial_process_metadata",
+        "legal_due_diligence",
+        "procedural_status"
+      ],
+      "source_type": "public_REST_search_API",
+      "base_url": "https://api-publica.datajud.cnj.jus.br/",
+      "discovery_url": "https://www.cnj.jus.br/sistemas/datajud/api-publica/",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED_PUBLIC_METADATA_WITH_PRIVACY_LIMITS",
+      "notes": "API pública fornece metadados de capas e movimentações de processos públicos em tribunais, respeitando sigilo/confidencialidade e termos de uso. No LoteDiretor usar preferencialmente quando já houver número de processo/tribunal associado ao imóvel ou documento; não construir busca por parte/proprietário."
+    },
+    {
       "id": "br-cnj-justica-aberta-serventias",
       "authority": "Conselho Nacional de Justiça",
       "scope": "BR",
@@ -763,6 +779,40 @@
       "access_class": "OPEN_REUSABLE",
       "verification_status": "VERIFIED_WITH_PERSONAL_DATA_FILTER",
       "notes": "Polígonos de áreas embargadas. Serviços podem conter nome/documentos de pessoas; aplicação pública deve minimizar/bloquear campos pessoais e ser property-centric."
+    },
+    {
+      "id": "br-ibama-laf-public",
+      "authority": "IBAMA",
+      "scope": "BR",
+      "domain": [
+        "environmental_licensing",
+        "environmental_studies",
+        "eia_rima",
+        "licenses",
+        "administrative_processes"
+      ],
+      "source_type": "public_queries_open_data_and_documents",
+      "discovery_url": "https://www.gov.br/ibama/pt-br/assuntos/laf/consultas",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PUBLIC_AND_REQUEST_BASED_MIXED_ACCESS",
+      "notes": "Portal reúne processos de licenciamento ambiental federal, EIA/RIMA, painel de empreendimentos, licenças por período, dados abertos de licenças, SEI e PNLA. Documentos integrais podem exigir pedido de vistas/acesso conforme processo e restrição."
+    },
+    {
+      "id": "br-ibama-sinaflor",
+      "authority": "IBAMA",
+      "scope": "BR",
+      "domain": [
+        "forest_licensing",
+        "vegetation_suppression",
+        "rural_property",
+        "environmental_authorizations",
+        "timber_origin"
+      ],
+      "source_type": "regulated_system_open_data_and_panels",
+      "discovery_url": "https://www.gov.br/ibama/pt-br/assuntos/biodiversidade/flora-e-madeira/sistema-nacional-de-controle-da-origem-dos-produtos-florestais-sinaflor",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_MIXED_OPEN_AND_AUTHENTICATED",
+      "notes": "Sinaflor integra informações de imóveis rurais (Sicar/ADA), autorizações de exploração/supressão e origem de produtos florestais. Painéis/dados abertos podem ser usados; operações de empreendedor/RT/órgão são autenticadas."
     },
     {
       "id": "br-ibge-cnefe",
