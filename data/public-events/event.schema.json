@@ -1,0 +1,375 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/paulohspred/Lotediretor/blob/main/data/public-events/event.schema.json",
+  "title": "LoteDiretor Public Event",
+  "description": "Evento público territorial/imobiliário derivado de obra, contratação, processo, licença ou publicação oficial. Não usar pessoa/proprietário como eixo de descoberta.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "event_id",
+    "event_type",
+    "source_id",
+    "source_event_id",
+    "authority",
+    "access_class",
+    "captured_at",
+    "match",
+    "provenance"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "0.1.0"
+    },
+    "event_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "event_type": {
+      "enum": [
+        "PROJECT_PLANNED",
+        "PROCUREMENT_PUBLISHED",
+        "CONTRACTED",
+        "LICENSED",
+        "APPROVED",
+        "PROCESS_OPENED",
+        "PROCESS_MOVEMENT",
+        "LEGAL_ACT_PUBLISHED",
+        "WORK_STARTED",
+        "WORK_PAUSED",
+        "WORK_RESUMED",
+        "WORK_COMPLETED",
+        "CANCELLED",
+        "OTHER"
+      ]
+    },
+    "lifecycle_stage": {
+      "enum": [
+        "PLANNED",
+        "PUBLISHED",
+        "PROCUREMENT",
+        "CONTRACTED",
+        "APPROVED",
+        "EXECUTION",
+        "COMPLETED",
+        "CANCELLED",
+        "UNKNOWN"
+      ]
+    },
+    "title": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "summary": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "source_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_event_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "authority": {
+      "type": "string",
+      "minLength": 1
+    },
+    "access_class": {
+      "enum": [
+        "OPEN_REUSABLE",
+        "PUBLIC_QUERY_ONLY",
+        "AUTHENTICATED_PUBLIC",
+        "RESTRICTED_PERSONAL",
+        "PAID_ON_DEMAND",
+        "USER_PRIVATE",
+        "DERIVED"
+      ]
+    },
+    "municipality_ibge": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[0-9]{7}$"
+    },
+    "event_date": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date"
+    },
+    "published_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "valid_from": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date"
+    },
+    "valid_to": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date"
+    },
+    "status_text": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "progress_percent": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0,
+      "maximum": 100
+    },
+    "planned_value_brl": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "executed_value_brl": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "responsible_organization": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "location": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "address": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "latitude": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": -90,
+          "maximum": 90
+        },
+        "longitude": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": -180,
+          "maximum": 180
+        },
+        "geometry": {
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "geometry_crs": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "identifiers": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "obrasgov_project_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "pncp_control_number": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "process_number": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "permit_number": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "gazette_edition": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "legal_act_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "property_public_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        }
+      }
+    },
+    "document_urls": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "uri"
+      },
+      "default": []
+    },
+    "related_event_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    },
+    "match": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "method",
+        "confidence"
+      ],
+      "properties": {
+        "method": {
+          "enum": [
+            "OFFICIAL_GEOMETRY",
+            "OFFICIAL_PROPERTY_IDENTIFIER",
+            "OFFICIAL_ADDRESS",
+            "SPATIAL_PROXIMITY",
+            "DOCUMENT_REFERENCE",
+            "TEXT_ONLY",
+            "UNRESOLVED"
+          ]
+        },
+        "confidence": {
+          "enum": [
+            "CONFIRMED",
+            "SUPPORTED",
+            "INDICATIVE",
+            "UNKNOWN",
+            "CONFLICTING"
+          ]
+        },
+        "distance_m": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "notes": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "captured_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_url"
+      ],
+      "properties": {
+        "source_url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "document_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "snapshot_sha256": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "parser_version": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "license": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "source_updated_at": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "notes": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    }
+  }
+}
