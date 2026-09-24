@@ -4700,6 +4700,24 @@
       "access_class": "PUBLIC_QUERY_ONLY",
       "verification_status": "VERIFIED_PUBLIC_SERVICE",
       "notes": "SEINFRA mantém a iluminação pública e a Prefeitura informa modernização LED georreferenciada com monitoramento individual das luminárias. Não presumir acesso ao inventário técnico sem canal/documentação pública específica."
+    },
+    {
+      "id": "pb-joao-pessoa-drainage-service",
+      "authority": "Prefeitura de João Pessoa / SEINFRA",
+      "scope": "municipality",
+      "municipality_ibge": "2507507",
+      "domain": [
+        "drainage",
+        "stormwater",
+        "infrastructure",
+        "utility_provider",
+        "maintenance"
+      ],
+      "source_type": "official_public_service",
+      "portal_url": "https://www.joaopessoa.pb.gov.br/noticias/seinfra-realiza-manutencao-na-malha-viaria-rede-de-drenagem-e-iluminacao-publica-em-38-bairros-da-capital/",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PUBLIC_SERVICE_TECHNICAL_DATA_PENDING",
+      "notes": "SEINFRA executa manutenção da rede de drenagem municipal. Serve para resolver a autoridade/operador do serviço; o inventário técnico georreferenciado da rede ainda precisa ser localizado/aprovado separadamente."
     }
   ]
 }
