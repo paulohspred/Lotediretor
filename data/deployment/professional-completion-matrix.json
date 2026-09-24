@@ -390,32 +390,35 @@
           "supporting_source_ids": [
             "br-pncp-open-api"
           ],
-          "endpoint": "https://api-publica.obrasgov.gestao.gov.br/",
+          "endpoint": "https://api-publica.obrasgov.gestao.gov.br/obras",
           "access_class": "OPEN_REUSABLE",
           "license": null,
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "connector_status": "PUBLIC_EVENT_CONNECTORS_CONFIGURED",
           "missing_fields": [
-            "municipal works source complement",
-            "distance-to-property normalizer"
+            "city-bounded materialization schedule",
+            "project geometry to parcel-distance normalizer",
+            "PNCP procurement-to-project relationship when upstream does not provide a direct key"
           ],
-          "notes": null
+          "notes": "ObrasGov current API and PNCP public consultation clients are now implemented with bounded GET-only ingestion. Parcel relevance still requires geometry/official identifier evidence."
         },
         {
           "field": "public processes",
           "status": "PARTIAL",
-          "source_id": "br-sei-public-search",
+          "source_id": "sp-sao-paulo-processos-administrativos",
           "supporting_source_ids": [
-            "sp-sao-paulo-licenciamento-geosampa"
+            "sp-sao-paulo-licenciamento-geosampa",
+            "br-sei-public-search"
           ],
-          "endpoint": "https://www.gov.br/servicoscompartilhados/pt-br/assuntos/gestao-documental/sistema-eletronico-de-informacoes-sei/pesquisa-publica",
+          "endpoint": "https://processos.prefeitura.sp.gov.br/Forms/Principal.aspx",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "connector_status": "PUBLIC_EVENT_RESOLVER_CONFIGURED",
           "missing_fields": [
-            "municipal SEI/SIMPROC public-search adapter",
-            "property/process linkage"
+            "stable machine interface for known process numbers",
+            "property/process linkage normalizer",
+            "authorized Diário Oficial API credential"
           ],
-          "notes": null
+          "notes": "Municipal process query is official and public by known process number; do not use CPF/CNPJ search for property intelligence."
         },
         {
           "field": "official gazette",
@@ -789,31 +792,34 @@
           "supporting_source_ids": [
             "br-pncp-open-api"
           ],
-          "endpoint": "https://api-publica.obrasgov.gestao.gov.br/",
+          "endpoint": "https://api-publica.obrasgov.gestao.gov.br/obras",
           "access_class": "OPEN_REUSABLE",
           "license": null,
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "connector_status": "PUBLIC_EVENT_CONNECTORS_CONFIGURED",
           "missing_fields": [
-            "municipal complement"
+            "city-bounded materialization schedule",
+            "project geometry to parcel-distance normalizer",
+            "PNCP procurement-to-project relationship when upstream does not provide a direct key"
           ],
-          "notes": null
+          "notes": "ObrasGov current API and PNCP public consultation clients are now implemented with bounded GET-only ingestion. Parcel relevance still requires geometry/official identifier evidence."
         },
         {
           "field": "public processes",
           "status": "PARTIAL",
           "source_id": "pe-recife-sei-public-search",
           "supporting_source_ids": [
-            "pe-recife-licenciamento-urbanistico"
+            "pe-recife-licenciamento-urbanistico",
+            "pe-recife-official-gazette-open-data"
           ],
           "endpoint": "https://portalsei.recife.pe.gov.br/",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "QUERY_WORKFLOW_ONLY",
+          "connector_status": "PUBLIC_EVENT_RESOLVER_CONFIGURED",
           "missing_fields": [
-            "documented machine interface/API",
-            "property/process linkage"
+            "documented machine API for public process search",
+            "property/process linkage normalizer"
           ],
-          "notes": "Municipal SEI exposes public process search; only public results may be used, with no authentication bypass."
+          "notes": "Recife has open licensing/gazette data plus SEI public search; keep SEI documents query-only unless a public machine interface is documented."
         },
         {
           "field": "official gazette",
@@ -1200,28 +1206,35 @@
           "supporting_source_ids": [
             "br-pncp-open-api"
           ],
-          "endpoint": "https://api-publica.obrasgov.gestao.gov.br/",
+          "endpoint": "https://api-publica.obrasgov.gestao.gov.br/obras",
           "access_class": "OPEN_REUSABLE",
           "license": null,
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "connector_status": "PUBLIC_EVENT_CONNECTORS_CONFIGURED",
           "missing_fields": [
-            "municipal works complement"
+            "city-bounded materialization schedule",
+            "project geometry to parcel-distance normalizer",
+            "PNCP procurement-to-project relationship when upstream does not provide a direct key"
           ],
-          "notes": null
+          "notes": "ObrasGov current API and PNCP public consultation clients are now implemented with bounded GET-only ingestion. Parcel relevance still requires geometry/official identifier evidence."
         },
         {
           "field": "public processes",
           "status": "PARTIAL",
-          "source_id": "br-sei-public-search",
-          "supporting_source_ids": [],
-          "endpoint": "https://www.gov.br/servicoscompartilhados/pt-br/assuntos/gestao-documental/sistema-eletronico-de-informacoes-sei/pesquisa-publica",
+          "source_id": "rj-rio-processos-administrativos",
+          "supporting_source_ids": [
+            "rj-rio-licenses-habite-se",
+            "rj-rio-official-gazette-doweb"
+          ],
+          "endpoint": "https://transparencia.prefeitura.rio/consulta-a-processos/",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "connector_status": "PUBLIC_EVENT_RESOLVER_CONFIGURED",
           "missing_fields": [
-            "municipal process/licensing public adapter"
+            "system resolver by process date/identifier",
+            "machine-safe query interface",
+            "property/process linkage"
           ],
-          "notes": null
+          "notes": "New municipal processes use SEI!RIO from 05/12/2025; Processo.Rio/SICOP remain legacy. Resolve system before querying and never bypass verification codes."
         },
         {
           "field": "official gazette",
@@ -1609,28 +1622,35 @@
           "supporting_source_ids": [
             "br-pncp-open-api"
           ],
-          "endpoint": "https://api-publica.obrasgov.gestao.gov.br/",
+          "endpoint": "https://api-publica.obrasgov.gestao.gov.br/obras",
           "access_class": "OPEN_REUSABLE",
           "license": null,
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "connector_status": "PUBLIC_EVENT_CONNECTORS_CONFIGURED",
           "missing_fields": [
-            "municipal works complement"
+            "city-bounded materialization schedule",
+            "project geometry to parcel-distance normalizer",
+            "PNCP procurement-to-project relationship when upstream does not provide a direct key"
           ],
-          "notes": null
+          "notes": "ObrasGov current API and PNCP public consultation clients are now implemented with bounded GET-only ingestion. Parcel relevance still requires geometry/official identifier evidence."
         },
         {
           "field": "public processes",
           "status": "PARTIAL",
-          "source_id": "br-sei-public-search",
-          "supporting_source_ids": [],
-          "endpoint": "https://www.gov.br/servicoscompartilhados/pt-br/assuntos/gestao-documental/sistema-eletronico-de-informacoes-sei/pesquisa-publica",
+          "source_id": "mg-belo-horizonte-processos-protocolos",
+          "supporting_source_ids": [
+            "mg-belo-horizonte-projeto-edificacao-licenciado",
+            "mg-belo-horizonte-dom"
+          ],
+          "endpoint": "https://prefeitura.pbh.gov.br/FAZENDa/sigede",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "connector_status": "PUBLIC_EVENT_RESOLVER_CONFIGURED",
           "missing_fields": [
-            "municipal public-process adapter"
+            "protocol/system resolver",
+            "stable machine query interface",
+            "property/process linkage"
           ],
-          "notes": null
+          "notes": "PBH routes different protocol types through multiple systems; preserve the originating system and protocol number."
         },
         {
           "field": "official gazette",
@@ -2015,30 +2035,34 @@
           "supporting_source_ids": [
             "br-pncp-open-api"
           ],
-          "endpoint": "https://api-publica.obrasgov.gestao.gov.br/",
+          "endpoint": "https://api-publica.obrasgov.gestao.gov.br/obras",
           "access_class": "OPEN_REUSABLE",
           "license": null,
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "connector_status": "PUBLIC_EVENT_CONNECTORS_CONFIGURED",
           "missing_fields": [
-            "municipal complement"
+            "city-bounded materialization schedule",
+            "project geometry to parcel-distance normalizer",
+            "PNCP procurement-to-project relationship when upstream does not provide a direct key"
           ],
-          "notes": null
+          "notes": "ObrasGov current API and PNCP public consultation clients are now implemented with bounded GET-only ingestion. Parcel relevance still requires geometry/official identifier evidence."
         },
         {
           "field": "public processes",
-          "status": "PARTIAL",
-          "source_id": "pb-joao-pessoa-building-permits",
+          "status": "QUERY_ONLY",
+          "source_id": "pb-joao-pessoa-processo-online",
           "supporting_source_ids": [
-            "br-sei-public-search"
+            "pb-joao-pessoa-building-permits",
+            "pb-joao-pessoa-official-gazette"
           ],
-          "endpoint": "https://www.joaopessoa.pb.gov.br/secretarias/seplan/alvaras-e-licencas/",
-          "access_class": "AUTHENTICATED_PUBLIC",
+          "endpoint": "https://www.joaopessoa.pb.gov.br/processoonline/acompanhar_processo.do",
+          "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "connector_status": "PUBLIC_EVENT_RESOLVER_CONFIGURED",
           "missing_fields": [
-            "general municipal process adapter"
+            "authorized non-CAPTCHA machine interface",
+            "property/process linkage"
           ],
-          "notes": null
+          "notes": "Processo On Line uses CAPTCHA. Keep manual/authorized query only; Aprova Digital/1Doc flows remain separate service evidence."
         },
         {
           "field": "official gazette",
@@ -2099,8 +2123,8 @@
     },
     "João Pessoa": {
       "READY": 6,
-      "QUERY_ONLY": 7,
-      "PARTIAL": 12,
+      "QUERY_ONLY": 8,
+      "PARTIAL": 11,
       "PRIVATE_ON_DEMAND": 1
     }
   },
