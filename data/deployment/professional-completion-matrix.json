@@ -1298,31 +1298,38 @@
         },
         {
           "field": "IPTU",
-          "status": "GAP",
-          "source_id": null,
-          "supporting_source_ids": [],
-          "endpoint": null,
-          "access_class": null,
-          "license": null,
-          "connector_status": "NOT_DISCOVERED",
-          "missing_fields": [
-            "bulk/public IPTU cadastral source with reusable terms"
+          "status": "PARTIAL",
+          "source_id": "mg-belo-horizonte-cadastro-imobiliario-regionais",
+          "supporting_source_ids": [
+            "mg-belo-horizonte-zona-homogenea-iptu"
           ],
-          "notes": null
+          "endpoint": "https://dados.pbh.gov.br/dataset/?license_id=cc-by&organization=smfa&res_format=CSV&tags=IPTU&tags=cadastro+imobili%C3%A1rio",
+          "access_class": "OPEN_REUSABLE",
+          "license": "CC BY",
+          "connector_status": "APPROVED_CONNECTOR_CONFIGURED",
+          "missing_fields": [
+            "confirm per-property tax assessed/payable fields",
+            "tax-year normalization"
+          ],
+          "notes": "PBH publishes monthly cadastral/IPTU-tagged regional datasets under CC BY. This closes source discovery but does not by itself prove that individual IPTU liability is present in every record."
         },
         {
           "field": "PGV",
           "status": "PARTIAL",
-          "source_id": "mg-belo-horizonte-bhgeo",
-          "supporting_source_ids": [],
-          "endpoint": "https://prefeitura.pbh.gov.br/bhgeo/acesso-aos-dados",
-          "access_class": "PUBLIC_QUERY_ONLY",
-          "license": null,
+          "source_id": "mg-belo-horizonte-zona-homogenea-iptu",
+          "supporting_source_ids": [
+            "mg-belo-horizonte-bhgeo",
+            "mg-belo-horizonte-plan-director"
+          ],
+          "endpoint": "https://dados.pbh.gov.br/dataset/zona-homogenea-iptu",
+          "access_class": "OPEN_REUSABLE",
+          "license": "CC BY",
           "connector_status": "APPROVED_CONNECTOR_CONFIGURED",
           "missing_fields": [
-            "explicit PGV/value-table source and legal version"
+            "current unit-value tables/formula normalization",
+            "legal-version chain"
           ],
-          "notes": null
+          "notes": "Zona Homogênea is an official valuation input for IPTU and has historical resources; complete PGV requires legal/unit-value tables and formula by effective period."
         },
         {
           "field": "ITBI",
@@ -1430,17 +1437,19 @@
         },
         {
           "field": "risk",
-          "status": "GAP",
-          "source_id": null,
-          "supporting_source_ids": [],
-          "endpoint": null,
-          "access_class": null,
-          "license": null,
-          "connector_status": "NOT_DISCOVERED",
-          "missing_fields": [
-            "municipal risk/flood/landslide authoritative connector"
+          "status": "READY",
+          "source_id": "mg-belo-horizonte-risk-geologico",
+          "supporting_source_ids": [
+            "mg-ide-sisema"
           ],
-          "notes": null
+          "endpoint": "https://dados.pbh.gov.br/dataset/area-risco-geologico",
+          "access_class": "OPEN_REUSABLE",
+          "license": "CC BY",
+          "connector_status": "APPROVED_CONNECTOR_CONFIGURED",
+          "missing_fields": [
+            "current site-specific technical inspection when required"
+          ],
+          "notes": "Official risk layer covers significant geological risk and flood-risk areas. Method/date must remain visible because some source mapping is historical."
         },
         {
           "field": "heritage",
@@ -1608,17 +1617,19 @@
         },
         {
           "field": "official gazette",
-          "status": "GAP",
-          "source_id": null,
+          "status": "QUERY_ONLY",
+          "source_id": "mg-belo-horizonte-dom",
           "supporting_source_ids": [],
-          "endpoint": null,
-          "access_class": null,
+          "endpoint": "https://dom-web.pbh.gov.br/",
+          "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "NOT_DISCOVERED",
+          "connector_status": "APPROVED_QUERY_CONNECTOR",
           "missing_fields": [
-            "official structured gazette source/API"
+            "bulk reuse terms",
+            "stable machine API",
+            "legal-event parser"
           ],
-          "notes": null
+          "notes": "PBH officially directs citizens to DOM web search with advanced filters. Use as official evidence/query until API/reuse terms are resolved."
         },
         {
           "field": "historical data",
@@ -2043,11 +2054,10 @@
       "QUERY_ONLY": 3
     },
     "Belo Horizonte": {
-      "READY": 7,
-      "GAP": 3,
-      "PARTIAL": 14,
+      "READY": 8,
+      "PARTIAL": 15,
       "PRIVATE_ON_DEMAND": 1,
-      "QUERY_ONLY": 1
+      "QUERY_ONLY": 2
     },
     "João Pessoa": {
       "READY": 6,
