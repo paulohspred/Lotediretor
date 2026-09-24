@@ -121,24 +121,24 @@
           "connector_status": "MATERIALIZER_VALIDATED_END_TO_END",
           "missing_fields": [
             "monthly refresh/diff automation",
-            "pre-2022 backfill if broader historical depth is required",
             "condominium/unit-level reconciliation when SQL geometry represents a parent lot"
           ],
-          "notes": "Official São Paulo ITBI transparency workbooks are materialized into a privacy-safe SQLite index keyed by 11-digit SQL. 2022-2026 currently contain 828,583 DTI rows across 472,057 distinct SQLs. Public fields include transaction values/date/nature, VVR, tax base, financing, registry office/matrícula, SQL status, frontage, ideal fraction, land/built area, use, pattern and ACC. Buyer/seller names and CPF/CNPJ are not materialized. Matrícula/cartório from DTI are historical public references, not substitutes for a current registry certificate."
+          "notes": "Official São Paulo ITBI transparency workbooks are materialized into a privacy-safe SQLite index keyed by 11-digit SQL. Full official series 2006-2026 contains 2,641,502 DTI rows across 1,524,854 distinct SQLs. Public fields include transaction values/date/nature, VVR, tax base, financing, registry office/matrícula, SQL status, frontage, ideal fraction, land/built area, use, pattern and ACC. Buyer/seller names and CPF/CNPJ are not materialized."
         },
         {
           "field": "registry reference",
-          "status": "PRIVATE_ON_DEMAND",
-          "source_id": null,
+          "status": "PARTIAL",
+          "source_id": "sp-sao-paulo-itbi-transactions",
           "supporting_source_ids": [],
-          "endpoint": null,
-          "access_class": null,
+          "endpoint": "https://www2.prefeitura.sp.gov.br/web/fazenda/w/acesso_a_informacao/31501",
+          "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "NOT_DISCOVERED",
+          "connector_status": "HISTORICAL_REGISTRY_REFERENCE_RESOLVER_IMPLEMENTED",
           "missing_fields": [
-            "matricula/CNS lookup via legitimate registral flow"
+            "current registry certificate/matricula via legitimate registral flow",
+            "current ownership and encumbrance verification"
           ],
-          "notes": "No national open registry reference source approved."
+          "notes": "Public ITBI DTI history can expose historical registry office and matrícula references keyed by SQL. These references are useful for routing due diligence but are not substitutes for a current registry certificate and do not establish current ownership."
         },
         {
           "field": "zoning",
@@ -450,11 +450,11 @@
           "endpoint": "https://www2.prefeitura.sp.gov.br/web/fazenda/w/acesso_a_informacao/31501",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "connector_status": "ITBI_HISTORY_2006_2026_MATERIALIZED",
           "missing_fields": [
             "unified temporal index across tax, risk, imagery, law and permits"
           ],
-          "notes": "ITBI annual series reaches 2006-2026 on the official index; GeoSampa risk occurrences include historical series from 2013. Temporal unification remains pending."
+          "notes": "ITBI public transaction series is materialized for 2006-2026 (2,641,502 rows). GeoSampa risk occurrences and other temporal sources remain to be unified into a single property timeline."
         }
       ]
     },
