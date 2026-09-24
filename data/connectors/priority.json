@@ -220,6 +220,33 @@
       "mode": "public_search_metadata_only",
       "approved": true,
       "notes": "Public official gazette search. No bulk reuse license confirmed; query/snapshot evidence only."
+    },
+    {
+      "id": "joao-pessoa-ficha-cadastral-index",
+      "source_id": "pb-joao-pessoa-ficha-cadastral-imovel",
+      "kind": "public_page",
+      "url": "https://receita.joaopessoa.pb.gov.br/dsf_jpa_portal/inicial.do?acronym=COMPROVANTEINSCRICAOESITUACAOMUNICIPAL&evento=montaMenu",
+      "mode": "service_metadata_only",
+      "approved": true,
+      "notes": "Snapshot only the public service surface. Do not automate per-property fiscal queries until schema, rate limits, CAPTCHA/authentication and terms are explicitly reviewed."
+    },
+    {
+      "id": "joao-pessoa-pgv-program-doc",
+      "source_id": "pb-joao-pessoa-ctm-pgv-modernization",
+      "kind": "public_page",
+      "url": "https://www.joaopessoa.pb.gov.br/joao-pessoa-sustentavel/joao-pessoa-sustentavel-avanca-no-desenvolvimento-urbano-com-economia-superior-a-us-40-milhoes/",
+      "mode": "official_documentation_metadata",
+      "approved": true,
+      "notes": "Evidence of CTM/PGV modernization and recadastramento. Not a substitute for the PGV dataset or legal table."
+    },
+    {
+      "id": "joao-pessoa-doe-index",
+      "source_id": "pb-joao-pessoa-official-gazette",
+      "kind": "public_page",
+      "url": "https://www.joaopessoa.pb.gov.br/doe-jp/",
+      "mode": "public_archive_metadata_only",
+      "approved": true,
+      "notes": "Public official-edition archive. Discover stable pagination/document URLs; bulk reuse/API terms remain under review."
     }
   ]
 }
