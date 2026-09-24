@@ -22,12 +22,12 @@ header{height:56px;background:var(--nav);color:#fff;border-bottom:4px solid var(
 .status-list{display:block;padding:5px 0 9px}.status-row{display:flex;align-items:center;justify-content:space-between;padding:6px 14px;border-bottom:1px solid #e2e7e9;background:#fff}.status-row span{font-size:11px;color:#536772}.status-row b{font-size:9px}.green{color:var(--green)}.blue{color:var(--blue)}.amber{color:var(--amber)}
 .layer-list{background:#fff}.layer-toggle{display:flex;gap:8px;align-items:flex-start;padding:7px 14px;border-bottom:1px solid #e4e9eb;font-size:11px;color:#394d58}.layer-toggle input{margin:1px 0 0}.layer-toggle small{display:block;color:#819099;margin-top:2px;font-size:9px}
 .mapwrap{position:relative;min-width:0;height:100%;overflow:hidden}.maptop{position:absolute;z-index:500;left:12px;top:12px;display:flex;gap:6px;pointer-events:none}.mapbadge{background:rgba(255,255,255,.94);border:1px solid #ccd6da;border-radius:2px;padding:6px 8px;font-size:9px;color:#596c76;box-shadow:0 1px 4px rgba(0,0,0,.12)}#map{height:100%;min-height:0;background:#dce4e7}.leaflet-control-attribution{font-size:9px}.leaflet-popup-content-wrapper,.leaflet-popup-tip{background:#fff;color:#2d414b}.popup-title{font-weight:700;font-size:13px}.popup-meta{font-size:10px;color:#6c7c84}
-.report-panel{position:absolute;z-index:800;top:0;right:0;bottom:0;width:min(520px,48%);background:#fff;border-left:1px solid #c9d3d8;box-shadow:-5px 0 18px rgba(25,45,56,.16);transform:translateX(101%);transition:transform .18s ease;display:flex;flex-direction:column}.report-panel.open{transform:translateX(0)}
-.report-top{padding:17px 45px 13px 20px;border-bottom:1px solid #d8e0e4;background:#fff;position:relative}.report-topline{display:flex;align-items:center;justify-content:space-between;gap:10px}.report-kicker{font-size:10px;font-weight:800;color:#697b84;text-transform:uppercase;letter-spacing:.05em}.report-actions{display:flex;gap:5px;position:absolute;right:8px;top:7px}.report-btn{border:1px solid #bdc8ce;background:#f5f7f8;color:#334a57;border-radius:2px;padding:5px 7px;font-size:9px}.report-title{font-size:23px;line-height:1.15;margin:7px 0 5px;font-weight:500;color:#273d48}.report-subtitle{font-size:11px;color:#697b85;line-height:1.4}.report-scroll{overflow:auto;padding:0 20px 25px}.report-legend{margin:13px 0 3px;background:#f4f6f7;border-left:3px solid #7b98a7;padding:8px 9px;font-size:10px;line-height:1.45;color:#61737c}
+.report-panel{position:absolute;z-index:800;top:0;right:0;bottom:0;width:41.66667%;background:#fff;border-left:0;box-shadow:-4px 0 0 rgba(0,0,0,.10);transform:translateX(101%);transition:transform .16s ease;display:flex;flex-direction:column}.report-panel.open{transform:translateX(0)}
+.report-top{padding:16px 20px 12px;border-bottom:1px solid #ddd;background:#fff;position:relative}.report-topline{display:flex;align-items:center;justify-content:space-between;gap:10px}.report-kicker{font-size:10px;font-weight:800;color:#697b84;text-transform:uppercase;letter-spacing:.05em}.report-actions{display:flex;gap:5px;position:absolute;right:8px;top:7px}.report-btn{border:0;background:#fff;color:#64747c;border-radius:0;padding:4px 7px;font-size:11px;cursor:pointer}.report-btn#closeReport{position:absolute;right:calc(100% + 4px);top:-7px;background:#fff;box-shadow:-4px 4px 0 rgba(0,0,0,.10);font-size:26px;line-height:1;padding:1px 8px 5px;color:#777}.report-title{font-size:24px;line-height:1.12;margin:5px 0 4px;font-weight:500;color:#263942}.report-subtitle{font-size:11px;color:#697b85;line-height:1.4}.report-scroll{overflow:auto;padding:0 20px 25px}.zola-lot-label{font-size:10px;font-weight:700;color:#65767f;text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px}.zola-lot-meta{font-size:11px;color:#6f7e85;margin:0 0 10px}.zola-zone-list{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0 11px;padding:0;list-style:none}.zola-zone-list li{margin:0}.zola-zone-pill{display:inline-block;background:#fff;border:1px solid #b9c5cb;border-radius:3px;padding:4px 8px;color:#31556b;font-size:11px;font-weight:700}.zola-intersections{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:10px 0 12px;border-top:1px solid #e4e8ea;border-bottom:1px solid #e4e8ea}.zola-intersections h6{font-size:10px;margin:0 0 5px;color:#526771}.zola-intersections ul{list-style:none;margin:0;padding:0}.zola-intersections li{font-size:10px;color:#657780;padding:2px 0}.zola-section-title{font-size:13px;font-weight:700;color:#314852;margin:17px 0 6px;padding-bottom:5px;border-bottom:1px solid #cfd7db}.report-legend{margin:11px 0 3px;background:#f4f6f7;border-left:3px solid #7b98a7;padding:8px 9px;font-size:10px;line-height:1.45;color:#61737c}
 .report-section{border:0;border-bottom:1px solid #dce3e6;background:#fff;border-radius:0;margin:0;overflow:visible}.report-section summary{cursor:pointer;list-style:none;padding:14px 0 10px;display:flex;align-items:center;justify-content:space-between;gap:10px}.report-section summary::-webkit-details-marker{display:none}.report-section summary:before{content:"▸";color:#81919a;margin-right:6px}.report-section[open] summary:before{content:"▾"}.report-section summary strong{font-size:14px;color:#304650;flex:1}.report-section summary span{font-size:9px;color:#829199}.report-content{padding:0 0 13px;border:0}
 .report-values{display:block;border-top:1px solid #edf0f2}.report-value{display:grid;grid-template-columns:minmax(135px,42%) 1fr;border-bottom:1px solid #edf0f2;padding:0;background:#fff}.report-value small{display:block;color:#667984;font-size:10px;font-weight:700;padding:7px 5px;text-transform:none;letter-spacing:0}.report-value b{display:block;font-size:11px;font-weight:400;padding:7px 5px;color:#263d48;word-break:break-word}
 .sources-detail{margin-top:10px;background:#f8f9f9;border:1px solid #e0e5e8}.sources-detail>summary{padding:7px 8px!important;font-size:9px!important;color:#667983}.field-state{padding:7px 8px;border-top:1px solid #e4e9eb;background:#fafbfb}.field-line{display:flex;justify-content:space-between;gap:8px}.field-name{font-size:10px;color:#4f6571;font-weight:700}.status-chip{font-size:7px;border-radius:9px;padding:2px 4px;border:1px solid #b9c5cb}.status-ready{color:var(--green)}.status-partial{color:var(--blue)}.status-query_only{color:var(--amber)}.status-private_on_demand{color:var(--violet)}.field-source,.field-missing{font-size:8px;color:#7a8991;margin-top:3px;line-height:1.35}
-@media(max-width:960px){.workbench{grid-template-columns:245px 1fr}.report-panel{width:min(500px,62%)}.headstat{display:none}}
+@media(min-width:1600px){.report-panel{width:33.33333%}}@media(max-width:960px){.workbench{grid-template-columns:245px 1fr}.report-panel{width:56%}.headstat{display:none}}
 @media(max-width:680px){html,body{overflow:auto}.workbench{grid-template-columns:1fr;height:auto}.sidebar{max-height:43vh}.mapwrap{height:57vh}.report-panel{position:fixed;top:56px;width:94%;z-index:1300}.phase{display:none}}
 @media print{header,.sidebar,#map,.maptop,.report-actions{display:none!important}html,body,.shell,.workbench,.mapwrap{height:auto;overflow:visible;display:block}.report-panel{position:static;transform:none!important;width:100%;box-shadow:none;border:0}.report-scroll{overflow:visible}.sources-detail{display:none}}
 </style>
@@ -102,7 +102,7 @@ header{height:56px;background:var(--nav);color:#fff;border-bottom:4px solid var(
     <aside class="report-panel" id="reportPanel" aria-label="Ficha do lote">
       <div class="report-top">
         <div class="report-topline"><span class="report-kicker">Lote / dossiê territorial</span>
-          <div class="report-actions"><button class="report-btn" id="printReport" type="button">Imprimir</button><button class="report-btn" id="closeReport" type="button">×</button></div>
+          <div class="report-actions"><button class="report-btn" id="printReport" type="button">Imprimir</button><button class="report-btn" id="closeReport" type="button" aria-label="Fechar">×</button></div>
         </div>
         <div class="report-title" id="reportTitle">Selecione um lote</div>
         <div class="report-subtitle" id="reportSubtitle">Clique no mapa ou busque por SQL/CIB.</div>
@@ -288,13 +288,50 @@ function formatReportValue(item){
   }
   return text(item.value);
 }
-function renderReport(report,p){
+function renderReport(report,p,context){
   const panel=document.getElementById("reportPanel");
+  const planning=(context&&context.planning)||{};
+  const zoning=(planning.zoning&&planning.zoning.properties)||{};
+  const macroarea=(planning.macroarea&&planning.macroarea.properties)||{};
+  const macrozone=(planning.macrozone&&planning.macrozone.properties)||{};
+  const fiscal=(context&&context.fiscal)||{};
+  const pgv=fiscal.pgv||{};
+  const risk=(context&&context.risk)||{};
+  const heritage=(context&&context.heritage)||{};
+
   document.getElementById("reportTitle").textContent=[p.street,p.number].filter(Boolean).join(", ")||("Lote "+text(p.sql_reference));
-  document.getElementById("reportSubtitle").textContent="São Paulo · "+[p.fiscal_sector,p.fiscal_block,p.fiscal_lot].filter(Boolean).join(" / ")+" · relatório público L3 em construção";
+  document.getElementById("reportSubtitle").innerHTML=
+    '<div class="zola-lot-label">LOTE FISCAL <span style="color:#aaa">|</span> SQL '+escapeHtml(text(p.sql_reference))+'</div>'+
+    '<div class="zola-lot-meta">São Paulo &nbsp;|&nbsp; Setor '+escapeHtml(text(p.fiscal_sector))+
+    ' &nbsp;|&nbsp; Quadra '+escapeHtml(text(p.fiscal_block))+
+    ' &nbsp;|&nbsp; Lote '+escapeHtml(text(p.fiscal_lot))+'</div>';
+
+  const zones=[];
+  if(zoning.cd_zoneamento_perimetro)zones.push(zoning.cd_zoneamento_perimetro);
+  if(macroarea.sg_macroarea)zones.push(macroarea.sg_macroarea);
+  if(macrozone.sg_macro_divisao_pde)zones.push(macrozone.sg_macro_divisao_pde);
+
+  const intersections=[];
+  if((risk.geological||[]).length)intersections.push("Risco geológico");
+  if((risk.hydrological||[]).length)intersections.push("Risco hidrológico");
+  if((heritage.assets||[]).length)intersections.push("Bem tombado");
+  const buffers=(heritage.buffers||{});
+  Object.keys(buffers).forEach(k=>{if((buffers[k]||[]).length)intersections.push("Área envoltória "+k)});
+  if((context&&context.buildings||[]).length)intersections.push((context.buildings||[]).length+" footprint(s) de edificação");
+
+  const zoneHtml=zones.length?'<ul class="zola-zone-list">'+zones.map(z=>'<li><span class="zola-zone-pill">'+escapeHtml(z)+'</span></li>').join("")+'</ul>':"";
+  const intersectionHtml='<div class="zola-intersections">'+
+    '<div><h6>Camadas que intersectam o lote</h6><ul>'+
+      (intersections.length?intersections.map(v=>'<li>• '+escapeHtml(v)+'</li>').join(""):'<li>Nenhuma incidência nas camadas consultadas.</li>')+
+    '</ul></div>'+
+    '<div><h6>Detalhes do zoneamento</h6><ul>'+
+      (zoning.tx_zoneamento_perimetro?'<li>'+escapeHtml(zoning.tx_zoneamento_perimetro)+'</li>':"")+
+      (zoning.cd_numero_legislacao_zoneamento?'<li>Lei '+escapeHtml(zoning.cd_numero_legislacao_zoneamento)+'/'+escapeHtml(zoning.an_legislacao_zoneamento)+'</li>':"")+
+      (pgv.found?'<li>PGV 2026: '+escapeHtml(formatReportValue({value:pgv.vm2t_brl_per_m2,unit:"BRL/m²"}))+'</li>':"")+
+    '</ul></div></div>';
+
   const sections=report&&Array.isArray(report.sections)?report.sections:[];
-  const intro='<div class="report-legend">Os valores visíveis foram obtidos para este lote. Abra “Fontes, estado e pendências” somente quando quiser conferir provenance ou o que ainda falta integrar.</div>';
-  const html=sections.map((section,index)=>{
+  const html=sections.map(section=>{
     const values=(section.actual_values||[]).map(item=>
       '<div class="report-value"><small>'+escapeHtml(item.label)+'</small><b>'+escapeHtml(formatReportValue(item))+'</b></div>'
     ).join("");
@@ -306,19 +343,28 @@ function renderReport(report,p){
         (missing.length?'<div class="field-missing">Ainda falta: '+escapeHtml(missing.join(" · "))+'</div>':"")+
       '</div>';
     }).join("");
-    return '<details class="report-section" '+(((section.actual_values||[]).length||index<4)?"open":"")+'>'+
-      '<summary><strong>'+escapeHtml(section.title)+'</strong><span>'+((section.actual_values||[]).length)+' dados</span></summary>'+
-      '<div class="report-content">'+(values?'<div class="report-values">'+values+'</div>':"")+
+    if(!values && !fields)return "";
+    return '<section class="zola-report-section"><h3 class="zola-section-title">'+escapeHtml(section.title)+'</h3>'+
+      (values?'<div class="report-values">'+values+'</div>':"")+
       (fields?'<details class="sources-detail"><summary>Fontes, estado e pendências</summary>'+fields+'</details>':"")+
-      '</div></details>';
+      '</section>';
   }).join("");
-  document.getElementById("reportContent").innerHTML=intro+html;
+
+  document.getElementById("reportContent").innerHTML=
+    zoneHtml+intersectionHtml+
+    '<div class="report-legend">Os dados abaixo são os valores já resolvidos para este lote. Informações ainda não materializadas ficam dentro de “Fontes, estado e pendências”.</div>'+
+    html;
   panel.classList.add("open");
-  setTimeout(()=>map.invalidateSize(),250);
+  setTimeout(()=>{
+    map.invalidateSize();
+    if(selectedParcelLayer){
+      try{map.fitBounds(selectedParcelLayer.getBounds(),{paddingTopLeft:[25,25],paddingBottomRight:[Math.round(panel.offsetWidth*.35),25],maxZoom:18});}catch(e){}
+    }
+  },190);
 }
 function closeReport(){
   document.getElementById("reportPanel").classList.remove("open");
-  setTimeout(()=>map.invalidateSize(),250);
+  setTimeout(()=>{map.invalidateSize();if(selectedParcelLayer){try{map.fitBounds(selectedParcelLayer.getBounds(),{padding:[45,45],maxZoom:18});}catch(e){}}},190);
 }
 document.getElementById("closeReport").addEventListener("click",closeReport);
 document.getElementById("printReport").addEventListener("click",()=>window.print());
@@ -327,7 +373,7 @@ function renderParcel(payload){
   const p=payload.feature.properties;
   clearSelectedParcel();
   selectedParcelLayer=L.geoJSON(payload.feature,{
-    style:{color:"#3bd790",weight:4,fillColor:"#3bd790",fillOpacity:.18}
+    style:{color:"rgba(0,10,90,1)",weight:6,dashArray:"12 9",lineCap:"round",opacity:.9,fillColor:"rgba(0,20,130,1)",fillOpacity:.60}
   }).addTo(map);
   const buildings=(payload.context&&Array.isArray(payload.context.buildings))?payload.context.buildings:[];
   if(buildings.length){
@@ -357,7 +403,7 @@ function renderParcel(payload){
       <div class="parcel-datum" style="grid-column:1/-1"><small>Uso cadastral</small><strong>${escapeHtml(text(p.use_description))}</strong></div>
     </div>
     <div class="parcel-source">Fonte: Prefeitura de São Paulo / GeoSampa · lote_cidadao · CC BY-SA 4.0 · consulta ${escapeHtml(payload.source.queried_at)}</div>`;
-  renderReport(payload.report,p);
+  renderReport(payload.report,p,payload.context);
 }
 async function inspectParcel(latlng){
   const idx=Number(select.value);
