@@ -239,16 +239,18 @@
           "status": "READY",
           "source_id": "sp-geosampa-cultural-heritage",
           "supporting_source_ids": [
+            "sp-condephaat-protected-heritage",
             "br-iphan-geoserver"
           ],
           "endpoint": "https://metadados.geosampa.prefeitura.sp.gov.br/geonetwork/srv/search?keyword=Patrim%C3%B4nio+cultural",
           "access_class": "OPEN_REUSABLE",
-          "license": null,
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "license": "CC BY-SA 4.0 for PMSP-produced geospatial layers",
+          "connector_status": "HERITAGE_THREE_LEVEL_RESOLVER_CONFIGURED",
           "missing_fields": [
-            "legal-act temporal reconciliation"
+            "state IDE-SP reuse terms for independent state-layer materialization",
+            "property-specific archaeological certificate/query where required"
           ],
-          "notes": null
+          "notes": "L3 resolves federal/state/municipal protection, pending tombamento, surrounding areas and archaeology. GeoSampa preserves links to legal resolutions; state/federal authority sources remain separate."
         },
         {
           "field": "electricity",
@@ -652,17 +654,19 @@
           "status": "READY",
           "source_id": "pe-recife-heritage-iep",
           "supporting_source_ids": [
+            "pe-recife-zeph",
+            "pe-fundarpe-protected-heritage",
             "br-iphan-geoserver"
           ],
           "endpoint": "https://dados.recife.pe.gov.br/dataset/imoveis-especiais-de-preservacao-ieps",
           "access_class": "OPEN_REUSABLE",
           "license": "ODbL",
-          "connector_status": "APPROVED_CONNECTOR_CONFIGURED",
+          "connector_status": "HERITAGE_THREE_LEVEL_RESOLVER_CONFIGURED",
           "missing_fields": [
-            "ZEPH geometry/legal-act normalization",
-            "state heritage complement"
+            "ZEPH ArcGIS reuse license",
+            "state Fundarpe geometry normalized by asset/process"
           ],
-          "notes": "Municipal IEP dataset is ODbL with GeoJSON/CSV/JSON and legal-reference attributes."
+          "notes": "IEP, ZEPH, state tombamento/process and IPHAN are modeled separately. State pending-process protection must preserve publication date/status."
         },
         {
           "field": "electricity",
@@ -1059,19 +1063,23 @@
         },
         {
           "field": "heritage",
-          "status": "PARTIAL",
-          "source_id": "rj-rio-pgeo3",
+          "status": "READY",
+          "source_id": "rj-rio-irph-apac",
           "supporting_source_ids": [
+            "rj-rio-heritage-protected-areas",
+            "rj-inepac-protected-heritage",
             "br-iphan-geoserver"
           ],
-          "endpoint": "https://pgeo3.rio.rj.gov.br/arcgis/rest/services",
+          "endpoint": "https://pgeo3.rio.rj.gov.br/arcgis/rest/services/Urbanismo/LBB_APAC/FeatureServer",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "connector_status": "HERITAGE_THREE_LEVEL_RESOLVER_CONFIGURED",
           "missing_fields": [
-            "dedicated heritage layer allowlist"
+            "structured current INEPAC inventory",
+            "explicit reuse license for municipal FeatureServices",
+            "consolidated individual tombed/preserved asset layer"
           ],
-          "notes": null
+          "notes": "APAC geometry + IRPH legal guides close L3 municipal protected-area screening. INEPAC and IPHAN remain distinct authority layers; APAC is not equivalent to individual tombamento."
         },
         {
           "field": "electricity",
@@ -1477,18 +1485,19 @@
         {
           "field": "heritage",
           "status": "READY",
-          "source_id": "mg-iepha-protected-heritage",
+          "source_id": "mg-belo-horizonte-heritage-open-data",
           "supporting_source_ids": [
+            "mg-iepha-protected-heritage",
             "br-iphan-geoserver"
           ],
-          "endpoint": "https://www.mg.gov.br/iepha/pagina/patrimonio-cultural-protegido",
-          "access_class": "PUBLIC_QUERY_ONLY",
-          "license": null,
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "endpoint": "https://dados.pbh.gov.br/dataset/?_tags_limit=0&res_format=CSV&tags=cultural&tags=patrim%C3%B4nio",
+          "access_class": "OPEN_REUSABLE",
+          "license": "CC BY",
+          "connector_status": "HERITAGE_THREE_LEVEL_RESOLVER_CONFIGURED",
           "missing_fields": [
-            "municipal heritage complement"
+            "incidence-specific protection/height guideline normalizer"
           ],
-          "notes": null
+          "notes": "Monthly CC BY datasets cover municipal protected areas/assets and publish separate IEPHA/IPHAN datasets. 'Bem Cultural Imóvel' distinguishes tombado from pending/documentary protection."
         },
         {
           "field": "electricity",
@@ -1889,19 +1898,22 @@
         },
         {
           "field": "heritage",
-          "status": "PARTIAL",
+          "status": "READY",
           "source_id": "pb-joao-pessoa-filipeia",
           "supporting_source_ids": [
+            "pb-iphaep-protected-heritage",
             "br-iphan-geoserver"
           ],
           "endpoint": "https://filipeia.joaopessoa.pb.gov.br/",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "connector_status": "HERITAGE_THREE_LEVEL_RESOLVER_CONFIGURED",
           "missing_fields": [
-            "state/municipal heritage legal acts"
+            "reuse license for heritage layers",
+            "current municipal heritage-authority organizational reconciliation",
+            "vectorized preservation-grade rules"
           ],
-          "notes": null
+          "notes": "Filipeia maps IPHAN/IPHAEP historic areas and tombamentos. IPHAEP provides state legal rules and approval requirement. This is sufficient for L3 screening, while project approval remains query/document-driven."
         },
         {
           "field": "electricity",
@@ -2111,8 +2123,8 @@
       "QUERY_ONLY": 1
     },
     "Rio de Janeiro": {
-      "READY": 8,
-      "PARTIAL": 15,
+      "READY": 9,
+      "PARTIAL": 14,
       "QUERY_ONLY": 3
     },
     "Belo Horizonte": {
@@ -2122,9 +2134,9 @@
       "QUERY_ONLY": 2
     },
     "João Pessoa": {
-      "READY": 6,
+      "READY": 7,
       "QUERY_ONLY": 8,
-      "PARTIAL": 11,
+      "PARTIAL": 10,
       "PRIVATE_ON_DEMAND": 1
     }
   },
