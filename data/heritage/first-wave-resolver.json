@@ -1,0 +1,298 @@
+{
+  "schema_version": "0.1.0",
+  "as_of": "2026-09-24",
+  "purpose": "Resolver patrimônio cultural em três níveis para triagem L3: federal (IPHAN), estadual e municipal.",
+  "principles": [
+    "Tombamento definitivo, processo de tombamento, área envoltória/APAC/ZEPH e interesse arqueológico são estados distintos.",
+    "A ausência de incidência em uma camada não prova ausência de proteção; atos e cadastros oficiais devem ser reconciliados.",
+    "Geometria de área envoltória deve vir de fonte oficial ou ser derivada apenas quando a regra jurídica for determinística e os insumos oficiais forem suficientes.",
+    "Processo pendente pode produzir proteção provisória conforme a legislação aplicável; manter status e ato/publicação.",
+    "A incidência deve apontar o órgão competente e o ato/resolução antes de qualquer conclusão sobre intervenção."
+  ],
+  "capability_ids": [
+    "PROTECTED_ASSET",
+    "PENDING_PROTECTION",
+    "SURROUNDING_AREA",
+    "PROTECTED_AREA",
+    "ARCHAEOLOGY",
+    "LEGAL_ACT",
+    "APPROVAL_AUTHORITY"
+  ],
+  "federal": {
+    "source_id": "br-iphan-geoserver",
+    "authority": "IPHAN",
+    "access_class": "PUBLIC_QUERY_ONLY",
+    "capabilities": [
+      "PROTECTED_ASSET",
+      "SURROUNDING_AREA",
+      "ARCHAEOLOGY",
+      "LEGAL_ACT",
+      "APPROVAL_AUTHORITY"
+    ],
+    "status": "PARTIAL",
+    "notes": "GeoServer federal é fonte espacial de contexto; atos/listas/processos devem ser vinculados quando necessários. Licença de redistribuição não presumida."
+  },
+  "municipalities": [
+    {
+      "ibge": "3550308",
+      "city": "São Paulo",
+      "uf": "SP",
+      "status": "READY",
+      "levels": {
+        "federal": {
+          "source_ids": [
+            "br-iphan-geoserver",
+            "sp-geosampa-cultural-heritage"
+          ],
+          "capabilities": [
+            "PROTECTED_ASSET",
+            "SURROUNDING_AREA",
+            "ARCHAEOLOGY",
+            "LEGAL_ACT"
+          ]
+        },
+        "state": {
+          "source_ids": [
+            "sp-condephaat-protected-heritage",
+            "sp-geosampa-cultural-heritage"
+          ],
+          "capabilities": [
+            "PROTECTED_ASSET",
+            "PENDING_PROTECTION",
+            "SURROUNDING_AREA",
+            "LEGAL_ACT",
+            "APPROVAL_AUTHORITY"
+          ]
+        },
+        "municipal": {
+          "source_ids": [
+            "sp-geosampa-cultural-heritage"
+          ],
+          "capabilities": [
+            "PROTECTED_ASSET",
+            "PENDING_PROTECTION",
+            "SURROUNDING_AREA",
+            "PROTECTED_AREA",
+            "ARCHAEOLOGY",
+            "LEGAL_ACT",
+            "APPROVAL_AUTHORITY"
+          ]
+        }
+      },
+      "rules": [
+        "GeoSampa consolida proteções municipal, estadual e federal e publica links para resoluções.",
+        "Abertura de processo de tombamento é mantida como PENDING_PROTECTION, nunca convertida em tombamento definitivo.",
+        "Para tombamentos estaduais antigos, não gerar automaticamente raio de 300 m se a geometria oficial de área envoltória estiver disponível."
+      ],
+      "missing": [
+        "licença/termos estaduais do IDE-SP para materialização independente do espelho municipal",
+        "consulta oficial específica para alguns casos arqueológicos/sem SQL"
+      ]
+    },
+    {
+      "ibge": "2611606",
+      "city": "Recife",
+      "uf": "PE",
+      "status": "READY",
+      "levels": {
+        "federal": {
+          "source_ids": [
+            "br-iphan-geoserver"
+          ],
+          "capabilities": [
+            "PROTECTED_ASSET",
+            "SURROUNDING_AREA",
+            "ARCHAEOLOGY",
+            "LEGAL_ACT"
+          ]
+        },
+        "state": {
+          "source_ids": [
+            "pe-fundarpe-protected-heritage"
+          ],
+          "capabilities": [
+            "PROTECTED_ASSET",
+            "PENDING_PROTECTION",
+            "ARCHAEOLOGY",
+            "LEGAL_ACT",
+            "APPROVAL_AUTHORITY"
+          ]
+        },
+        "municipal": {
+          "source_ids": [
+            "pe-recife-heritage-iep",
+            "pe-recife-zeph"
+          ],
+          "capabilities": [
+            "PROTECTED_ASSET",
+            "PROTECTED_AREA",
+            "SURROUNDING_AREA",
+            "LEGAL_ACT",
+            "APPROVAL_AUTHORITY"
+          ]
+        }
+      },
+      "rules": [
+        "IEP municipal e ZEPH são categorias diferentes e devem permanecer separadas.",
+        "No sistema estadual, publicação do edital de tombamento no Diário Oficial pode iniciar proteção provisória antes da homologação final.",
+        "Parâmetros da ZEPH devem ser lidos da legislação/ficha específica, não inferidos apenas do polígono."
+      ],
+      "missing": [
+        "licença de materialização da camada ZEPH ArcGIS",
+        "geometria estadual Fundarpe normalizada por bem/processo"
+      ]
+    },
+    {
+      "ibge": "3304557",
+      "city": "Rio de Janeiro",
+      "uf": "RJ",
+      "status": "READY",
+      "levels": {
+        "federal": {
+          "source_ids": [
+            "br-iphan-geoserver"
+          ],
+          "capabilities": [
+            "PROTECTED_ASSET",
+            "SURROUNDING_AREA",
+            "ARCHAEOLOGY",
+            "LEGAL_ACT"
+          ]
+        },
+        "state": {
+          "source_ids": [
+            "rj-inepac-protected-heritage"
+          ],
+          "capabilities": [
+            "PROTECTED_ASSET",
+            "PENDING_PROTECTION",
+            "LEGAL_ACT",
+            "APPROVAL_AUTHORITY"
+          ]
+        },
+        "municipal": {
+          "source_ids": [
+            "rj-rio-irph-apac",
+            "rj-rio-heritage-protected-areas"
+          ],
+          "capabilities": [
+            "PROTECTED_AREA",
+            "SURROUNDING_AREA",
+            "ARCHAEOLOGY",
+            "LEGAL_ACT",
+            "APPROVAL_AUTHORITY"
+          ]
+        }
+      },
+      "rules": [
+        "APAC é área de proteção do ambiente cultural e não equivale automaticamente a tombamento individual.",
+        "IRPH publica atos/decretos por APAC; a incidência espacial deve apontar o ato correspondente.",
+        "Camada genérica de áreas protegidas deve ser classificada por tipo antes de gerar restrição patrimonial."
+      ],
+      "missing": [
+        "inventário estadual INEPAC atual em interface estruturada/estável",
+        "camada municipal consolidada de bens tombados/preservados com licença explícita"
+      ]
+    },
+    {
+      "ibge": "3106200",
+      "city": "Belo Horizonte",
+      "uf": "MG",
+      "status": "READY",
+      "levels": {
+        "federal": {
+          "source_ids": [
+            "br-iphan-geoserver",
+            "mg-belo-horizonte-heritage-open-data"
+          ],
+          "capabilities": [
+            "PROTECTED_ASSET",
+            "LEGAL_ACT"
+          ]
+        },
+        "state": {
+          "source_ids": [
+            "mg-iepha-protected-heritage",
+            "mg-belo-horizonte-heritage-open-data"
+          ],
+          "capabilities": [
+            "PROTECTED_ASSET",
+            "LEGAL_ACT",
+            "APPROVAL_AUTHORITY"
+          ]
+        },
+        "municipal": {
+          "source_ids": [
+            "mg-belo-horizonte-heritage-open-data"
+          ],
+          "capabilities": [
+            "PROTECTED_ASSET",
+            "PENDING_PROTECTION",
+            "PROTECTED_AREA",
+            "SURROUNDING_AREA",
+            "LEGAL_ACT",
+            "APPROVAL_AUTHORITY"
+          ]
+        }
+      },
+      "rules": [
+        "Bem Cultural Imóvel distingue tombado, processo de tombamento aberto e registros documentais.",
+        "Área de Proteção Cultural contém perímetros municipais e também referências estaduais/federais; preservar esfera/órgão em cada registro.",
+        "Datasets mensais devem ser versionados, não sobrescritos."
+      ],
+      "missing": [
+        "normalização de diretrizes específicas de proteção/altimetria por incidência quando aplicável"
+      ]
+    },
+    {
+      "ibge": "2507507",
+      "city": "João Pessoa",
+      "uf": "PB",
+      "status": "READY",
+      "levels": {
+        "federal": {
+          "source_ids": [
+            "br-iphan-geoserver",
+            "pb-joao-pessoa-filipeia"
+          ],
+          "capabilities": [
+            "PROTECTED_ASSET",
+            "PROTECTED_AREA",
+            "LEGAL_ACT"
+          ]
+        },
+        "state": {
+          "source_ids": [
+            "pb-iphaep-protected-heritage",
+            "pb-joao-pessoa-filipeia"
+          ],
+          "capabilities": [
+            "PROTECTED_ASSET",
+            "PROTECTED_AREA",
+            "SURROUNDING_AREA",
+            "LEGAL_ACT",
+            "APPROVAL_AUTHORITY"
+          ]
+        },
+        "municipal": {
+          "source_ids": [
+            "pb-joao-pessoa-filipeia"
+          ],
+          "capabilities": [
+            "PROTECTED_AREA",
+            "PROTECTED_ASSET"
+          ]
+        }
+      },
+      "rules": [
+        "Filipeia publica cartografia com Centro Histórico, tombamentos IPHAN e IPHAEP.",
+        "IPHAEP identifica o Centro Histórico de João Pessoa como tombado e exige aprovação para intervenções na área de preservação conforme grau de classificação.",
+        "Não derivar automaticamente área de entorno de bem isolado sem regra, geometria e parâmetros oficiais suficientes."
+      ],
+      "missing": [
+        "reconciliação da autoridade municipal atual entre estrutura administrativa publicada e atos de reorganização patrimonial",
+        "dataset vetorial reutilizável/licença para camadas patrimoniais do Filipeia"
+      ]
+    }
+  ]
+}
