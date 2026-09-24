@@ -36,12 +36,12 @@
           "endpoint": "https://geosampa.prefeitura.sp.gov.br/",
           "access_class": "OPEN_REUSABLE",
           "license": null,
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "connector_status": "MATERIALIZER_VALIDATED_END_TO_END",
           "missing_fields": [
             "CIB public linkage",
             "registry reconciliation"
           ],
-          "notes": null
+          "notes": "GeoSampa lote_cidadao materializer was validated end-to-end on fiscal sector 001: WFS 2.0 pagination, closed 25-field allowlist, 1,927/1,927 features, normalization and validation with zero errors."
         },
         {
           "field": "land",
@@ -53,12 +53,12 @@
           "endpoint": "https://wfs.geosampa.prefeitura.sp.gov.br/geoserver/geoportal/wfs",
           "access_class": "OPEN_REUSABLE",
           "license": null,
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "connector_status": "MATERIALIZER_VALIDATED_END_TO_END",
           "missing_fields": [
             "frontage normalization",
             "official-vs-GIS area reconciliation"
           ],
-          "notes": null
+          "notes": "GeoSampa lote_cidadao materializer was validated end-to-end on fiscal sector 001: WFS 2.0 pagination, closed 25-field allowlist, 1,927/1,927 features, normalization and validation with zero errors."
         },
         {
           "field": "building",
