@@ -1,0 +1,116 @@
+{
+  "schema_version": "0.1.0",
+  "as_of": "2026-09-24",
+  "target_level": "L3",
+  "first_wave": [
+    {
+      "city": "São Paulo",
+      "uf": "SP",
+      "ibge": "3550308",
+      "status": "IN_PROGRESS",
+      "known_strengths": [
+        "IPTU/cadastro aberto",
+        "GeoSampa",
+        "zoneamento/PDE",
+        "ortofotos/LiDAR",
+        "licenciamento GeoSampa"
+      ],
+      "next_gaps": [
+        "ITBI oficial atual em bulk",
+        "licenciamento geral além de camadas específicas",
+        "normalização de edificação"
+      ]
+    },
+    {
+      "city": "Recife",
+      "uf": "PE",
+      "ibge": "2611606",
+      "status": "IN_PROGRESS",
+      "known_strengths": [
+        "lotes",
+        "IPTU rico ODbL",
+        "ITBI ODbL",
+        "licenciamento diário",
+        "outorga onerosa",
+        "restrições ambientais ArcGIS"
+      ],
+      "next_gaps": [
+        "imagem/ortofoto oficial reutilizável",
+        "infraestrutura urbana normalizada",
+        "patrimônio/risco em conectores específicos"
+      ]
+    },
+    {
+      "city": "Rio de Janeiro",
+      "uf": "RJ",
+      "ibge": "3304557",
+      "status": "IN_PROGRESS",
+      "known_strengths": [
+        "imóveis territoriais",
+        "matrícula como referência",
+        "IPTU/ITBI CC BY 4.0",
+        "edificações com altura",
+        "GeoPAL",
+        "legislação urbanística"
+      ],
+      "next_gaps": [
+        "infraestrutura/rede",
+        "licença item a item para edificações",
+        "conector de parâmetros LC 270/2024"
+      ]
+    },
+    {
+      "city": "Belo Horizonte",
+      "uf": "MG",
+      "ibge": "3106200",
+      "status": "IN_PROGRESS",
+      "known_strengths": [
+        "LOTE_CTM",
+        "edificações",
+        "parâmetros urbanísticos",
+        "ITBI",
+        "projeto edificação licenciado",
+        "infraestrutura BHMap"
+      ],
+      "next_gaps": [
+        "licença explícita por dataset",
+        "ortofoto/imagem",
+        "risco/ambiente consolidados"
+      ]
+    },
+    {
+      "city": "João Pessoa",
+      "uf": "PB",
+      "ibge": "2507507",
+      "status": "IN_PROGRESS",
+      "known_strengths": [
+        "lotes/quadras/logradouros SHP/CSV",
+        "aerofotos históricas",
+        "zoneamento/PD 2024",
+        "terreno/hidrografia",
+        "serviços de alvará/habite-se"
+      ],
+      "next_gaps": [
+        "IPTU/PGV bulk",
+        "ITBI bulk",
+        "edificações/cadastro predial aberto",
+        "infraestrutura urbana"
+      ]
+    }
+  ],
+  "second_wave": [
+    "Santos/SP",
+    "São José dos Campos/SP",
+    "Jundiaí/SP",
+    "Niterói/RJ",
+    "Juiz de Fora/MG",
+    "Goiânia/GO",
+    "Pinhais/PR",
+    "Londrina/PR",
+    "Joinville/SC",
+    "Blumenau/SC",
+    "Florianópolis/SC",
+    "Campo Grande/MS",
+    "Vitória/ES"
+  ]
+}
