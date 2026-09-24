@@ -1,128 +1,56 @@
-# ZoLa (New York City’s Zoning & Land Use Map)
+# LoteDiretor Brasil
 
-ZoLa provides a simple way to research zoning regulations and other information relevant to planners. Find the zoning for your property, discover new proposals for your neighborhood, and learn where City Planning initiatives are happening throughout the City.
+Plataforma nacional de inteligência territorial e imobiliária para pesquisa, análise e documentação técnica de imóveis urbanos e rurais no Brasil.
 
-![image](https://user-images.githubusercontent.com/409279/34126699-83fe1ab0-e408-11e7-84eb-1f228f43c071.png)
+O projeto parte do [ZoLa — New York City Zoning & Land Use Map](https://github.com/NYCPlanning/labs-zola) como **baseline funcional de experiência cartográfica**, não como arquitetura nacional definitiva.
 
-## Requirements
+## Estado atual
 
-- [Git](https://git-scm.com/)
-- [Node.js](https://nodejs.org/) (with NPM)
-  - This installation was tested using Node v16
-- [Ember CLI](https://ember-cli.com/)
-- [Yarn](https://yarnpkg.com/)
+- Baseline ZoLa oficial importado de `NYCPlanning/labs-zola@a31db6e6d50c81d77facca50367e08c1bdf09f6a`.
+- Token Mapbox embutido no upstream removido; a configuração usa `MAPBOX_ACCESS_TOKEN`.
+- Baseline preservado na branch `baseline/zola-upstream-2026-08-20`.
+- Pesquisa inicial de dados imobiliários, cadastro, registro, legislação e referências internacionais em:
+  [docs/RESEARCH_PROPERTY_DATA_BRAZIL_WORLD.md](docs/RESEARCH_PROPERTY_DATA_BRAZIL_WORLD.md).
 
-## Local development
+## Objetivo do produto
 
-- Clone this repository: `git clone https://github.com/NYCPlanning/labs-zola.git`
-- Navigate to the repo: `cd labs-zola`
-- Install dependencies: `yarn`
-- Run the development server: `ember serve`
+Para cada imóvel analisado, o LoteDiretor deve reunir o máximo de informação **legalmente acessível, tecnicamente verificável e rastreável**, incluindo, quando disponível:
 
-## Connect to a local or remote Layers Api:
-```
-start:local-api
-```
+- identificação cadastral e territorial;
+- CIB/SINTER e identificadores municipais;
+- endereço e geometrias oficiais;
+- cadastro/IPTU;
+- matrícula, certidões e direitos reais em fluxos apropriados;
+- legislação urbanística, Plano Diretor, zoneamento e parâmetros;
+- edificações, licenças, habite-se e documentos;
+- imagens, ortofotos e contexto construído;
+- topografia, drenagem, riscos e restrições;
+- dados ambientais e rurais;
+- histórico e evidências de fontes;
+- documentos fornecidos pelo usuário;
+- análises derivadas com método e versão explícitos.
 
-Which will run `API_HOST=http://localhost:3000 ember serve`, running `http://` will prevent cross-origin restrictions.
+O sistema não deve preencher lacunas com suposições. Cada conclusão relevante precisa distinguir dado oficial, dado restrito, documento fornecido, dado inferido e cálculo do LoteDiretor.
 
-## Architecture
+## Direção arquitetural
 
-ZoLa is an [Ember.js](https://www.emberjs.com/) single page application (SPA).  The frontend handles routing, web mapping, layout, and user interactions, and communicates with various APIs for content and data.
+O ZoLa é mantido como referência para mapa, busca, seleção de lote, camadas, ficha do imóvel, comparação e impressão.
 
-#### Layer-Groups, Layers and Sources
+Para escala nacional, a direção técnica é desacoplar progressivamente:
 
-ZoLa retrieves layers from the [Labs Layers Api](https://github.com/nycplanning/labs-layers-api). It requests _layer groups_, which are groups of [MapboxGL layers](https://docs.mapbox.com/mapbox-gl-js/style-spec/layers/). For example, the "subways" layer group includes the subway lines, subway routes, and subway station entrances layers. Each layer defines has style and some filter definitions. Alongside layers, the Layers API also delivers _sources_ which provide SQL definitions for the layers. One source may correspond to multiple layers. For example, a subways source powers the Subway A line, Subway J line and Subway G line, etc.
+- frontend geoespacial moderno;
+- API orientada por contratos;
+- PostgreSQL/PostGIS;
+- catálogo nacional de fontes e conectores;
+- pipeline ETL/ELT versionado;
+- armazenamento de objetos para snapshots e documentos;
+- modelo de identidade imobiliária que não confunda lote, IPTU, matrícula, unidade autônoma, edificação e imóvel rural;
+- separação rigorosa entre dados públicos, pessoais/restritos e documentos privados.
 
-Layer Groups, Layers and Sources are represented and managed as Ember Models in ZoLa. These models are provided by the [Ember Mapbox Composer](https://github.com/NYCPlanning/ember-mapbox-composer) custom Addon. On first load, [the Application route](https://github.com/NYCPlanning/labs-zola/blob/develop/app/routes/application.js#L34) will query for all necessary Layer Group records (which makes a request to the `layer-group/` endpoint of the Layers API). This consequently sideloads all necessary Layer, Source and metadata information as well.
+A pesquisa e as decisões iniciais estão documentadas em [docs/RESEARCH_PROPERTY_DATA_BRAZIL_WORLD.md](docs/RESEARCH_PROPERTY_DATA_BRAZIL_WORLD.md).
 
-Labs Layer API indeed acts as the backend that Ember Data is tied to. This is specified in the [Application Adapter's `host` variable override](https://github.com/NYCPlanning/labs-zola/blob/develop/app/adapters/layer-group.js#L4-L7).
+## Licença e origem
 
-#### Vector tiles from Carto Maps API
-Along with Layer Groups, the Layers API payload (in the metadata property) contains an extra [MapboxStyle object](https://docs.mapbox.com/mapbox-gl-js/style-spec/root/), which provides [tile URL definitions](https://docs.mapbox.com/mapbox-gl-js/style-spec/sources/) for all source layers. These tile url definitions are _anonymous maps_ generated by Layers API using the Carto Maps API.
+O código do baseline ZoLa foi publicado pelo NYC Department of City Planning. O arquivo [LICENSE](LICENSE) importado do upstream contém dedicação ao domínio público/CC0 1.0.
 
-#### Zola Search API 
-Zola Search API provides autocomplete search results, and aggregates results from ZoLa's Carto database with those from the Mapzen Search API. The search API is an express.js app that lives in a separate repo: (https://github.com/NYCPlanning/labs-zola-search-api)
-
-## BBL Route
-
- `https://zola.planning.nyc.gov/bbl/:bbl`
-
-For convenience to other apps that work with NYC BBLs (10-digit Borough, Block, and Lot identifiers), a `/bbl` route is available for incoming links.  Incoming connections on this route will be redirected to the corresponding `lot` view.
-
-Example BBL route
-
-[https://zola.planning.nyc.gov/bbl/1000477501](https://zola.planning.nyc.gov/bbl/1000477501)
-
-will redirect to 
-
-[https://zola.planning.nyc.gov/lot/1/47/7501](https://zola.planning.nyc.gov/lot/1/47/7501)
-
-## Bounding Box Route
-
-`https://zola.planning.nyc.gov/bbox/:west/:south/:east/:north`
-
-
-For compliance with NYC [Local Law #40 of 2018](http://nyc.legistar1.com/nyc/attachments/f6a21032-ecd2-4197-ba05-f415caa39ecf.pdf), the Department of Housing Preservation and Development is required to create a link to ZoLa for all NYC Urban Renewal Areas "that directs to the highest practicable zoom level that contains all blocks and lots within such urban renewal area".  The `/bbox` route allows for specifying a bounding box defined by WGS84 latitude and longitude in decimal degrees.  When the ZoLa application loads the `bbox` route with valid bounds, the map will automatically zoom to fit the supplied bounds into the user's viewport.
-
-Example Bounding Box Route:
-
-https://zola.planning.nyc.gov/bbox/-73.9978/40.5705/-73.9804/40.5785
-
-## Testing and checks
-
-- **ESLint** - We use ESLint with Airbnb's rules for JavaScript projects
-  - Add an ESLint plugin to your text editor to highlight broken rules while you code
-  - You can also run `eslint` at the command line with the `--fix` flag to automatically fix some errors.
-
-- **Testing**
-  - Run the test suite: `ember test -server`
-  - Load `http://localhost:7357/` to view the test UI
-  - Before creating a Pull Request, make sure your branch is updated with the latest `develop` and passes all tests
-
-## Contact us
-
-You can find us on Twitter at [@nycplanninglabs](https://twitter.com/nycplanninglabs), or comment on issues and we'll follow up as soon as we can. If you'd like to send an email, use [labs_dl@planning.nyc.gov](mailto:labs_dl@planning.nyc.gov)
-
-## Updating MapPLUTO Data
-
-- **Indices** - When updating MapPLUTO data, be sure to add an index to the BBL column: `CREATE INDEX idx_mappluto_{version}_bbl ON mappluto_{version} (bbl)`
-
-- **Block Centroids** - You also need to regenerate the `mappluto_block_centroids` data table that provides the centroid of each block. This is used to add block labels to the map. 
-  - Run the `CREATE TABLE` SQL below on the Carto Batch UI: https://cartodb.github.io/carto-batch-ui/. 
-  - Once the batch query runs successfully, you need to query for the table via the regular Carto UI and save it as a dataset.
-  - Then you can run `DROP TABLE mappluto_block_centroids_new` to delete the invisible table saved on Carto's backend.
-
-```
-CREATE TABLE mappluto_block_centroids_new AS (
-SELECT
-  ST_Centroid(
-    ST_Union(
-      ST_makevalid(
-        the_geom
-      )
-    )
-  ) as the_geom,
-  ST_transform(
-    ST_centroid(
-      ST_Union(
-        ST_makevalid(
-          the_geom
-        )
-      )
-    ), 3857
-  ) as the_geom_webmercator,
-  block,
-  borocode
-FROM planninglabs.mappluto_VERSION
-GROUP BY block, borocode)
-```
-
-## Deploying the Intranet Site
-To build the docker file:
-- Pull the `docker-master` branch, and then merge the changes from `master` into `docker-master`
-- Log in to Docker Hub with `docker login -u <your_username>`
-- Navigate to the ZoLa's directory in the terminal, and then run `docker build --platform linux/amd64 -t <your_username>/labs-zola:latest .`
-- Confirm image exists by listing your local images with `docker images`
-- Push the image to Docker Hub with `docker push <your_username>/labs-zola:latest`
-- Send the URL for the image on Docker Hub (it should be https://hub.docker.com/repository/docker/<your_username>/labs-zola/) and send it to Leo Olen for deployment
+LoteDiretor não é afiliado nem endossado pelo NYC Department of City Planning.
