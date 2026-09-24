@@ -174,6 +174,43 @@ THEMATIC_LAYERS = {
             "dt_carga",
         ],
     },
+    "impact_license": {
+        "type_name": "geoportal:GEOSAMPA_licenca_obra",
+        "geometry": "ge_multipoligono",
+        "fields": [
+            "cd_identificador_licenca_obra",
+            "cd_processo_administrativo",
+            "tx_endereco_empreendimento",
+            "cd_parecer_cades",
+            "cd_parecer_cla",
+            "dt_publicacao_doc",
+            "tx_link_doc",
+            "st_licenca_empreendimento",
+            "tx_categoria_ocupacao",
+        ],
+    },
+    "environment_license": {
+        "type_name": "geoportal:GEOSAMPA_licenca_expedida_multipoligono_internet",
+        "geometry": "ge_multipoligono",
+        "fields": [
+            "cd_identificador_licenca_expedida_fme",
+            "cd_licenca_ambiental_expedida",
+            "sg_licenca_ambiental_expedida",
+            "cd_numero_licenca_expedida",
+            "nm_descricao_licenca",
+            "dt_expedicao_licenca",
+            "dt_validade_licenca_expedida",
+            "cd_processo_administrativo_licenca",
+            "nm_documento_licenca",
+            "tx_categoria_empreendimento",
+            "tp_estudo_licenca",
+            "tx_link_estudo_publicado",
+            "an_expedicao_licenca",
+            "dt_atualizacao",
+            "nm_completo_hiperlink",
+            "tx_observacao",
+        ],
+    },
     "heritage_buffer_iphan": {
         "type_name": "geoportal:patrimonio_cultural_area_envoltoria_IPHAN",
         "geometry": "ge_poligono",
@@ -506,6 +543,71 @@ def fetch_buildings_for_parcel(parcel_geometry: dict) -> list[dict]:
     return output
 
 
+def fetch_housing_permits(sql: str | None) -> list[dict]:
+    if not sql or not re.fullmatch(r"\d{11}", sql):
+        return []
+    fields = [
+        "cd_identificador_habitacao_popular",
+        "cd_subcategoria_uso",
+        "cd_sql_incra",
+        "tx_grupo_endereco",
+        "tx_assunto_alvara",
+        "cd_numero_processo_execucao",
+        "dt_autuacao_execucao",
+        "cd_numero_documento_execucao",
+        "dt_deferimento_execucao",
+        "qt_area_total_terreno",
+        "qt_area_construida_total",
+        "qt_unidade_his",
+        "qt_unidade_hmp",
+        "dt_atualizacao",
+    ]
+    query = {
+        "service": "WFS",
+        "version": "2.0.0",
+        "request": "GetFeature",
+        "typeNames": "geoportal:habitacao_popular",
+        "srsName": "EPSG:4326",
+        "cql_filter": f"cd_sql_incra='{sql}'",
+        "count": "50",
+        "propertyName": ",".join(fields),
+        "outputFormat": "application/json",
+    }
+    url = WFS + "?" + urllib.parse.urlencode(query)
+    request = urllib.request.Request(
+        url,
+        headers={
+            "User-Agent": "LoteDiretor/0.1 (+https://lotediretor.com)",
+            "Accept": "application/json",
+        },
+    )
+    with urllib.request.urlopen(request, timeout=12) as response:
+        body = response.read(2 * 1024 * 1024 + 1)
+        if response.status != 200:
+            raise RuntimeError(
+                f"GeoSampa habitacao_popular returned HTTP {response.status}"
+            )
+        if len(body) > 2 * 1024 * 1024:
+            raise RuntimeError("GeoSampa habitacao_popular exceeded safety limit")
+    payload = json.loads(body)
+    if payload.get("type") != "FeatureCollection":
+        raise RuntimeError("GeoSampa habitacao_popular did not return FeatureCollection")
+    output = []
+    allowed = set(fields)
+    for feature in payload.get("features") or []:
+        props = feature.get("properties") or {}
+        unexpected = set(props) - allowed
+        if unexpected:
+            raise RuntimeError(
+                "GeoSampa habitacao_popular returned unexpected fields: "
+                + ", ".join(sorted(unexpected))
+            )
+        if props.get("cd_sql_incra") != sql:
+            continue
+        output.append({"id": feature.get("id"), "properties": props})
+    return output
+
+
 def fetch_point_layer(key: str, lat: float, lng: float) -> list[dict]:
     config = THEMATIC_LAYERS[key]
     delta = 0.0007
@@ -647,6 +749,12 @@ def build_context(lat: float, lng: float, parcel_geometry: dict, parcel: dict) -
             for key in THEMATIC_LAYERS
         }
         futures[pool.submit(fetch_buildings_for_parcel, parcel_geometry)] = "__buildings__"
+        futures[
+            pool.submit(
+                fetch_housing_permits,
+                (parcel.get("properties") or {}).get("sql_reference"),
+            )
+        ] = "__housing_permits__"
         for future in as_completed(futures):
             key = futures[future]
             try:
@@ -666,6 +774,16 @@ def build_context(lat: float, lng: float, parcel_geometry: dict, parcel: dict) -
             "macrozone": macrozone,
         },
         "buildings": results.get("__buildings__") or [],
+        "licensing": {
+            "housing_permits_exact_sql": results.get("__housing_permits__") or [],
+            "impact_spatial_incidence": results.get("impact_license") or [],
+            "environment_spatial_incidence": results.get("environment_license") or [],
+            "interpretation": (
+                "Exact SQL matches are property-linked. Polygon intersections "
+                "are spatial incidence only and must not be described as a "
+                "parcel-specific license without an official identifier link."
+            ),
+        },
         "risk": {
             "geological": results.get("geological_risk") or [],
             "hydrological": results.get("hydrological_risk") or [],
@@ -856,6 +974,52 @@ def actual_values_for_section(
                 "value": "Valor unitário não localizado para a chave cadastral do lote.",
             }
         ]
+
+    if section_id == "licensing_history":
+        licensing = context.get("licensing") or {}
+        values = []
+        exact = licensing.get("housing_permits_exact_sql") or []
+        for item in exact:
+            props = item.get("properties") or {}
+            values.extend([
+                {"label": "Alvará HIS/HMP · assunto", "value": props.get("tx_assunto_alvara")},
+                {"label": "Processo de execução", "value": props.get("cd_numero_processo_execucao")},
+                {"label": "Documento", "value": props.get("cd_numero_documento_execucao")},
+                {"label": "Data de deferimento", "value": props.get("dt_deferimento_execucao")},
+                {"label": "Área construída licenciada", "value": props.get("qt_area_construida_total"), "unit": "m²"},
+                {"label": "Unidades HIS", "value": props.get("qt_unidade_his")},
+                {"label": "Unidades HMP", "value": props.get("qt_unidade_hmp")},
+            ])
+        impact = licensing.get("impact_spatial_incidence") or []
+        for item in impact:
+            props = item.get("properties") or {}
+            values.extend([
+                {"label": "Incidência espacial · processo EIV/impacto", "value": props.get("cd_processo_administrativo")},
+                {"label": "Status publicado", "value": props.get("st_licenca_empreendimento")},
+                {"label": "Categoria", "value": props.get("tx_categoria_ocupacao")},
+                {"label": "Publicação", "value": props.get("dt_publicacao_doc")},
+            ])
+        environmental = licensing.get("environment_spatial_incidence") or []
+        for item in environmental:
+            props = item.get("properties") or {}
+            values.extend([
+                {"label": "Incidência espacial · licença ambiental", "value": props.get("cd_numero_licenca_expedida") or props.get("cd_licenca_ambiental_expedida")},
+                {"label": "Descrição publicada", "value": props.get("nm_descricao_licenca")},
+                {"label": "Processo ambiental", "value": props.get("cd_processo_administrativo_licenca")},
+                {"label": "Expedição", "value": props.get("dt_expedicao_licenca")},
+                {"label": "Validade publicada", "value": props.get("dt_validade_licenca_expedida")},
+                {"label": "Tipo de estudo", "value": props.get("tp_estudo_licenca")},
+            ])
+        if not exact:
+            values.append({
+                "label": "Alvará HIS/HMP por SQL",
+                "value": "Nenhum registro exato encontrado na camada pública consultada.",
+            })
+        values.append({
+            "label": "Limite da consulta",
+            "value": licensing.get("interpretation"),
+        })
+        return values
 
     if section_id == "infrastructure_utilities":
         labels = {
