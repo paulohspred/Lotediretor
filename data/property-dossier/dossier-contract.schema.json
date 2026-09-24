@@ -1,0 +1,546 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/paulohspred/Lotediretor/blob/main/data/property-dossier/dossier-contract.schema.json",
+  "title": "LoteDiretor Property Dossier Contract",
+  "description": "Contrato normalizado para fatos, evidências, lacunas e proveniência de um dossiê imobiliário. Ausência de evidência não autoriza inferência silenciosa.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "dossier_id",
+    "generated_at",
+    "subject",
+    "sections",
+    "unknowns"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "0.1.0"
+    },
+    "dossier_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "as_of": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date"
+    },
+    "completion_level": {
+      "enum": [
+        "L0",
+        "L1",
+        "L2",
+        "L3",
+        "L4",
+        "UNASSESSED"
+      ]
+    },
+    "subject": {
+      "$ref": "#/$defs/subject"
+    },
+    "sections": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/section"
+      }
+    },
+    "unknowns": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/unknown"
+      }
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    }
+  },
+  "$defs": {
+    "subject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "subject_type",
+        "identity_refs"
+      ],
+      "properties": {
+        "subject_type": {
+          "enum": [
+            "URBAN_PARCEL",
+            "RURAL_PARCEL",
+            "BUILDING",
+            "CONDOMINIUM_UNIT",
+            "PROPERTY_RECORD",
+            "UNRESOLVED_PROPERTY"
+          ]
+        },
+        "identity_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/identityRef"
+          }
+        },
+        "geometry_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/geometryRef"
+          },
+          "default": []
+        },
+        "location": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "municipality_ibge": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "pattern": "^[0-9]{7}$"
+            },
+            "uf": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "pattern": "^[A-Z]{2}$"
+            },
+            "address": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "latitude": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "minimum": -90,
+              "maximum": 90
+            },
+            "longitude": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "minimum": -180,
+              "maximum": 180
+            }
+          }
+        }
+      }
+    },
+    "identityRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "value",
+        "scope"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "MUNICIPAL_CADASTRE",
+            "IPTU",
+            "SQL",
+            "CIB",
+            "MATRICULA",
+            "CNS",
+            "CAR",
+            "SIGEF",
+            "ADDRESS",
+            "CONDOMINIUM_UNIT",
+            "OTHER"
+          ]
+        },
+        "value": {
+          "type": "string",
+          "minLength": 1
+        },
+        "scope": {
+          "enum": [
+            "PUBLIC",
+            "PRIVATE",
+            "RESTRICTED",
+            "USER_PROVIDED"
+          ]
+        },
+        "authority": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "source_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "geometryRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "geometry_type",
+        "source_id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "geometry_type": {
+          "enum": [
+            "POINT",
+            "LINESTRING",
+            "POLYGON",
+            "MULTIPOLYGON",
+            "RASTER_FOOTPRINT",
+            "OTHER"
+          ]
+        },
+        "source_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "crs": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "valid_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date"
+        },
+        "accuracy_m": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "notes": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "section": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "status",
+        "facts"
+      ],
+      "properties": {
+        "id": {
+          "enum": [
+            "identity",
+            "land",
+            "building",
+            "tax",
+            "transactions",
+            "registry",
+            "zoning",
+            "permits",
+            "environment",
+            "risk",
+            "heritage",
+            "infrastructure",
+            "imagery",
+            "documents",
+            "terrain",
+            "public_projects",
+            "administrative_processes",
+            "market_finance"
+          ]
+        },
+        "status": {
+          "enum": [
+            "COMPLETE",
+            "PARTIAL",
+            "UNAVAILABLE_PUBLICLY",
+            "REQUIRES_QUERY",
+            "REQUIRES_USER_DOCUMENT",
+            "RESTRICTED",
+            "NOT_APPLICABLE",
+            "UNKNOWN"
+          ]
+        },
+        "facts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/fact"
+          }
+        },
+        "notes": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "fact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "field",
+        "status",
+        "evidence_class",
+        "access_class",
+        "provenance"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "field": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status": {
+          "enum": [
+            "AVAILABLE",
+            "NOT_AVAILABLE",
+            "NOT_PUBLICLY_AVAILABLE",
+            "QUERY_ONLY",
+            "REQUIRES_USER_DOCUMENT",
+            "RESTRICTED",
+            "NOT_APPLICABLE",
+            "UNKNOWN",
+            "CONFLICTING_EVIDENCE"
+          ]
+        },
+        "value": {},
+        "unit": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "evidence_class": {
+          "enum": [
+            "OFFICIAL_SOURCE",
+            "OFFICIAL_DOCUMENT",
+            "USER_DOCUMENT",
+            "DERIVED",
+            "INDICATIVE_PUBLIC_SOURCE",
+            "RESTRICTED_OFFICIAL_SOURCE",
+            "NO_EVIDENCE"
+          ]
+        },
+        "access_class": {
+          "enum": [
+            "OPEN_REUSABLE",
+            "PUBLIC_QUERY_ONLY",
+            "PUBLIC_READ_ONLY",
+            "AUTH_REQUIRED",
+            "USER_PRIVATE",
+            "RESTRICTED",
+            "LICENSE_REVIEW_REQUIRED",
+            "UNKNOWN"
+          ]
+        },
+        "provenance": {
+          "$ref": "#/$defs/provenance"
+        },
+        "method": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "confidence": {
+          "enum": [
+            "CONFIRMED",
+            "SUPPORTED",
+            "INDICATIVE",
+            "UNKNOWN",
+            "CONFLICTING"
+          ]
+        },
+        "geometry_ref": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "valid_from": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date"
+        },
+        "valid_to": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date"
+        },
+        "observed_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "upstream_fact_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        },
+        "public_release_allowed": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "captured_at"
+      ],
+      "properties": {
+        "source_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "authority": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "source_url": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "uri"
+        },
+        "document_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "captured_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "snapshot_sha256": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "parser_version": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "license": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "notes": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "unknown": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "field",
+        "reason",
+        "next_action"
+      ],
+      "properties": {
+        "section_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "field": {
+          "type": "string",
+          "minLength": 1
+        },
+        "reason": {
+          "enum": [
+            "SOURCE_NOT_FOUND",
+            "NOT_PUBLIC",
+            "AUTH_REQUIRED",
+            "LICENSE_UNCLEAR",
+            "SCHEMA_UNMAPPED",
+            "GEOMETRY_UNRESOLVED",
+            "CONFLICTING_SOURCES",
+            "OUTDATED_SOURCE",
+            "USER_DOCUMENT_NEEDED",
+            "TECHNICAL_CONFIRMATION_REQUIRED",
+            "OTHER"
+          ]
+        },
+        "next_action": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_candidates": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        }
+      }
+    }
+  }
+}
