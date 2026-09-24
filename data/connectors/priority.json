@@ -112,20 +112,21 @@
     {
       "id": "sp-geosampa-lidar-catalog",
       "source_id": "sp-sao-paulo-lidar-terrain",
-      "kind": "public_page",
+      "kind": "geosampa_mdt_2020_tile_resolver",
       "url": "https://metadados.geosampa.prefeitura.sp.gov.br/geonetwork/srv/search?orgName=Coordenadoria+de+Produ%C3%A7%C3%A3o+e+An%C3%A1lise+da+Informa%C3%A7%C3%A3o+%E2%80%93+GEOINFO",
-      "mode": "metadata_only_before_large_artifact_download",
+      "mode": "official_wfs_tile_index_plus_hashed_laz_cache_and_property_profiles",
       "approved": true,
-      "notes": "License resolved for PMSP-produced GeoSampa geodata. Snapshot catalog metadata only until tile/artifact schema and object-storage policy are approved."
+      "notes": "Validated on GeoSampa MDT 2020 tile 3314-233. Official app maps type 21 to layer geoportal:quadricula_folha_mdt_mds_2020, folder MDT_2020 and <tile>.zip. Parcel API downloads official LAZ tile, hashes evidence, interpolates local ground surface, and produces elevation stats plus A-A/B-B cuts. Requires python3-laspy, python3-laszip, numpy, pyproj, shapely and scipy on the VM."
     },
     {
       "id": "sp-itbi-index",
       "source_id": "sp-sao-paulo-itbi-transactions",
-      "kind": "public_page",
+      "kind": "privacy_safe_public_query_materializer",
       "url": "https://www2.prefeitura.sp.gov.br/web/fazenda/w/acesso_a_informacao/31501",
-      "mode": "public_index_metadata_only",
+      "mode": "official_xlsx_snapshot_hash_sql_index",
       "approved": true,
-      "notes": "Public index snapshot only. Annual XLSX/ODS resource materialization remains blocked until reuse/license terms and field allowlist are finalized."
+      "notes": "Validated end-to-end for 2022-2026 official workbooks: 828,583 DTI rows and 472,057 distinct SQLs. Closed public field mapping only; no buyer/seller names or CPF/CNPJ. SQLite index supports parcel query by SQL and historical matrícula/cartório references. Keep PUBLIC_QUERY_ONLY/reuse caveat until a separate open-data license determination is documented.",
+      "tool": "tools/ingestion/sp_itbi_history.py"
     },
     {
       "id": "sp-pgv-2026-law",
