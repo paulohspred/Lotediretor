@@ -157,6 +157,33 @@
       "mode": "metadata_only_until_license_review",
       "approved": true,
       "notes": "Public ArcGIS service; capture metadata only. Do not cache/materialize imagery until reuse terms are confirmed."
+    },
+    {
+      "id": "rio-licenses-habite-se",
+      "source_id": "rj-rio-licenses-habite-se",
+      "kind": "public_page",
+      "url": "https://desenvolvimentourbano.prefeitura.rio/informacoes-urbanisticas/",
+      "mode": "metadata_and_resource_discovery_only",
+      "approved": true,
+      "notes": "Public SMDU urban-information surface. Discover monthly license/habite-se resources and schemas; do not materialize raw administrative records until resource-specific terms/privacy review is complete."
+    },
+    {
+      "id": "rio-doweb-editions",
+      "source_id": "rj-rio-official-gazette-doweb",
+      "kind": "json_api",
+      "url": "https://doweb.rio.rj.gov.br/apifront/portal/edicoes/edicoes_from_data/",
+      "mode": "edition_metadata_query_only",
+      "approved": true,
+      "notes": "Public read-only edition endpoint. Preserve edition/date/id and official PDF references. Redistribution terms unresolved; metadata/query only."
+    },
+    {
+      "id": "rio-urban-uses",
+      "source_id": "rj-rio-urban-uses-activities",
+      "kind": "arcgis_service",
+      "url": "https://pgeo3.rio.rj.gov.br/arcgis/rest/services/Urbanismo/IU_Usos_e_atividades/MapServer",
+      "mode": "metadata_and_schema_first",
+      "approved": true,
+      "notes": "Capture service/layer/table schema first. Legal normalizer must join activity/use tables and preserve LC 270/2024 / Decreto 56.561/2025 provenance and future amendments."
     }
   ]
 }
