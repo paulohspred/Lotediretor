@@ -13,82 +13,37 @@
   ],
   "sources": [
     {
-      "id": "br-rfb-sinter-cib",
-      "authority": "Receita Federal do Brasil",
-      "scope": "BR",
+      "id": "am-manaus-plan-director",
+      "authority": "Prefeitura de Manaus",
+      "scope": "municipality",
+      "municipality_ibge": "1302603",
       "domain": [
-        "property_identity",
-        "cadastre"
+        "plan_director",
+        "law"
       ],
-      "source_type": "portal_api_ecosystem",
-      "discovery_url": "https://www.gov.br/receitafederal/pt-br/acesso-a-informacao/acoes-e-programas/programas-e-atividades/sinter",
-      "access_class": "PUBLIC_QUERY_ONLY",
-      "verification_status": "VERIFIED",
-      "notes": "CIB é identificador nacional em implantação. Consulta pública não equivale a acesso aos campos pessoais/restritos existentes na origem."
-    },
-    {
-      "id": "br-ibge-cnefe",
-      "authority": "IBGE",
-      "scope": "BR",
-      "domain": [
-        "address",
-        "geocoding"
-      ],
-      "source_type": "download",
-      "discovery_url": "https://www.ibge.gov.br/estatisticas/sociais/populacao/38734-cadastro-nacional-de-enderecos-para-fins-estatisticos.html",
-      "formats": [
-        "CSV",
-        "GeoJSON"
-      ],
+      "source_type": "legal_documents",
+      "discovery_url": "https://www.manaus.am.gov.br/",
       "access_class": "OPEN_REUSABLE",
-      "verification_status": "VERIFIED",
-      "notes": "Backbone nacional de endereços georreferenciados; não é cadastro dominial."
+      "verification_status": "DISCOVERY",
+      "notes": "LC 002/2014 localizada; validar consolidação, alterações e revisão vigente em 2026."
     },
     {
-      "id": "br-inde",
-      "authority": "Infraestrutura Nacional de Dados Espaciais",
-      "scope": "BR",
+      "id": "ap-macapa-sit",
+      "authority": "Prefeitura de Macapá",
+      "scope": "municipality",
+      "municipality_ibge": "1600303",
       "domain": [
-        "geospatial_catalog"
+        "cadastre",
+        "itbi",
+        "pgv",
+        "plan_director",
+        "urban_law"
       ],
-      "source_type": "catalog_ogc",
-      "discovery_url": "https://inde.gov.br/",
-      "formats": [
-        "WMS",
-        "WFS",
-        "CSW",
-        "downloads"
-      ],
-      "access_class": "OPEN_REUSABLE",
-      "verification_status": "VERIFIED"
-    },
-    {
-      "id": "br-incra-sigef",
-      "authority": "INCRA",
-      "scope": "BR",
-      "domain": [
-        "rural_parcel",
-        "survey"
-      ],
-      "source_type": "authenticated_portal",
-      "discovery_url": "https://sigef.incra.gov.br/",
-      "access_class": "AUTHENTICATED_PUBLIC",
-      "verification_status": "VERIFIED",
-      "notes": "Parcelas georreferenciadas/certificadas. Não tratar como prova isolada de titularidade registral."
-    },
-    {
-      "id": "br-sicar-car",
-      "authority": "Serviço Florestal Brasileiro / SICAR",
-      "scope": "BR",
-      "domain": [
-        "rural",
-        "environment"
-      ],
-      "source_type": "portal_download_map",
-      "discovery_url": "https://www.car.gov.br/publico/imoveis/index",
+      "source_type": "web_gis",
+      "discovery_url": "https://mapa.macapa.ap.gov.br/",
       "access_class": "PUBLIC_QUERY_ONLY",
-      "verification_status": "VERIFIED",
-      "notes": "CAR é declaratório; não prova domínio."
+      "verification_status": "ENDPOINT_DISCOVERY_REQUIRED",
+      "notes": "SIT expõe cadastro de unidade imobiliária, histórico PGV, temáticos ITBI e legislação do Plano Diretor. Descobrir serviços/APIs e licença antes de ingestão."
     },
     {
       "id": "br-ana-open-data",
@@ -161,6 +116,56 @@
       "verification_status": "VERIFIED"
     },
     {
+      "id": "br-ibge-cnefe",
+      "authority": "IBGE",
+      "scope": "BR",
+      "domain": [
+        "address",
+        "geocoding"
+      ],
+      "source_type": "download",
+      "discovery_url": "https://www.ibge.gov.br/estatisticas/sociais/populacao/38734-cadastro-nacional-de-enderecos-para-fins-estatisticos.html",
+      "formats": [
+        "CSV",
+        "GeoJSON"
+      ],
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED",
+      "notes": "Backbone nacional de endereços georreferenciados; não é cadastro dominial."
+    },
+    {
+      "id": "br-incra-sigef",
+      "authority": "INCRA",
+      "scope": "BR",
+      "domain": [
+        "rural_parcel",
+        "survey"
+      ],
+      "source_type": "authenticated_portal",
+      "discovery_url": "https://sigef.incra.gov.br/",
+      "access_class": "AUTHENTICATED_PUBLIC",
+      "verification_status": "VERIFIED",
+      "notes": "Parcelas georreferenciadas/certificadas. Não tratar como prova isolada de titularidade registral."
+    },
+    {
+      "id": "br-inde",
+      "authority": "Infraestrutura Nacional de Dados Espaciais",
+      "scope": "BR",
+      "domain": [
+        "geospatial_catalog"
+      ],
+      "source_type": "catalog_ogc",
+      "discovery_url": "https://inde.gov.br/",
+      "formats": [
+        "WMS",
+        "WFS",
+        "CSW",
+        "downloads"
+      ],
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED"
+    },
+    {
       "id": "br-inpe-terrabrasilis",
       "authority": "INPE",
       "scope": "BR",
@@ -175,158 +180,71 @@
       "verification_status": "VERIFIED"
     },
     {
-      "id": "sp-sao-paulo-geosampa-wfs",
-      "authority": "Prefeitura de São Paulo",
-      "scope": "municipality",
-      "municipality_ibge": "3550308",
+      "id": "br-rfb-sinter-cib",
+      "authority": "Receita Federal do Brasil",
+      "scope": "BR",
       "domain": [
-        "cadastre",
-        "zoning",
-        "urban_planning",
-        "environment",
-        "infrastructure"
-      ],
-      "source_type": "WFS",
-      "base_url": "https://wfs.geosampa.prefeitura.sp.gov.br/geoserver/geoportal/wfs",
-      "formats": [
-        "WFS",
-        "GML",
-        "GeoJSON",
-        "SHP"
-      ],
-      "access_class": "OPEN_REUSABLE",
-      "verification_status": "VERIFIED",
-      "notes": "Inclui lote fiscal e amplo catálogo municipal. Confirmar licença/atribuição por camada."
-    },
-    {
-      "id": "sp-sao-paulo-geosampa-wms",
-      "authority": "Prefeitura de São Paulo",
-      "scope": "municipality",
-      "municipality_ibge": "3550308",
-      "domain": [
-        "basemap",
-        "orthophoto",
-        "thematic_layers"
-      ],
-      "source_type": "WMS",
-      "base_url": "https://wms.geosampa.prefeitura.sp.gov.br/geoserver/geoportal/wms",
-      "access_class": "PUBLIC_QUERY_ONLY",
-      "verification_status": "VERIFIED"
-    },
-    {
-      "id": "sp-sao-paulo-pde-law",
-      "authority": "Prefeitura de São Paulo / Câmara Municipal",
-      "scope": "municipality",
-      "municipality_ibge": "3550308",
-      "domain": [
-        "plan_director",
-        "law"
-      ],
-      "source_type": "legal_documents",
-      "discovery_url": "https://gestaourbana.prefeitura.sp.gov.br/marco-regulatorio/plano-diretor/",
-      "access_class": "OPEN_REUSABLE",
-      "verification_status": "VERIFIED",
-      "notes": "PDE Lei 16.050/2014 com revisão intermediária pela Lei 17.975/2023 e anexos/mapas. Versionar alterações."
-    },
-    {
-      "id": "pe-recife-open-data",
-      "authority": "Prefeitura do Recife",
-      "scope": "municipality",
-      "municipality_ibge": "2611606",
-      "domain": [
-        "iptu",
-        "itbi",
-        "licensing",
-        "urban_planning"
-      ],
-      "source_type": "CKAN",
-      "base_url": "https://dados.recife.pe.gov.br/",
-      "formats": [
-        "CSV",
-        "JSON",
-        "GeoJSON"
-      ],
-      "access_class": "OPEN_REUSABLE",
-      "verification_status": "VERIFIED",
-      "notes": "Portal possui séries históricas anuais de IPTU e ITBI e dados urbanísticos."
-    },
-    {
-      "id": "pe-recife-zoning-arcgis",
-      "authority": "Prefeitura do Recife",
-      "scope": "municipality",
-      "municipality_ibge": "2611606",
-      "domain": [
-        "zoning",
-        "plan_director"
-      ],
-      "source_type": "ArcGIS_FeatureServer",
-      "discovery_url": "https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Planejamento/BASES_ZONEAMENTO_G_PD2020/FeatureServer",
-      "access_class": "PUBLIC_QUERY_ONLY",
-      "verification_status": "VERIFIED"
-    },
-    {
-      "id": "mg-belo-horizonte-open-data",
-      "authority": "Prefeitura de Belo Horizonte",
-      "scope": "municipality",
-      "municipality_ibge": "3106200",
-      "domain": [
-        "itbi",
-        "urban_data",
+        "property_identity",
         "cadastre"
       ],
-      "source_type": "open_data_portal",
-      "base_url": "https://dados.pbh.gov.br/",
-      "access_class": "OPEN_REUSABLE",
-      "verification_status": "VERIFIED"
+      "source_type": "portal_api_ecosystem",
+      "discovery_url": "https://www.gov.br/receitafederal/pt-br/acesso-a-informacao/acoes-e-programas/programas-e-atividades/sinter",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED",
+      "notes": "CIB é identificador nacional em implantação. Consulta pública não equivale a acesso aos campos pessoais/restritos existentes na origem."
     },
     {
-      "id": "mg-belo-horizonte-plan-director",
-      "authority": "Prefeitura de Belo Horizonte",
-      "scope": "municipality",
-      "municipality_ibge": "3106200",
+      "id": "br-sicar-car",
+      "authority": "Serviço Florestal Brasileiro / SICAR",
+      "scope": "BR",
       "domain": [
-        "plan_director",
-        "zoning",
-        "law"
+        "rural",
+        "environment"
       ],
-      "source_type": "legal_documents_gis",
-      "discovery_url": "https://prefeitura.pbh.gov.br/politica-urbana/planejamento-urbano/plano-diretor",
+      "source_type": "portal_download_map",
+      "discovery_url": "https://www.car.gov.br/publico/imoveis/index",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED",
+      "notes": "CAR é declaratório; não prova domínio."
+    },
+    {
+      "id": "ce-fortaleza-iptu",
+      "authority": "Prefeitura de Fortaleza / SEFIN",
+      "scope": "municipality",
+      "municipality_ibge": "2304400",
+      "domain": [
+        "iptu",
+        "cadastre",
+        "property_attributes"
+      ],
+      "source_type": "CKAN_dataset",
+      "discovery_url": "https://dados.fortaleza.ce.gov.br/dataset/",
+      "formats": [
+        "CSV"
+      ],
+      "license": "CC-BY (portal filter; verify dataset metadata during ingest)",
       "access_class": "OPEN_REUSABLE",
       "verification_status": "VERIFIED",
-      "notes": "Lei 11.181/2019 e regulamentos; BHMAP/GeoSiurbe complementam a geometria."
+      "notes": "Cadastro fiscal imobiliário relativo ao IPTU."
     },
     {
-      "id": "rs-porto-alegre-itbi",
-      "authority": "Prefeitura de Porto Alegre",
+      "id": "ce-fortaleza-itbi",
+      "authority": "Prefeitura de Fortaleza / SEFIN",
       "scope": "municipality",
-      "municipality_ibge": "4314902",
+      "municipality_ibge": "2304400",
       "domain": [
         "itbi",
         "transactions"
       ],
-      "source_type": "CKAN",
-      "discovery_url": "https://dadosabertos.poa.br/dataset/itbi",
+      "source_type": "CKAN_dataset",
+      "discovery_url": "https://dados.fortaleza.ce.gov.br/dataset/",
       "formats": [
         "CSV"
       ],
-      "access_class": "OPEN_REUSABLE",
-      "verification_status": "VERIFIED"
-    },
-    {
-      "id": "rs-porto-alegre-plan-director-2026",
-      "authority": "Prefeitura de Porto Alegre",
-      "scope": "municipality",
-      "municipality_ibge": "4314902",
-      "domain": [
-        "plan_director",
-        "zoning",
-        "law"
-      ],
-      "source_type": "legal_documents",
-      "discovery_url": "https://www.prefeitura.poa.br/gp/noticias/prefeito-sanciona-novo-plano-diretor-e-lei-de-uso-e-ocupacao-do-solo",
+      "license": "CC-BY (portal filter; verify dataset metadata during ingest)",
       "access_class": "OPEN_REUSABLE",
       "verification_status": "VERIFIED",
-      "notes": "Novo PDUS e LUOS sancionados em 14/07/2026. Registrar números legais e anexos a partir do DOPA antes do motor normativo."
+      "notes": "Transações imobiliárias com recolhimento de ITBI, geolocalização, características dos imóveis e informações das operações."
     },
     {
       "id": "ce-fortaleza-open-data",
@@ -372,52 +290,6 @@
       "notes": "Portal disponibiliza LC 450/2025, macrozoneamento, zonas especiais e KMZ."
     },
     {
-      "id": "rj-rio-plan-director",
-      "authority": "Prefeitura do Rio de Janeiro",
-      "scope": "municipality",
-      "municipality_ibge": "3304557",
-      "domain": [
-        "plan_director",
-        "law"
-      ],
-      "source_type": "legal_documents",
-      "discovery_url": "https://www.rio.rj.gov.br/",
-      "access_class": "OPEN_REUSABLE",
-      "verification_status": "VERIFIED",
-      "notes": "Plano Diretor: Lei Complementar 270/2024. Localizar endpoint oficial consolidado e anexos no próximo ciclo."
-    },
-    {
-      "id": "rj-rio-data-rio",
-      "authority": "Prefeitura do Rio de Janeiro",
-      "scope": "municipality",
-      "municipality_ibge": "3304557",
-      "domain": [
-        "open_data",
-        "geospatial"
-      ],
-      "source_type": "open_data_portal",
-      "base_url": "https://www.data.rio/",
-      "access_class": "OPEN_REUSABLE",
-      "verification_status": "DISCOVERY",
-      "notes": "Catalogar cadastros, imóveis, ITBI/IPTU e GIS em profundidade."
-    },
-    {
-      "id": "pr-curitiba-plan-director",
-      "authority": "Prefeitura de Curitiba / IPPUC",
-      "scope": "municipality",
-      "municipality_ibge": "4106902",
-      "domain": [
-        "plan_director",
-        "zoning",
-        "law"
-      ],
-      "source_type": "legal_documents_gis",
-      "discovery_url": "https://ippuc.org.br/",
-      "access_class": "OPEN_REUSABLE",
-      "verification_status": "VERIFIED",
-      "notes": "Plano Diretor Lei 14.771/2015; zoneamento Lei 15.511/2019. Revisão em curso em 2026."
-    },
-    {
       "id": "es-vitoria-plan-director",
       "authority": "Prefeitura de Vitória",
       "scope": "municipality",
@@ -449,6 +321,310 @@
       "notes": "Plano Diretor LC 349/2022."
     },
     {
+      "id": "ma-sao-luis-plan-director",
+      "authority": "Prefeitura de São Luís",
+      "scope": "municipality",
+      "municipality_ibge": "2111300",
+      "domain": [
+        "plan_director",
+        "law",
+        "historical_law"
+      ],
+      "source_type": "legal_documents",
+      "discovery_url": "https://www.saoluis.ma.gov.br/",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED",
+      "notes": "Plano Diretor Lei 7.122/2023; portal preserva documentos históricos úteis para versionamento."
+    },
+    {
+      "id": "mg-belo-horizonte-itbi",
+      "authority": "Prefeitura de Belo Horizonte",
+      "scope": "municipality",
+      "municipality_ibge": "3106200",
+      "domain": [
+        "itbi",
+        "transactions",
+        "building",
+        "valuation"
+      ],
+      "source_type": "CKAN_dataset",
+      "discovery_url": "https://dados.pbh.gov.br/dataset/itbi-relatorios",
+      "formats": [
+        "CSV"
+      ],
+      "license": "NOT_DECLARED_ON_RESOURCE",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "LICENSE_REVIEW_REQUIRED",
+      "notes": "Relatórios mensais incluem endereço, ano da construção, área do terreno, área construída, fração ideal, padrão, tipo construtivo, ocupação, valor declarado/base de cálculo, zona e data de quitação."
+    },
+    {
+      "id": "mg-belo-horizonte-open-data",
+      "authority": "Prefeitura de Belo Horizonte",
+      "scope": "municipality",
+      "municipality_ibge": "3106200",
+      "domain": [
+        "itbi",
+        "urban_data",
+        "cadastre"
+      ],
+      "source_type": "open_data_portal",
+      "base_url": "https://dados.pbh.gov.br/",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "LICENSE_REVIEW_REQUIRED",
+      "notes": "Portal oficial confirmado. Recurso ITBI consultado não declara licença; revisar licença por dataset antes de redistribuição."
+    },
+    {
+      "id": "mg-belo-horizonte-plan-director",
+      "authority": "Prefeitura de Belo Horizonte",
+      "scope": "municipality",
+      "municipality_ibge": "3106200",
+      "domain": [
+        "plan_director",
+        "zoning",
+        "law"
+      ],
+      "source_type": "legal_documents_gis",
+      "discovery_url": "https://prefeitura.pbh.gov.br/politica-urbana/planejamento-urbano/plano-diretor",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED",
+      "notes": "Lei 11.181/2019 e regulamentos; BHMAP/GeoSiurbe complementam a geometria."
+    },
+    {
+      "id": "pa-belem-plan-director",
+      "authority": "Prefeitura de Belém",
+      "scope": "municipality",
+      "municipality_ibge": "1501402",
+      "domain": [
+        "plan_director",
+        "law"
+      ],
+      "source_type": "legal_documents",
+      "discovery_url": "https://prefeitura.belem.pa.gov.br/",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "DISCOVERY",
+      "notes": "Lei 8.655/2008 localizada; validar revisão/consolidação vigente."
+    },
+    {
+      "id": "pe-recife-iptu",
+      "authority": "Prefeitura do Recife / Secretaria de Finanças",
+      "scope": "municipality",
+      "municipality_ibge": "2611606",
+      "domain": [
+        "iptu",
+        "cadastre",
+        "building",
+        "valuation"
+      ],
+      "source_type": "CKAN_dataset",
+      "discovery_url": "https://dados.recife.pe.gov.br/dataset/imposto-predial-e-territorial-urbano-iptu",
+      "formats": [
+        "CSV",
+        "JSON"
+      ],
+      "license": "ODbL",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED",
+      "notes": "Inclui número do contribuinte, CPF/CNPJ mascarado, endereço, fração ideal, áreas, valores unitários, ano, pavimentos, uso, padrão, valor estimado, IPTU e coordenadas. Não criar busca pública por pessoa."
+    },
+    {
+      "id": "pe-recife-itbi",
+      "authority": "Prefeitura do Recife / Secretaria de Finanças",
+      "scope": "municipality",
+      "municipality_ibge": "2611606",
+      "domain": [
+        "itbi",
+        "transactions",
+        "property_attributes"
+      ],
+      "source_type": "CKAN_dataset",
+      "discovery_url": "https://dados.recife.pe.gov.br/dataset/imposto-sobre-transmissao-de-bens-imoveis-itbi",
+      "formats": [
+        "CSV",
+        "JSON"
+      ],
+      "license": "ODbL",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED",
+      "temporal_coverage": "2015-2026+",
+      "notes": "Relação de transações com recolhimento de ITBI, características do imóvel e informações da operação."
+    },
+    {
+      "id": "pe-recife-licenciamento-urbanistico",
+      "authority": "Prefeitura do Recife / SEDUL",
+      "scope": "municipality",
+      "municipality_ibge": "2611606",
+      "domain": [
+        "building_permits",
+        "licensing",
+        "construction"
+      ],
+      "source_type": "CKAN_dataset",
+      "discovery_url": "https://dados.recife.pe.gov.br/dataset/licenciamento-urbanistico",
+      "formats": [
+        "CSV",
+        "PDF dictionary"
+      ],
+      "license": "ODbL",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED",
+      "update_frequency": "daily",
+      "notes": "Processos de licenciamento urbanístico 100% digitais."
+    },
+    {
+      "id": "pe-recife-open-data",
+      "authority": "Prefeitura do Recife",
+      "scope": "municipality",
+      "municipality_ibge": "2611606",
+      "domain": [
+        "iptu",
+        "itbi",
+        "licensing",
+        "urban_planning"
+      ],
+      "source_type": "CKAN",
+      "base_url": "https://dados.recife.pe.gov.br/",
+      "formats": [
+        "CSV",
+        "JSON",
+        "GeoJSON"
+      ],
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED",
+      "notes": "Portal possui séries históricas anuais de IPTU e ITBI e dados urbanísticos."
+    },
+    {
+      "id": "pe-recife-outorga-onerosa",
+      "authority": "Prefeitura do Recife / SEDUL",
+      "scope": "municipality",
+      "municipality_ibge": "2611606",
+      "domain": [
+        "urban_instrument",
+        "development_rights",
+        "licensing"
+      ],
+      "source_type": "CKAN_dataset",
+      "discovery_url": "https://dados.recife.pe.gov.br/dataset/outorga-onerosa-do-direito-de-construir",
+      "formats": [
+        "CSV"
+      ],
+      "license": "ODbL",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED",
+      "notes": "Geolocalização, características do empreendimento, alvará e valores outorgados."
+    },
+    {
+      "id": "pe-recife-zoning-arcgis",
+      "authority": "Prefeitura do Recife",
+      "scope": "municipality",
+      "municipality_ibge": "2611606",
+      "domain": [
+        "zoning",
+        "plan_director"
+      ],
+      "source_type": "ArcGIS_FeatureServer",
+      "discovery_url": "https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Planejamento/BASES_ZONEAMENTO_G_PD2020/FeatureServer",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED"
+    },
+    {
+      "id": "pr-curitiba-plan-director",
+      "authority": "Prefeitura de Curitiba / IPPUC",
+      "scope": "municipality",
+      "municipality_ibge": "4106902",
+      "domain": [
+        "plan_director",
+        "zoning",
+        "law"
+      ],
+      "source_type": "legal_documents_gis",
+      "discovery_url": "https://ippuc.org.br/",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED",
+      "notes": "Plano Diretor Lei 14.771/2015; zoneamento Lei 15.511/2019. Revisão em curso em 2026."
+    },
+    {
+      "id": "rj-rio-data-rio",
+      "authority": "Prefeitura do Rio de Janeiro",
+      "scope": "municipality",
+      "municipality_ibge": "3304557",
+      "domain": [
+        "open_data",
+        "geospatial"
+      ],
+      "source_type": "open_data_portal",
+      "base_url": "https://www.data.rio/",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "DISCOVERY",
+      "notes": "Catalogar cadastros, imóveis, ITBI/IPTU e GIS em profundidade."
+    },
+    {
+      "id": "rj-rio-plan-director",
+      "authority": "Prefeitura do Rio de Janeiro",
+      "scope": "municipality",
+      "municipality_ibge": "3304557",
+      "domain": [
+        "plan_director",
+        "law"
+      ],
+      "source_type": "legal_documents",
+      "discovery_url": "https://www.rio.rj.gov.br/",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED",
+      "notes": "Plano Diretor: Lei Complementar 270/2024. Localizar endpoint oficial consolidado e anexos no próximo ciclo."
+    },
+    {
+      "id": "rs-porto-alegre-iptu",
+      "authority": "Prefeitura de Porto Alegre / Secretaria Municipal da Fazenda",
+      "scope": "municipality",
+      "municipality_ibge": "4314902",
+      "domain": [
+        "iptu",
+        "cadastre"
+      ],
+      "source_type": "CKAN_dataset",
+      "discovery_url": "https://dadosabertos.poa.br/dataset/iptu",
+      "formats": [
+        "CSV"
+      ],
+      "license": "CC-BY",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED",
+      "temporal_coverage": "2013-2026+"
+    },
+    {
+      "id": "rs-porto-alegre-itbi",
+      "authority": "Prefeitura de Porto Alegre",
+      "scope": "municipality",
+      "municipality_ibge": "4314902",
+      "domain": [
+        "itbi",
+        "transactions"
+      ],
+      "source_type": "CKAN",
+      "discovery_url": "https://dadosabertos.poa.br/dataset/itbi",
+      "formats": [
+        "CSV"
+      ],
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED"
+    },
+    {
+      "id": "rs-porto-alegre-plan-director-2026",
+      "authority": "Prefeitura de Porto Alegre",
+      "scope": "municipality",
+      "municipality_ibge": "4314902",
+      "domain": [
+        "plan_director",
+        "zoning",
+        "law"
+      ],
+      "source_type": "legal_documents",
+      "discovery_url": "https://www.prefeitura.poa.br/gp/noticias/prefeito-sanciona-novo-plano-diretor-e-lei-de-uso-e-ocupacao-do-solo",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED",
+      "notes": "Novo PDUS e LUOS sancionados em 14/07/2026. Registrar números legais e anexos a partir do DOPA antes do motor normativo."
+    },
+    {
       "id": "sp-campinas-spatial-data",
       "authority": "Prefeitura de Campinas",
       "scope": "municipality",
@@ -468,50 +644,78 @@
       "notes": "Portal de metadados e camadas municipais; validar cada licença e atualização."
     },
     {
-      "id": "ma-sao-luis-plan-director",
-      "authority": "Prefeitura de São Luís",
+      "id": "sp-sao-paulo-geosampa-wfs",
+      "authority": "Prefeitura de São Paulo",
       "scope": "municipality",
-      "municipality_ibge": "2111300",
+      "municipality_ibge": "3550308",
       "domain": [
-        "plan_director",
-        "law",
-        "historical_law"
+        "cadastre",
+        "zoning",
+        "urban_planning",
+        "environment",
+        "infrastructure"
       ],
-      "source_type": "legal_documents",
-      "discovery_url": "https://www.saoluis.ma.gov.br/",
+      "source_type": "WFS",
+      "base_url": "https://wfs.geosampa.prefeitura.sp.gov.br/geoserver/geoportal/wfs",
+      "formats": [
+        "WFS",
+        "GML",
+        "GeoJSON",
+        "SHP"
+      ],
       "access_class": "OPEN_REUSABLE",
       "verification_status": "VERIFIED",
-      "notes": "Plano Diretor Lei 7.122/2023; portal preserva documentos históricos úteis para versionamento."
+      "notes": "Inclui lote fiscal e amplo catálogo municipal. Confirmar licença/atribuição por camada."
     },
     {
-      "id": "am-manaus-plan-director",
-      "authority": "Prefeitura de Manaus",
+      "id": "sp-sao-paulo-geosampa-wms",
+      "authority": "Prefeitura de São Paulo",
       "scope": "municipality",
-      "municipality_ibge": "1302603",
+      "municipality_ibge": "3550308",
+      "domain": [
+        "basemap",
+        "orthophoto",
+        "thematic_layers"
+      ],
+      "source_type": "WMS",
+      "base_url": "https://wms.geosampa.prefeitura.sp.gov.br/geoserver/geoportal/wms",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED"
+    },
+    {
+      "id": "sp-sao-paulo-iptu-cadastro-fiscal",
+      "authority": "Prefeitura de São Paulo / Secretaria Municipal da Fazenda",
+      "scope": "municipality",
+      "municipality_ibge": "3550308",
+      "domain": [
+        "iptu",
+        "cadastre",
+        "property_attributes"
+      ],
+      "source_type": "GeoSampa_download",
+      "discovery_url": "https://geosampa.prefeitura.sp.gov.br/",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED_WITH_PRIVACY_FILTER",
+      "legal_basis": [
+        "Decreto 56.701/2015",
+        "Decreto 56.932/2016"
+      ],
+      "notes": "Norma municipal determina consulta/download do cadastro imobiliário fiscal IPTU em dados abertos sob licença livre. PGM 12.195/2020 orienta anonimização/inibição de dados pessoais à luz da LGPD."
+    },
+    {
+      "id": "sp-sao-paulo-pde-law",
+      "authority": "Prefeitura de São Paulo / Câmara Municipal",
+      "scope": "municipality",
+      "municipality_ibge": "3550308",
       "domain": [
         "plan_director",
         "law"
       ],
       "source_type": "legal_documents",
-      "discovery_url": "https://www.manaus.am.gov.br/",
+      "discovery_url": "https://gestaourbana.prefeitura.sp.gov.br/marco-regulatorio/plano-diretor/",
       "access_class": "OPEN_REUSABLE",
-      "verification_status": "DISCOVERY",
-      "notes": "LC 002/2014 localizada; validar consolidação, alterações e revisão vigente em 2026."
-    },
-    {
-      "id": "pa-belem-plan-director",
-      "authority": "Prefeitura de Belém",
-      "scope": "municipality",
-      "municipality_ibge": "1501402",
-      "domain": [
-        "plan_director",
-        "law"
-      ],
-      "source_type": "legal_documents",
-      "discovery_url": "https://prefeitura.belem.pa.gov.br/",
-      "access_class": "OPEN_REUSABLE",
-      "verification_status": "DISCOVERY",
-      "notes": "Lei 8.655/2008 localizada; validar revisão/consolidação vigente."
+      "verification_status": "VERIFIED",
+      "notes": "PDE Lei 16.050/2014 com revisão intermediária pela Lei 17.975/2023 e anexos/mapas. Versionar alterações."
     }
   ]
 }
