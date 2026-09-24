@@ -1,0 +1,160 @@
+{
+  "schema_version": "0.1.0",
+  "as_of": "2026-09-24",
+  "source_id": "br-obrasgov-api",
+  "base_url": "https://api-publica.obrasgov.gestao.gov.br/obras",
+  "authentication": "NONE",
+  "pagination": {
+    "page_param": "pagina",
+    "page_size_param": "tamanho_da_pagina",
+    "max_page_size": 200
+  },
+  "resources": {
+    "projects": {
+      "endpoint": "projeto-investimento",
+      "filters": [
+        "id_projeto_investimento",
+        "projeto_estruturante",
+        "desc_nome",
+        "nr_cep",
+        "desc_endereco",
+        "desc_projeto",
+        "desc_funcao_social",
+        "desc_meta_global",
+        "dt_inicial_prevista",
+        "dt_final_prevista",
+        "dt_cadastro",
+        "ano_cadastro",
+        "natureza_intervencao",
+        "id_natureza_intervencao",
+        "especie_intervencao",
+        "id_especie_intervencao",
+        "situacao",
+        "uf_principal",
+        "organizacao_resp",
+        "cnpj_organizacao_resp",
+        "populacao_beneficiada",
+        "desc_populacao_beneficiada",
+        "qtd_empregos_gerados",
+        "ind_bim",
+        "dt_inicial_efetiva",
+        "dt_final_efetiva",
+        "obs_pertinentes_intervencao",
+        "sistema_resp",
+        "possui_estudo_viabilidade"
+      ]
+    },
+    "physical_execution": {
+      "endpoint": "execucao-fisica",
+      "filters": [
+        "id_projeto_investimento",
+        "percentual_execucao_fisica",
+        "dt_inicial_execucao",
+        "dt_final_execucao",
+        "tipo_instrumento",
+        "tipo_forma_execucao",
+        "dt_criacao_instrumento",
+        "dt_cadastro_execucao",
+        "dt_atualizacao_execucao"
+      ]
+    },
+    "geometries": {
+      "endpoint": "geometria",
+      "filters": [
+        "id_projeto_investimento",
+        "id_geometria",
+        "sg_uf",
+        "no_municipio",
+        "cod_ibge",
+        "origem_geometria"
+      ]
+    },
+    "status_history": {
+      "endpoint": "historico-situacao-cancelada-paralisada",
+      "filters": [
+        "id_historico_situacao_investimento",
+        "descricao_historico_situacao_investimento",
+        "data_historico_situacao_investimento",
+        "justificativa_cancelada_paralisada",
+        "possui_tratativas_situacao_investimento",
+        "fase_tratativas_situacao_investimento",
+        "id_projeto_investimento"
+      ]
+    },
+    "feasibility_studies": {
+      "endpoint": "estudo-viabilidade",
+      "filters": [
+        "id_projeto_investimento",
+        "tipo_estudo_viabilidade",
+        "especificacao_estudo_viabilidade"
+      ]
+    },
+    "contracts": {
+      "endpoint": "contrato",
+      "filters": [
+        "id_projeto_investimento",
+        "id_contrato",
+        "numero_contrato",
+        "vigencia_inicio_contrato",
+        "vigencia_fim_contrato",
+        "data_assinatura_contrato",
+        "data_publicacao_contrato",
+        "modalidade_contrato",
+        "objeto_contrato",
+        "processo",
+        "receita_despesa_contrato",
+        "orgao_contrato",
+        "cnpj_fornecedor_contrato",
+        "fornecedor_contrato",
+        "categoria_contrato",
+        "licitacao_numero",
+        "situacao_contrato",
+        "link_transparencia",
+        "valor_global_contrato",
+        "valor_acumulado_contrato",
+        "valor_utilizado_pi_contrato",
+        "valor_incluido_contrato"
+      ],
+      "privacy_note": "Fornecedor/CNPJ são públicos no upstream, mas não são necessários para vínculo territorial básico; normalizadores devem projetar somente campos de finalidade."
+    },
+    "commitments": {
+      "endpoint": "empenho",
+      "filters": [
+        "ug_emitente",
+        "id_projeto_investimento",
+        "programa_trabalho",
+        "plano_interno",
+        "fonte",
+        "natureza_despesa",
+        "valor_empenho",
+        "sistema_origem_empenho",
+        "bd_origem_empenho",
+        "id_minuta",
+        "organizacao_empenho",
+        "data_emissao",
+        "nome_situacao_minuta",
+        "unidade_orcamentaria",
+        "programa_trabalho_resumido",
+        "resultado_primario",
+        "acao_orcamentaria",
+        "codigo_autor_emenda",
+        "nr_empenho",
+        "credor",
+        "aliquidar",
+        "liquidado",
+        "pago",
+        "rpinscrito",
+        "rpaliquidar",
+        "rpaliquidado",
+        "rppago",
+        "descricao_empenho"
+      ],
+      "privacy_note": "Credor não deve ser usado como eixo de descoberta imobiliária."
+    },
+    "last_update": {
+      "endpoint": "data-atualizacao",
+      "paginated": false,
+      "filters": []
+    }
+  }
+}
