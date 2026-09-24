@@ -1431,6 +1431,23 @@
       "notes": "SIEG/IMB distribui pacote de geosserviços WMS/WFS e manual QGIS. Extrair e testar endpoints atuais antes de promover camadas."
     },
     {
+      "id": "ma-sao-luis-official-gazette",
+      "authority": "Prefeitura de São Luís",
+      "scope": "municipality",
+      "municipality_ibge": "2111300",
+      "domain": [
+        "official_gazette",
+        "urban_law",
+        "legal_publication",
+        "zoning_revision"
+      ],
+      "source_type": "official_gazette_structured",
+      "base_url": "https://diariooficial.saoluis.ma.gov.br/",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED_PUBLIC_OFFICIAL_ACTS",
+      "notes": "Diário Oficial eletrônico possui páginas estruturadas de documentos/atos e PDFs. Usar para comprovar publicação e vigência, inclusive editais da revisão de zoneamento."
+    },
+    {
       "id": "ma-sao-luis-plan-director",
       "authority": "Prefeitura de São Luís",
       "scope": "municipality",
@@ -1445,6 +1462,24 @@
       "access_class": "OPEN_REUSABLE",
       "verification_status": "VERIFIED",
       "notes": "Plano Diretor Lei 7.122/2023; portal preserva documentos históricos úteis para versionamento."
+    },
+    {
+      "id": "ma-sao-luis-zoning-review",
+      "authority": "Prefeitura de São Luís / INCID",
+      "scope": "municipality",
+      "municipality_ibge": "2111300",
+      "domain": [
+        "zoning",
+        "parceling",
+        "land_use",
+        "urban_parameters",
+        "legal_revision"
+      ],
+      "source_type": "official_revision_portal",
+      "discovery_url": "https://www.saoluis.ma.gov.br/revisao-zoneamento/",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED_PUBLIC_LEGAL_PROCESS",
+      "notes": "Processo oficial de revisão da Lei 3.253/1992 após o Plano Diretor 2023. Deve ser monitorado até aprovação/publicação da nova LUOS para evitar usar minuta como norma vigente."
     },
     {
       "id": "mg-belo-horizonte-bhgeo",
@@ -1718,6 +1753,29 @@
       "access_class": "PUBLIC_QUERY_ONLY",
       "verification_status": "VERIFIED_ENDPOINT_LICENSE_REVIEW",
       "notes": "Página oficial oferece SHP por tema e endpoint WFS de uso consolidado. Validar termos/licença antes de espelhamento."
+    },
+    {
+      "id": "pa-belem-codem-maps",
+      "authority": "Prefeitura de Belém / CODEM",
+      "scope": "municipality",
+      "municipality_ibge": "1501402",
+      "domain": [
+        "cartography",
+        "neighborhoods",
+        "public_facilities",
+        "administrative_districts",
+        "islands",
+        "hydrology",
+        "parks"
+      ],
+      "source_type": "official_map_download_portal",
+      "discovery_url": "https://prefeitura.belem.pa.gov.br/servicos/mapas-digitais-de-codem/",
+      "formats": [
+        "PDF"
+      ],
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PUBLIC_MAPS_LICENSE_REVIEW",
+      "notes": "CODEM oferece mapas digitais em PDF de bairros, equipamentos, distritos, ilhas, bacias e parques. Cadastro imobiliário e base cartográfica mais rica existem institucionalmente, mas não foram confirmados como dados abertos atuais."
     },
     {
       "id": "pa-belem-plan-director",
@@ -2173,6 +2231,26 @@
       "notes": "Plano Diretor: Lei Complementar 270/2024. Localizar endpoint oficial consolidado e anexos no próximo ciclo."
     },
     {
+      "id": "rn-natal-plano-mapas",
+      "authority": "Prefeitura do Natal",
+      "scope": "municipality",
+      "municipality_ibge": "2408102",
+      "domain": [
+        "zoning",
+        "urban_parameters",
+        "building_permits",
+        "habite_se",
+        "infrastructure",
+        "land_use",
+        "plan_director"
+      ],
+      "source_type": "official_map_portal",
+      "discovery_url": "https://planodiretor.natal.rn.gov.br/paginas/menu/aba5/pagina4.php",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PUBLIC_MAPS_LICENSE_REVIEW",
+      "notes": "Portal oficial do Plano Diretor publica zoneamento/prescrições da LC 208/2022 e mapas/séries de alvará de construção e habite-se 2007–2016/2018, além de drenagem, água, esgoto, pavimento, população e usos."
+    },
+    {
       "id": "ro-porto-velho-geoportal",
       "authority": "Prefeitura de Porto Velho",
       "scope": "municipality",
@@ -2189,6 +2267,24 @@
       "access_class": "PUBLIC_QUERY_ONLY",
       "verification_status": "VERIFIED_ENDPOINT_DISCOVERY_PENDING",
       "notes": "GeoPortal oficial integra Cadastro Técnico Multifinalitário Municipal; tutorial documenta consulta de imóvel/lote, zoneamento, metadados, downloads shapefile e WMS/WFS. Extrair URLs concretas dos botões e revisar licença por camada."
+    },
+    {
+      "id": "rr-boa-vista-cartografia",
+      "authority": "Prefeitura de Boa Vista",
+      "scope": "municipality",
+      "municipality_ibge": "1400100",
+      "domain": [
+        "cartography",
+        "cadastre_context",
+        "iptu_services",
+        "itbi_services",
+        "urban_planning"
+      ],
+      "source_type": "official_cartographic_portal_and_services",
+      "discovery_url": "https://boavista.rr.gov.br/mapa-cartografico",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PUBLIC_PORTAL_DOWNLOAD_TERMS_REVIEW",
+      "notes": "Portal oficial lista Base Cartográfica Municipal 2016 e 2020. Canal do Cidadão também oferece certidões de imóveis/terrenos, IPTU, ITBI e mapa cartográfico. Serviços cadastrais detalhados podem exigir autenticação; não contornar."
     },
     {
       "id": "rs-caxias-cadastro-territorial",
@@ -2550,6 +2646,26 @@
       "access_class": "PUBLIC_QUERY_ONLY",
       "verification_status": "VERIFIED_SENSITIVE_TABLES_BLOCKED",
       "notes": "Serviço público lista camadas Lotes/Edificações e tabelas cadastrais, ITBI e Proprietários. Apenas camadas/campos aprovados devem ser ingeridos. Tabela Proprietários e quaisquer campos pessoais/documentais ficam BLOCKED por padrão; exposição técnica do endpoint não equivale a autorização de republicação."
+    },
+    {
+      "id": "se-aracaju-slim-urban-law",
+      "authority": "Prefeitura de Aracaju / EMURB",
+      "scope": "municipality",
+      "municipality_ibge": "2800308",
+      "domain": [
+        "plan_director",
+        "urban_law",
+        "building_code",
+        "parceling",
+        "licensing",
+        "legal_annexes",
+        "road_system"
+      ],
+      "source_type": "official_legal_document_hub",
+      "discovery_url": "https://slim.aracaju.se.gov.br/home/legislacoes/",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED_PUBLIC_LEGAL_DOCUMENTS",
+      "notes": "SLIM reúne Plano Diretor, anexos, mapa do sistema viário, Código de Obras, Código de Urbanismo, parcelamento, regularização e instruções técnicas. Documentos jurídicos públicos podem ser versionados, mantendo publicação/vigência e fonte oficial."
     },
     {
       "id": "sp-campinas-spatial-data",
