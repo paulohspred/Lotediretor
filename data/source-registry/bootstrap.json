@@ -113,10 +113,15 @@
         "restriction"
       ],
       "source_type": "download",
-      "discovery_url": "https://dadosabertos.aneel.gov.br/",
+      "discovery_url": "https://dadosabertos.anm.gov.br/SIGMINE/",
       "access_class": "OPEN_REUSABLE",
-      "verification_status": "DISCOVERY",
-      "notes": "Endpoint precisa ser corrigido/validado para o diretório oficial ANM antes de ingestão. Entrada mantida como lembrete deliberado de validação."
+      "verification_status": "VERIFIED",
+      "notes": "Diretório oficial ANM; contém BRASIL.zip, arquivos por UF e conjuntos SIGMINE. Endereço oficial mudou para dadosabertos.anm.gov.br em 05/02/2026.",
+      "formats": [
+        "SHP/ZIP",
+        "KMZ",
+        "ODS"
+      ]
     },
     {
       "id": "br-cnuc",
