@@ -100,6 +100,24 @@
       "verification_status": "VERIFIED_ENDPOINT_LICENSE_REVIEW"
     },
     {
+      "id": "ba-salvador-geo",
+      "authority": "Prefeitura de Salvador / FMLF / SEDUR",
+      "scope": "municipality",
+      "municipality_ibge": "2927408",
+      "domain": [
+        "geospatial",
+        "urban_planning",
+        "neighborhoods",
+        "cadastre",
+        "public_facilities"
+      ],
+      "source_type": "ArcGIS_REST_Portal",
+      "base_url": "https://geo.salvador.ba.gov.br/arcgis/rest/services",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PUBLIC_METADATA_LICENSE_PER_ITEM",
+      "notes": "Metadados ArcGIS oficiais apontam FeatureServers públicos e identificam FMLF/SEDUR como responsáveis. Diversos itens trazem 'Compartilhado ao Público' como restrição de uso; catalogar item a item antes de ingestão."
+    },
+    {
       "id": "ba-sei-arcgis",
       "authority": "Superintendência de Estudos Econômicos e Sociais da Bahia (SEI)",
       "scope": "state",
@@ -1317,6 +1335,25 @@
       "verification_status": "VERIFIED"
     },
     {
+      "id": "pr-curitiba-geocuritiba",
+      "authority": "Prefeitura de Curitiba / IPPUC",
+      "scope": "municipality",
+      "municipality_ibge": "4106902",
+      "domain": [
+        "multifinalitary_cadastre",
+        "parceling",
+        "cadastral_blocks",
+        "zoning",
+        "road_classification",
+        "legal_boundaries"
+      ],
+      "source_type": "ArcGIS_REST",
+      "base_url": "https://geocuritiba.ippuc.org.br/server/rest/services/GeoCuritiba/Publico_GeoCuritiba_MapaCadastral/MapServer",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PUBLIC_SERVICE_LICENSE_REVIEW",
+      "notes": "Serviço identificado como 'Base Cadastral - Para acesso publico'. Inclui Cadastro Técnico Multifinalitário, planta de loteamento, projeto de parcelamento, quadras, alinhamentos, zoneamento cadastral e zoneamento da Lei 15.511/2019. ItemInfo não declara licença."
+    },
+    {
       "id": "pr-curitiba-plan-director",
       "authority": "Prefeitura de Curitiba / IPPUC",
       "scope": "municipality",
@@ -1331,6 +1368,24 @@
       "access_class": "OPEN_REUSABLE",
       "verification_status": "VERIFIED",
       "notes": "Plano Diretor Lei 14.771/2015; zoneamento Lei 15.511/2019. Revisão em curso em 2026."
+    },
+    {
+      "id": "pr-sanepar-arcgis",
+      "authority": "Sanepar",
+      "scope": "state",
+      "uf": "PR",
+      "domain": [
+        "water",
+        "sewerage",
+        "technical_cadastre",
+        "works",
+        "water_resources"
+      ],
+      "source_type": "ArcGIS_REST",
+      "base_url": "https://server.sanepar.com.br/server/rest/services",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_ENDPOINT_LICENSE_REVIEW",
+      "notes": "Diretório REST público com pastas Água, Esgoto, RecursosHidricos, Obras, Curitiba e serviço Cadastro_Tecnico. Não assumir que todos os dados sejam licenciados para redistribuição."
     },
     {
       "id": "pr-state-geoserver",
@@ -1381,6 +1436,65 @@
       "access_class": "OPEN_REUSABLE",
       "verification_status": "DISCOVERY",
       "notes": "Catalogar cadastros, imóveis, ITBI/IPTU e GIS em profundidade."
+    },
+    {
+      "id": "rj-rio-iptu",
+      "authority": "Prefeitura do Rio de Janeiro / Secretaria Municipal de Fazenda / IPP",
+      "scope": "municipality",
+      "municipality_ibge": "3304557",
+      "domain": [
+        "iptu",
+        "cadastre",
+        "property_use",
+        "market_dynamics"
+      ],
+      "source_type": "ArcGIS_MapServer",
+      "base_url": "https://pgeo3.rio.rj.gov.br/arcgis/rest/services/Fazenda/IPTU/MapServer",
+      "license": "CC BY 4.0",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED",
+      "update_frequency": "quarterly",
+      "notes": "Cadastro imobiliário/IPTU do ano vigente para imóveis residenciais, não residenciais e territoriais, por divisões administrativas e logradouros. Item metadata consultado declara CC BY 4.0."
+    },
+    {
+      "id": "rj-rio-itbi",
+      "authority": "Prefeitura do Rio de Janeiro / Secretaria Municipal de Fazenda / IPP",
+      "scope": "municipality",
+      "municipality_ibge": "3304557",
+      "domain": [
+        "itbi",
+        "transactions",
+        "market_dynamics",
+        "property_attributes"
+      ],
+      "source_type": "ArcGIS_MapServer",
+      "base_url": "https://pgeo3.rio.rj.gov.br/arcgis/rest/services/Fazenda/ITBI/MapServer",
+      "license": "CC BY 4.0",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED",
+      "temporal_coverage": "2010+",
+      "notes": "Transações por divisão administrativa/logradouro, mês/ano, imóveis territoriais/residenciais/não residenciais. Inclui médias de área, percentual transferido, valor da transação e valor total estimado. Metadados declaram CC BY 4.0 e explicitam supressão de casos de logradouro com apenas uma transação em certas tabelas."
+    },
+    {
+      "id": "rj-rio-pgeo3",
+      "authority": "Prefeitura do Rio de Janeiro / IPP",
+      "scope": "municipality",
+      "municipality_ibge": "3304557",
+      "domain": [
+        "cadastre",
+        "tax",
+        "itbi",
+        "urbanism",
+        "geotechnics",
+        "environment",
+        "imagery",
+        "heritage"
+      ],
+      "source_type": "ArcGIS_REST",
+      "base_url": "https://pgeo3.rio.rj.gov.br/arcgis/rest/services",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_ENDPOINT_LICENSE_PER_SERVICE",
+      "notes": "ArcGIS público com pastas CadParcel, Fazenda, Urbanismo, Geotecnia, Imagens, Patrimônio, Meio Ambiente e outras. Licença deve ser capturada do itemInfo/metadata de cada serviço."
     },
     {
       "id": "rj-rio-plan-director",
