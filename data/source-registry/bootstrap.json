@@ -1100,11 +1100,12 @@
         "public_investment"
       ],
       "source_type": "open_REST_API",
-      "base_url": "https://api-publica.obrasgov.gestao.gov.br/",
+      "base_url": "https://api-publica.obrasgov.gestao.gov.br/obras",
       "discovery_url": "https://www.gov.br/obrasgov/pt-br/acesso-a-informacao/dados-abertos-obrasgov",
       "access_class": "OPEN_REUSABLE",
-      "verification_status": "VERIFIED",
-      "notes": "API aberta de obras/projetos públicos com georreferenciamento, execução física, financeira e situacional. Útil para mostrar obras existentes/planejadas/paralisadas próximas ao imóvel e histórico de investimento."
+      "verification_status": "VERIFIED_CURRENT_API_2026",
+      "notes": "API pública atual do ObrasGov, sem autenticação para dados abertos. Recursos documentados incluem projeto-investimento, geometria, execucao-fisica, contrato, empenho, historico-situacao-cancelada-paralisada, estudo-viabilidade e data-atualizacao. O ambiente anterior teve prazo de migração até 31/08/2026; novos conectores devem usar apenas api-publica.obrasgov.gestao.gov.br/obras.",
+      "developer_url": "https://api-publica.obrasgov.gestao.gov.br/obras/docs"
     },
     {
       "id": "br-onr-ridigital",
@@ -1181,12 +1182,13 @@
         "public_investment"
       ],
       "source_type": "open_REST_API_and_documents",
-      "base_url": "https://pncp.gov.br/api/pncp",
+      "base_url": "https://pncp.gov.br/api/consulta",
       "api_documentation_url": "https://pncp.gov.br/api/pncp/swagger-ui/index.html",
       "discovery_url": "https://www.gov.br/pncp/pt-br/acesso-a-informacao/dados-abertos",
       "access_class": "OPEN_REUSABLE",
-      "verification_status": "VERIFIED_PUBLIC_QUERY_APIS",
-      "notes": "APIs de consulta/dados abertos são públicas sem login; APIs de manutenção exigem autenticação. Pode localizar editais, contratos, atas e documentos relacionados a obras/serviços públicos, mas nem todo contrato possui georreferenciamento."
+      "verification_status": "VERIFIED_PUBLIC_QUERY_APIS_CURRENT",
+      "notes": "API pública de consulta do PNCP, sem login para leitura. O eixo de descoberta usa /v1/contratacoes/publicacao e /v1/contratos com GET. Endpoints de manutenção/escrita ficam fora do LoteDiretor. Detalhes específicos de contratação/contrato podem usar endpoints GET documentados pelo PNCP, sempre sem credenciais de manutenção.",
+      "developer_url": "https://pncp.gov.br/api/consulta/swagger-ui/index.html"
     },
     {
       "id": "br-receita-cno",
