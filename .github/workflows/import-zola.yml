@@ -1,0 +1,36 @@
+name: Import upstream ZoLa
+
+on:
+  push:
+    paths:
+      - ".github/workflows/import-zola.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Lotediretor
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Clone official ZoLa upstream
+        run: |
+          git clone --depth 1 --branch develop https://github.com/NYCPlanning/labs-zola.git /tmp/labs-zola
+          echo "UPSTREAM_SHA=$(git -C /tmp/labs-zola rev-parse HEAD)" >> "$GITHUB_ENV"
+
+      - name: Replace repository contents with ZoLa baseline
+        run: |
+          rsync -a --delete --exclude='.git/' /tmp/labs-zola/ ./
+
+      - name: Commit imported baseline
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Import official ZoLa baseline from NYCPlanning/labs-zola@${UPSTREAM_SHA}"
+          git push origin HEAD:main
