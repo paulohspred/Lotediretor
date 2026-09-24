@@ -1,0 +1,21 @@
+{
+  "schema_version": "0.1.0",
+  "visual_terrain_report": [
+    "parcel_location_map",
+    "official_orthophoto_current",
+    "official_orthophoto_historical_if_available",
+    "street_level_facade_if_licensed",
+    "open_google_reference_link",
+    "building_footprint_comparison",
+    "terrain_hillshade",
+    "terrain_hypsometry",
+    "contours",
+    "slope_map",
+    "profile_AA",
+    "profile_BB",
+    "front_to_rear_profile",
+    "risk_environment_overlays",
+    "urban_zoning_overlays",
+    "source_and_accuracy_panel"
+  ]
+}
