@@ -1715,6 +1715,28 @@
       "notes": "Portal publica extensa planta cartográfica/diagnóstico: relevo, declividade, geologia, bacias, APP, propriedades rurais, grandes propriedades urbanas, zoneamento, macrozoneamento, vazios, loteamentos irregulares, água/esgoto, alagamentos/risco e hierarquia viária."
     },
     {
+      "id": "ms-campo-grande-simgeo",
+      "authority": "Prefeitura de Campo Grande",
+      "scope": "municipality",
+      "municipality_ibge": "5002704",
+      "domain": [
+        "multifinalitary_cadastre",
+        "cadastre",
+        "lots",
+        "cartography",
+        "plan_director",
+        "zoning",
+        "imagery",
+        "urban_planning"
+      ],
+      "source_type": "ArcGIS_REST_public_GIS",
+      "base_url": "https://simgeo.campogrande.ms.gov.br/arcgis/rest/services",
+      "portal_url": "https://www.campogrande.ms.gov.br/simgeoctm",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PUBLIC_ENDPOINT_LICENSE_PER_SERVICE",
+      "notes": "SIMGEO/CTM modernizado em dezembro de 2024. Prefeitura o descreve como repositório centralizado de informações sobre imóveis, infraestrutura e outros elementos geográficos. ArcGIS REST público expõe, entre outras, camadas do Plano Diretor e suporta GeoJSON em serviços consultados. Licença por serviço ainda precisa de revisão."
+    },
+    {
       "id": "ms-pinms-arcgis",
       "authority": "Governo do Mato Grosso do Sul",
       "scope": "state",
@@ -2044,6 +2066,24 @@
       "verification_status": "VERIFIED"
     },
     {
+      "id": "pi-teresina-property-services",
+      "authority": "Prefeitura de Teresina / Secretaria Municipal de Finanças",
+      "scope": "municipality",
+      "municipality_ibge": "2211001",
+      "domain": [
+        "cadastre",
+        "iptu",
+        "property_services",
+        "building_area",
+        "historical_tax_record"
+      ],
+      "source_type": "official_service_documentation_authenticated_petition",
+      "discovery_url": "https://antigo.pmt.pi.gov.br/teresinensedigital/financas/iptu-certidao-de-integracao-do-imovel-ao-cadastro-imobiliario-fiscal/",
+      "access_class": "AUTHENTICATED_PUBLIC",
+      "verification_status": "VERIFIED_SERVICE_NOT_BULK_DATA",
+      "notes": "Certidão de Integração pode conter ano de inclusão e áreas tributadas de terreno/construção por exercício de IPTU. Solicitação exige documentação/peticionamento e não é base aberta. Útil para modelo documental e aquisição sob demanda."
+    },
+    {
       "id": "pi-teresina-urban-law",
       "authority": "Prefeitura de Teresina / SEMPLAN",
       "scope": "municipality",
@@ -2350,6 +2390,23 @@
       "access_class": "PUBLIC_QUERY_ONLY",
       "verification_status": "VERIFIED_ENDPOINT_DISCOVERY_PENDING",
       "notes": "GeoPortal oficial integra Cadastro Técnico Multifinalitário Municipal; tutorial documenta consulta de imóvel/lote, zoneamento, metadados, downloads shapefile e WMS/WFS. Extrair URLs concretas dos botões e revisar licença por camada."
+    },
+    {
+      "id": "ro-porto-velho-geoserver",
+      "authority": "Prefeitura de Porto Velho",
+      "scope": "municipality",
+      "municipality_ibge": "1100205",
+      "domain": [
+        "geospatial",
+        "cadastre",
+        "zoning",
+        "urban_planning"
+      ],
+      "source_type": "GeoServer_WFS_WMS_WCS_WMTS",
+      "base_url": "https://geoserver.portovelho.ro.gov.br/geoserver/",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PUBLIC_CAPABILITIES_LICENSE_PER_LAYER",
+      "notes": "GeoServer municipal público versão 2.20.1 expõe capacidades WFS, WMS, WCS, WMTS/TMS. Enumerar apenas GetCapabilities e metadados públicos; materialização depende de identificação/licença das camadas."
     },
     {
       "id": "rr-boa-vista-cartografia",
@@ -3096,6 +3153,27 @@
       "access_class": "PUBLIC_QUERY_ONLY",
       "verification_status": "VERIFIED_ENDPOINT_LICENSE_REVIEW",
       "notes": "Manual oficial documenta WMS, WMTS, WFS, WCS e CSW, além de catálogo/metadados e downloads. Registrar endpoints concretos por serviço durante a colheita."
+    },
+    {
+      "id": "to-palmas-property-tax-services",
+      "authority": "Prefeitura de Palmas / Secretaria Municipal da Fazenda e Transformação Digital",
+      "scope": "municipality",
+      "municipality_ibge": "1721000",
+      "domain": [
+        "cadastre",
+        "iptu",
+        "pgv",
+        "valuation",
+        "building_permits",
+        "habite_se",
+        "property_services"
+      ],
+      "source_type": "public_tax_and_service_portal",
+      "base_url": "https://iptu.palmas.to.gov.br/",
+      "pgv_url": "https://iptu.palmas.to.gov.br/planta-valores/",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_QUERY_PRIVACY_CONTROLS",
+      "notes": "Consulta de IPTU e Planta de Valores por CCI. Consulta de CCI usa CPF/CNPJ como controle de acesso e não deve ser automatizada para descoberta de imóveis. Resolve Palmas documenta revisão cadastral, alvará/habite-se e vínculo com matrícula/cadastro municipal."
     }
   ]
 }
