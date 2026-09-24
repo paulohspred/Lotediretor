@@ -1,0 +1,158 @@
+{
+  "schema_version": "0.1.0",
+  "dossier_id": "example:municipality:parcel:123",
+  "generated_at": "2026-09-24T12:00:00Z",
+  "as_of": "2026-09-24",
+  "completion_level": "L1",
+  "subject": {
+    "subject_type": "URBAN_PARCEL",
+    "identity_refs": [
+      {
+        "kind": "MUNICIPAL_CADASTRE",
+        "value": "123",
+        "scope": "PUBLIC",
+        "authority": "Município de Exemplo",
+        "source_id": "example-cadastre"
+      }
+    ],
+    "geometry_refs": [
+      {
+        "id": "parcel-official-1",
+        "geometry_type": "POLYGON",
+        "source_id": "example-cadastre",
+        "crs": "EPSG:31983",
+        "valid_at": "2026-09-24",
+        "accuracy_m": null,
+        "notes": "Exemplo sem coordenadas reais."
+      }
+    ],
+    "location": {
+      "municipality_ibge": "0000000",
+      "uf": "MG",
+      "address": null,
+      "latitude": null,
+      "longitude": null
+    }
+  },
+  "sections": [
+    {
+      "id": "identity",
+      "status": "PARTIAL",
+      "facts": [
+        {
+          "id": "fact-municipal-id",
+          "field": "municipal_identifier",
+          "status": "AVAILABLE",
+          "value": "123",
+          "unit": null,
+          "evidence_class": "OFFICIAL_SOURCE",
+          "access_class": "OPEN_REUSABLE",
+          "provenance": {
+            "source_id": "example-cadastre",
+            "authority": "Município de Exemplo",
+            "source_url": "https://example.invalid/cadastre",
+            "document_id": null,
+            "captured_at": "2026-09-24T12:00:00Z",
+            "snapshot_sha256": null,
+            "parser_version": "example-0.1",
+            "license": "EXAMPLE_ONLY",
+            "notes": "Registro puramente ilustrativo; não representa fonte real."
+          },
+          "method": null,
+          "confidence": "CONFIRMED",
+          "geometry_ref": "parcel-official-1",
+          "valid_from": null,
+          "valid_to": null,
+          "observed_at": "2026-09-24T12:00:00Z",
+          "upstream_fact_ids": [],
+          "warnings": [],
+          "public_release_allowed": true
+        },
+        {
+          "id": "fact-area-gis",
+          "field": "area_gis_m2",
+          "status": "AVAILABLE",
+          "value": 500.0,
+          "unit": "m2",
+          "evidence_class": "DERIVED",
+          "access_class": "OPEN_REUSABLE",
+          "provenance": {
+            "source_id": null,
+            "authority": null,
+            "source_url": null,
+            "document_id": null,
+            "captured_at": "2026-09-24T12:00:00Z",
+            "snapshot_sha256": null,
+            "parser_version": "geometry-area-0.1",
+            "license": null,
+            "notes": "Exemplo de cálculo derivado sobre geometria oficial."
+          },
+          "method": "ST_Area after projected CRS normalization",
+          "confidence": "SUPPORTED",
+          "geometry_ref": "parcel-official-1",
+          "valid_from": null,
+          "valid_to": null,
+          "observed_at": "2026-09-24T12:00:00Z",
+          "upstream_fact_ids": [
+            "fact-municipal-id"
+          ],
+          "warnings": [
+            "Valor ilustrativo."
+          ],
+          "public_release_allowed": true
+        }
+      ],
+      "notes": "Exemplo mínimo para testar o contrato."
+    },
+    {
+      "id": "registry",
+      "status": "REQUIRES_USER_DOCUMENT",
+      "facts": [
+        {
+          "id": "fact-matricula",
+          "field": "matricula",
+          "status": "REQUIRES_USER_DOCUMENT",
+          "unit": null,
+          "evidence_class": "NO_EVIDENCE",
+          "access_class": "USER_PRIVATE",
+          "provenance": {
+            "source_id": null,
+            "authority": null,
+            "source_url": null,
+            "document_id": null,
+            "captured_at": "2026-09-24T12:00:00Z",
+            "snapshot_sha256": null,
+            "parser_version": null,
+            "license": null,
+            "notes": "Sem documento registral fornecido."
+          },
+          "method": null,
+          "confidence": "UNKNOWN",
+          "geometry_ref": null,
+          "valid_from": null,
+          "valid_to": null,
+          "observed_at": null,
+          "upstream_fact_ids": [],
+          "warnings": [],
+          "public_release_allowed": false
+        }
+      ],
+      "notes": "Matrícula permanece L4/on-demand."
+    }
+  ],
+  "unknowns": [
+    {
+      "section_id": "registry",
+      "field": "matricula",
+      "reason": "USER_DOCUMENT_NEEDED",
+      "next_action": "Solicitar certidão oficial via fluxo autorizado ou upload do usuário.",
+      "source_candidates": [
+        "RI Digital",
+        "Meu Registro"
+      ]
+    }
+  ],
+  "warnings": [
+    "Arquivo de exemplo; não representa um imóvel real."
+  ]
+}
