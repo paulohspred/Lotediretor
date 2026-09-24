@@ -17,7 +17,7 @@ from collections import deque
 from datetime import datetime, timezone
 from html.parser import HTMLParser
 
-USER_AGENT = "LoteDiretor-SourceDiscovery/0.3 (+https://github.com/paulohspred/Lotediretor)"
+USER_AGENT = "LoteDiretor-SourceDiscovery/0.4 (+https://github.com/paulohspred/Lotediretor)"
 
 SENSITIVE_FIELD_TOKENS = {
     "cpf", "cnpj", "proprietario", "proprietário", "owner", "titular",
@@ -264,6 +264,163 @@ def discover_directory(url: str, max_depth: int, max_items: int) -> dict:
     }
 
 
+
+def discover_sapl(instance_url: str, endpoint: str, params: list[str], max_pages: int) -> dict:
+    """Read a public SAPL REST endpoint without attempting authentication.
+
+    Example endpoint values:
+      norma/normajuridica
+      norma/normarelacionada
+      norma/anexonormajuridica
+      materia/materialegislativa
+      materia/tramitacao
+    """
+    root = validate_http_url(instance_url)
+    endpoint = endpoint.strip("/")
+    base = instance_url.rstrip("/") + "/api/" + endpoint + "/"
+    query: dict[str, str] = {}
+    for item in params:
+        if "=" not in item:
+            raise ValueError(f"invalid --param {item!r}; expected key=value")
+        key, value = item.split("=", 1)
+        query[key] = value
+
+    first_url = base
+    if query:
+        first_url += "?" + urllib.parse.urlencode(query)
+
+    pages = []
+    records = []
+    current = first_url
+    visited: set[str] = set()
+
+    for _ in range(max_pages):
+        if not current or current in visited:
+            break
+        visited.add(current)
+        parsed = validate_http_url(current)
+        if not same_origin(root, parsed):
+            raise RuntimeError("SAPL pagination attempted to leave the original host")
+
+        payload = fetch_json(current)
+        pages.append(current)
+
+        if isinstance(payload, list):
+            records.extend(payload)
+            current = None
+            break
+
+        if not isinstance(payload, dict):
+            raise RuntimeError("unexpected SAPL response shape")
+
+        batch = payload.get("results")
+        if isinstance(batch, list):
+            records.extend(batch)
+        else:
+            # Some deployments/endpoints may return an object rather than DRF pagination.
+            records.append(payload)
+            current = None
+            break
+
+        next_url = payload.get("next")
+        if not next_url:
+            pagination = payload.get("pagination") or {}
+            next_url = pagination.get("next") or pagination.get("next_url")
+        current = urllib.parse.urljoin(current, next_url) if next_url else None
+
+    return {
+        "kind": "sapl",
+        "source": instance_url,
+        "endpoint": endpoint,
+        "params": query,
+        "discovered_at": now(),
+        "pages_fetched": len(pages),
+        "record_count": len(records),
+        "truncated": bool(current),
+        "page_urls": pages,
+        "records": records,
+        "warning": (
+            "Read-only discovery only. A public GET response does not authorize "
+            "republishing personal/restricted fields or downloading protected attachments."
+        ),
+    }
+
+
+def _xml_local_name(tag: str) -> str:
+    return tag.rsplit("}", 1)[-1] if "}" in tag else tag
+
+
+def discover_lexml(base_url: str, query: str, max_records: int, start_record: int) -> dict:
+    """Search the official LexML SRU endpoint (SRU 1.1)."""
+    params = {
+        "version": "1.1",
+        "operation": "searchRetrieve",
+        "query": query,
+        "maximumRecords": str(max_records),
+        "startRecord": str(start_record),
+    }
+    url = base_url + ("&" if "?" in base_url else "?") + urllib.parse.urlencode(params)
+    body, headers = fetch(url)
+    root = ET.fromstring(body)
+
+    number_of_records = None
+    for elem in root.iter():
+        if _xml_local_name(elem.tag) == "numberOfRecords":
+            try:
+                number_of_records = int((elem.text or "0").strip())
+            except ValueError:
+                number_of_records = None
+            break
+
+    wanted = {
+        "urn", "title", "description", "subject", "type", "identifier",
+        "date", "localidade", "autoridade", "tipoDocumento",
+    }
+    records = []
+    for record in root.iter():
+        if _xml_local_name(record.tag) != "record":
+            continue
+        item: dict[str, object] = {}
+        for elem in record.iter():
+            name = _xml_local_name(elem.tag)
+            value = (elem.text or "").strip()
+            if name in wanted and value:
+                if name in item:
+                    existing = item[name]
+                    if isinstance(existing, list):
+                        existing.append(value)
+                    else:
+                        item[name] = [existing, value]
+                else:
+                    item[name] = value
+        if item:
+            records.append(item)
+
+    diagnostics = []
+    for elem in root.iter():
+        if _xml_local_name(elem.tag) == "diagnostic":
+            diag = {}
+            for child in elem.iter():
+                name = _xml_local_name(child.tag)
+                if name in {"uri", "message", "details"} and (child.text or "").strip():
+                    diag[name] = (child.text or "").strip()
+            if diag:
+                diagnostics.append(diag)
+
+    return {
+        "kind": "lexml-sru",
+        "source": base_url,
+        "query": query,
+        "discovered_at": now(),
+        "content_type": headers.get("Content-Type"),
+        "number_of_records": number_of_records,
+        "start_record": start_record,
+        "requested_maximum_records": max_records,
+        "returned_records": len(records),
+        "records": records,
+        "diagnostics": diagnostics,
+    }
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     sub = parser.add_subparsers(dest="command", required=True)
@@ -283,6 +440,18 @@ def main() -> int:
     p = sub.add_parser("directory")
     p.add_argument("url"); p.add_argument("--max-depth", type=int, default=1); p.add_argument("--max-items", type=int, default=1000)
 
+    p = sub.add_parser("sapl")
+    p.add_argument("url")
+    p.add_argument("--endpoint", default="norma/normajuridica")
+    p.add_argument("--param", action="append", default=[])
+    p.add_argument("--max-pages", type=int, default=5)
+
+    p = sub.add_parser("lexml")
+    p.add_argument("--url", default="https://www.lexml.gov.br/busca/SRU")
+    p.add_argument("--query", required=True)
+    p.add_argument("--maximum-records", type=int, default=50)
+    p.add_argument("--start-record", type=int, default=1)
+
     args = parser.parse_args()
     if args.command == "ckan":
         result = discover_ckan(args.url, args.query, args.rows)
@@ -294,6 +463,10 @@ def main() -> int:
         result = discover_wfs(args.url)
     elif args.command == "directory":
         result = discover_directory(args.url, args.max_depth, args.max_items)
+    elif args.command == "sapl":
+        result = discover_sapl(args.url, args.endpoint, args.param, args.max_pages)
+    elif args.command == "lexml":
+        result = discover_lexml(args.url, args.query, args.maximum_records, args.start_record)
     else:
         parser.error("unsupported command")
 
