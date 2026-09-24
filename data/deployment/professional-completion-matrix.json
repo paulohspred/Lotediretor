@@ -644,31 +644,37 @@
         },
         {
           "field": "heritage",
-          "status": "PARTIAL",
-          "source_id": "br-iphan-geoserver",
-          "supporting_source_ids": [],
-          "endpoint": "https://geoserver.iphan.gov.br/geoserver/",
-          "access_class": "PUBLIC_QUERY_ONLY",
-          "license": null,
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
-          "missing_fields": [
-            "municipal/state heritage datasets"
+          "status": "READY",
+          "source_id": "pe-recife-heritage-iep",
+          "supporting_source_ids": [
+            "br-iphan-geoserver"
           ],
-          "notes": null
+          "endpoint": "https://dados.recife.pe.gov.br/dataset/imoveis-especiais-de-preservacao-ieps",
+          "access_class": "OPEN_REUSABLE",
+          "license": "ODbL",
+          "connector_status": "APPROVED_CONNECTOR_CONFIGURED",
+          "missing_fields": [
+            "ZEPH geometry/legal-act normalization",
+            "state heritage complement"
+          ],
+          "notes": "Municipal IEP dataset is ODbL with GeoJSON/CSV/JSON and legal-reference attributes."
         },
         {
           "field": "electricity",
           "status": "PARTIAL",
           "source_id": "br-aneel-bdgd",
-          "supporting_source_ids": [],
+          "supporting_source_ids": [
+            "pe-neoenergia-pernambuco-provider"
+          ],
           "endpoint": "https://dadosabertos.aneel.gov.br/dataset/base-de-dados-geografica-da-distribuidora-bdgd",
           "access_class": "OPEN_REUSABLE",
           "license": "ODbL",
           "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
           "missing_fields": [
-            "local distributor resolver/materialization"
+            "BDGD distributor-specific materialization",
+            "do not infer available load/capacity"
           ],
-          "notes": null
+          "notes": "Neoenergia Pernambuco is the local distributor; use BDGD for technical assets and provider channels for availability/capacity confirmation."
         },
         {
           "field": "gas",
@@ -746,17 +752,18 @@
         },
         {
           "field": "imagery",
-          "status": "GAP",
-          "source_id": null,
+          "status": "PARTIAL",
+          "source_id": "pe-recife-ortho-2013-2014",
           "supporting_source_ids": [],
-          "endpoint": null,
-          "access_class": null,
+          "endpoint": "https://esigportal2.recife.pe.gov.br/arcgis/rest/services/MeioAmbiente/MA_Ortofoto2013_2014MapService/MapServer",
+          "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "NOT_DISCOVERED",
+          "connector_status": "APPROVED_METADATA_ONLY_LICENSE_REVIEW",
           "missing_fields": [
-            "official reusable orthophoto/current imagery"
+            "reuse/cache license",
+            "newer official imagery"
           ],
-          "notes": null
+          "notes": "Official cached orthophoto 2013/2014 exists; keep render/metadata-only until reuse terms are confirmed."
         },
         {
           "field": "terrain",
@@ -791,32 +798,33 @@
         {
           "field": "public processes",
           "status": "PARTIAL",
-          "source_id": "pe-recife-licenciamento-urbanistico",
+          "source_id": "pe-recife-sei-public-search",
           "supporting_source_ids": [
-            "br-sei-public-search"
+            "pe-recife-licenciamento-urbanistico"
           ],
-          "endpoint": "https://dados.recife.pe.gov.br/dataset/licenciamento-urbanistico",
-          "access_class": "OPEN_REUSABLE",
-          "license": "ODbL",
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "endpoint": "https://portalsei.recife.pe.gov.br/",
+          "access_class": "PUBLIC_QUERY_ONLY",
+          "license": null,
+          "connector_status": "QUERY_WORKFLOW_ONLY",
           "missing_fields": [
-            "general municipal public-process adapter"
+            "documented machine interface/API",
+            "property/process linkage"
           ],
-          "notes": null
+          "notes": "Municipal SEI exposes public process search; only public results may be used, with no authentication bypass."
         },
         {
           "field": "official gazette",
-          "status": "GAP",
-          "source_id": null,
+          "status": "READY",
+          "source_id": "pe-recife-official-gazette-open-data",
           "supporting_source_ids": [],
-          "endpoint": null,
-          "access_class": null,
-          "license": null,
-          "connector_status": "NOT_DISCOVERED",
+          "endpoint": "https://dados.recife.pe.gov.br/dataset/diario-oficial",
+          "access_class": "OPEN_REUSABLE",
+          "license": "ODbL",
+          "connector_status": "APPROVED_CONNECTOR_CONFIGURED",
           "missing_fields": [
-            "official gazette structured source/API"
+            "legal-event parser and edition/PDF reconciliation"
           ],
-          "notes": null
+          "notes": "ODbL dataset exposes CSV/ZIP/JSON, dictionary and CKAN API, with historical series and monthly updates."
         },
         {
           "field": "historical data",
@@ -2010,11 +2018,10 @@
       "QUERY_ONLY": 3
     },
     "Recife": {
-      "READY": 10,
+      "READY": 12,
       "PARTIAL": 12,
       "PRIVATE_ON_DEMAND": 1,
-      "QUERY_ONLY": 1,
-      "GAP": 2
+      "QUERY_ONLY": 1
     },
     "Rio de Janeiro": {
       "READY": 8,
