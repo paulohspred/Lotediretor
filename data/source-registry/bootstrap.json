@@ -1578,6 +1578,28 @@
       "notes": "Lei 11.181/2019 e regulamentos; BHMAP/GeoSiurbe complementam a geometria."
     },
     {
+      "id": "mg-belo-horizonte-projeto-edificacao-licenciado",
+      "authority": "Prefeitura de Belo Horizonte",
+      "scope": "municipality",
+      "municipality_ibge": "3106200",
+      "domain": [
+        "building_permits",
+        "licensing",
+        "buildings",
+        "building_regularization"
+      ],
+      "source_type": "open_data_spatial_dataset",
+      "discovery_url": "https://dados.pbh.gov.br/dataset/?_organization_limit=0&res_format=PDF&tags=licenciamento",
+      "formats": [
+        "CSV",
+        "PDF",
+        "spatial layer via BHMap"
+      ],
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_DATASET_LICENSE_REVIEW",
+      "notes": "Dataset 'Projeto Edificação Licenciado' espacializa projetos de edificação, licenciamentos, regularizações e situação das baixas de construção. Licença deve ser confirmada no recurso antes de espelhamento."
+    },
+    {
       "id": "mg-contagem-geoprocessamento",
       "authority": "Prefeitura de Contagem",
       "scope": "municipality",
@@ -1853,6 +1875,23 @@
       "notes": "Lei 8.655/2008 localizada; validar revisão/consolidação vigente."
     },
     {
+      "id": "pb-joao-pessoa-building-permits",
+      "authority": "Prefeitura de João Pessoa / SEPLAN",
+      "scope": "municipality",
+      "municipality_ibge": "2507507",
+      "domain": [
+        "building_permits",
+        "habite_se",
+        "licensing",
+        "property_services"
+      ],
+      "source_type": "official_digital_service",
+      "discovery_url": "https://www.joaopessoa.pb.gov.br/secretarias/seplan/alvaras-e-licencas/",
+      "access_class": "AUTHENTICATED_PUBLIC",
+      "verification_status": "VERIFIED_SERVICE_NOT_BULK_DATA",
+      "notes": "Serviços incluem alvará de construção/ampliação/reforma/regularização, habite-se, demolição, remembramento/desmembramento, aprovação de loteamentos e certidões. Fluxos atuais usam Aprova Digital; tratar como aquisição/consulta documental, não bulk open data."
+    },
+    {
       "id": "pb-joao-pessoa-filipeia",
       "authority": "Prefeitura de João Pessoa / SEPLAN",
       "scope": "municipality",
@@ -1910,6 +1949,23 @@
       "access_class": "PUBLIC_QUERY_ONLY",
       "verification_status": "VERIFIED_ENDPOINT_LICENSE_REVIEW",
       "notes": "Diretório inclui APACGEO, SIRH, PE3D, Topodata, MDT e serviços de reservatórios/chuva/outorgas."
+    },
+    {
+      "id": "pe-recife-environment-restrictions",
+      "authority": "Prefeitura do Recife / Secretaria de Meio Ambiente e Sustentabilidade",
+      "scope": "municipality",
+      "municipality_ibge": "2611606",
+      "domain": [
+        "environment",
+        "hydrology",
+        "risk",
+        "urban_restriction"
+      ],
+      "source_type": "ArcGIS_MapServer",
+      "base_url": "https://esigportal2.recife.pe.gov.br/arcgis/rest/services/MeioAmbiente",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_ENDPOINT_LICENSE_PER_SERVICE",
+      "notes": "Pasta oficial de Meio Ambiente inclui camadas como Faixa Non Aedificandi 2026, derivada de rios/canais/cursos d'água, Plano de Drenagem e ortofotocarta. Catalogar restrições e metadados por serviço."
     },
     {
       "id": "pe-recife-financas-lotes",
@@ -2245,6 +2301,23 @@
       "access_class": "OPEN_REUSABLE",
       "verification_status": "DISCOVERY",
       "notes": "Catalogar cadastros, imóveis, ITBI/IPTU e GIS em profundidade."
+    },
+    {
+      "id": "rj-rio-edificacoes-2019",
+      "authority": "Prefeitura do Rio de Janeiro / IPP",
+      "scope": "municipality",
+      "municipality_ibge": "3304557",
+      "domain": [
+        "buildings",
+        "height",
+        "cadastre",
+        "property_identity"
+      ],
+      "source_type": "ArcGIS_FeatureServer",
+      "base_url": "https://pgeo3.rio.rj.gov.br/arcgis/rest/services/CadLog/Edificacoes_2019/FeatureServer/0",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PUBLIC_SERVICE_LICENSE_REVIEW",
+      "notes": "Polígonos de edificações com altura, base, código de edificação e código de lote. Suporta JSON/GeoJSON/PBF. Confirmar itemInfo/licença antes de materialização."
     },
     {
       "id": "rj-rio-geopal",
@@ -3094,7 +3167,9 @@
       "domain": [
         "iptu",
         "cadastre",
-        "property_attributes"
+        "property_attributes",
+        "building",
+        "valuation"
       ],
       "source_type": "GeoSampa_download",
       "discovery_url": "https://geosampa.prefeitura.sp.gov.br/",
@@ -3104,7 +3179,24 @@
         "Decreto 56.701/2015",
         "Decreto 56.932/2016"
       ],
-      "notes": "Norma municipal determina consulta/download do cadastro imobiliário fiscal IPTU em dados abertos sob licença livre. PGM 12.195/2020 orienta anonimização/inibição de dados pessoais à luz da LGPD."
+      "notes": "Cadastro imobiliário fiscal IPTU em dados abertos/licença livre via GeoSampa. Base inclui SQL/endereço e atributos como área construída e área do terreno; aplicação deve seguir minimização de dados pessoais conforme orientação PGM/LGPD."
+    },
+    {
+      "id": "sp-sao-paulo-licenciamento-geosampa",
+      "authority": "Prefeitura de São Paulo / SMUL",
+      "scope": "municipality",
+      "municipality_ibge": "3550308",
+      "domain": [
+        "building_permits",
+        "licensing",
+        "buildings",
+        "urban_planning"
+      ],
+      "source_type": "GeoSampa_download_metadata",
+      "discovery_url": "https://metadados.geosampa.prefeitura.sp.gov.br/geonetwork/srv/search?orgName=Prefeitura+do+Munic%C3%ADpio+de+S%C3%A3o+Paulo+-+PMSP+%2F+Secretaria+Municipal+de+Urbanismo+e+Licenciamento+-+SMUL",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED_PUBLIC_DOWNLOAD",
+      "notes": "GeoSampa publica camadas de licenciamento e permite download; camada HIS/HMP - Alvará de Execução contém endereço, unidades, datas e área a construir. Metadados também documentam integração com SLC-e por SQL. Revisar camada a camada, mas o portal declara livre acesso/uso/compartilhamento com citação da fonte."
     },
     {
       "id": "sp-sao-paulo-pde-law",
