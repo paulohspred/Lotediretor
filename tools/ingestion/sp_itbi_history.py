@@ -448,17 +448,36 @@ def main() -> int:
 
     total = db.execute("SELECT COUNT(*) FROM transactions").fetchone()[0]
     sql_count = db.execute("SELECT COUNT(DISTINCT sql) FROM transactions").fetchone()[0]
+    source_rows = db.execute(
+        """SELECT year, source_url, final_url, captured_at, sha256, bytes,
+                  transaction_rows
+           FROM source_files
+           ORDER BY year"""
+    ).fetchall()
+    coverage_years = [row[0] for row in source_rows]
+    all_files = [
+        {
+            "year": row[0],
+            "source_url": row[1],
+            "final_url": row[2],
+            "captured_at": row[3],
+            "sha256": row[4],
+            "bytes": row[5],
+            "transaction_rows": row[6],
+        }
+        for row in source_rows
+    ]
     manifest = {
         "schema_version": "0.1.0",
         "source_id": "sp-sao-paulo-itbi-transactions",
         "index_url": INDEX_URL,
         "captured_at": utc_now(),
-        "years": years,
+        "years": coverage_years,
         "transaction_rows": total,
         "distinct_sql": sql_count,
         "database": db_path.name,
         "database_sha256": sha256_file(db_path),
-        "files": results,
+        "files": all_files,
         "privacy": {
             "person_names": "not materialized",
             "cpf_cnpj": "not materialized",
