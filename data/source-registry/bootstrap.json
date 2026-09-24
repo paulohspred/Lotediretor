@@ -3600,8 +3600,9 @@
       "source_type": "GeoSampa_download_vector",
       "discovery_url": "https://metadados.geosampa.prefeitura.sp.gov.br/geonetwork/srv/search?keyword=Patrim%C3%B4nio+cultural",
       "access_class": "OPEN_REUSABLE",
-      "verification_status": "VERIFIED_PUBLIC_DOWNLOAD",
-      "notes": "Camadas incluem bens tombados/em processo, áreas envoltórias e bens arqueológicos, cobrindo proteções municipal, estadual e federal. Vincular cada incidência à resolução/ato de proteção."
+      "verification_status": "VERIFIED_PUBLIC_DOWNLOAD_LICENSED",
+      "notes": "Camadas de patrimônio no GeoSampa incluem bens tombados/em processo, áreas envoltórias e arqueologia. Para geodados produzidos pela PMSP, a licença publicada é CC BY-SA 4.0. Preservar o ato/resolução e distinguir overlays originados de órgãos estaduais/federais.",
+      "license": "CC BY-SA 4.0 for PMSP-produced geospatial layers"
     },
     {
       "id": "sp-jundiai-geojundiai",
@@ -3805,8 +3806,9 @@
         "SHP"
       ],
       "access_class": "OPEN_REUSABLE",
-      "verification_status": "VERIFIED",
-      "notes": "Inclui lote fiscal e amplo catálogo municipal. Confirmar licença/atribuição por camada."
+      "verification_status": "VERIFIED_OPEN_GEODATA_LICENSED",
+      "notes": "WFS oficial do GeoSampa, com lote fiscal e amplo catálogo municipal. A PMSP informa que dados geoespaciais produzidos por seus órgãos usam CC BY-SA 4.0. Aplicar atribuição e ShareAlike; revisar camadas cujo produtor seja externo à PMSP.",
+      "license": "CC BY-SA 4.0 (for geospatial layers produced by PMSP; verify third-party/external-producer layers individually)"
     },
     {
       "id": "sp-sao-paulo-geosampa-wms",
@@ -3821,7 +3823,9 @@
       "source_type": "WMS",
       "base_url": "https://wms.geosampa.prefeitura.sp.gov.br/geoserver/geoportal/wms",
       "access_class": "PUBLIC_QUERY_ONLY",
-      "verification_status": "VERIFIED"
+      "verification_status": "VERIFIED_OPEN_GEODATA_LICENSED",
+      "license": "CC BY-SA 4.0 (for geospatial layers produced by PMSP; verify third-party/external-producer layers individually)",
+      "notes": "WMS oficial do GeoSampa. A licença CC BY-SA 4.0 aplica-se às camadas geoespaciais produzidas pelos órgãos da PMSP; conteúdo de terceiros deve ser revisto por camada."
     },
     {
       "id": "sp-sao-paulo-iptu-cadastro-fiscal",
@@ -3859,8 +3863,9 @@
       "source_type": "GeoSampa_download_metadata",
       "discovery_url": "https://metadados.geosampa.prefeitura.sp.gov.br/geonetwork/srv/search?orgName=Prefeitura+do+Munic%C3%ADpio+de+S%C3%A3o+Paulo+-+PMSP+%2F+Secretaria+Municipal+de+Urbanismo+e+Licenciamento+-+SMUL",
       "access_class": "OPEN_REUSABLE",
-      "verification_status": "VERIFIED_PUBLIC_DOWNLOAD",
-      "notes": "GeoSampa publica camadas de licenciamento e permite download; camada HIS/HMP - Alvará de Execução contém endereço, unidades, datas e área a construir. Metadados também documentam integração com SLC-e por SQL. Revisar camada a camada, mas o portal declara livre acesso/uso/compartilhamento com citação da fonte."
+      "verification_status": "VERIFIED_PUBLIC_DOWNLOAD_LICENSED",
+      "notes": "GeoSampa publica camadas de licenciamento produzidas pela PMSP e permite download. Camadas geoespaciais produzidas pela PMSP estão sob CC BY-SA 4.0; normalizar camada a camada e preservar referência ao documento/processo de origem.",
+      "license": "CC BY-SA 4.0"
     },
     {
       "id": "sp-sao-paulo-pde-law",
@@ -4008,8 +4013,107 @@
         "raster/grid metadata"
       ],
       "access_class": "PUBLIC_QUERY_ONLY",
-      "verification_status": "VERIFIED_PUBLIC_DOWNLOAD_LICENSE_REVIEW",
-      "notes": "GeoSampa documenta MDT/MDS e nuvens LiDAR 2017 e 2020. O levantamento 2020 possui nuvem com cerca de 10 pontos/m² e produtos MDT/MDS de 0,50 m; metadados indicam PEC-PCD Classe A. Confirmar licença/termos específicos do artefato antes de materialização."
+      "verification_status": "VERIFIED_PUBLIC_GEODATA_LICENSED_SCHEMA_REVIEW",
+      "notes": "GeoSampa documenta MDT/MDS e LiDAR 2017/2020 produzidos para a PMSP. Em 2020 há nuvem LiDAR de ~10 pts/m² e produtos de 0,50 m, PEC-PCD Classe A. Licença geral do GeoSampa para geodados produzidos pela PMSP: CC BY-SA 4.0. Antes de baixar artefatos pesados, enumerar índice/tiles, formatos, CRS, hashes e política de object storage.",
+      "license": "CC BY-SA 4.0 for PMSP-produced GeoSampa geospatial data"
+    },
+    {
+      "id": "sp-sao-paulo-buildings-2d-geosampa",
+      "authority": "Prefeitura de São Paulo / SMUL / GEOINFO",
+      "scope": "municipality",
+      "municipality_ibge": "3550308",
+      "domain": [
+        "buildings",
+        "building_footprint",
+        "cartography",
+        "historical_building_presence"
+      ],
+      "source_type": "GeoSampa_vector_dataset",
+      "metadata_url": "https://metadados.geosampa.prefeitura.sp.gov.br/geonetwork/srv/resources/datasets/bcf69ef1-2f9e-42c2-b7ec-e808f89e8116",
+      "access_class": "OPEN_REUSABLE",
+      "license": "CC BY-SA 4.0",
+      "verification_status": "VERIFIED_OPEN_GEODATA_LICENSED",
+      "update_frequency": "not planned",
+      "notes": "Edificações 2D são polígonos oriundos de restituição fotogramétrica do MDC, baseados principalmente no recobrimento de 2004. Útil como footprint/cartografia histórica, mas não tratar como geometria predial atual sem reconciliação com cadastro fiscal, licenciamento e imagens mais recentes."
+    },
+    {
+      "id": "sp-sao-paulo-risk-geosampa",
+      "authority": "Prefeitura de São Paulo / Defesa Civil / SMUL-GEOINFO",
+      "scope": "municipality",
+      "municipality_ibge": "3550308",
+      "domain": [
+        "risk",
+        "flood",
+        "landslide",
+        "geotechnics",
+        "historical_series",
+        "disaster"
+      ],
+      "source_type": "GeoSampa_vector_and_reports",
+      "metadata_url": "https://metadados.geosampa.prefeitura.sp.gov.br/geonetwork/srv/search?topicCat=geoscientificInformation",
+      "access_class": "OPEN_REUSABLE",
+      "license": "CC BY-SA 4.0 for PMSP-produced geospatial layers",
+      "verification_status": "VERIFIED_OPEN_GEODATA_LICENSED",
+      "notes": "Catálogo GeoSampa inclui risco geológico, risco hidrológico, manchas/ocorrências de inundação e alagamento. Ocorrências possuem série histórica desde 2013 até a atualidade. Relatórios completos por área/setor podem existir em PDF. Preservar metodologia, data e nível de precisão."
+    },
+    {
+      "id": "sp-sao-paulo-drainage-geosampa",
+      "authority": "Prefeitura de São Paulo / SIURB / FCTH",
+      "scope": "municipality",
+      "municipality_ibge": "3550308",
+      "domain": [
+        "drainage",
+        "stormwater",
+        "hydrology",
+        "infrastructure",
+        "flood"
+      ],
+      "source_type": "GeoSampa_vector_dataset",
+      "metadata_url": "https://metadados.geosampa.prefeitura.sp.gov.br/geonetwork/srv/resources/datasets/a3a68cba-d571-4667-8d56-024c1197a069",
+      "access_class": "OPEN_REUSABLE",
+      "license": "CC BY-SA 4.0 for PMSP-produced geospatial layers",
+      "verification_status": "VERIFIED_OPEN_GEODATA_LICENSED",
+      "update_frequency": "as needed",
+      "notes": "Rede de Drenagem vetorial produzida no contexto dos Cadernos de Bacias/Plano Diretor de Drenagem, com complementação e verificação de campo e atualização do traçado da rede. Usar como infraestrutura pluvial oficial com data e cobertura explícitas."
+    },
+    {
+      "id": "sp-sao-paulo-water-sewer-geoconvias",
+      "authority": "Prefeitura de São Paulo / antigo CONVIAS-SIURB",
+      "scope": "municipality",
+      "municipality_ibge": "3550308",
+      "domain": [
+        "water_supply",
+        "sewerage",
+        "utilities",
+        "infrastructure",
+        "historical_network_works"
+      ],
+      "source_type": "GeoSampa_vector_dataset",
+      "metadata_url": "https://metadados.geosampa.prefeitura.sp.gov.br/geonetwork/srv/resources/datasets/a986702e-b25f-404c-a1fc-90b5ec91ec34",
+      "access_class": "OPEN_REUSABLE",
+      "license": "CC BY-SA 4.0 for PMSP-produced geospatial layers",
+      "verification_status": "VERIFIED_OPEN_GEODATA_LIMITED_COVERAGE",
+      "update_frequency": "not planned",
+      "notes": "Camada 'Água e Esgoto' do antigo GeoConvias registra As Built de obras/serviços pontuais de implantação, instalação e manutenção. A própria PMSP informa que NÃO corresponde ao cadastro completo das redes existentes. Usar apenas como evidência histórica/local de intervenções, nunca como prova de disponibilidade na testada."
+    },
+    {
+      "id": "sp-sao-paulo-urban-parameters-geosampa",
+      "authority": "Prefeitura de São Paulo / SMUL / SP Urbanismo",
+      "scope": "municipality",
+      "municipality_ibge": "3550308",
+      "domain": [
+        "urban_parameters",
+        "zoning",
+        "legal_rules",
+        "development_rights",
+        "urban_planning"
+      ],
+      "source_type": "GeoSampa_legal_geospatial_catalog",
+      "metadata_url": "https://metadados.geosampa.prefeitura.sp.gov.br/geonetwork/geoprodam/search?keyword=planejamento+urbano",
+      "access_class": "OPEN_REUSABLE",
+      "license": "CC BY-SA 4.0 for PMSP-produced geospatial layers",
+      "verification_status": "VERIFIED_CATALOG_MULTIPLE_LEGAL_INSTRUMENTS",
+      "notes": "GeoSampa publica camadas e dicionários de parâmetros urbanísticos vinculados a instrumentos legais, inclusive PIUs/OUCs. Há datasets com CA máximo, gabarito, cota-parte, quadro/mapa e links para lei/anexos. Não assumir que uma única camada cobre toda a cidade: o normalizador deve resolver regra por instrumento, perímetro e vigência."
     }
   ]
 }
