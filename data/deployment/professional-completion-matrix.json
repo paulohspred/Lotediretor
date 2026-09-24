@@ -949,62 +949,74 @@
         {
           "field": "zoning",
           "status": "PARTIAL",
-          "source_id": "rj-rio-pgeo3",
+          "source_id": "rj-rio-urban-uses-activities",
           "supporting_source_ids": [
+            "rj-rio-pgeo3",
             "rj-rio-plan-director"
           ],
-          "endpoint": "https://pgeo3.rio.rj.gov.br/arcgis/rest/services",
+          "endpoint": "https://pgeo3.rio.rj.gov.br/arcgis/rest/services/Urbanismo/IU_Usos_e_atividades/MapServer",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "connector_status": "APPROVED_CONNECTOR_CONFIGURED",
           "missing_fields": [
-            "current zoning service/layer identification"
+            "complete zone/overlay geometry inventory",
+            "resource license review",
+            "temporal amendment resolver"
           ],
-          "notes": null
+          "notes": "Official service resolves uses/activities against LC 270/2024 and Decreto 56.561/2025, but its own metadata says the spatial layer alone is incomplete and must be joined to tables."
         },
         {
           "field": "urban parameters",
           "status": "PARTIAL",
-          "source_id": "rj-rio-plan-director",
+          "source_id": "rj-rio-urban-uses-activities",
           "supporting_source_ids": [
+            "rj-rio-plan-director",
             "rj-rio-pgeo3"
           ],
-          "endpoint": "https://www.rio.rj.gov.br/",
-          "access_class": "OPEN_REUSABLE",
+          "endpoint": "https://pgeo3.rio.rj.gov.br/arcgis/rest/services/Urbanismo/IU_Usos_e_atividades/MapServer",
+          "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "connector_status": "APPROVED_CONNECTOR_CONFIGURED",
           "missing_fields": [
-            "LC 270/2024 structured parameter parser"
+            "full building-intensity parameter set",
+            "legal-rule temporal joins",
+            "article/annex citations"
           ],
-          "notes": null
+          "notes": "Use/activity tables are structured and currentable; complete L3 requires the rest of the LC 270/2024 parameter system."
         },
         {
           "field": "permits",
           "status": "PARTIAL",
-          "source_id": "rj-rio-geopal",
-          "supporting_source_ids": [],
-          "endpoint": "https://pgeo3.rio.rj.gov.br/arcgis/rest/services/CadParcel/GeoPAL/MapServer",
+          "source_id": "rj-rio-licenses-habite-se",
+          "supporting_source_ids": [
+            "rj-rio-geopal"
+          ],
+          "endpoint": "https://desenvolvimentourbano.prefeitura.rio/informacoes-urbanisticas/",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "connector_status": "APPROVED_RESOURCE_DISCOVERY_ONLY",
           "missing_fields": [
-            "building licensing/alvaras beyond subdivision projects"
+            "monthly resource schema/terms",
+            "property join",
+            "legacy/current system reconciliation"
           ],
-          "notes": null
+          "notes": "SMDU publishes licensing/habite-se information and monthly relations derived from municipal administrative records."
         },
         {
           "field": "habite-se",
-          "status": "GAP",
-          "source_id": null,
+          "status": "QUERY_ONLY",
+          "source_id": "rj-rio-licenses-habite-se",
           "supporting_source_ids": [],
-          "endpoint": null,
-          "access_class": null,
+          "endpoint": "https://desenvolvimentourbano.prefeitura.rio/informacoes-urbanisticas/",
+          "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "NOT_DISCOVERED",
+          "connector_status": "APPROVED_RESOURCE_DISCOVERY_ONLY",
           "missing_fields": [
-            "official conclusion/habite-se source"
+            "resource-specific terms",
+            "safe field allowlist",
+            "stable bulk schema"
           ],
-          "notes": null
+          "notes": "Official SMDU surface and certificate consultation eliminate the source-discovery gap, but raw monthly records are not yet approved for materialization."
         },
         {
           "field": "environment",
@@ -1203,17 +1215,19 @@
         },
         {
           "field": "official gazette",
-          "status": "GAP",
-          "source_id": null,
+          "status": "QUERY_ONLY",
+          "source_id": "rj-rio-official-gazette-doweb",
           "supporting_source_ids": [],
-          "endpoint": null,
-          "access_class": null,
+          "endpoint": "https://doweb.rio.rj.gov.br/",
+          "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "NOT_DISCOVERED",
+          "connector_status": "APPROVED_QUERY_CONNECTOR",
           "missing_fields": [
-            "official structured gazette source/API"
+            "reuse terms",
+            "stable date/pagination contract",
+            "legal-event parser"
           ],
-          "notes": null
+          "notes": "D.O. Rio supports public edition/date/word search, full-edition PDF download and a public JSON edition endpoint. Treat as query/snapshot evidence until reuse terms are resolved."
         },
         {
           "field": "historical data",
@@ -2026,8 +2040,7 @@
     "Rio de Janeiro": {
       "READY": 8,
       "PARTIAL": 15,
-      "GAP": 2,
-      "QUERY_ONLY": 1
+      "QUERY_ONLY": 3
     },
     "Belo Horizonte": {
       "READY": 7,
