@@ -1,0 +1,292 @@
+{
+  "schema_version": "0.1.0",
+  "as_of": "2026-09-24",
+  "purpose": "Modelo de completude do dossiê profissional de um imóvel no LoteDiretor. Nem todo campo é público, gratuito ou automaticamente disponível; cada fato deve carregar fonte, data, acesso e evidência.",
+  "audiences": [
+    "arquiteto",
+    "engenheiro civil",
+    "engenheiro ambiental",
+    "urbanista",
+    "corretor e imobiliária",
+    "avaliador de imóveis",
+    "advogado imobiliário",
+    "incorporador/construtor",
+    "investidor",
+    "perito",
+    "gestor público"
+  ],
+  "sections": [
+    {
+      "id": "identity",
+      "title": "Identidade e localização",
+      "target_fields": [
+        "coordenada",
+        "endereço normalizado",
+        "CEP",
+        "código IBGE",
+        "bairro",
+        "distrito",
+        "inscrição municipal/IPTU",
+        "SQL/setor-quadra-lote",
+        "CIB",
+        "matrícula quando conhecida",
+        "CNS/cartório quando identificável",
+        "CAR/SIGEF para rural",
+        "identificadores de condomínio/unidade"
+      ],
+      "minimum_for_city_complete": [
+        "geometry_or_spatial_reference",
+        "municipal_identifier",
+        "address_or_location"
+      ],
+      "access_notes": "Matrícula é identificador registral; titularidade nominal permanece domínio restrito/on-demand."
+    },
+    {
+      "id": "land",
+      "title": "Terreno e geometria",
+      "target_fields": [
+        "polígono cadastral",
+        "área cadastral",
+        "área GIS calculada",
+        "testada",
+        "perímetro",
+        "quadra",
+        "lote",
+        "sublote",
+        "fração ideal",
+        "cota/elevação",
+        "declividade",
+        "curvas de nível",
+        "MDT/MDS/LiDAR",
+        "confrontações quando oficiais"
+      ]
+    },
+    {
+      "id": "building",
+      "title": "Edificações",
+      "target_fields": [
+        "footprint",
+        "área construída fiscal",
+        "área construída licenciada",
+        "área ocupada",
+        "número de pavimentos",
+        "altura",
+        "ano da construção",
+        "uso",
+        "tipologia",
+        "padrão construtivo",
+        "estrutura",
+        "unidades",
+        "garagens",
+        "piscina",
+        "condomínio",
+        "obsolescência",
+        "situação da edificação"
+      ]
+    },
+    {
+      "id": "tax",
+      "title": "IPTU, PGV e valores fiscais",
+      "target_fields": [
+        "valor venal terreno",
+        "valor venal construção",
+        "valor venal total",
+        "IPTU lançado",
+        "alíquota",
+        "PGV/valor unitário terreno",
+        "valor unitário construção",
+        "benefícios/imunidades",
+        "histórico por exercício quando público"
+      ],
+      "privacy_notes": "Não publicar contribuinte nominal/CPF/CNPJ em ficha pública."
+    },
+    {
+      "id": "transactions",
+      "title": "ITBI e mercado",
+      "target_fields": [
+        "data da transação",
+        "natureza",
+        "percentual transmitido",
+        "valor declarado",
+        "valor avaliado/base de cálculo",
+        "ITBI recolhido",
+        "financiamento quando público",
+        "estatísticas históricas",
+        "índices/valores de referência"
+      ],
+      "privacy_notes": "Preferir dados property-centric ou agregados; não criar índice público de pessoas."
+    },
+    {
+      "id": "registry",
+      "title": "Registro de imóveis e documentos",
+      "target_fields": [
+        "matrícula",
+        "cartório/CNS",
+        "certidão digital",
+        "descrição tabular do imóvel",
+        "área registral",
+        "proprietário atual quando obtido legitimamente em fluxo privado",
+        "ônus",
+        "usufruto",
+        "alienação fiduciária",
+        "hipoteca",
+        "indisponibilidade",
+        "servidões",
+        "averbações",
+        "construções averbadas",
+        "incorporação/condomínio"
+      ],
+      "access_notes": "Obtenção via RI Digital/Meu Registro/certidão oficial ou documento do usuário; armazenamento restrito."
+    },
+    {
+      "id": "zoning",
+      "title": "Plano Diretor, zoneamento e parâmetros",
+      "target_fields": [
+        "zona",
+        "macrozoneamento",
+        "sobrezoneamentos",
+        "ZEIS/AEIS/ZEPAM/etc",
+        "coeficiente de aproveitamento mínimo/básico/máximo",
+        "taxa de ocupação",
+        "taxa de permeabilidade",
+        "gabarito/altura",
+        "recuos",
+        "lote mínimo",
+        "frente mínima",
+        "usos permitidos/condicionados/proibidos",
+        "outorga onerosa",
+        "transferência do direito de construir",
+        "PEUC/IPTU progressivo",
+        "operações urbanas",
+        "eixos",
+        "áreas especiais",
+        "instrumentos incidentes"
+      ],
+      "legal_notes": "Sempre vincular parâmetro à norma, artigo/anexo, vigência e geometria correspondente."
+    },
+    {
+      "id": "permits",
+      "title": "Licenciamento e histórico construtivo",
+      "target_fields": [
+        "projeto aprovado",
+        "alvará de construção",
+        "alvará de execução",
+        "habite-se/aceite-se/certificado de conclusão",
+        "regularização",
+        "reforma",
+        "demolição",
+        "remembramento/desmembramento",
+        "loteamento",
+        "EIV/RIV",
+        "outorga onerosa",
+        "processo administrativo",
+        "status/data"
+      ]
+    },
+    {
+      "id": "environment",
+      "title": "Ambiental e restrições",
+      "target_fields": [
+        "APP",
+        "área de preservação",
+        "unidade de conservação",
+        "mananciais",
+        "hidrografia",
+        "faixa non aedificandi",
+        "vegetação",
+        "árvores protegidas",
+        "área contaminada",
+        "embargo IBAMA",
+        "licenciamento ambiental",
+        "CAR/RL",
+        "terras indígenas",
+        "quilombolas",
+        "cavidades",
+        "mineração"
+      ]
+    },
+    {
+      "id": "risk",
+      "title": "Risco e geotecnia",
+      "target_fields": [
+        "inundação/alagamento",
+        "deslizamento",
+        "suscetibilidade",
+        "erosão",
+        "geologia",
+        "solo",
+        "declividade",
+        "risco geotécnico",
+        "Defesa Civil/Cemaden/SGB"
+      ]
+    },
+    {
+      "id": "heritage",
+      "title": "Patrimônio e arqueologia",
+      "target_fields": [
+        "tombamento municipal/estadual/federal",
+        "entorno de bem tombado",
+        "sítio arqueológico",
+        "paisagem cultural",
+        "restrições de preservação"
+      ]
+    },
+    {
+      "id": "infrastructure",
+      "title": "Infraestrutura e servidões",
+      "target_fields": [
+        "sistema viário",
+        "hierarquia viária",
+        "rodovia/faixa de domínio",
+        "ferrovia",
+        "energia/transmissão/subestação",
+        "gasoduto/oleoduto/mineroduto",
+        "água",
+        "esgoto",
+        "drenagem",
+        "rede disponível quando pública",
+        "aeródromos/superfícies aeronáuticas",
+        "portos/hidrovias"
+      ]
+    },
+    {
+      "id": "imagery",
+      "title": "Imagem e histórico visual",
+      "target_fields": [
+        "ortofoto atual",
+        "ortofoto histórica",
+        "satélite",
+        "fachada quando licenciada",
+        "Mapillary quando aplicável",
+        "aerofotogrametria",
+        "LiDAR/nuvem de pontos"
+      ],
+      "access_notes": "Google Maps/Street View apenas via uso permitido; não armazenar/raspar como dataset próprio."
+    },
+    {
+      "id": "documents",
+      "title": "Documentos e evidências",
+      "target_fields": [
+        "PDF da lei",
+        "anexos/mapas legais",
+        "certidões",
+        "matrícula",
+        "IPTU do usuário",
+        "planta aprovada",
+        "levantamento topográfico",
+        "ART/RRT",
+        "memorial descritivo",
+        "laudos",
+        "fotos do usuário",
+        "hash do arquivo"
+      ]
+    }
+  ],
+  "completion_levels": {
+    "L0": "Fonte descoberta.",
+    "L1": "Mapa básico: lote/localização + zoneamento.",
+    "L2": "Dossiê urbanístico: L1 + parâmetros legais + cadastro predial/terreno.",
+    "L3": "Dossiê profissional: L2 + fiscal/ITBI + licenciamento + ambiente/risco + infraestrutura + imagens.",
+    "L4": "Due diligence completa sob demanda: L3 + matrícula/certidões/documentos restritos + reconciliação jurídica e histórico documental."
+  }
+}
