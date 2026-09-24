@@ -27,6 +27,22 @@ jobs:
         run: |
           rsync -a --delete --exclude='.git/' /tmp/labs-zola/ ./
 
+      - name: Remove upstream embedded credentials
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          path = Path("config/environment.js")
+          text = path.read_text()
+          pattern = r"accessToken:\s*\n\s*'pk\.[^']+'"
+          replacement = "accessToken: process.env.MAPBOX_ACCESS_TOKEN || ''"
+          updated, count = re.subn(pattern, replacement, text, count=1)
+          if count != 1:
+              raise SystemExit("Expected Mapbox token was not found exactly once")
+          path.write_text(updated)
+          PY
+
       - name: Commit imported baseline
         run: |
           git config user.name "github-actions[bot]"
