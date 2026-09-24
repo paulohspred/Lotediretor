@@ -1,0 +1,130 @@
+{
+  "schema_version": "0.1.0",
+  "as_of": "2026-09-24",
+  "purpose": "Mapa operacional do ecossistema extrajudicial relevante ao LoteDiretor. Não representa autorização de acesso; cada serviço mantém autenticação, emolumentos, finalidade e regras próprias.",
+  "systems": [
+    {
+      "id": "cnj-justica-aberta",
+      "operator": "Conselho Nacional de Justiça",
+      "role": "directory_and_statistics",
+      "public_capabilities": [
+        "localização de serventias",
+        "CNS",
+        "atribuições",
+        "produtividade",
+        "arrecadação",
+        "CSV/XLSX customizado"
+      ],
+      "property_use": "Resolver qual serventia/cartório existe e seus metadados institucionais.",
+      "access": "PUBLIC"
+    },
+    {
+      "id": "serp-meu-registro",
+      "operator": "ONSERP + Operadores Nacionais",
+      "role": "national_front_door",
+      "public_capabilities": [
+        "solicitação de serviços registrais conforme especialidade"
+      ],
+      "property_use": "Orquestração futura/atual de pedidos oficiais em múltiplas especialidades.",
+      "access": "SERVICE_SPECIFIC"
+    },
+    {
+      "id": "onr-ri-digital",
+      "operator": "ONR",
+      "role": "property_registry",
+      "public_capabilities": [
+        "certidão digital",
+        "visualização de matrícula",
+        "pesquisas e protocolos conforme serviço"
+      ],
+      "property_use": "Matrícula, certidão, atos/ônus e evidência registral oficial.",
+      "access": "PAID_AUTHENTICATED_OR_SERVICE_SPECIFIC",
+      "caveat": "Visualização de matrícula é consulta e não substitui certidão."
+    },
+    {
+      "id": "onr-technical",
+      "operator": "ONR",
+      "role": "interoperability_contracts",
+      "public_capabilities": [
+        "manuais de integração",
+        "especificações de web services",
+        "Swagger/documentação pública"
+      ],
+      "property_use": "Modelar contratos e preparar integrações futuras/autorizadas sem acessar dados registrais fora do canal oficial.",
+      "access": "PUBLIC_DOCUMENTATION_AUTHENTICATED_OPERATIONS"
+    },
+    {
+      "id": "censec-cep",
+      "operator": "Colégio Notarial do Brasil - Conselho Federal",
+      "role": "notarial_index",
+      "public_capabilities": [
+        "busca paga de escrituras/procurações com metadados limitados"
+      ],
+      "property_use": "Descobrir existência/localização de escritura ou procuração relacionada em fluxo privado de due diligence.",
+      "access": "PAID",
+      "caveat": "Não usar para indexação massiva por pessoa. Resultado público é deliberadamente limitado."
+    },
+    {
+      "id": "censec-api",
+      "operator": "Colégio Notarial do Brasil - Conselho Federal",
+      "role": "notarial_interoperability",
+      "public_capabilities": [
+        "documentação técnica de cargas CEP/CESDI/RCTO/CTP"
+      ],
+      "property_use": "Compreender comunicação estruturada de atos e transações; eventual integração somente com autorização.",
+      "access": "PUBLIC_DOCUMENTATION_RESTRICTED_API"
+    },
+    {
+      "id": "on-rcpn",
+      "operator": "Operador Nacional do Registro Civil de Pessoas Naturais",
+      "role": "civil_registry",
+      "public_capabilities": [
+        "localização de registros",
+        "solicitação de certidões"
+      ],
+      "property_use": "Apenas quando necessário em fluxo jurídico privado; não compõe ficha pública do imóvel.",
+      "access": "PAID_AUTHENTICATED"
+    },
+    {
+      "id": "on-rtdpj",
+      "operator": "Operador Nacional do Registro de Títulos e Documentos e Civil de Pessoas Jurídicas",
+      "role": "rtdpj_registry",
+      "public_capabilities": [
+        "serviços eletrônicos e base nacional conforme normas do CNJ"
+      ],
+      "property_use": "Documentos/atos de pessoas jurídicas e títulos eventualmente relacionados a imóvel ou empreendimento.",
+      "access": "REGULATED_AUTHENTICATED"
+    },
+    {
+      "id": "cenprot",
+      "operator": "IEPTB / CENPROT",
+      "role": "protest_registry",
+      "public_capabilities": [
+        "consultas/certidões conforme regras nacionais"
+      ],
+      "property_use": "Due diligence privada de pessoa/empresa; não é atributo público do imóvel.",
+      "access": "SERVICE_SPECIFIC"
+    },
+    {
+      "id": "sinter-cib",
+      "operator": "Receita Federal",
+      "role": "territorial_integration",
+      "public_capabilities": [
+        "consulta pública de imóveis integrados sem titulares/ITBI",
+        "API autenticada para cadastros de origem"
+      ],
+      "property_use": "Ponte entre cadastro municipal, CIB e futura integração registral padronizada.",
+      "access": "PUBLIC_QUERY_PLUS_AUTHENTICATED_API"
+    }
+  ],
+  "workflow": {
+    "public_property_dossier": [
+      "CNJ Justiça Aberta para identificar serventia/CNS",
+      "SINTER/CIB e cadastro municipal para identidade territorial",
+      "RI Digital apenas para documento/certidão solicitada no fluxo oficial",
+      "manter documento registral em domínio privado/restrito",
+      "extrair fatos jurídicos com fonte, data e hash",
+      "não publicar nomes/CPFs ou construir índice nacional de proprietários"
+    ]
+  }
+}
