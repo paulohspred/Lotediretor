@@ -83,6 +83,21 @@ footer{border-top:1px solid rgba(255,255,255,.07);margin-top:40px;padding:24px 0
       <span class="mapbadge">Cobertura L3 em construção</span>
     </div>
     <div id="map"></div>
+
+    <aside class="report-panel" id="reportPanel" aria-label="Relatório do imóvel">
+      <div class="report-top">
+        <div class="report-topline">
+          <span class="report-kicker">Dossiê do imóvel</span>
+          <div class="report-actions">
+            <button class="report-btn" id="printReport" type="button">Imprimir / PDF</button>
+            <button class="report-btn" id="closeReport" type="button">Fechar</button>
+          </div>
+        </div>
+        <div class="report-title" id="reportTitle">Terreno selecionado</div>
+        <div class="report-subtitle" id="reportSubtitle">Selecione um lote no mapa.</div>
+      </div>
+      <div class="report-scroll" id="reportContent"></div>
+    </aside>
   </div>
 </section>
 
@@ -179,6 +194,47 @@ function setParcelMessage(state,message){
 function clearSelectedParcel(){
   if(selectedParcelLayer){map.removeLayer(selectedParcelLayer);selectedParcelLayer=null}
 }
+
+function statusClass(status){return "status-"+String(status||"").toLowerCase()}
+function formatReportValue(item){
+  if(item.value===null||item.value===undefined||item.value==="")return "—";
+  if(item.unit==="m²" && typeof item.value==="number")return area(item.value);
+  return text(item.value);
+}
+function renderReport(report,p){
+  const panel=document.getElementById("reportPanel");
+  document.getElementById("reportTitle").textContent=[p.street,p.number].filter(Boolean).join(", ")||("Lote "+text(p.sql_reference));
+  document.getElementById("reportSubtitle").textContent="São Paulo · "+[p.fiscal_sector,p.fiscal_block,p.fiscal_lot].filter(Boolean).join(" / ")+" · relatório público L3 em construção";
+  const sections=report&&Array.isArray(report.sections)?report.sections:[];
+  const intro='<div class="report-legend">Valores exibidos no topo de cada seção já foram obtidos para este lote. As linhas abaixo mostram o estado das demais fontes: READY indica fonte apta, não necessariamente valor já integrado.</div>';
+  const html=sections.map((section,index)=>{
+    const values=(section.actual_values||[]).map(item=>
+      '<div class="report-value"><small>'+escapeHtml(item.label)+'</small><b>'+escapeHtml(formatReportValue(item))+'</b></div>'
+    ).join("");
+    const fields=(section.fields||[]).map(field=>{
+      const missing=field.missing_fields||[];
+      return '<div class="field-state">'+
+        '<div class="field-line"><span class="field-name">'+escapeHtml(field.label)+'</span><span class="status-chip '+statusClass(field.status)+'">'+escapeHtml(field.status)+'</span></div>'+
+        '<div class="field-source">Fonte: '+escapeHtml(field.source_id||"fluxo privado/sob demanda")+' · '+escapeHtml(field.connector_status||"sem conector")+'</div>'+
+        (missing.length?'<div class="field-missing">Ainda falta: '+escapeHtml(missing.join(" · "))+'</div>':"")+
+      '</div>';
+    }).join("");
+    return '<details class="report-section" '+(index<3?"open":"")+'>'+
+      '<summary><strong>'+escapeHtml(section.title)+'</strong><span>'+(section.fields||[]).length+' verificações</span></summary>'+
+      '<div class="report-content">'+(values?'<div class="report-values">'+values+'</div>':"")+fields+'</div>'+
+    '</details>';
+  }).join("");
+  document.getElementById("reportContent").innerHTML=intro+html;
+  panel.classList.add("open");
+  setTimeout(()=>map.invalidateSize(),250);
+}
+function closeReport(){
+  document.getElementById("reportPanel").classList.remove("open");
+  setTimeout(()=>map.invalidateSize(),250);
+}
+document.getElementById("closeReport").addEventListener("click",closeReport);
+document.getElementById("printReport").addEventListener("click",()=>window.print());
+
 function renderParcel(payload){
   const p=payload.feature.properties;
   clearSelectedParcel();
@@ -199,6 +255,7 @@ function renderParcel(payload){
       <div class="parcel-datum" style="grid-column:1/-1"><small>Uso cadastral</small><strong>${escapeHtml(text(p.use_description))}</strong></div>
     </div>
     <div class="parcel-source">Fonte: Prefeitura de São Paulo / GeoSampa · lote_cidadao · CC BY-SA 4.0 · consulta ${escapeHtml(payload.source.queried_at)}</div>`;
+  renderReport(payload.report,p);
 }
 async function inspectParcel(latlng){
   const idx=Number(select.value);
@@ -230,6 +287,7 @@ async function inspectParcel(latlng){
 map.on("click",e=>inspectParcel(e.latlng));
 select.addEventListener("change",e=>{
   clearSelectedParcel();
+  closeReport();
   const idx=Number(e.target.value);
   applyCity(idx,true);
   if(cities[idx].ibge==="3550308"){
