@@ -17,7 +17,37 @@ from collections import deque
 from datetime import datetime, timezone
 from html.parser import HTMLParser
 
-USER_AGENT = "LoteDiretor-SourceDiscovery/0.2 (+https://github.com/paulohspred/Lotediretor)"
+USER_AGENT = "LoteDiretor-SourceDiscovery/0.3 (+https://github.com/paulohspred/Lotediretor)"
+
+SENSITIVE_FIELD_TOKENS = {
+    "cpf", "cnpj", "proprietario", "proprietário", "owner", "titular",
+    "requerente", "documento", "doc_requerente", "nome_pessoa", "nom_pessoa",
+    "telefone", "celular", "email", "e_mail", "rg", "cnh", "passaporte",
+}
+
+
+def privacy_flags(fields: list[dict]) -> dict:
+    flagged = []
+    for field in fields or []:
+        name = str(field.get("name") or "").lower()
+        alias = str(field.get("alias") or "").lower()
+        haystack = f"{name} {alias}"
+        hits = sorted(token for token in SENSITIVE_FIELD_TOKENS if token in haystack)
+        if hits:
+            flagged.append({
+                "name": field.get("name"),
+                "alias": field.get("alias"),
+                "matched_tokens": hits,
+            })
+    return {
+        "privacy_review_required": bool(flagged),
+        "potentially_sensitive_fields": flagged,
+        "warning": (
+            "Heuristic only. Public endpoint exposure does not authorize republication; "
+            "review LGPD, purpose, source terms and minimization before ingestion."
+            if flagged else None
+        ),
+    }
 
 
 def validate_http_url(url: str) -> urllib.parse.ParseResult:
@@ -98,6 +128,10 @@ def discover_arcgis(url: str) -> dict:
             "copyrightText": payload.get("copyrightText"),
             "supportedQueryFormats": payload.get("supportedQueryFormats"),
         })
+    if "fields" in payload:
+        fields = payload.get("fields", [])
+        out["fields"] = fields
+        out.update(privacy_flags(fields))
     return out
 
 
