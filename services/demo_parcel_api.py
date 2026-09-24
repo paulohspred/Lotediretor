@@ -72,6 +72,7 @@ UTILITY_RESOLVER_PATH = ROOT / "data/utilities/municipality-provider-resolver.js
 SOURCE_REGISTRY_PATH = ROOT / "data/source-registry/bootstrap.json"
 PGV_INDEX_PATH = Path("/srv/lotediretor/data/pgv2026/pgv-terrain-values-2026.json")
 ITBI_DB_PATH = Path("/srv/lotediretor/data/itbi-public/itbi-transactions.sqlite3")
+IPTU_DB_PATH = Path("/srv/lotediretor/data/iptu-public/iptu-cadastre.sqlite3")
 TERRAIN_CACHE_DIR = Path("/var/cache/lotediretor/terrain/mdt2020")
 TERRAIN_DOWNLOAD = "https://download.geosampa.prefeitura.sp.gov.br/PaginasPublicas/downloadArquivo.aspx"
 _TERRAIN_RESULT_CACHE = {}
@@ -1030,6 +1031,69 @@ def resolve_pgv(parcel: dict) -> dict:
     }
 
 
+def resolve_iptu_cadastre(parcel: dict, history_limit: int = 8) -> dict:
+    sql = (parcel.get("properties") or {}).get("sql_reference")
+    if not sql or not re.fullmatch(r"\d{11}", sql):
+        return {
+            "available": IPTU_DB_PATH.exists(),
+            "found": False,
+            "records": [],
+            "reason": "parcel_without_sql",
+        }
+    if not IPTU_DB_PATH.exists():
+        return {
+            "available": False,
+            "found": False,
+            "records": [],
+            "reason": "iptu_index_not_materialized",
+        }
+
+    uri = f"file:{IPTU_DB_PATH}?mode=ro&immutable=1"
+    db = sqlite3.connect(uri, uri=True, timeout=3)
+    db.row_factory = sqlite3.Row
+    try:
+        rows = db.execute(
+            """
+            SELECT exercise, notice_number, registration_date, condominium,
+                   street_code, street, number, complement, neighborhood,
+                   reference, cep, corner_front_count, ideal_fraction,
+                   land_area_m2, built_area_m2, occupied_area_m2,
+                   land_unit_value_brl_m2,
+                   construction_unit_value_brl_m2,
+                   corrected_construction_year, floors, frontage_m,
+                   use_description, construction_pattern, terrain_type,
+                   obsolescence_factor, life_start_year, life_start_month,
+                   contributor_phase, source_zip_sha256
+            FROM cadastre
+            WHERE sql = ?
+            ORDER BY exercise DESC
+            LIMIT ?
+            """,
+            (sql, history_limit),
+        ).fetchall()
+    finally:
+        db.close()
+
+    records = [dict(row) for row in rows]
+    return {
+        "available": True,
+        "found": bool(records),
+        "count": len(records),
+        "records": records,
+        "latest": records[0] if records else None,
+        "source_id": "sp-sao-paulo-iptu-cadastro-fiscal",
+        "interpretation": (
+            "Cadastro fiscal IPTU da Emissão Geral do exercício. Campos "
+            "cadastrais e valores unitários são inputs fiscais; não equivalem "
+            "isoladamente ao valor final do IPTU nem a levantamento físico atual."
+        ),
+        "privacy": (
+            "Consulta usa o arquivo bulk público IPTU_INTER. O LoteDiretor não "
+            "materializa nem publica nome de proprietário/possuidor nesta ficha."
+        ),
+    }
+
+
 def resolve_itbi_history(parcel: dict, limit: int = 12) -> dict:
     sql = (parcel.get("properties") or {}).get("sql_reference")
     if not sql or not re.fullmatch(r"\d{11}", sql):
@@ -1212,6 +1276,7 @@ def build_context(lat: float, lng: float, parcel_geometry: dict, parcel: dict) -
         "utilities": load_utility_context(),
         "fiscal": {
             "pgv": resolve_pgv(parcel),
+            "iptu": resolve_iptu_cadastre(parcel),
             "itbi": resolve_itbi_history(parcel),
         },
         "query_errors": errors,
@@ -1288,24 +1353,59 @@ def actual_values_for_section(
                 "value": (context.get("fiscal") or {}).get("pgv", {}).get("vm2t_brl_per_m2"),
                 "unit": "BRL/m²",
             },
+            {
+                "label": "Pavimentos · IPTU",
+                "value": ((context.get("fiscal") or {}).get("iptu") or {}).get("latest", {}).get("floors"),
+            },
+            {
+                "label": "Ano construção · IPTU",
+                "value": ((context.get("fiscal") or {}).get("iptu") or {}).get("latest", {}).get("corrected_construction_year"),
+            },
         ]
         return values
 
     if section_id == "identity_location":
-        return [
+        iptu = ((context.get("fiscal") or {}).get("iptu") or {}).get("latest") or {}
+        terrain = context.get("terrain") or {}
+        values = [
             {"label": "SQL", "value": p.get("sql_reference")},
             {"label": "CIB", "value": p.get("cib")},
             {"label": "Situação CIB", "value": p.get("cib_status")},
+            {"label": "Situação cartográfica do lote", "value": p.get("parcel_status")},
             {"label": "Setor", "value": p.get("fiscal_sector")},
             {"label": "Quadra", "value": p.get("fiscal_block")},
             {"label": "Lote", "value": p.get("fiscal_lot")},
             {"label": "Endereço", "value": address},
-            {"label": "Complemento", "value": p.get("complement")},
-            {"label": "Área do terreno", "value": p.get("land_area_m2"), "unit": "m²"},
+            {"label": "Complemento GeoSampa", "value": p.get("complement")},
+            {"label": "Bairro · IPTU", "value": iptu.get("neighborhood")},
+            {"label": "CEP · IPTU", "value": iptu.get("cep")},
+            {"label": "Data do cadastramento · IPTU", "value": iptu.get("registration_date")},
+            {"label": "Área terreno · cadastro fiscal", "value": iptu.get("land_area_m2") or p.get("land_area_m2"), "unit": "m²"},
+            {"label": "Área geométrica calculada · lote", "value": terrain.get("parcel_area_geometry_m2"), "unit": "m²"},
+            {"label": "Testada para cálculo · IPTU", "value": iptu.get("frontage_m"), "unit": "m"},
+            {"label": "Frentes/esquinas · IPTU", "value": iptu.get("corner_front_count")},
+            {"label": "Fração ideal · IPTU", "value": iptu.get("ideal_fraction")},
+            {"label": "Condomínio · IPTU", "value": iptu.get("condominium")},
         ]
+        cadastral_area = iptu.get("land_area_m2") or p.get("land_area_m2")
+        geometry_area = terrain.get("parcel_area_geometry_m2")
+        if isinstance(cadastral_area, (int, float)) and isinstance(geometry_area, (int, float)):
+            values.append({
+                "label": "Divergência área GIS x cadastro",
+                "value": round(geometry_area - cadastral_area, 2),
+                "unit": "m²",
+            })
+            if cadastral_area:
+                values.append({
+                    "label": "Divergência relativa área GIS x cadastro",
+                    "value": round((geometry_area - cadastral_area) / cadastral_area * 100, 2),
+                    "unit": "%",
+                })
+        return values
 
     if section_id == "building_existing":
         buildings = context.get("buildings") or []
+        iptu = ((context.get("fiscal") or {}).get("iptu") or {}).get("latest") or {}
         heights = [
             item.get("properties", {}).get("qt_altura_edificacao")
             for item in buildings
@@ -1320,10 +1420,16 @@ def actual_values_for_section(
             if item.get("properties", {}).get("dt_atualizacao")
         ]
         return [
-            {"label": "Área construída fiscal", "value": p.get("built_area_m2"), "unit": "m²"},
-            {"label": "Uso cadastral", "value": p.get("use_description")},
-            {"label": "Tipo de lote", "value": p.get("parcel_type")},
-            {"label": "Situação do lote", "value": p.get("parcel_status")},
+            {"label": "Área construída fiscal", "value": iptu.get("built_area_m2") or p.get("built_area_m2"), "unit": "m²"},
+            {"label": "Área ocupada · IPTU", "value": iptu.get("occupied_area_m2"), "unit": "m²"},
+            {"label": "Pavimentos · IPTU", "value": iptu.get("floors")},
+            {"label": "Ano construção corrigido · IPTU", "value": iptu.get("corrected_construction_year")},
+            {"label": "Uso cadastral · IPTU", "value": iptu.get("use_description") or p.get("use_description")},
+            {"label": "Padrão construtivo · IPTU", "value": iptu.get("construction_pattern")},
+            {"label": "Tipo de terreno · IPTU", "value": iptu.get("terrain_type")},
+            {"label": "Fator de obsolescência · IPTU", "value": iptu.get("obsolescence_factor")},
+            {"label": "Tipo de lote · GeoSampa", "value": p.get("parcel_type")},
+            {"label": "Situação do lote · GeoSampa", "value": p.get("parcel_status")},
             {"label": "Footprints cartográficos no lote", "value": len(buildings)},
             {
                 "label": "Maior altura cartográfica entre footprints intersectantes",
@@ -1368,6 +1474,25 @@ def actual_values_for_section(
         pgv = fiscal.get("pgv") or {}
         itbi = fiscal.get("itbi") or {}
         values = []
+        iptu_data = fiscal.get("iptu") or {}
+        iptu = iptu_data.get("latest") or {}
+        if iptu:
+            values.extend([
+                {"label": "Cadastro IPTU 2026", "value": "Encontrado no bulk público IPTU_INTER"},
+                {"label": "Valor unitário terreno · IPTU", "value": iptu.get("land_unit_value_brl_m2"), "unit": "BRL/m²"},
+                {"label": "Valor unitário construção · IPTU", "value": iptu.get("construction_unit_value_brl_m2"), "unit": "BRL/m²"},
+                {"label": "Área terreno · IPTU", "value": iptu.get("land_area_m2"), "unit": "m²"},
+                {"label": "Área construída · IPTU", "value": iptu.get("built_area_m2"), "unit": "m²"},
+                {"label": "Área ocupada · IPTU", "value": iptu.get("occupied_area_m2"), "unit": "m²"},
+                {"label": "Testada · IPTU", "value": iptu.get("frontage_m"), "unit": "m"},
+                {"label": "Pavimentos · IPTU", "value": iptu.get("floors")},
+                {"label": "Ano construção corrigido · IPTU", "value": iptu.get("corrected_construction_year")},
+                {"label": "Padrão construtivo · IPTU", "value": iptu.get("construction_pattern")},
+                {"label": "Fator de obsolescência · IPTU", "value": iptu.get("obsolescence_factor")},
+                {"label": "Observação IPTU", "value": iptu_data.get("interpretation")},
+            ])
+        else:
+            values.append({"label": "Cadastro IPTU", "value": "SQL não localizado no índice fiscal materializado."})
 
         if pgv.get("found"):
             values.extend([
