@@ -27,7 +27,7 @@
   "candidates": [
     {
       "id": "cand-sc-ciga-municipality-enumeration",
-      "status": "DISCOVERED",
+      "status": "SCHEMA_REVIEW",
       "category": "multi_municipality_gis",
       "authority": "CIGA",
       "url": "https://geo.ciga.sc.gov.br/",
@@ -39,14 +39,32 @@
         "internal cadastral fields may exist"
       ],
       "next_checks": [
-        "enumerate public tenants without authentication bypass",
-        "record municipality IBGE",
-        "inspect terms and public layer schemas"
-      ]
+        "expand tenant list",
+        "terms/license per municipality",
+        "public field allowlist",
+        "stable service endpoints if documented"
+      ],
+      "progress": {
+        "confirmed_public_tenants": [
+          "Corupá",
+          "Balneário Piçarras",
+          "Guabiruba",
+          "Canoinhas"
+        ],
+        "entrypoints_identified": [
+          "Petrolândia",
+          "Irani",
+          "Mondaí",
+          "Tangará",
+          "Massaranduba",
+          "Garuva"
+        ],
+        "inventory_file": "data/platforms/ciga-geo-tenants.json"
+      }
     },
     {
       "id": "cand-pr-pinhais-itbi",
-      "status": "AUTHORITY_CONFIRMED",
+      "status": "TERMS_REVIEW",
       "category": "itbi",
       "authority": "Prefeitura de Pinhais",
       "url": "https://geopinhais.pinhais.pr.gov.br/server/rest/services/ITBI/FeatureServer",
@@ -57,11 +75,30 @@
         "license not yet established"
       ],
       "next_checks": [
-        "inspect itemInfo/metadata",
-        "inspect schema through read-only service description",
-        "privacy review",
-        "license review"
-      ]
+        "itemInfo/metadata license",
+        "municipal terms",
+        "decide query-only vs materialization"
+      ],
+      "schema_summary": {
+        "geometry": "point",
+        "observed_fields": [
+          "cadastro",
+          "inscricao",
+          "edif_cond",
+          "unidades",
+          "area_lote",
+          "area_const",
+          "fracao",
+          "vvt",
+          "vvp",
+          "v_aval_dec",
+          "data",
+          "orig_aval",
+          "testada",
+          "area_tt_cons"
+        ],
+        "personal_name_fields_observed": false
+      }
     },
     {
       "id": "cand-sp-praia-grande-geoserver-layers",
