@@ -113,7 +113,7 @@ footer{border-top:1px solid rgba(255,255,255,.07);margin-top:40px;padding:24px 0
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 <script>
 const cities=[
-  {name:"São Paulo",uf:"SP",ibge:"3550308",lat:-23.5505,lng:-46.6333,z:11,r:12,p:10,q:3,v:1},
+  {name:"São Paulo",uf:"SP",ibge:"3550308",lat:-23.5505,lng:-46.6333,z:16,r:12,p:10,q:3,v:1},
   {name:"Recife",uf:"PE",ibge:"2611606",lat:-8.0476,lng:-34.8770,z:12,r:12,p:12,q:1,v:1},
   {name:"Rio de Janeiro",uf:"RJ",ibge:"3304557",lat:-22.9068,lng:-43.1729,z:11,r:9,p:14,q:3,v:0},
   {name:"Belo Horizonte",uf:"MG",ibge:"3106200",lat:-19.9167,lng:-43.9345,z:12,r:8,p:15,q:2,v:1},
@@ -123,26 +123,40 @@ const cities=[
 const select=document.getElementById("citySelect");
 cities.forEach((c,i)=>{const o=document.createElement("option");o.value=i;o.textContent=`${c.name} · ${c.uf}`;select.appendChild(o)});
 
-const map=L.map("map",{zoomControl:true,attributionControl:true}).setView([-14.5,-51.7],4);
+const map=L.map("map",{zoomControl:true,attributionControl:true}).setView([-23.5505,-46.6333],16);
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{
   maxZoom:19,
   attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 }).addTo(map);
+
+const spParcelWms=L.tileLayer.wms("https://wms.geosampa.prefeitura.sp.gov.br/geoserver/geoportal/wms",{
+  layers:"lote_cidadao",
+  format:"image/png",
+  transparent:true,
+  version:"1.1.1",
+  opacity:.58,
+  attribution:"Prefeitura de São Paulo · GeoSampa"
+});
 
 const markers=[];
 let selectedParcelLayer=null;
 let parcelRequestSeq=0;
 cities.forEach((c,i)=>{
   const marker=L.circleMarker([c.lat,c.lng],{
-    radius:9,weight:3,color:"#071019",fillColor:"#3bd790",fillOpacity:1
+    radius:9,weight:3,color:"#071019",fillColor:"#3bd790",fillOpacity:1,bubblingMouseEvents:false
   }).addTo(map);
   marker.bindPopup(`<div class="popup-title">${c.name} · ${c.uf}</div><div class="popup-meta">IBGE ${c.ibge}<br>${c.r} READY · ${c.p} PARTIAL · ${c.q} QUERY</div>`);
-  marker.on("click",()=>{select.value=i;applyCity(i,false)});
+  marker.on("click",()=>{select.value=i;clearSelectedParcel();applyCity(i,true);if(c.ibge==="3550308"){setParcelMessage("clique no mapa","Clique no interior de um terreno para consultar a parcela oficial.")}else{setParcelMessage("em integração",`Clique cadastral ainda não ligado em ${c.name}; o conector espacial desta cidade será o próximo estágio.`)}});
   markers.push(marker);
 });
 
 function applyCity(idx,fly=true){
   const c=cities[idx],total=c.r+c.p+c.q+c.v;
+  if(c.ibge==="3550308"){
+    if(!map.hasLayer(spParcelWms))spParcelWms.addTo(map);
+  }else if(map.hasLayer(spParcelWms)){
+    map.removeLayer(spParcelWms);
+  }
   document.getElementById("cityName").textContent=`${c.name} · ${c.uf}`;
   document.getElementById("ibge").textContent=`IBGE ${c.ibge}`;
   document.getElementById("ready").textContent=c.r;
