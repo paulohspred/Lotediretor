@@ -8,6 +8,7 @@ allowlist. It never requests owner/person fields.
 from __future__ import annotations
 
 import hashlib
+import html
 import io
 import json
 import math
@@ -73,6 +74,10 @@ SOURCE_REGISTRY_PATH = ROOT / "data/source-registry/bootstrap.json"
 PGV_INDEX_PATH = Path("/srv/lotediretor/data/pgv2026/pgv-terrain-values-2026.json")
 ITBI_DB_PATH = Path("/srv/lotediretor/data/itbi-public/itbi-transactions.sqlite3")
 IPTU_DB_PATH = Path("/srv/lotediretor/data/iptu-public/iptu-cadastre.sqlite3")
+LPUOS_INDEX_PATH = Path("/srv/lotediretor/data/lpuos/lpuos-parameters.json")
+SISZON_URL = "https://consultasiszon.prefeitura.sp.gov.br/FormsRestrict/frmConsultaSQCL.aspx"
+_LPUOS_INDEX_CACHE = None
+_SISZON_CACHE = {}
 TERRAIN_CACHE_DIR = Path("/var/cache/lotediretor/terrain/mdt2020")
 TERRAIN_DOWNLOAD = "https://download.geosampa.prefeitura.sp.gov.br/PaginasPublicas/downloadArquivo.aspx"
 _TERRAIN_RESULT_CACHE = {}
@@ -121,6 +126,52 @@ THEMATIC_LAYERS = {
             "tx_levantamento",
             "cd_escala_quadricula",
             "sg_fonte_original",
+        ],
+    },
+    "urban_operation": {
+        "type_name": "geoportal:operacao_urbana",
+        "geometry": "ge_poligono",
+        "fields": [
+            "cd_identificador_operacao_urbana", "sg_fonte_original",
+            "nm_operacao_urbana", "sg_operacao_urbana",
+            "qt_area_operacao_urbana",
+            "dt_carga", "tx_lei_operacao_urbana",
+            "tx_observacao_operacao_urbana",
+        ],
+    },
+    "aiu_perimeter": {
+        "type_name": "geoportal:perimetro_aiu",
+        "geometry": "ge_poligono",
+        "fields": [
+            "cd_identificador_perimetro_aiu", "tx_tipo_perimetro",
+            "nm_perimetro", "cd_numero_lei", "nm_lei",
+            "qt_area_hectare", "dt_atualizacao",
+        ],
+    },
+    "requalifica_centro": {
+        "type_name": "geoportal:requalifica_centro_perimetro_geral",
+        "geometry": "ge_poligono",
+        "fields": [
+            "cd_identificador", "qt_area_metro", "qt_area_quilometro",
+            "dc_lei", "tx_link_site", "nm_perimetro",
+        ],
+    },
+    "aiu_area_parameter": {
+        "type_name": "geoportal:area_qualificacao_transformacao_aiu",
+        "geometry": "ge_poligono",
+        "fields": [
+            "cd_identificador_area_qualificacao_transformacao",
+            "cd_parametro", "tx_tipo_area", "cd_numero_lei",
+            "nm_lei", "dt_atualizacao",
+        ],
+    },
+    "aiu_special_perimeter": {
+        "type_name": "geoportal:perimetro_especial_aiu",
+        "geometry": "ge_poligono",
+        "fields": [
+            "cd_identificador_perimetro_especial", "nm_projeto",
+            "cd_projeto", "cd_numero_lei", "nm_lei",
+            "tx_tipo_projeto", "dt_atualizacao",
         ],
     },
     "zoning": {
@@ -927,6 +978,63 @@ def resolve_terrain_context(lat: float, lng: float, parcel_geometry: dict) -> di
     return analysis
 
 
+def fetch_large_point_layer(key: str, lat: float, lng: float) -> list[dict]:
+    config = THEMATIC_LAYERS[key]
+    query = {
+        "service": "WFS",
+        "version": "2.0.0",
+        "request": "GetFeature",
+        "typeNames": config["type_name"],
+        "srsName": "EPSG:4326",
+        "count": "20",
+        "propertyName": ",".join(config["fields"]),
+        "cql_filter": (
+            "INTERSECTS("
+            + config["geometry"]
+            + f",SRID=4326;POINT({lng} {lat}))"
+        ),
+        "outputFormat": "application/json",
+    }
+    url = WFS + "?" + urllib.parse.urlencode(query)
+    request = urllib.request.Request(
+        url,
+        headers={
+            "User-Agent": "LoteDiretor/0.1 (+https://lotediretor.com)",
+            "Accept": "application/json",
+        },
+    )
+    with urllib.request.urlopen(request, timeout=12) as response:
+        body = response.read(1024 * 1024 + 1)
+        if response.status != 200:
+            raise RuntimeError(
+                f"GeoSampa {config['type_name']} returned HTTP {response.status}"
+            )
+        if len(body) > 1024 * 1024:
+            raise RuntimeError(
+                f"GeoSampa {config['type_name']} exact-point response exceeded safety limit"
+            )
+    payload = json.loads(body)
+    if payload.get("type") != "FeatureCollection":
+        raise RuntimeError(
+            f"GeoSampa {config['type_name']} did not return FeatureCollection"
+        )
+    allowed = set(config["fields"])
+    output = []
+    for feature in payload.get("features") or []:
+        props = feature.get("properties") or {}
+        unexpected = set(props) - allowed
+        if unexpected:
+            raise RuntimeError(
+                f"GeoSampa {config['type_name']} returned unexpected fields: "
+                + ", ".join(sorted(unexpected))
+            )
+        output.append({
+            "id": feature.get("id"),
+            "properties": props,
+        })
+    return output
+
+
 def fetch_point_layer(key: str, lat: float, lng: float) -> list[dict]:
     config = THEMATIC_LAYERS[key]
     delta = 0.0007
@@ -1198,6 +1306,255 @@ def resolve_itbi_history(parcel: dict, limit: int = 12) -> dict:
     }
 
 
+def load_lpuos_index() -> dict:
+    global _LPUOS_INDEX_CACHE
+    if _LPUOS_INDEX_CACHE is None:
+        payload = json.loads(LPUOS_INDEX_PATH.read_text(encoding="utf-8"))
+        zones = payload.get("zones")
+        if payload.get("source_id") != "sp-sao-paulo-lpuos-parameters":
+            raise ValueError("unexpected LPUOS source")
+        if not isinstance(zones, dict) or len(zones) < 20:
+            raise ValueError("invalid LPUOS zone index")
+        _LPUOS_INDEX_CACHE = payload
+    return _LPUOS_INDEX_CACHE
+
+
+def resolve_siszon_qa(parcel: dict) -> dict:
+    props = parcel.get("properties") or {}
+    sector = props.get("fiscal_sector")
+    block = props.get("fiscal_block")
+    lot = props.get("fiscal_lot")
+    if not all(
+        isinstance(value, str) and re.fullmatch(r"\d+", value)
+        for value in (sector, block, lot)
+    ):
+        return {"available": False, "reason": "missing_fiscal_sqc"}
+    sqcl = f"{sector}.{block}.{lot}"
+    if sqcl in _SISZON_CACHE:
+        return _SISZON_CACHE[sqcl]
+    url = SISZON_URL + "?" + urllib.parse.urlencode({"SQCL": sqcl})
+    request = urllib.request.Request(
+        url,
+        headers={
+            "User-Agent": "Mozilla/5.0 LoteDiretor/0.1 (+https://lotediretor.com)",
+            "Accept": "text/html",
+        },
+    )
+    with urllib.request.urlopen(request, timeout=12) as response:
+        body = response.read(1024 * 1024 + 1)
+        if len(body) > 1024 * 1024:
+            raise RuntimeError("SISZON response exceeded safety limit")
+        charset = response.headers.get_content_charset() or "iso-8859-1"
+    page = body.decode(charset, errors="replace")
+    match = re.search(
+        r'<table[^>]+id="ctl00_ContentPlaceHolder1_grvHistoricoZonaUso"'
+        r'[\s\S]*?</table>',
+        page,
+        re.IGNORECASE,
+    )
+    if not match:
+        result = {
+            "available": False,
+            "sqcl": sqcl,
+            "reason": "zone_history_not_found",
+            "source_url": url,
+        }
+        _SISZON_CACHE[sqcl] = result
+        return result
+    current = []
+    for tr in re.findall(r"<tr[^>]*>([\s\S]*?)</tr>", match.group(0), re.I):
+        cells = []
+        for attrs, raw in re.findall(r"<td([^>]*)>([\s\S]*?)</td>", tr, re.I):
+            value = html.unescape(re.sub(r"<[^>]+>", " ", raw))
+            value = re.sub(r"\s+", " ", value).strip()
+            tm = re.search(r"title=[\"']([^\"']*)", attrs, re.I)
+            cells.append({
+                "value": value,
+                "title": html.unescape(tm.group(1)) if tm else None,
+            })
+        if len(cells) >= 5 and cells[4]["value"].upper().startswith("VIGENTE"):
+            current.append({
+                "code": cells[0]["value"].strip(),
+                "description": cells[0]["title"],
+                "perimeter": cells[1]["value"].strip(),
+                "law": cells[2]["value"].strip(),
+                "updated_at": cells[3]["value"].strip(),
+                "status": cells[4]["value"].strip(),
+            })
+    qa_row = next((row for row in current if row["code"] == "QA"), None)
+    pa = None
+    if qa_row and re.fullmatch(r"\d{4}", qa_row.get("perimeter") or ""):
+        pa = f"PA {int(qa_row['perimeter'])}"
+    result = {
+        "available": True,
+        "sqcl": sqcl,
+        "pa": pa,
+        "qa_row": qa_row,
+        "current_rows": current,
+        "source_url": url,
+        "interpretation": (
+            "SISZON is used only for current MA/QA context, which the municipal "
+            "query states was not changed by the recent zoning revisions. "
+            "Current zone geometry is resolved separately from GeoSampa."
+        ),
+    }
+    if len(_SISZON_CACHE) > 4096:
+        _SISZON_CACHE.clear()
+    _SISZON_CACHE[sqcl] = result
+    return result
+
+
+def collect_special_urban_regimes(results: dict) -> list[dict]:
+    mappings = [
+        ("urban_operation", "Operação Urbana"),
+        ("aiu_perimeter", "Área de Intervenção Urbana"),
+        ("requalifica_centro", "Requalifica Centro"),
+        ("aiu_area_parameter", "Parâmetro territorial de AIU"),
+        ("aiu_special_perimeter", "Perímetro especial de AIU"),
+    ]
+    output = []
+    for key, label in mappings:
+        for item in results.get(key) or []:
+            output.append({
+                "type": key,
+                "label": label,
+                "feature_id": item.get("id"),
+                "properties": item.get("properties") or {},
+            })
+    return output
+
+
+def resolve_lpuos_parameters(
+    parcel: dict,
+    zoning_feature: dict | None,
+    iptu: dict,
+    siszon: dict,
+    special_regimes: list[dict],
+) -> dict:
+    index = load_lpuos_index()
+    zone_props = (zoning_feature or {}).get("properties") or {}
+    zone_code = (zone_props.get("cd_zoneamento_perimetro") or "").strip().upper()
+    normalized_zone = zone_code.replace(" ", "-")
+    record = (index.get("zones") or {}).get(normalized_zone)
+    if not record:
+        return {
+            "available": False,
+            "zone": zone_code or None,
+            "reason": "zone_not_found_in_lpuos_index",
+            "special_regimes": special_regimes,
+        }
+    iptu_latest = (iptu or {}).get("latest") or {}
+    area = iptu_latest.get("land_area_m2")
+    if not isinstance(area, (int, float)) or area <= 0:
+        area = (parcel.get("properties") or {}).get("land_area_m2")
+    frontage = iptu_latest.get("frontage_m")
+    parceling = record.get("parceling") or {}
+    occupation = record.get("occupation") or {}
+    max_occupancy = None
+    occupancy_basis = None
+    if isinstance(area, (int, float)):
+        if area < 500:
+            max_occupancy = occupation.get("max_occupancy_up_to_500")
+            occupancy_basis = "lote < 500 m²"
+        elif area > 500:
+            max_occupancy = occupation.get("max_occupancy_500_plus")
+            occupancy_basis = "lote > 500 m²"
+        else:
+            small = occupation.get("max_occupancy_up_to_500")
+            large = occupation.get("max_occupancy_500_plus")
+            max_occupancy = small if small == large else None
+            occupancy_basis = "lote = 500 m²; conferir sobreposição das faixas"
+    pa = (siszon or {}).get("pa")
+    qa_table = (index.get("environmental_qualification") or {}).get(pa) if pa else None
+    permeability = None
+    qa_min = None
+    qa_required = None
+    if qa_table and isinstance(area, (int, float)):
+        permeability = (
+            qa_table.get("min_permeability_up_to_500")
+            if area <= 500
+            else qa_table.get("min_permeability_over_500")
+        )
+        qa_required = area > 500 and pa != "PA 13"
+        if qa_required:
+            if area <= 1000:
+                qa_min = qa_table.get("min_qa_500_1000")
+            elif area <= 2500:
+                qa_min = qa_table.get("min_qa_1000_2500")
+            elif area <= 5000:
+                qa_min = qa_table.get("min_qa_2500_5000")
+            elif area <= 10000:
+                qa_min = qa_table.get("min_qa_5000_10000")
+            else:
+                qa_min = qa_table.get("min_qa_over_10000")
+    effective_occupancy = max_occupancy
+    if (
+        isinstance(max_occupancy, (int, float))
+        and isinstance(permeability, (int, float))
+        and max_occupancy + permeability > 1
+    ):
+        effective_occupancy = max(0.0, 1.0 - permeability)
+    ca_min = occupation.get("ca_min")
+    ca_basic = occupation.get("ca_basic")
+    ca_max = occupation.get("ca_max")
+    theoretical = {}
+    if isinstance(area, (int, float)):
+        for key, ca in [
+            ("min_computable_area_m2", ca_min),
+            ("basic_computable_area_m2", ca_basic),
+            ("max_computable_area_m2", ca_max),
+        ]:
+            theoretical[key] = round(area * ca, 2) if isinstance(ca, (int, float)) else None
+    built = iptu_latest.get("built_area_m2")
+    gross_ratio = (
+        round(built / area, 3)
+        if isinstance(built, (int, float))
+        and isinstance(area, (int, float))
+        and area > 0
+        else None
+    )
+    return {
+        "available": True,
+        "status": (
+            "BASE_PARAMETERS_SPECIAL_REGIME_REVIEW_REQUIRED"
+            if special_regimes else "BASE_ZONE_PARAMETERS"
+        ),
+        "zone": normalized_zone,
+        "land_area_m2": area,
+        "frontage_m": frontage,
+        "parceling": parceling,
+        "occupation": {
+            **occupation,
+            "effective_max_occupancy_ratio": effective_occupancy,
+            "occupancy_basis": occupancy_basis,
+        },
+        "environmental": {
+            "pa": pa,
+            "source": "SISZON public query + Quadro 3A",
+            "min_permeability_ratio": permeability,
+            "qa_required": qa_required,
+            "min_qa_score": qa_min,
+            "vegetation_factor_alpha": (qa_table or {}).get("vegetation_factor_alpha"),
+            "drainage_factor_beta": (qa_table or {}).get("drainage_factor_beta"),
+        },
+        "theoretical_base": theoretical,
+        "existing_built_area_m2": built,
+        "existing_gross_built_land_ratio": gross_ratio,
+        "special_regimes": special_regimes,
+        "notes": index.get("notes") or {},
+        "document_hashes": {
+            key: value.get("sha256")
+            for key, value in (index.get("documents") or {}).items()
+        },
+        "interpretation": (
+            "Parâmetros-base da LPUOS para a zona vigente. Não constituem "
+            "parecer definitivo de edificabilidade. Regimes especiais, ZEPEC, "
+            "restrições registrais, uso/projeto, áreas não computáveis, "
+            "incentivos e outras regras podem alterar o potencial efetivo."
+        ),
+    }
+
+
 def load_utility_context() -> dict:
     resolver = json.loads(UTILITY_RESOLVER_PATH.read_text(encoding="utf-8"))
     registry = json.loads(SOURCE_REGISTRY_PATH.read_text(encoding="utf-8"))
@@ -1229,11 +1586,15 @@ def load_utility_context() -> dict:
 def build_context(lat: float, lng: float, parcel_geometry: dict, parcel: dict) -> dict:
     results = {}
     errors = {}
-    with ThreadPoolExecutor(max_workers=8) as pool:
+    with ThreadPoolExecutor(max_workers=12) as pool:
         futures = {
             pool.submit(fetch_point_layer, key, lat, lng): key
             for key in THEMATIC_LAYERS
+            if key != "urban_operation"
         }
+        futures[
+            pool.submit(fetch_large_point_layer, "urban_operation", lat, lng)
+        ] = "urban_operation"
         futures[pool.submit(fetch_buildings_for_parcel, parcel_geometry)] = "__buildings__"
         futures[
             pool.submit(
@@ -1244,6 +1605,7 @@ def build_context(lat: float, lng: float, parcel_geometry: dict, parcel: dict) -
         futures[
             pool.submit(resolve_terrain_context, lat, lng, parcel_geometry)
         ] = "__terrain__"
+        futures[pool.submit(resolve_siszon_qa, parcel)] = "__siszon__"
         for future in as_completed(futures):
             key = futures[future]
             try:
@@ -1255,12 +1617,26 @@ def build_context(lat: float, lng: float, parcel_geometry: dict, parcel: dict) -
     zoning = (results.get("zoning") or [None])[0]
     macroarea = (results.get("macroarea") or [None])[0]
     macrozone = (results.get("macrozone") or [None])[0]
+    special_regimes = collect_special_urban_regimes(results)
+    siszon = results.get("__siszon__") or {
+        "available": False,
+        "reason": errors.get("__siszon__") or "not_available",
+    }
+    iptu = resolve_iptu_cadastre(parcel)
+    pgv = resolve_pgv(parcel)
+    itbi = resolve_itbi_history(parcel)
+    lpuos_parameters = resolve_lpuos_parameters(
+        parcel, zoning, iptu, siszon, special_regimes
+    )
 
     return {
         "planning": {
             "zoning": zoning,
             "macroarea": macroarea,
             "macrozone": macrozone,
+            "siszon": siszon,
+            "parameters": lpuos_parameters,
+            "special_regimes": special_regimes,
         },
         "buildings": results.get("__buildings__") or [],
         "terrain": results.get("__terrain__") or {
@@ -1291,9 +1667,9 @@ def build_context(lat: float, lng: float, parcel_geometry: dict, parcel: dict) -
         },
         "utilities": load_utility_context(),
         "fiscal": {
-            "pgv": resolve_pgv(parcel),
-            "iptu": resolve_iptu_cadastre(parcel),
-            "itbi": resolve_itbi_history(parcel),
+            "pgv": pgv,
+            "iptu": iptu,
+            "itbi": itbi,
         },
         "query_errors": errors,
         "queried_at": utc_now(),
@@ -1376,552 +1752,4 @@ def actual_values_for_section(
             {
                 "label": "Ano construção · IPTU",
                 "value": ((context.get("fiscal") or {}).get("iptu") or {}).get("latest", {}).get("corrected_construction_year"),
-            },
-        ]
-        return values
-
-    if section_id == "identity_location":
-        iptu = ((context.get("fiscal") or {}).get("iptu") or {}).get("latest") or {}
-        terrain = context.get("terrain") or {}
-        values = [
-            {"label": "SQL", "value": p.get("sql_reference")},
-            {"label": "CIB", "value": p.get("cib")},
-            {"label": "Situação CIB", "value": p.get("cib_status")},
-            {"label": "Situação cartográfica do lote", "value": p.get("parcel_status")},
-            {"label": "Setor", "value": p.get("fiscal_sector")},
-            {"label": "Quadra", "value": p.get("fiscal_block")},
-            {"label": "Lote", "value": p.get("fiscal_lot")},
-            {"label": "Endereço", "value": address},
-            {"label": "Complemento GeoSampa", "value": p.get("complement")},
-            {"label": "Bairro · IPTU", "value": iptu.get("neighborhood")},
-            {"label": "CEP · IPTU", "value": iptu.get("cep")},
-            {"label": "Data do cadastramento · IPTU", "value": iptu.get("registration_date")},
-            {"label": "Área terreno · cadastro fiscal", "value": iptu.get("land_area_m2") or p.get("land_area_m2"), "unit": "m²"},
-            {"label": "Área geométrica calculada · lote", "value": terrain.get("parcel_area_geometry_m2"), "unit": "m²"},
-            {"label": "Testada para cálculo · IPTU", "value": iptu.get("frontage_m"), "unit": "m"},
-            {"label": "Frentes/esquinas · IPTU", "value": iptu.get("corner_front_count")},
-            {"label": "Fração ideal · IPTU", "value": iptu.get("ideal_fraction")},
-            {"label": "Condomínio · IPTU", "value": iptu.get("condominium")},
-        ]
-        cadastral_area = iptu.get("land_area_m2") or p.get("land_area_m2")
-        geometry_area = terrain.get("parcel_area_geometry_m2")
-        if isinstance(cadastral_area, (int, float)) and isinstance(geometry_area, (int, float)):
-            values.append({
-                "label": "Divergência área GIS x cadastro",
-                "value": round(geometry_area - cadastral_area, 2),
-                "unit": "m²",
-            })
-            if cadastral_area:
-                values.append({
-                    "label": "Divergência relativa área GIS x cadastro",
-                    "value": round((geometry_area - cadastral_area) / cadastral_area * 100, 2),
-                    "unit": "%",
-                })
-        return values
-
-    if section_id == "building_existing":
-        buildings = context.get("buildings") or []
-        iptu = ((context.get("fiscal") or {}).get("iptu") or {}).get("latest") or {}
-        heights = [
-            item.get("properties", {}).get("qt_altura_edificacao")
-            for item in buildings
-            if isinstance(
-                item.get("properties", {}).get("qt_altura_edificacao"),
-                (int, float),
-            )
-        ]
-        updates = [
-            item.get("properties", {}).get("dt_atualizacao")
-            for item in buildings
-            if item.get("properties", {}).get("dt_atualizacao")
-        ]
-        return [
-            {"label": "Área construída fiscal", "value": iptu.get("built_area_m2") or p.get("built_area_m2"), "unit": "m²"},
-            {"label": "Área ocupada · IPTU", "value": iptu.get("occupied_area_m2"), "unit": "m²"},
-            {"label": "Pavimentos · IPTU", "value": iptu.get("floors")},
-            {"label": "Ano construção corrigido · IPTU", "value": iptu.get("corrected_construction_year")},
-            {"label": "Uso cadastral · IPTU", "value": iptu.get("use_description") or p.get("use_description")},
-            {"label": "Padrão construtivo · IPTU", "value": iptu.get("construction_pattern")},
-            {"label": "Tipo de terreno · IPTU", "value": iptu.get("terrain_type")},
-            {"label": "Fator de obsolescência · IPTU", "value": iptu.get("obsolescence_factor")},
-            {"label": "Tipo de lote · GeoSampa", "value": p.get("parcel_type")},
-            {"label": "Situação do lote · GeoSampa", "value": p.get("parcel_status")},
-            {"label": "Footprints cartográficos no lote", "value": len(buildings)},
-            {
-                "label": "Maior altura cartográfica entre footprints intersectantes",
-                "value": round(max(heights), 2) if heights else None,
-                "unit": "m",
-            },
-            {
-                "label": "Atualização mais recente do footprint",
-                "value": max(updates) if updates else None,
-            },
-            {
-                "label": "Ressalva temporal",
-                "value": (
-                    "Edificações 2D são cartografia histórica. Footprints são "
-                    "mostrados por interseção espacial e não equivalem "
-                    "automaticamente à geometria predial atual/licenciada nem "
-                    "à área construída fiscal."
-                ),
-            },
-        ]
-
-    if section_id == "planning_buildability":
-        law_no = zoning.get("cd_numero_legislacao_zoneamento")
-        law_year = zoning.get("an_legislacao_zoneamento")
-        law = f"Lei {int(law_no):,}/{int(law_year)}".replace(",", ".") if law_no and law_year else None
-        return [
-            {"label": "Zona vigente", "value": zoning.get("cd_zoneamento_perimetro")},
-            {"label": "Descrição da zona", "value": zoning.get("tx_zoneamento_perimetro")},
-            {"label": "Base legal", "value": law},
-            {"label": "Atualização da camada", "value": zoning.get("dt_atualizacao")},
-            {"label": "Macroárea", "value": macroarea.get("nm_macroarea")},
-            {"label": "Sigla da macroárea", "value": macroarea.get("sg_macroarea")},
-            {
-                "label": "Macrozona",
-                "value": macrozone.get("tx_macro_divisao_pde")
-                or macrozone.get("nm_perimetro_divisao_pde"),
-            },
-        ]
-
-    if section_id == "fiscal_market":
-        fiscal = context.get("fiscal") or {}
-        pgv = fiscal.get("pgv") or {}
-        itbi = fiscal.get("itbi") or {}
-        values = []
-        iptu_data = fiscal.get("iptu") or {}
-        iptu = iptu_data.get("latest") or {}
-        if iptu:
-            values.extend([
-                {"label": "Cadastro IPTU 2026", "value": "Encontrado no bulk público IPTU_INTER"},
-                {"label": "Valor unitário terreno · IPTU", "value": iptu.get("land_unit_value_brl_m2"), "unit": "BRL/m²"},
-                {"label": "Valor unitário construção · IPTU", "value": iptu.get("construction_unit_value_brl_m2"), "unit": "BRL/m²"},
-                {"label": "Área terreno · IPTU", "value": iptu.get("land_area_m2"), "unit": "m²"},
-                {"label": "Área construída · IPTU", "value": iptu.get("built_area_m2"), "unit": "m²"},
-                {"label": "Área ocupada · IPTU", "value": iptu.get("occupied_area_m2"), "unit": "m²"},
-                {"label": "Testada · IPTU", "value": iptu.get("frontage_m"), "unit": "m"},
-                {"label": "Pavimentos · IPTU", "value": iptu.get("floors")},
-                {"label": "Ano construção corrigido · IPTU", "value": iptu.get("corrected_construction_year")},
-                {"label": "Padrão construtivo · IPTU", "value": iptu.get("construction_pattern")},
-                {"label": "Fator de obsolescência · IPTU", "value": iptu.get("obsolescence_factor")},
-                {"label": "Observação IPTU", "value": iptu_data.get("interpretation")},
-            ])
-        else:
-            values.append({"label": "Cadastro IPTU", "value": "SQL não localizado no índice fiscal materializado."})
-
-        if pgv.get("found"):
-            values.extend([
-                {
-                    "label": "PGV 2026 · valor unitário de terreno",
-                    "value": pgv.get("vm2t_brl_per_m2"),
-                    "unit": "BRL/m²",
-                },
-                {
-                    "label": "Chave PGV · Codlog / SQ",
-                    "value": f"{pgv.get('codlog')} / {pgv.get('sq')}",
-                },
-                {"label": "Base legal PGV", "value": pgv.get("law")},
-                {"label": "Vigência PGV", "value": pgv.get("effective_from")},
-            ])
-        else:
-            values.append({
-                "label": "PGV 2026",
-                "value": "Valor unitário não localizado para a chave cadastral do lote.",
-            })
-
-        txs = itbi.get("transactions") or []
-        coverage_years = itbi.get("coverage_years") or []
-        if coverage_years:
-            coverage_label = (
-                f"{min(coverage_years)}–{max(coverage_years)}"
-                if len(coverage_years) > 1
-                else str(coverage_years[0])
-            )
-        else:
-            coverage_label = "sem índice"
-        values.append({
-            "label": f"DTIs/ITBI encontradas · {coverage_label}",
-            "value": itbi.get("count", 0),
-        })
-        if not txs:
-            values.append({
-                "label": "Histórico ITBI",
-                "value": (
-                    "Nenhuma DTI paga encontrada para este SQL no índice "
-                    f"público materializado de {coverage_label}."
-                ),
-            })
-        for idx, tx in enumerate(txs[:5], start=1):
-            prefix = f"ITBI #{idx}"
-            values.extend([
-                {"label": f"{prefix} · data da transação", "value": tx.get("transaction_date")},
-                {"label": f"{prefix} · natureza", "value": tx.get("transaction_nature")},
-                {"label": f"{prefix} · valor declarado", "value": tx.get("transaction_value"), "unit": "BRL"},
-                {"label": f"{prefix} · VVR", "value": tx.get("vvr"), "unit": "BRL"},
-                {"label": f"{prefix} · base de cálculo", "value": tx.get("tax_base"), "unit": "BRL"},
-                {"label": f"{prefix} · proporção transmitida", "value": tx.get("transmitted_pct"), "unit": "%"},
-                {"label": f"{prefix} · financiamento", "value": tx.get("financing_type")},
-                {"label": f"{prefix} · valor financiado", "value": tx.get("financed_value"), "unit": "BRL"},
-                {"label": f"{prefix} · cartório", "value": tx.get("registry_office")},
-                {"label": f"{prefix} · matrícula", "value": tx.get("registry_number")},
-            ])
-
-        if txs:
-            latest = txs[0]
-            values.extend([
-                {"label": "Situação do SQL · snapshot IPTU/DTI mais recente", "value": latest.get("sql_status")},
-                {"label": "Testada · snapshot IPTU/DTI", "value": latest.get("frontage_m"), "unit": "m"},
-                {"label": "Fração ideal · snapshot IPTU/DTI", "value": latest.get("ideal_fraction")},
-                {"label": "Área terreno · snapshot IPTU/DTI", "value": latest.get("land_area_m2"), "unit": "m²"},
-                {"label": "Área construída · snapshot IPTU/DTI", "value": latest.get("built_area_m2"), "unit": "m²"},
-                {"label": "Uso IPTU · snapshot DTI", "value": latest.get("use_description")},
-                {"label": "Padrão IPTU · snapshot DTI", "value": latest.get("pattern_description")},
-                {"label": "ACC / ano construção · snapshot DTI", "value": latest.get("construction_year")},
-            ])
-
-        values.extend([
-            {"label": "Interpretação ITBI", "value": itbi.get("interpretation")},
-            {"label": "Privacidade", "value": itbi.get("privacy")},
-        ])
-        return values
-
-    if section_id == "licensing_history":
-        licensing = context.get("licensing") or {}
-        values = []
-        exact = licensing.get("housing_permits_exact_sql") or []
-        for item in exact:
-            props = item.get("properties") or {}
-            values.extend([
-                {"label": "Alvará HIS/HMP · assunto", "value": props.get("tx_assunto_alvara")},
-                {"label": "Processo de execução", "value": props.get("cd_numero_processo_execucao")},
-                {"label": "Documento", "value": props.get("cd_numero_documento_execucao")},
-                {"label": "Data de deferimento", "value": props.get("dt_deferimento_execucao")},
-                {"label": "Área construída licenciada", "value": props.get("qt_area_construida_total"), "unit": "m²"},
-                {"label": "Unidades HIS", "value": props.get("qt_unidade_his")},
-                {"label": "Unidades HMP", "value": props.get("qt_unidade_hmp")},
-            ])
-        impact = licensing.get("impact_spatial_incidence") or []
-        for item in impact:
-            props = item.get("properties") or {}
-            values.extend([
-                {"label": "Incidência espacial · processo EIV/impacto", "value": props.get("cd_processo_administrativo")},
-                {"label": "Status publicado", "value": props.get("st_licenca_empreendimento")},
-                {"label": "Categoria", "value": props.get("tx_categoria_ocupacao")},
-                {"label": "Publicação", "value": props.get("dt_publicacao_doc")},
-            ])
-        environmental = licensing.get("environment_spatial_incidence") or []
-        for item in environmental:
-            props = item.get("properties") or {}
-            values.extend([
-                {"label": "Incidência espacial · licença ambiental", "value": props.get("cd_numero_licenca_expedida") or props.get("cd_licenca_ambiental_expedida")},
-                {"label": "Descrição publicada", "value": props.get("nm_descricao_licenca")},
-                {"label": "Processo ambiental", "value": props.get("cd_processo_administrativo_licenca")},
-                {"label": "Expedição", "value": props.get("dt_expedicao_licenca")},
-                {"label": "Validade publicada", "value": props.get("dt_validade_licenca_expedida")},
-                {"label": "Tipo de estudo", "value": props.get("tp_estudo_licenca")},
-            ])
-        if not exact:
-            values.append({
-                "label": "Alvará HIS/HMP por SQL",
-                "value": "Nenhum registro exato encontrado na camada pública consultada.",
-            })
-        values.append({
-            "label": "Limite da consulta",
-            "value": licensing.get("interpretation"),
-        })
-        return values
-
-    if section_id == "infrastructure_utilities":
-        labels = {
-            "electricity": "Energia elétrica",
-            "gas": "Gás canalizado",
-            "water_sewer": "Água e esgoto",
-            "telecom": "Telecom",
-            "drainage": "Drenagem",
-        }
-        values = []
-        utilities = context.get("utilities") or {}
-        for service_type in [
-            "electricity", "gas", "water_sewer", "telecom", "drainage"
-        ]:
-            for entry in utilities.get(service_type) or []:
-                provider = entry.get("provider_authority") or entry.get("provider_source_id")
-                evidence = entry.get("evidence_level")
-                values.append({
-                    "label": f"{labels[service_type]} · referência",
-                    "value": provider,
-                })
-                values.append({
-                    "label": f"{labels[service_type]} · evidência",
-                    "value": evidence,
-                })
-        values.append({
-            "label": "Limite de interpretação",
-            "value": (
-                "Prestador/território ou contexto de rede não comprovam "
-                "ligação, disponibilidade ou capacidade técnica no lote."
-            ),
-        })
-        return values
-
-    if section_id == "terrain_visual":
-        terrain = context.get("terrain") or {}
-        if not terrain.get("available"):
-            return [{
-                "label": "MDT/LiDAR 2020",
-                "value": "Análise altimétrica não disponível para este lote nesta consulta.",
-            }]
-        tile = terrain.get("tile") or {}
-        profiles = terrain.get("profiles") or []
-        values = [
-            {"label": "Folha MDT 2020", "value": tile.get("code")},
-            {"label": "Levantamento", "value": tile.get("survey")},
-            {"label": "Datum vertical", "value": terrain.get("vertical_datum")},
-            {"label": "Cota mínima derivada", "value": terrain.get("min_elevation_m"), "unit": "m"},
-            {"label": "Cota máxima derivada", "value": terrain.get("max_elevation_m"), "unit": "m"},
-            {"label": "Cota média derivada", "value": terrain.get("mean_elevation_m"), "unit": "m"},
-            {"label": "Amplitude altimétrica derivada", "value": terrain.get("amplitude_m"), "unit": "m"},
-            {"label": "Qualidade da interpolação", "value": terrain.get("quality")},
-            {"label": "Distância P90 ao retorno de solo", "value": terrain.get("nearest_ground_point_p90_m"), "unit": "m"},
-        ]
-        for profile in profiles:
-            name = profile.get("name")
-            values.extend([
-                {"label": f"Corte {name} · comprimento", "value": profile.get("length_m"), "unit": "m"},
-                {"label": f"Corte {name} · rumo", "value": profile.get("bearing_deg"), "unit": "°"},
-                {"label": f"Corte {name} · desnível início→fim", "value": profile.get("delta_elevation_m"), "unit": "m"},
-                {"label": f"Corte {name} · inclinação média", "value": profile.get("average_slope_pct"), "unit": "%"},
-            ])
-        values.append({"label": "Limite topográfico", "value": terrain.get("caveat")})
-        return values
-
-    if section_id == "registry_due_diligence":
-        itbi = (context.get("fiscal") or {}).get("itbi") or {}
-        refs = itbi.get("registry_references") or []
-        registry_years = itbi.get("coverage_years") or []
-        registry_coverage_label = (
-            f"{min(registry_years)}–{max(registry_years)}"
-            if len(registry_years) > 1
-            else (str(registry_years[0]) if registry_years else "sem índice")
-        )
-        values = []
-        for idx, ref in enumerate(refs[:8], start=1):
-            values.extend([
-                {
-                    "label": f"Referência registral pública #{idx} · cartório",
-                    "value": ref.get("registry_office"),
-                },
-                {
-                    "label": f"Referência registral pública #{idx} · matrícula",
-                    "value": ref.get("registry_number"),
-                },
-                {
-                    "label": f"Referência registral pública #{idx} · transação mais recente",
-                    "value": ref.get("transaction_date"),
-                },
-                {
-                    "label": f"Referência registral pública #{idx} · ocorrências DTI",
-                    "value": ref.get("occurrence_count"),
-                },
-            ])
-        if not refs:
-            values.append({
-                "label": "Referência matrícula/cartório via ITBI",
-                "value": (
-                    "Nenhuma referência encontrada para este SQL no índice "
-                    f"ITBI público de {registry_coverage_label}."
-                ),
-            })
-        values.append({
-            "label": "Titular / proprietário atual",
-            "value": (
-                "Não publicado na ficha pública. Obter somente por certidão/"
-                "matrícula atualizada ou documento fornecido pelo usuário em "
-                "fluxo privado/autorizado."
-            ),
-        })
-        values.append({
-            "label": "Limite registral",
-            "value": (
-                "A matrícula informada em DTI é uma referência histórica "
-                "pública. Certidão/matrícula atualizada, titularidade, ônus e "
-                "averbações permanecem no fluxo privado sob demanda."
-            ),
-        })
-        return values
-
-    if section_id == "environment_risk_heritage":
-        values = []
-        for item in risk.get("geological") or []:
-            props = item.get("properties") or {}
-            values.extend([
-                {"label": "Risco geológico", "value": props.get("tx_grau_de_risco_geologico")},
-                {"label": "Processo geológico", "value": props.get("tx_tipo_processo_geologico")},
-                {"label": "Data de vistoria (risco geo.)", "value": props.get("dt_vistoria")},
-            ])
-        for item in risk.get("hydrological") or []:
-            props = item.get("properties") or {}
-            values.extend([
-                {"label": "Risco hidrológico", "value": props.get("tx_grau_risco_hidrologico")},
-                {"label": "Processo hidrológico", "value": props.get("tx_tipo_processo")},
-                {"label": "Bacia hidrográfica", "value": props.get("nm_bacia_hidrografica")},
-            ])
-        for item in heritage.get("assets") or []:
-            props = item.get("properties") or {}
-            values.extend([
-                {"label": "Bem tombado", "value": props.get("nm_area_tombada")},
-                {"label": "Situação do tombamento", "value": props.get("tx_situacao_tombamento")},
-                {"label": "ZEPEC", "value": props.get("tx_zepec")},
-            ])
-        for authority, items in (heritage.get("buffers") or {}).items():
-            for item in items:
-                props = item.get("properties") or {}
-                values.append({
-                    "label": f"Área envoltória {authority}",
-                    "value": props.get("nm_area") or "Incidência identificada",
-                })
-        if not values:
-            values.append({
-                "label": "Triagem espacial",
-                "value": "Sem incidência nas camadas consultadas neste ponto",
-            })
-        return values
-
-    return []
-
-
-def build_report(parcel: dict, context: dict) -> dict:
-    spec, rows = load_report_contract()
-    sections = []
-    for section in sorted(spec["sections"], key=lambda item: item["order"]):
-        field_states = []
-        for field in section.get("source_matrix_fields", []):
-            row = rows.get(field)
-            if not row:
-                continue
-            field_states.append({
-                "field": field,
-                "label": FIELD_LABELS.get(field, field),
-                "status": row.get("status"),
-                "source_id": row.get("source_id"),
-                "connector_status": row.get("connector_status"),
-                "access_class": row.get("access_class"),
-                "missing_fields": row.get("missing_fields") or [],
-            })
-        values = [
-            item for item in actual_values_for_section(section["id"], parcel, context)
-            if item.get("value") not in (None, "")
-        ]
-        sections.append({
-            "id": section["id"],
-            "title": section["title"],
-            "order": section["order"],
-            "section_type": section.get("section_type"),
-            "actual_values": values,
-            "fields": field_states,
-        })
-    return {
-        "title": spec["title"],
-        "target_completion_level": spec["target_completion_level"],
-        "principle": spec["principle"],
-        "mode": "PUBLIC_PROPERTY_REPORT",
-        "sections": sections,
-    }
-
-
-class Handler(BaseHTTPRequestHandler):
-    server_version = "LoteDiretorParcelAPI/0.1"
-
-    def log_message(self, fmt, *args):
-        print(f"{self.address_string()} - {fmt % args}", flush=True)
-
-    def send_json(self, status: int, payload: dict):
-        body = json.dumps(payload, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
-        self.send_response(status)
-        self.send_header("Content-Type", "application/json; charset=utf-8")
-        self.send_header("Content-Length", str(len(body)))
-        self.send_header("Cache-Control", "no-store")
-        self.send_header("X-Content-Type-Options", "nosniff")
-        self.end_headers()
-        self.wfile.write(body)
-
-    def do_GET(self):
-        parsed = urllib.parse.urlsplit(self.path)
-        if parsed.path == "/healthz":
-            return self.send_json(200, {"ok": True, "service": "parcel-click"})
-
-        params = urllib.parse.parse_qs(parsed.query)
-
-        if parsed.path == "/v1/sp/search":
-            query_text = params.get("q", [""])[0]
-            try:
-                matches = search_parcel(query_text)
-            except ValueError as exc:
-                return self.send_json(400, {"error": str(exc)})
-            except Exception as exc:
-                print(f"search upstream error: {exc!r}", flush=True)
-                return self.send_json(502, {"error": "upstream_unavailable"})
-            return self.send_json(200, {
-                "query": query_text,
-                "count": len(matches),
-                "matches": matches,
-                "source": {
-                    "id": "sp-sao-paulo-geosampa-wfs",
-                    "layer": TYPE_NAME,
-                    "authority": "Prefeitura de São Paulo / GeoSampa",
-                },
-            })
-
-        if parsed.path != "/v1/sp/parcel":
-            return self.send_json(404, {"error": "not_found"})
-
-        try:
-            lat = float(params.get("lat", [""])[0])
-            lng = float(params.get("lng", [""])[0])
-        except ValueError:
-            return self.send_json(400, {"error": "invalid_coordinates"})
-
-        if not (math.isfinite(lat) and math.isfinite(lng)):
-            return self.send_json(400, {"error": "invalid_coordinates"})
-
-        min_lng, min_lat, max_lng, max_lat = SP_BOUNDS
-        if not (min_lat <= lat <= max_lat and min_lng <= lng <= max_lng):
-            return self.send_json(400, {"error": "outside_sao_paulo_demo_bounds"})
-
-        try:
-            collection = fetch_candidates(lat, lng)
-            features = collection.get("features") or []
-            selected = next((f for f in features if contains_point(f, lng, lat)), None)
-            if selected is None:
-                return self.send_json(404, {
-                    "error": "parcel_not_found",
-                    "candidate_count": len(features),
-                    "source": "GeoSampa lote_cidadao",
-                })
-            parcel = public_feature(selected)
-            context = build_context(lat, lng, parcel["geometry"], parcel)
-            return self.send_json(200, {
-                "found": True,
-                "clicked": {"lat": lat, "lng": lng},
-                "feature": parcel,
-                "context": context,
-                "source": {
-                    "id": "sp-sao-paulo-geosampa-wfs",
-                    "authority": "Prefeitura de São Paulo / GeoSampa",
-                    "layer": TYPE_NAME,
-                    "license": "CC BY-SA 4.0",
-                    "queried_at": utc_now(),
-                    "method": "WFS 2.0 bbox candidate query + server-side point-in-polygon",
-                },
-                "report": build_report(parcel, context),
-            })
-        except Exception as exc:
-            print(f"upstream error: {exc!r}", flush=True)
-            return self.send_json(502, {"error": "upstream_unavailable"})
-
-
-if __name__ == "__main__":
-    server = ThreadingHTTPServer((HOST, PORT), Handler)
-    print(f"LoteDiretor parcel API listening on http://{HOST}:{PORT}", flush=True)
-    server.serve_forever()
+          
