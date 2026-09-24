@@ -196,12 +196,42 @@ const spHeritageWms=L.tileLayer.wms("https://wms.geosampa.prefeitura.sp.gov.br/g
   attribution:"Patrimônio cultural · Prefeitura de São Paulo · GeoSampa"
 }).setZIndex(370);
 
+const spHillshadeWms=L.tileLayer.wms("https://wms.geosampa.prefeitura.sp.gov.br/geoserver/geoportal/wms",{
+  layers:"Hillshade_MDC_2004",
+  format:"image/png",
+  transparent:true,
+  version:"1.1.1",
+  opacity:.52,
+  attribution:"Hillshade MDC 2004 · Prefeitura de São Paulo · GeoSampa"
+}).setZIndex(340);
+
+const spSlopeWms=L.tileLayer.wms("https://wms.geosampa.prefeitura.sp.gov.br/geoserver/geoportal/wms",{
+  layers:"declividade",
+  format:"image/png",
+  transparent:true,
+  version:"1.1.1",
+  opacity:.48,
+  attribution:"Declividade · Prefeitura de São Paulo · GeoSampa"
+}).setZIndex(341);
+
+const spOrthoIndex2020Wms=L.tileLayer.wms("https://wms.geosampa.prefeitura.sp.gov.br/geoserver/geoportal/wms",{
+  layers:"Articulacao_Orto_2020",
+  format:"image/png",
+  transparent:true,
+  version:"1.1.1",
+  opacity:.55,
+  attribution:"Índice de ortofotos 2020 · Prefeitura de São Paulo · GeoSampa"
+}).setZIndex(342);
+
 L.control.layers(null,{
   "Lotes fiscais · GeoSampa":spParcelWms,
   "Zoneamento vigente · Lei 18.177/2024":spZoningWms,
   "Risco geológico":spGeoRiskWms,
   "Risco hidrológico":spHydroRiskWms,
-  "Patrimônio · tombamento/envoltória":spHeritageWms
+  "Patrimônio · tombamento/envoltória":spHeritageWms,
+  "Hillshade histórico · MDC 2004":spHillshadeWms,
+  "Declividade · GeoSampa":spSlopeWms,
+  "Índice das ortofotos 2020":spOrthoIndex2020Wms
 },{collapsed:true,position:"topright"}).addTo(map);
 
 const markers=[];
@@ -228,6 +258,9 @@ function applyCity(idx,fly=true){
     if(map.hasLayer(spGeoRiskWms))map.removeLayer(spGeoRiskWms);
     if(map.hasLayer(spHydroRiskWms))map.removeLayer(spHydroRiskWms);
     if(map.hasLayer(spHeritageWms))map.removeLayer(spHeritageWms);
+    if(map.hasLayer(spHillshadeWms))map.removeLayer(spHillshadeWms);
+    if(map.hasLayer(spSlopeWms))map.removeLayer(spSlopeWms);
+    if(map.hasLayer(spOrthoIndex2020Wms))map.removeLayer(spOrthoIndex2020Wms);
   }
   document.getElementById("cityName").textContent=`${c.name} · ${c.uf}`;
   document.getElementById("ibge").textContent=`IBGE ${c.ibge}`;
