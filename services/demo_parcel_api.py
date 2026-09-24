@@ -733,7 +733,7 @@ def resolve_itbi_history(parcel: dict, limit: int = 12) -> dict:
             "reason": "itbi_index_not_materialized",
         }
 
-    uri = f"file:{ITBI_DB_PATH}?mode=ro"
+    uri = f"file:{ITBI_DB_PATH}?mode=ro&immutable=1"
     db = sqlite3.connect(uri, uri=True, timeout=3)
     db.row_factory = sqlite3.Row
     try:
