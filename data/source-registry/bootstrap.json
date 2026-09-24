@@ -677,7 +677,19 @@
       "discovery_url": "https://acervofundiario.incra.gov.br/acervo/login.php",
       "access_class": "AUTHENTICATED_PUBLIC",
       "verification_status": "VERIFIED",
-      "notes": "Acervo Fundiário exige autenticação gov.br, mas o serviço oficial afirma que os dados são livres e inclui áreas certificadas SIGEF/SNCI, assentamentos e territórios quilombolas, com download e WMS/WFS. Não contornar autenticação."
+      "notes": "Acervo/GeoNode oficial. A página de desenvolvedores documenta WMS/WFS/WCS/CSW/OpenSearch/OAI-PMH/WMTS; o catálogo pode ser descoberto por metadados antes de baixar. Serviços/consultas que exigirem gov.br continuam sem bypass. Não tratar parcela/assentamento como prova isolada de titularidade.",
+      "geonode_url": "https://geoportal.incra.gov.br/",
+      "developer_url": "https://geoportal.incra.gov.br/developer/",
+      "csw_url": "https://geonodeincra.serpro.gov.br/catalogue/csw",
+      "technical_services": [
+        "WMS",
+        "WFS",
+        "WCS",
+        "CSW",
+        "OpenSearch",
+        "OAI-PMH",
+        "WMTS"
+      ]
     },
     {
       "id": "br-incra-sigef",
