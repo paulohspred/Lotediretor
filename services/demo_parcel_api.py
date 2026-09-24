@@ -7,16 +7,27 @@ allowlist. It never requests owner/person fields.
 """
 from __future__ import annotations
 
+import hashlib
+import io
 import json
 import math
 import re
 import sqlite3
 import urllib.parse
 import urllib.request
+import zipfile
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timezone
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
+
+import laspy
+import numpy as np
+from pyproj import Transformer
+from scipy.interpolate import LinearNDInterpolator
+from scipy.spatial import cKDTree
+from shapely.geometry import LineString, Point, shape
+from shapely.ops import transform as shapely_transform
 
 HOST = "127.0.0.1"
 PORT = 8765
@@ -61,6 +72,9 @@ UTILITY_RESOLVER_PATH = ROOT / "data/utilities/municipality-provider-resolver.js
 SOURCE_REGISTRY_PATH = ROOT / "data/source-registry/bootstrap.json"
 PGV_INDEX_PATH = Path("/srv/lotediretor/data/pgv2026/pgv-terrain-values-2026.json")
 ITBI_DB_PATH = Path("/srv/lotediretor/data/itbi-public/itbi-transactions.sqlite3")
+TERRAIN_CACHE_DIR = Path("/var/cache/lotediretor/terrain/mdt2020")
+TERRAIN_DOWNLOAD = "https://download.geosampa.prefeitura.sp.gov.br/PaginasPublicas/downloadArquivo.aspx"
+_TERRAIN_RESULT_CACHE = {}
 _PGV_INDEX_CACHE = None
 
 FIELD_LABELS = {
@@ -94,6 +108,20 @@ BUILDING_LAYER = {
 }
 
 THEMATIC_LAYERS = {
+    "terrain_tile": {
+        "type_name": "geoportal:quadricula_folha_mdt_mds_2020",
+        "geometry": "ge_poligono",
+        "fields": [
+            "cd_identificador",
+            "cd_levantamento",
+            "cd_quadricula",
+            "an_levantamento",
+            "tx_situacao_quadricula",
+            "tx_levantamento",
+            "cd_escala_quadricula",
+            "sg_fonte_original",
+        ],
+    },
     "zoning": {
         "type_name": "geoportal:perimetro_zona_lei_18177_24",
         "geometry": "ge_poligono",
@@ -610,6 +638,294 @@ def fetch_housing_permits(sql: str | None) -> list[dict]:
     return output
 
 
+def terrain_file_sha256(path: Path) -> str:
+    h = hashlib.sha256()
+    with path.open("rb") as fh:
+        for chunk in iter(lambda: fh.read(1024 * 1024), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+
+def ensure_mdt_2020_tile(tile_code: str) -> dict:
+    if not re.fullmatch(r"\d{4}-\d{3}", tile_code or ""):
+        raise ValueError("invalid_mdt_tile_code")
+
+    TERRAIN_CACHE_DIR.mkdir(parents=True, exist_ok=True)
+    laz_path = TERRAIN_CACHE_DIR / f"MDT_{tile_code}_1000.laz"
+    manifest_path = TERRAIN_CACHE_DIR / f"{tile_code}.json"
+
+    if laz_path.exists() and manifest_path.exists():
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        if manifest.get("laz_sha256") == terrain_file_sha256(laz_path):
+            return manifest
+
+    archive_name = f"{tile_code}.zip"
+    params = {
+        "orig": "DownloadMapaArticulacao",
+        "arq": f"MDT_2020\\{archive_name}",
+        "arqTipo": "MAPA_ARTICULACAO",
+    }
+    url = TERRAIN_DOWNLOAD + "?" + urllib.parse.urlencode(params)
+    request = urllib.request.Request(
+        url,
+        headers={
+            "User-Agent": "Mozilla/5.0 LoteDiretor/0.1 (+https://lotediretor.com)",
+            "Referer": "https://download.geosampa.prefeitura.sp.gov.br/PaginasPublicas/_SBC.aspx",
+            "Accept": "application/zip,application/octet-stream,*/*",
+        },
+    )
+    with urllib.request.urlopen(request, timeout=45) as response:
+        raw = response.read(80 * 1024 * 1024 + 1)
+        final_url = response.geturl()
+    if len(raw) > 80 * 1024 * 1024:
+        raise RuntimeError("MDT archive exceeded safety limit")
+    if not raw.startswith(b"PK"):
+        raise RuntimeError("GeoSampa MDT endpoint did not return ZIP")
+
+    archive_sha = hashlib.sha256(raw).hexdigest()
+    expected = f"MDT_{tile_code}_1000.laz"
+    with zipfile.ZipFile(io.BytesIO(raw)) as archive:
+        names = archive.namelist()
+        if expected not in names:
+            raise RuntimeError(f"expected {expected} not found in MDT archive")
+        info = archive.getinfo(expected)
+        if info.file_size > 150 * 1024 * 1024:
+            raise RuntimeError("MDT LAZ exceeded safety limit")
+        with archive.open(info) as source, laz_path.open("wb") as target:
+            while True:
+                chunk = source.read(1024 * 1024)
+                if not chunk:
+                    break
+                target.write(chunk)
+
+    laz_sha = terrain_file_sha256(laz_path)
+    manifest = {
+        "tile": tile_code,
+        "year": 2020,
+        "source_id": "sp-sao-paulo-lidar-terrain",
+        "source_url": url,
+        "final_url": final_url,
+        "zip_sha256": archive_sha,
+        "laz_sha256": laz_sha,
+        "laz_file": laz_path.name,
+        "captured_at": utc_now(),
+    }
+    tmp = manifest_path.with_suffix(".json.tmp")
+    tmp.write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    tmp.replace(manifest_path)
+    return manifest
+
+
+def parcel_axis_line(parcel_utm, direction: np.ndarray) -> LineString:
+    center = np.array([parcel_utm.centroid.x, parcel_utm.centroid.y], dtype=float)
+    length = max(
+        parcel_utm.bounds[2] - parcel_utm.bounds[0],
+        parcel_utm.bounds[3] - parcel_utm.bounds[1],
+        20.0,
+    ) * 4
+    segment = LineString([
+        center - direction * length,
+        center + direction * length,
+    ])
+    clipped = parcel_utm.intersection(segment)
+    if clipped.geom_type == "MultiLineString":
+        clipped = max(clipped.geoms, key=lambda geom: geom.length)
+    if clipped.geom_type != "LineString":
+        raise RuntimeError("unable to derive parcel profile axis")
+    return clipped
+
+
+def analyze_mdt_for_parcel(parcel_geometry: dict, laz_path: Path) -> dict:
+    parcel_wgs84 = shape(parcel_geometry)
+    transformer = Transformer.from_crs(4326, 31983, always_xy=True)
+    parcel = shapely_transform(transformer.transform, parcel_wgs84)
+
+    las = laspy.read(str(laz_path))
+    x = np.asarray(las.x)
+    y = np.asarray(las.y)
+    z = np.asarray(las.z)
+    if len(z) < 100:
+        raise RuntimeError("MDT tile contains too few points")
+
+    local_area = parcel.buffer(30)
+    minx, miny, maxx, maxy = local_area.bounds
+    mask = (x >= minx) & (x <= maxx) & (y >= miny) & (y <= maxy)
+    local_x = x[mask]
+    local_y = y[mask]
+    local_z = z[mask]
+    if len(local_z) < 80:
+        raise RuntimeError("insufficient local MDT points")
+
+    local_points = np.column_stack((local_x, local_y))
+    inside_buffer = np.array([
+        local_area.contains(Point(float(px), float(py)))
+        for px, py in local_points
+    ])
+    local_points = local_points[inside_buffer]
+    local_z = local_z[inside_buffer]
+    if len(local_z) < 80:
+        raise RuntimeError("insufficient local MDT points after clipping")
+
+    interpolator = LinearNDInterpolator(local_points, local_z, fill_value=np.nan)
+    tree = cKDTree(local_points)
+
+    rectangle = parcel.minimum_rotated_rectangle
+    rect = list(rectangle.exterior.coords)[:-1]
+    edges = []
+    for index in range(4):
+        start = np.array(rect[index], dtype=float)
+        end = np.array(rect[(index + 1) % 4], dtype=float)
+        edges.append((float(np.linalg.norm(end - start)), start, end))
+    edges.sort(key=lambda item: item[0], reverse=True)
+    direction_a = edges[0][2] - edges[0][1]
+    direction_a = direction_a / np.linalg.norm(direction_a)
+    direction_b = np.array([-direction_a[1], direction_a[0]])
+
+    def profile(name: str, line: LineString) -> dict:
+        count = 61
+        distances = np.linspace(0, line.length, count)
+        coordinates = np.array([
+            [line.interpolate(float(distance)).x, line.interpolate(float(distance)).y]
+            for distance in distances
+        ])
+        elevations = np.asarray(
+            interpolator(coordinates[:, 0], coordinates[:, 1]),
+            dtype=float,
+        )
+        nearest_distances, _ = tree.query(coordinates, k=1)
+        if not np.all(np.isfinite(elevations)):
+            raise RuntimeError(f"{name} profile extends outside MDT interpolation hull")
+        start_z = float(elevations[0])
+        end_z = float(elevations[-1])
+        delta = end_z - start_z
+        bearing = (
+            math.degrees(math.atan2(direction_a[0], direction_a[1])) + 360
+        ) % 180 if name == "A-A" else (
+            math.degrees(math.atan2(direction_b[0], direction_b[1])) + 360
+        ) % 180
+        simplified_indexes = np.linspace(0, count - 1, 31).astype(int)
+        return {
+            "name": name,
+            "length_m": round(float(line.length), 2),
+            "bearing_deg": round(float(bearing), 1),
+            "start_elevation_m": round(start_z, 3),
+            "end_elevation_m": round(end_z, 3),
+            "delta_elevation_m": round(delta, 3),
+            "average_slope_pct": round(delta / float(line.length) * 100, 2),
+            "min_elevation_m": round(float(np.min(elevations)), 3),
+            "max_elevation_m": round(float(np.max(elevations)), 3),
+            "amplitude_m": round(float(np.max(elevations) - np.min(elevations)), 3),
+            "nearest_ground_point_p90_m": round(float(np.percentile(nearest_distances, 90)), 2),
+            "nearest_ground_point_max_m": round(float(np.max(nearest_distances)), 2),
+            "samples": [
+                {
+                    "distance_m": round(float(distances[index]), 2),
+                    "elevation_m": round(float(elevations[index]), 3),
+                    "nearest_ground_point_m": round(float(nearest_distances[index]), 2),
+                }
+                for index in simplified_indexes
+            ],
+        }
+
+    axis_a = parcel_axis_line(parcel, direction_a)
+    axis_b = parcel_axis_line(parcel, direction_b)
+    profile_a = profile("A-A", axis_a)
+    profile_b = profile("B-B", axis_b)
+
+    spacing = 1.0
+    grid_x = np.arange(parcel.bounds[0], parcel.bounds[2] + spacing / 2, spacing)
+    grid_y = np.arange(parcel.bounds[1], parcel.bounds[3] + spacing / 2, spacing)
+    grid = np.array([
+        (gx, gy)
+        for gy in grid_y
+        for gx in grid_x
+        if parcel.contains(Point(float(gx), float(gy)))
+    ])
+    grid_z = np.asarray(interpolator(grid[:, 0], grid[:, 1]), dtype=float)
+    grid_nearest, _ = tree.query(grid, k=1)
+    valid = np.isfinite(grid_z)
+    if not np.any(valid):
+        raise RuntimeError("no valid parcel terrain samples")
+
+    p90 = float(np.percentile(grid_nearest[valid], 90))
+    quality = (
+        "INTERPOLATED_SPARSE_GROUND_RETURNS"
+        if p90 > 10
+        else "INTERPOLATED_FROM_LIDAR_GROUND_POINTS"
+    )
+    return {
+        "available": True,
+        "crs": "EPSG:31983",
+        "horizontal_datum": "SIRGAS 2000",
+        "vertical_datum": "Imbituba / MAPGEO2015",
+        "method": (
+            "GeoSampa MDT 2020 LAZ ground-point TIN interpolation; "
+            "parcel grid 1 m; A-A longest oriented parcel axis; "
+            "B-B perpendicular through centroid."
+        ),
+        "quality": quality,
+        "parcel_area_geometry_m2": round(float(parcel.area), 2),
+        "local_ground_points": int(len(local_z)),
+        "grid_samples": int(np.sum(valid)),
+        "min_elevation_m": round(float(np.min(grid_z[valid])), 3),
+        "max_elevation_m": round(float(np.max(grid_z[valid])), 3),
+        "mean_elevation_m": round(float(np.mean(grid_z[valid])), 3),
+        "amplitude_m": round(float(np.max(grid_z[valid]) - np.min(grid_z[valid])), 3),
+        "nearest_ground_point_median_m": round(float(np.percentile(grid_nearest[valid], 50)), 2),
+        "nearest_ground_point_p90_m": round(p90, 2),
+        "nearest_ground_point_max_m": round(float(np.max(grid_nearest[valid])), 2),
+        "profiles": [profile_a, profile_b],
+        "caveat": (
+            "Produto derivado de MDT LiDAR oficial, não substitui levantamento "
+            "topográfico de campo/RTK/estação total. Em áreas edificadas, o MDT "
+            "pode exigir interpolação entre retornos de solo ao redor da construção."
+        ),
+    }
+
+
+def resolve_terrain_context(lat: float, lng: float, parcel_geometry: dict) -> dict:
+    cache_key = (
+        round(lat, 6),
+        round(lng, 6),
+        json.dumps(parcel_geometry, sort_keys=True, separators=(",", ":")),
+    )
+    cached = _TERRAIN_RESULT_CACHE.get(cache_key)
+    if cached is not None:
+        return cached
+
+    tiles = fetch_point_layer("terrain_tile", lat, lng)
+    if not tiles:
+        result = {
+            "available": False,
+            "reason": "mdt_2020_tile_not_found",
+        }
+        _TERRAIN_RESULT_CACHE[cache_key] = result
+        return result
+
+    props = tiles[0].get("properties") or {}
+    tile_code = props.get("cd_quadricula")
+    manifest = ensure_mdt_2020_tile(tile_code)
+    analysis = analyze_mdt_for_parcel(
+        parcel_geometry,
+        TERRAIN_CACHE_DIR / manifest["laz_file"],
+    )
+    analysis["tile"] = {
+        "code": tile_code,
+        "year": props.get("an_levantamento"),
+        "survey": props.get("tx_levantamento"),
+        "scale": props.get("cd_escala_quadricula"),
+        "source": props.get("sg_fonte_original"),
+        "zip_sha256": manifest.get("zip_sha256"),
+        "laz_sha256": manifest.get("laz_sha256"),
+        "captured_at": manifest.get("captured_at"),
+    }
+    _TERRAIN_RESULT_CACHE[cache_key] = analysis
+    if len(_TERRAIN_RESULT_CACHE) > 128:
+        first_key = next(iter(_TERRAIN_RESULT_CACHE))
+        _TERRAIN_RESULT_CACHE.pop(first_key, None)
+    return analysis
+
+
 def fetch_point_layer(key: str, lat: float, lng: float) -> list[dict]:
     config = THEMATIC_LAYERS[key]
     delta = 0.0007
@@ -845,6 +1161,9 @@ def build_context(lat: float, lng: float, parcel_geometry: dict, parcel: dict) -
                 (parcel.get("properties") or {}).get("sql_reference"),
             )
         ] = "__housing_permits__"
+        futures[
+            pool.submit(resolve_terrain_context, lat, lng, parcel_geometry)
+        ] = "__terrain__"
         for future in as_completed(futures):
             key = futures[future]
             try:
@@ -864,6 +1183,10 @@ def build_context(lat: float, lng: float, parcel_geometry: dict, parcel: dict) -
             "macrozone": macrozone,
         },
         "buildings": results.get("__buildings__") or [],
+        "terrain": results.get("__terrain__") or {
+            "available": False,
+            "reason": errors.get("__terrain__") or "not_available",
+        },
         "licensing": {
             "housing_permits_exact_sql": results.get("__housing_permits__") or [],
             "impact_spatial_incidence": results.get("impact_license") or [],
@@ -1190,6 +1513,37 @@ def actual_values_for_section(
                 "ligação, disponibilidade ou capacidade técnica no lote."
             ),
         })
+        return values
+
+    if section_id == "terrain_visual":
+        terrain = context.get("terrain") or {}
+        if not terrain.get("available"):
+            return [{
+                "label": "MDT/LiDAR 2020",
+                "value": "Análise altimétrica não disponível para este lote nesta consulta.",
+            }]
+        tile = terrain.get("tile") or {}
+        profiles = terrain.get("profiles") or []
+        values = [
+            {"label": "Folha MDT 2020", "value": tile.get("code")},
+            {"label": "Levantamento", "value": tile.get("survey")},
+            {"label": "Datum vertical", "value": terrain.get("vertical_datum")},
+            {"label": "Cota mínima derivada", "value": terrain.get("min_elevation_m"), "unit": "m"},
+            {"label": "Cota máxima derivada", "value": terrain.get("max_elevation_m"), "unit": "m"},
+            {"label": "Cota média derivada", "value": terrain.get("mean_elevation_m"), "unit": "m"},
+            {"label": "Amplitude altimétrica derivada", "value": terrain.get("amplitude_m"), "unit": "m"},
+            {"label": "Qualidade da interpolação", "value": terrain.get("quality")},
+            {"label": "Distância P90 ao retorno de solo", "value": terrain.get("nearest_ground_point_p90_m"), "unit": "m"},
+        ]
+        for profile in profiles:
+            name = profile.get("name")
+            values.extend([
+                {"label": f"Corte {name} · comprimento", "value": profile.get("length_m"), "unit": "m"},
+                {"label": f"Corte {name} · rumo", "value": profile.get("bearing_deg"), "unit": "°"},
+                {"label": f"Corte {name} · desnível início→fim", "value": profile.get("delta_elevation_m"), "unit": "m"},
+                {"label": f"Corte {name} · inclinação média", "value": profile.get("average_slope_pct"), "unit": "%"},
+            ])
+        values.append({"label": "Limite topográfico", "value": terrain.get("caveat")})
         return values
 
     if section_id == "registry_due_diligence":
