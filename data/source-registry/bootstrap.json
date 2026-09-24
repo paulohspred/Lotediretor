@@ -1,0 +1,512 @@
+{
+  "schema_version": "0.1.0",
+  "generated_at": "2026-09-24",
+  "description": "Bootstrap do catálogo nacional de fontes do LoteDiretor. Entradas VERIFIED foram confirmadas em fonte oficial; DISCOVERY precisa de validação de endpoint/licença antes de ingestão.",
+  "access_classes": [
+    "OPEN_REUSABLE",
+    "PUBLIC_QUERY_ONLY",
+    "AUTHENTICATED_PUBLIC",
+    "RESTRICTED_PERSONAL",
+    "PAID_ON_DEMAND",
+    "USER_PRIVATE",
+    "DERIVED"
+  ],
+  "sources": [
+    {
+      "id": "br-rfb-sinter-cib",
+      "authority": "Receita Federal do Brasil",
+      "scope": "BR",
+      "domain": [
+        "property_identity",
+        "cadastre"
+      ],
+      "source_type": "portal_api_ecosystem",
+      "discovery_url": "https://www.gov.br/receitafederal/pt-br/acesso-a-informacao/acoes-e-programas/programas-e-atividades/sinter",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED",
+      "notes": "CIB é identificador nacional em implantação. Consulta pública não equivale a acesso aos campos pessoais/restritos existentes na origem."
+    },
+    {
+      "id": "br-ibge-cnefe",
+      "authority": "IBGE",
+      "scope": "BR",
+      "domain": [
+        "address",
+        "geocoding"
+      ],
+      "source_type": "download",
+      "discovery_url": "https://www.ibge.gov.br/estatisticas/sociais/populacao/38734-cadastro-nacional-de-enderecos-para-fins-estatisticos.html",
+      "formats": [
+        "CSV",
+        "GeoJSON"
+      ],
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED",
+      "notes": "Backbone nacional de endereços georreferenciados; não é cadastro dominial."
+    },
+    {
+      "id": "br-inde",
+      "authority": "Infraestrutura Nacional de Dados Espaciais",
+      "scope": "BR",
+      "domain": [
+        "geospatial_catalog"
+      ],
+      "source_type": "catalog_ogc",
+      "discovery_url": "https://inde.gov.br/",
+      "formats": [
+        "WMS",
+        "WFS",
+        "CSW",
+        "downloads"
+      ],
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED"
+    },
+    {
+      "id": "br-incra-sigef",
+      "authority": "INCRA",
+      "scope": "BR",
+      "domain": [
+        "rural_parcel",
+        "survey"
+      ],
+      "source_type": "authenticated_portal",
+      "discovery_url": "https://sigef.incra.gov.br/",
+      "access_class": "AUTHENTICATED_PUBLIC",
+      "verification_status": "VERIFIED",
+      "notes": "Parcelas georreferenciadas/certificadas. Não tratar como prova isolada de titularidade registral."
+    },
+    {
+      "id": "br-sicar-car",
+      "authority": "Serviço Florestal Brasileiro / SICAR",
+      "scope": "BR",
+      "domain": [
+        "rural",
+        "environment"
+      ],
+      "source_type": "portal_download_map",
+      "discovery_url": "https://www.car.gov.br/publico/imoveis/index",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED",
+      "notes": "CAR é declaratório; não prova domínio."
+    },
+    {
+      "id": "br-ana-open-data",
+      "authority": "Agência Nacional de Águas e Saneamento Básico",
+      "scope": "BR",
+      "domain": [
+        "water",
+        "hydrology",
+        "water_rights"
+      ],
+      "source_type": "open_data_portal",
+      "discovery_url": "https://dadosabertos.ana.gov.br/",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED"
+    },
+    {
+      "id": "br-anm-sigmine-open-data",
+      "authority": "Agência Nacional de Mineração",
+      "scope": "BR",
+      "domain": [
+        "mining",
+        "restriction"
+      ],
+      "source_type": "download",
+      "discovery_url": "https://dadosabertos.aneel.gov.br/",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "DISCOVERY",
+      "notes": "Endpoint precisa ser corrigido/validado para o diretório oficial ANM antes de ingestão. Entrada mantida como lembrete deliberado de validação."
+    },
+    {
+      "id": "br-cnuc",
+      "authority": "Ministério do Meio Ambiente e Mudança do Clima",
+      "scope": "BR",
+      "domain": [
+        "protected_areas",
+        "environment"
+      ],
+      "source_type": "download_portal",
+      "discovery_url": "https://cnuc.mma.gov.br/",
+      "formats": [
+        "CSV",
+        "SHP"
+      ],
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED"
+    },
+    {
+      "id": "br-funai-geospatial",
+      "authority": "FUNAI",
+      "scope": "BR",
+      "domain": [
+        "indigenous_lands",
+        "restriction"
+      ],
+      "source_type": "ogc_download",
+      "discovery_url": "https://www.gov.br/funai/pt-br/atuacao/terras-indigenas/geoprocessamento-e-mapas",
+      "formats": [
+        "SHP",
+        "KML",
+        "CSV",
+        "WMS",
+        "WFS"
+      ],
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED"
+    },
+    {
+      "id": "br-inpe-terrabrasilis",
+      "authority": "INPE",
+      "scope": "BR",
+      "domain": [
+        "satellite",
+        "land_use",
+        "deforestation"
+      ],
+      "source_type": "portal_api_download",
+      "discovery_url": "https://terrabrasilis.dpi.inpe.br/",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED"
+    },
+    {
+      "id": "sp-sao-paulo-geosampa-wfs",
+      "authority": "Prefeitura de São Paulo",
+      "scope": "municipality",
+      "municipality_ibge": "3550308",
+      "domain": [
+        "cadastre",
+        "zoning",
+        "urban_planning",
+        "environment",
+        "infrastructure"
+      ],
+      "source_type": "WFS",
+      "base_url": "https://wfs.geosampa.prefeitura.sp.gov.br/geoserver/geoportal/wfs",
+      "formats": [
+        "WFS",
+        "GML",
+        "GeoJSON",
+        "SHP"
+      ],
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED",
+      "notes": "Inclui lote fiscal e amplo catálogo municipal. Confirmar licença/atribuição por camada."
+    },
+    {
+      "id": "sp-sao-paulo-geosampa-wms",
+      "authority": "Prefeitura de São Paulo",
+      "scope": "municipality",
+      "municipality_ibge": "3550308",
+      "domain": [
+        "basemap",
+        "orthophoto",
+        "thematic_layers"
+      ],
+      "source_type": "WMS",
+      "base_url": "https://wms.geosampa.prefeitura.sp.gov.br/geoserver/geoportal/wms",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED"
+    },
+    {
+      "id": "sp-sao-paulo-pde-law",
+      "authority": "Prefeitura de São Paulo / Câmara Municipal",
+      "scope": "municipality",
+      "municipality_ibge": "3550308",
+      "domain": [
+        "plan_director",
+        "law"
+      ],
+      "source_type": "legal_documents",
+      "discovery_url": "https://gestaourbana.prefeitura.sp.gov.br/marco-regulatorio/plano-diretor/",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED",
+      "notes": "PDE Lei 16.050/2014 com revisão intermediária pela Lei 17.975/2023 e anexos/mapas. Versionar alterações."
+    },
+    {
+      "id": "pe-recife-open-data",
+      "authority": "Prefeitura do Recife",
+      "scope": "municipality",
+      "municipality_ibge": "2611606",
+      "domain": [
+        "iptu",
+        "itbi",
+        "licensing",
+        "urban_planning"
+      ],
+      "source_type": "CKAN",
+      "base_url": "https://dados.recife.pe.gov.br/",
+      "formats": [
+        "CSV",
+        "JSON",
+        "GeoJSON"
+      ],
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED",
+      "notes": "Portal possui séries históricas anuais de IPTU e ITBI e dados urbanísticos."
+    },
+    {
+      "id": "pe-recife-zoning-arcgis",
+      "authority": "Prefeitura do Recife",
+      "scope": "municipality",
+      "municipality_ibge": "2611606",
+      "domain": [
+        "zoning",
+        "plan_director"
+      ],
+      "source_type": "ArcGIS_FeatureServer",
+      "discovery_url": "https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Planejamento/BASES_ZONEAMENTO_G_PD2020/FeatureServer",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED"
+    },
+    {
+      "id": "mg-belo-horizonte-open-data",
+      "authority": "Prefeitura de Belo Horizonte",
+      "scope": "municipality",
+      "municipality_ibge": "3106200",
+      "domain": [
+        "itbi",
+        "urban_data",
+        "cadastre"
+      ],
+      "source_type": "open_data_portal",
+      "base_url": "https://dados.pbh.gov.br/",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED"
+    },
+    {
+      "id": "mg-belo-horizonte-plan-director",
+      "authority": "Prefeitura de Belo Horizonte",
+      "scope": "municipality",
+      "municipality_ibge": "3106200",
+      "domain": [
+        "plan_director",
+        "zoning",
+        "law"
+      ],
+      "source_type": "legal_documents_gis",
+      "discovery_url": "https://prefeitura.pbh.gov.br/politica-urbana/planejamento-urbano/plano-diretor",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED",
+      "notes": "Lei 11.181/2019 e regulamentos; BHMAP/GeoSiurbe complementam a geometria."
+    },
+    {
+      "id": "rs-porto-alegre-itbi",
+      "authority": "Prefeitura de Porto Alegre",
+      "scope": "municipality",
+      "municipality_ibge": "4314902",
+      "domain": [
+        "itbi",
+        "transactions"
+      ],
+      "source_type": "CKAN",
+      "discovery_url": "https://dadosabertos.poa.br/dataset/itbi",
+      "formats": [
+        "CSV"
+      ],
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED"
+    },
+    {
+      "id": "rs-porto-alegre-plan-director-2026",
+      "authority": "Prefeitura de Porto Alegre",
+      "scope": "municipality",
+      "municipality_ibge": "4314902",
+      "domain": [
+        "plan_director",
+        "zoning",
+        "law"
+      ],
+      "source_type": "legal_documents",
+      "discovery_url": "https://www.prefeitura.poa.br/gp/noticias/prefeito-sanciona-novo-plano-diretor-e-lei-de-uso-e-ocupacao-do-solo",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED",
+      "notes": "Novo PDUS e LUOS sancionados em 14/07/2026. Registrar números legais e anexos a partir do DOPA antes do motor normativo."
+    },
+    {
+      "id": "ce-fortaleza-open-data",
+      "authority": "Prefeitura de Fortaleza",
+      "scope": "municipality",
+      "municipality_ibge": "2304400",
+      "domain": [
+        "iptu",
+        "building_area",
+        "urban_planning",
+        "environment"
+      ],
+      "source_type": "CKAN",
+      "base_url": "https://dados.fortaleza.ce.gov.br/",
+      "formats": [
+        "CSV",
+        "GeoJSON",
+        "KML",
+        "KMZ"
+      ],
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED",
+      "notes": "Inclui cadastro fiscal IPTU, áreas edificadas e múltiplas camadas SEUMA."
+    },
+    {
+      "id": "ce-fortaleza-plan-director-2025",
+      "authority": "Prefeitura de Fortaleza",
+      "scope": "municipality",
+      "municipality_ibge": "2304400",
+      "domain": [
+        "plan_director",
+        "zoning",
+        "law"
+      ],
+      "source_type": "legal_documents_gis",
+      "discovery_url": "https://planodiretor.fortaleza.ce.gov.br/",
+      "formats": [
+        "PDF",
+        "KMZ"
+      ],
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED",
+      "notes": "Portal disponibiliza LC 450/2025, macrozoneamento, zonas especiais e KMZ."
+    },
+    {
+      "id": "rj-rio-plan-director",
+      "authority": "Prefeitura do Rio de Janeiro",
+      "scope": "municipality",
+      "municipality_ibge": "3304557",
+      "domain": [
+        "plan_director",
+        "law"
+      ],
+      "source_type": "legal_documents",
+      "discovery_url": "https://www.rio.rj.gov.br/",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED",
+      "notes": "Plano Diretor: Lei Complementar 270/2024. Localizar endpoint oficial consolidado e anexos no próximo ciclo."
+    },
+    {
+      "id": "rj-rio-data-rio",
+      "authority": "Prefeitura do Rio de Janeiro",
+      "scope": "municipality",
+      "municipality_ibge": "3304557",
+      "domain": [
+        "open_data",
+        "geospatial"
+      ],
+      "source_type": "open_data_portal",
+      "base_url": "https://www.data.rio/",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "DISCOVERY",
+      "notes": "Catalogar cadastros, imóveis, ITBI/IPTU e GIS em profundidade."
+    },
+    {
+      "id": "pr-curitiba-plan-director",
+      "authority": "Prefeitura de Curitiba / IPPUC",
+      "scope": "municipality",
+      "municipality_ibge": "4106902",
+      "domain": [
+        "plan_director",
+        "zoning",
+        "law"
+      ],
+      "source_type": "legal_documents_gis",
+      "discovery_url": "https://ippuc.org.br/",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED",
+      "notes": "Plano Diretor Lei 14.771/2015; zoneamento Lei 15.511/2019. Revisão em curso em 2026."
+    },
+    {
+      "id": "es-vitoria-plan-director",
+      "authority": "Prefeitura de Vitória",
+      "scope": "municipality",
+      "municipality_ibge": "3205309",
+      "domain": [
+        "plan_director",
+        "zoning",
+        "law"
+      ],
+      "source_type": "legal_documents",
+      "discovery_url": "https://www.vitoria.es.gov.br/",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED",
+      "notes": "PDU Lei 9.271/2018, com conjunto amplo de anexos."
+    },
+    {
+      "id": "go-goiania-plan-director",
+      "authority": "Prefeitura de Goiânia",
+      "scope": "municipality",
+      "municipality_ibge": "5208707",
+      "domain": [
+        "plan_director",
+        "law"
+      ],
+      "source_type": "legal_documents",
+      "discovery_url": "https://www.goiania.go.gov.br/",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED",
+      "notes": "Plano Diretor LC 349/2022."
+    },
+    {
+      "id": "sp-campinas-spatial-data",
+      "authority": "Prefeitura de Campinas",
+      "scope": "municipality",
+      "municipality_ibge": "3509502",
+      "domain": [
+        "geospatial",
+        "zoning",
+        "cadastre"
+      ],
+      "source_type": "download_portal",
+      "discovery_url": "https://metadados.campinas.sp.gov.br/",
+      "formats": [
+        "SHP"
+      ],
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED",
+      "notes": "Portal de metadados e camadas municipais; validar cada licença e atualização."
+    },
+    {
+      "id": "ma-sao-luis-plan-director",
+      "authority": "Prefeitura de São Luís",
+      "scope": "municipality",
+      "municipality_ibge": "2111300",
+      "domain": [
+        "plan_director",
+        "law",
+        "historical_law"
+      ],
+      "source_type": "legal_documents",
+      "discovery_url": "https://www.saoluis.ma.gov.br/",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED",
+      "notes": "Plano Diretor Lei 7.122/2023; portal preserva documentos históricos úteis para versionamento."
+    },
+    {
+      "id": "am-manaus-plan-director",
+      "authority": "Prefeitura de Manaus",
+      "scope": "municipality",
+      "municipality_ibge": "1302603",
+      "domain": [
+        "plan_director",
+        "law"
+      ],
+      "source_type": "legal_documents",
+      "discovery_url": "https://www.manaus.am.gov.br/",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "DISCOVERY",
+      "notes": "LC 002/2014 localizada; validar consolidação, alterações e revisão vigente em 2026."
+    },
+    {
+      "id": "pa-belem-plan-director",
+      "authority": "Prefeitura de Belém",
+      "scope": "municipality",
+      "municipality_ibge": "1501402",
+      "domain": [
+        "plan_director",
+        "law"
+      ],
+      "source_type": "legal_documents",
+      "discovery_url": "https://prefeitura.belem.pa.gov.br/",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "DISCOVERY",
+      "notes": "Lei 8.655/2008 localizada; validar revisão/consolidação vigente."
+    }
+  ]
+}
