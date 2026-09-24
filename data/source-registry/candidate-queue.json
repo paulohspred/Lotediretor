@@ -419,6 +419,26 @@
         "capture itemInfo/license",
         "build temporal legal-rule join tests"
       ]
+    },
+    {
+      "id": "cand-mg-belo-horizonte-dom",
+      "status": "TERMS_REVIEW",
+      "category": "official_gazette",
+      "authority": "Prefeitura de Belo Horizonte / Secretaria-Geral",
+      "url": "https://dom-web.pbh.gov.br/",
+      "discovered_via": "official PBH guidance and DOM portal",
+      "goal": "Determine whether DOM edition/act metadata has a stable public API or downloadable contract suitable for incremental legal-event ingestion.",
+      "risks": [
+        "public search is confirmed but bulk reuse license/API is not",
+        "acts can contain personal data irrelevant to property intelligence",
+        "web routes may change"
+      ],
+      "next_checks": [
+        "inspect public network/API documentation without bypassing access",
+        "review terms/reuse policy",
+        "define event allowlist",
+        "preserve edition/act identifiers and official document hashes"
+      ]
     }
   ]
 }
