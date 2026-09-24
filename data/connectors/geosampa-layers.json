@@ -1,0 +1,91 @@
+{
+  "schema_version": "0.1.0",
+  "as_of": "2026-09-24",
+  "source_id": "sp-sao-paulo-geosampa-wfs",
+  "connector_id": "sp-geosampa-wfs",
+  "endpoint": "https://wfs.geosampa.prefeitura.sp.gov.br/geoserver/geoportal/ows",
+  "service": "WFS",
+  "version": "2.0.0",
+  "license": "CC BY-SA 4.0",
+  "municipality_ibge": "3550308",
+  "layers": {
+    "lote_cidadao": {
+      "type_name": "geoportal:lote_cidadao",
+      "metadata_url": "https://metadados.geosampa.prefeitura.sp.gov.br/geonetwork/srv/resources/datasets/62c1113c-36a4-43d1-b763-81ec63b58116",
+      "geometry_property": "ge_poligono",
+      "observed_geometry_type": "Polygon",
+      "observed_crs": "EPSG:31983",
+      "update_frequency": "daily",
+      "partition": {
+        "field": "cd_setor_fiscal",
+        "kind": "fiscal_sector",
+        "valid_values": {
+          "minimum": 1,
+          "maximum": 310,
+          "width": 3,
+          "excluded": [
+            "092"
+          ]
+        }
+      },
+      "materialization": {
+        "approved": true,
+        "strategy": "sector_paginated",
+        "default_page_size": 500,
+        "max_page_size": 2000,
+        "max_pages_per_run": 50,
+        "output_format": "application/json",
+        "complete_required_by_default": true
+      },
+      "field_allowlist": [
+        "cd_identificador",
+        "cd_identificador_original_lote",
+        "cd_setor_fiscal",
+        "cd_tipo_quadra",
+        "tx_tipo_quadra",
+        "cd_quadra_fiscal",
+        "cd_subquadra_fiscal",
+        "cd_condominio",
+        "cd_tipo_lote",
+        "tx_tipo_lote",
+        "cd_lote",
+        "cd_situacao",
+        "cd_digito_sql",
+        "cd_logradouro",
+        "nm_logradouro_completo",
+        "cd_numero_porta",
+        "tx_complemento_endereco",
+        "tx_situ_lote",
+        "cd_tipo_uso_imovel",
+        "dc_tipo_uso_imovel",
+        "cd_tipo_terreno_imovel",
+        "qt_area_terreno",
+        "qt_area_construida",
+        "cd_cib",
+        "tx_situacao_cib"
+      ],
+      "field_policy": {
+        "allowlist_is_closed": true,
+        "unexpected_fields": "REJECT_SNAPSHOT",
+        "deny_name_patterns": [
+          "propriet",
+          "contribuinte_nome",
+          "cpf",
+          "cnpj",
+          "requerente",
+          "titular",
+          "email",
+          "telefone"
+        ],
+        "rationale": "The observed 2026 WFS schema is property-centric. Sending propertyName with a closed allowlist prevents future upstream fields from entering snapshots automatically."
+      },
+      "observed_schema": {
+        "verified_at": "2026-09-24",
+        "attribute_count": 25,
+        "sector_001_number_matched": 1927,
+        "pagination_verified": "WFS 2.0 count/startIndex returned distinct features at startIndex 0 and 1",
+        "property_name_projection_verified": true
+      }
+    }
+  }
+}
