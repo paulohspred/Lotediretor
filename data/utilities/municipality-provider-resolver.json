@@ -1,0 +1,690 @@
+{
+  "schema_version": "0.1.0",
+  "as_of": "2026-09-24",
+  "description": "Resolver inicial de concessionárias, operadores e fontes técnicas para as cinco cidades L3 prioritárias. O resolver identifica quem presta/regula o serviço e quais datasets podem apoiar contexto técnico; não transforma proximidade de rede em prova de disponibilidade no imóvel.",
+  "rules": {
+    "key": "municipality_ibge + service_type + territory",
+    "service_types": [
+      "electricity",
+      "gas",
+      "water_sewer",
+      "telecom",
+      "drainage",
+      "public_lighting"
+    ],
+    "availability_semantics": [
+      "PROVIDER_TERRITORY_ONLY: confirma quem atende/regula a área, não disponibilidade no lote.",
+      "NETWORK_CONTEXT: rede/ativo próximo pode ser exibido como contexto, não como capacidade ou ligação confirmada.",
+      "PARCEL_AVAILABILITY: somente quando houver consulta/documento oficial específico para o endereço/lote.",
+      "SUBMUNICIPAL_REQUIRED: município sozinho não basta; resolver por bairro/polígono/endereço."
+    ],
+    "privacy": "Não armazenar dados de unidade consumidora, titular, contrato ou pessoa sem base/autorização específica. BDGD deve usar allowlist de ativos técnicos.",
+    "temporal": "Guardar vigência do território de concessão e versão/data dos datasets; mudanças de concessão não podem sobrescrever silenciosamente o histórico."
+  },
+  "municipalities": [
+    {
+      "ibge": "3550308",
+      "city": "São Paulo",
+      "uf": "SP",
+      "territory_resolution": "MUNICIPALITY",
+      "services": {
+        "electricity": [
+          {
+            "provider_source_id": "sp-enel-distribuicao-provider",
+            "role": "DISTRIBUTOR",
+            "territory": {
+              "type": "MUNICIPALITY",
+              "value": "3550308"
+            },
+            "technical_source_ids": [
+              "br-aneel-bdgd",
+              "sp-arsesp-utility-concessions"
+            ],
+            "evidence_level": "PROVIDER_TERRITORY_ONLY",
+            "missing": [
+              "BDGD distributor package/version resolver",
+              "formal load/connection availability workflow"
+            ]
+          }
+        ],
+        "gas": [
+          {
+            "provider_source_id": "sp-comgas-network-query",
+            "role": "GAS_DISTRIBUTOR",
+            "territory": {
+              "type": "MUNICIPALITY",
+              "value": "3550308"
+            },
+            "technical_source_ids": [
+              "sp-comgas-network-query",
+              "sp-arsesp-utility-concessions"
+            ],
+            "evidence_level": "NETWORK_CONTEXT",
+            "missing": [
+              "licensed machine-readable network",
+              "frontage availability confirmation"
+            ]
+          }
+        ],
+        "water_sewer": [
+          {
+            "provider_source_id": "sp-sabesp-provider",
+            "role": "WATER_SEWER_PROVIDER",
+            "territory": {
+              "type": "MUNICIPALITY",
+              "value": "3550308"
+            },
+            "technical_source_ids": [
+              "br-sinisa-results",
+              "sp-sao-paulo-water-sewer-geoconvias",
+              "sp-arsesp-utility-concessions"
+            ],
+            "evidence_level": "PROVIDER_TERRITORY_ONLY",
+            "missing": [
+              "complete current network dataset",
+              "frontage connection/availability evidence"
+            ],
+            "caveat": "GeoConvias registra intervenções pontuais e não representa a rede completa."
+          }
+        ],
+        "telecom": [
+          {
+            "provider_source_id": "br-anatel-open-data",
+            "role": "REGULATORY_CONTEXT",
+            "territory": {
+              "type": "MUNICIPALITY",
+              "value": "3550308"
+            },
+            "technical_source_ids": [
+              "br-anatel-open-data"
+            ],
+            "evidence_level": "NETWORK_CONTEXT",
+            "missing": [
+              "provider-by-address availability source",
+              "fiber/fixed broadband parcel evidence"
+            ],
+            "caveat": "Estações/backhaul/acessos não provam fibra ou serviço disponível no lote."
+          }
+        ],
+        "drainage": [
+          {
+            "provider_source_id": "sp-sao-paulo-drainage-geosampa",
+            "role": "MUNICIPAL_INFRASTRUCTURE",
+            "territory": {
+              "type": "MUNICIPALITY",
+              "value": "3550308"
+            },
+            "technical_source_ids": [
+              "sp-sao-paulo-drainage-geosampa"
+            ],
+            "evidence_level": "NETWORK_CONTEXT",
+            "missing": [
+              "coverage/recency flags by basin"
+            ]
+          }
+        ],
+        "public_lighting": [
+          {
+            "provider_source_id": "sp-sao-paulo-public-lighting",
+            "role": "MUNICIPAL_PUBLIC_LIGHTING",
+            "territory": {
+              "type": "MUNICIPALITY",
+              "value": "3550308"
+            },
+            "technical_source_ids": [
+              "sp-sao-paulo-public-lighting"
+            ],
+            "evidence_level": "PROVIDER_TERRITORY_ONLY",
+            "missing": [
+              "approved georeferenced point inventory/schema"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "ibge": "2611606",
+      "city": "Recife",
+      "uf": "PE",
+      "territory_resolution": "MUNICIPALITY",
+      "services": {
+        "electricity": [
+          {
+            "provider_source_id": "pe-neoenergia-pernambuco-provider",
+            "role": "DISTRIBUTOR",
+            "territory": {
+              "type": "MUNICIPALITY",
+              "value": "2611606"
+            },
+            "technical_source_ids": [
+              "br-aneel-bdgd"
+            ],
+            "evidence_level": "PROVIDER_TERRITORY_ONLY",
+            "missing": [
+              "BDGD distributor package/version resolver",
+              "formal load/connection availability workflow"
+            ]
+          }
+        ],
+        "gas": [
+          {
+            "provider_source_id": "pe-copergas-network-map",
+            "role": "GAS_DISTRIBUTOR",
+            "territory": {
+              "type": "MUNICIPALITY",
+              "value": "2611606"
+            },
+            "technical_source_ids": [
+              "pe-copergas-network-map"
+            ],
+            "evidence_level": "NETWORK_CONTEXT",
+            "missing": [
+              "licensed machine-readable network",
+              "frontage availability confirmation"
+            ]
+          }
+        ],
+        "water_sewer": [
+          {
+            "provider_source_id": "pe-compesa-gis-ecosystem",
+            "role": "WATER_SEWER_PROVIDER",
+            "territory": {
+              "type": "MUNICIPALITY",
+              "value": "2611606"
+            },
+            "technical_source_ids": [
+              "pe-compesa-gis-ecosystem",
+              "br-sinisa-results"
+            ],
+            "evidence_level": "PROVIDER_TERRITORY_ONLY",
+            "missing": [
+              "approved public network-layer license",
+              "frontage availability evidence"
+            ]
+          }
+        ],
+        "telecom": [
+          {
+            "provider_source_id": "br-anatel-open-data",
+            "role": "REGULATORY_CONTEXT",
+            "territory": {
+              "type": "MUNICIPALITY",
+              "value": "2611606"
+            },
+            "technical_source_ids": [
+              "br-anatel-open-data"
+            ],
+            "evidence_level": "NETWORK_CONTEXT",
+            "missing": [
+              "provider-by-address availability source"
+            ]
+          }
+        ],
+        "drainage": [
+          {
+            "provider_source_id": "pe-recife-macrodrenagem",
+            "role": "MUNICIPAL_INFRASTRUCTURE",
+            "territory": {
+              "type": "MUNICIPALITY",
+              "value": "2611606"
+            },
+            "technical_source_ids": [
+              "pe-recife-macrodrenagem"
+            ],
+            "evidence_level": "NETWORK_CONTEXT",
+            "missing": [
+              "microdrainage/asset-level completeness"
+            ]
+          }
+        ],
+        "public_lighting": [
+          {
+            "provider_source_id": "pe-recife-public-lighting",
+            "role": "MUNICIPAL_PUBLIC_LIGHTING",
+            "territory": {
+              "type": "MUNICIPALITY",
+              "value": "2611606"
+            },
+            "technical_source_ids": [
+              "pe-recife-public-lighting"
+            ],
+            "evidence_level": "PROVIDER_TERRITORY_ONLY",
+            "missing": [
+              "approved point inventory/telegestão dataset"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "ibge": "3304557",
+      "city": "Rio de Janeiro",
+      "uf": "RJ",
+      "territory_resolution": "SUBMUNICIPAL_REQUIRED_FOR_WATER_SEWER",
+      "services": {
+        "electricity": [
+          {
+            "provider_source_id": "rj-light-distribuicao-provider",
+            "role": "DISTRIBUTOR",
+            "territory": {
+              "type": "MUNICIPALITY",
+              "value": "3304557"
+            },
+            "technical_source_ids": [
+              "br-aneel-bdgd"
+            ],
+            "evidence_level": "PROVIDER_TERRITORY_ONLY",
+            "missing": [
+              "BDGD distributor package/version resolver",
+              "formal load/connection availability workflow"
+            ]
+          }
+        ],
+        "gas": [
+          {
+            "provider_source_id": "rj-naturgy-gas-network",
+            "role": "GAS_DISTRIBUTOR",
+            "territory": {
+              "type": "MUNICIPALITY",
+              "value": "3304557"
+            },
+            "technical_source_ids": [
+              "rj-naturgy-gas-network"
+            ],
+            "evidence_level": "NETWORK_CONTEXT",
+            "missing": [
+              "licensed public network geometry",
+              "frontage availability confirmation"
+            ]
+          }
+        ],
+        "water_sewer": [
+          {
+            "provider_source_id": "rj-aguas-do-rio-provider",
+            "role": "WATER_SEWER_RETAIL_PROVIDER",
+            "territory": {
+              "type": "SUBMUNICIPAL",
+              "description": "124 bairros da capital, principalmente zonas Norte, Sul e Centro; usar território oficial versionado, não inferência por município."
+            },
+            "technical_source_ids": [
+              "br-sinisa-results",
+              "rj-cedae-open-data"
+            ],
+            "evidence_level": "SUBMUNICIPAL_REQUIRED",
+            "missing": [
+              "authoritative geospatial service-territory polygon",
+              "parcel/frontage availability"
+            ],
+            "upstream_note": "CEDAE permanece relevante na produção de água em partes do sistema."
+          },
+          {
+            "provider_source_id": "rj-igua-rio-provider",
+            "role": "WATER_SEWER_RETAIL_PROVIDER",
+            "territory": {
+              "type": "SUBMUNICIPAL",
+              "neighborhoods": [
+                "Anil",
+                "Barra da Tijuca",
+                "Barra Olímpica",
+                "Camorim",
+                "Cidade de Deus",
+                "Curicica",
+                "Freguesia (Jacarepaguá)",
+                "Gardênia Azul",
+                "Grumari",
+                "Itanhangá",
+                "Jacarepaguá",
+                "Joá",
+                "Pechincha",
+                "Recreio dos Bandeirantes",
+                "Tanque",
+                "Taquara",
+                "Vargem Grande",
+                "Vargem Pequena"
+              ],
+              "partial": [
+                "Praça Seca"
+              ],
+              "description": "Região Barra/Jacarepaguá e imediações; Praça Seca é parcial."
+            },
+            "technical_source_ids": [
+              "br-sinisa-results",
+              "rj-cedae-open-data"
+            ],
+            "evidence_level": "SUBMUNICIPAL_REQUIRED",
+            "missing": [
+              "authoritative service-territory polygon",
+              "parcel/frontage availability"
+            ],
+            "upstream_note": "Na capital, captação/tratamento de água permanece com CEDAE; Iguá faz distribuição e esgotamento em sua área."
+          },
+          {
+            "provider_source_id": "rj-rio-mais-saneamento-provider",
+            "role": "WATER_SEWER_RETAIL_PROVIDER",
+            "territory": {
+              "type": "SUBMUNICIPAL",
+              "neighborhoods": [
+                "Bangu",
+                "Barra de Guaratiba",
+                "Campo dos Afonsos",
+                "Campo Grande",
+                "Cosmos",
+                "Deodoro",
+                "Gericinó",
+                "Guaratiba",
+                "Ilha de Guaratiba",
+                "Inhoaíba",
+                "Jardim Sulacap",
+                "Jabour",
+                "Magalhães Bastos",
+                "Paciência",
+                "Padre Miguel",
+                "Pedra de Guaratiba",
+                "Realengo",
+                "Santa Cruz",
+                "Santíssimo",
+                "Senador Camará",
+                "Senador Vasconcelos",
+                "Sepetiba",
+                "Vila Kennedy",
+                "Vila Militar"
+              ],
+              "description": "24 bairros da Zona Oeste da capital."
+            },
+            "technical_source_ids": [
+              "br-sinisa-results",
+              "rj-cedae-open-data"
+            ],
+            "evidence_level": "SUBMUNICIPAL_REQUIRED",
+            "missing": [
+              "authoritative service-territory polygon",
+              "parcel/frontage availability"
+            ]
+          }
+        ],
+        "telecom": [
+          {
+            "provider_source_id": "br-anatel-open-data",
+            "role": "REGULATORY_CONTEXT",
+            "territory": {
+              "type": "MUNICIPALITY",
+              "value": "3304557"
+            },
+            "technical_source_ids": [
+              "br-anatel-open-data"
+            ],
+            "evidence_level": "NETWORK_CONTEXT",
+            "missing": [
+              "provider-by-address availability source"
+            ]
+          }
+        ],
+        "drainage": [
+          {
+            "provider_source_id": "rj-rio-hidrografia-drenagem",
+            "role": "MUNICIPAL_INFRASTRUCTURE",
+            "territory": {
+              "type": "MUNICIPALITY",
+              "value": "3304557"
+            },
+            "technical_source_ids": [
+              "rj-rio-hidrografia-drenagem"
+            ],
+            "evidence_level": "NETWORK_CONTEXT",
+            "missing": [
+              "asset-level completeness/version flags"
+            ]
+          }
+        ],
+        "public_lighting": [
+          {
+            "provider_source_id": "rj-rio-public-lighting",
+            "role": "MUNICIPAL_PUBLIC_LIGHTING",
+            "territory": {
+              "type": "MUNICIPALITY",
+              "value": "3304557"
+            },
+            "technical_source_ids": [
+              "rj-rio-public-lighting"
+            ],
+            "evidence_level": "PROVIDER_TERRITORY_ONLY",
+            "missing": [
+              "approved point inventory/schema"
+            ],
+            "note": "RioLuz publica relatórios de modernização; inventário ponto a ponto deve ser tratado separadamente."
+          }
+        ]
+      }
+    },
+    {
+      "ibge": "3106200",
+      "city": "Belo Horizonte",
+      "uf": "MG",
+      "territory_resolution": "MUNICIPALITY",
+      "services": {
+        "electricity": [
+          {
+            "provider_source_id": "mg-cemig-distribuicao-provider",
+            "role": "DISTRIBUTOR",
+            "territory": {
+              "type": "MUNICIPALITY",
+              "value": "3106200"
+            },
+            "technical_source_ids": [
+              "br-aneel-bdgd",
+              "mg-cemig-load-availability-map"
+            ],
+            "evidence_level": "NETWORK_CONTEXT",
+            "missing": [
+              "BDGD distributor package/version resolver",
+              "formal connection study for definitive capacity"
+            ],
+            "caveat": "Mapa de disponibilidade de cargas é indicativo e não substitui parecer/orçamento de conexão."
+          }
+        ],
+        "gas": [
+          {
+            "provider_source_id": "mg-gasmig-network-map",
+            "role": "GAS_DISTRIBUTOR",
+            "territory": {
+              "type": "MUNICIPALITY",
+              "value": "3106200"
+            },
+            "technical_source_ids": [
+              "mg-gasmig-network-map"
+            ],
+            "evidence_level": "NETWORK_CONTEXT",
+            "missing": [
+              "licensed machine-readable network",
+              "frontage availability confirmation"
+            ]
+          }
+        ],
+        "water_sewer": [
+          {
+            "provider_source_id": "mg-belo-horizonte-copasa-provider",
+            "role": "WATER_SEWER_PROVIDER",
+            "territory": {
+              "type": "MUNICIPALITY",
+              "value": "3106200"
+            },
+            "technical_source_ids": [
+              "br-sinisa-results"
+            ],
+            "evidence_level": "PROVIDER_TERRITORY_ONLY",
+            "missing": [
+              "approved technical network dataset",
+              "frontage availability evidence"
+            ]
+          }
+        ],
+        "telecom": [
+          {
+            "provider_source_id": "br-anatel-open-data",
+            "role": "REGULATORY_CONTEXT",
+            "territory": {
+              "type": "MUNICIPALITY",
+              "value": "3106200"
+            },
+            "technical_source_ids": [
+              "br-anatel-open-data"
+            ],
+            "evidence_level": "NETWORK_CONTEXT",
+            "missing": [
+              "provider-by-address availability source"
+            ]
+          }
+        ],
+        "drainage": [
+          {
+            "provider_source_id": "mg-belo-horizonte-bhgeo",
+            "role": "MUNICIPAL_INFRASTRUCTURE",
+            "territory": {
+              "type": "MUNICIPALITY",
+              "value": "3106200"
+            },
+            "technical_source_ids": [
+              "mg-belo-horizonte-bhgeo"
+            ],
+            "evidence_level": "NETWORK_CONTEXT",
+            "missing": [
+              "drainage-layer allowlist/license by dataset"
+            ]
+          }
+        ],
+        "public_lighting": [
+          {
+            "provider_source_id": "mg-belo-horizonte-public-lighting",
+            "role": "PPP_PUBLIC_LIGHTING",
+            "territory": {
+              "type": "MUNICIPALITY",
+              "value": "3106200"
+            },
+            "technical_source_ids": [
+              "mg-belo-horizonte-public-lighting"
+            ],
+            "evidence_level": "PROVIDER_TERRITORY_ONLY",
+            "missing": [
+              "approved point inventory/schema"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "ibge": "2507507",
+      "city": "João Pessoa",
+      "uf": "PB",
+      "territory_resolution": "MUNICIPALITY",
+      "services": {
+        "electricity": [
+          {
+            "provider_source_id": "pb-energisa-paraiba-provider",
+            "role": "DISTRIBUTOR",
+            "territory": {
+              "type": "MUNICIPALITY",
+              "value": "2507507"
+            },
+            "technical_source_ids": [
+              "br-aneel-bdgd"
+            ],
+            "evidence_level": "PROVIDER_TERRITORY_ONLY",
+            "missing": [
+              "BDGD distributor package/version resolver",
+              "formal load/connection availability workflow"
+            ]
+          }
+        ],
+        "gas": [
+          {
+            "provider_source_id": "pb-pbgas-network-map",
+            "role": "GAS_DISTRIBUTOR",
+            "territory": {
+              "type": "MUNICIPALITY",
+              "value": "2507507"
+            },
+            "technical_source_ids": [
+              "pb-pbgas-network-map"
+            ],
+            "evidence_level": "NETWORK_CONTEXT",
+            "missing": [
+              "licensed machine-readable network",
+              "frontage availability confirmation"
+            ]
+          }
+        ],
+        "water_sewer": [
+          {
+            "provider_source_id": "pb-joao-pessoa-cagepa-provider",
+            "role": "WATER_SEWER_PROVIDER",
+            "territory": {
+              "type": "MUNICIPALITY",
+              "value": "2507507"
+            },
+            "technical_source_ids": [
+              "br-sinisa-results"
+            ],
+            "evidence_level": "PROVIDER_TERRITORY_ONLY",
+            "missing": [
+              "approved geospatial network dataset",
+              "frontage availability evidence"
+            ]
+          }
+        ],
+        "telecom": [
+          {
+            "provider_source_id": "br-anatel-open-data",
+            "role": "REGULATORY_CONTEXT",
+            "territory": {
+              "type": "MUNICIPALITY",
+              "value": "2507507"
+            },
+            "technical_source_ids": [
+              "br-anatel-open-data"
+            ],
+            "evidence_level": "NETWORK_CONTEXT",
+            "missing": [
+              "provider-by-address availability source"
+            ]
+          }
+        ],
+        "drainage": [
+          {
+            "provider_source_id": "pb-joao-pessoa-drainage-service",
+            "role": "MUNICIPAL_INFRASTRUCTURE",
+            "territory": {
+              "type": "MUNICIPALITY",
+              "value": "2507507"
+            },
+            "technical_source_ids": [
+              "pb-joao-pessoa-filipeia",
+              "pb-joao-pessoa-drainage-service"
+            ],
+            "evidence_level": "PROVIDER_TERRITORY_ONLY",
+            "missing": [
+              "approved complete georeferenced stormwater-network inventory"
+            ]
+          }
+        ],
+        "public_lighting": [
+          {
+            "provider_source_id": "pb-joao-pessoa-public-lighting",
+            "role": "MUNICIPAL_PUBLIC_LIGHTING",
+            "territory": {
+              "type": "MUNICIPALITY",
+              "value": "2507507"
+            },
+            "technical_source_ids": [
+              "pb-joao-pessoa-public-lighting"
+            ],
+            "evidence_level": "PROVIDER_TERRITORY_ONLY",
+            "missing": [
+              "approved access to georeferenced luminaire inventory"
+            ],
+            "note": "A Prefeitura informa parque LED georreferenciado/monitorado, mas o inventário técnico ainda não está catalogado como dado aberto."
+          }
+        ]
+      }
+    }
+  ]
+}
