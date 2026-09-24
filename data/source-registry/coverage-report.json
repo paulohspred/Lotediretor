@@ -1,8 +1,8 @@
 {
   "schema_version": "0.1.0",
   "as_of": "2026-09-24",
-  "source_count": 165,
-  "municipality_count": 48,
+  "source_count": 169,
+  "municipality_count": 50,
   "key_domains": [
     "cadastre",
     "lots",
@@ -351,22 +351,22 @@
       ]
     },
     "MS": {
-      "sources": 1,
-      "municipalities": 0,
+      "sources": 2,
+      "municipalities": 1,
       "key_domains_present": [
+        "cadastre",
+        "lots",
+        "plan_director",
+        "zoning",
+        "urban_planning",
         "licensing",
         "imagery",
         "environment"
       ],
       "key_domains_missing": [
-        "cadastre",
-        "lots",
         "buildings",
         "iptu",
         "itbi",
-        "plan_director",
-        "zoning",
-        "urban_planning",
         "building_permits",
         "habite_se",
         "terrain",
@@ -375,6 +375,7 @@
         "official_gazette"
       ],
       "source_ids": [
+        "ms-campo-grande-simgeo",
         "ms-pinms-arcgis"
       ]
     },
@@ -545,17 +546,17 @@
       ]
     },
     "PI": {
-      "sources": 1,
+      "sources": 2,
       "municipalities": 1,
       "key_domains_present": [
+        "cadastre",
+        "iptu",
         "plan_director",
         "zoning"
       ],
       "key_domains_missing": [
-        "cadastre",
         "lots",
         "buildings",
-        "iptu",
         "itbi",
         "urban_planning",
         "building_permits",
@@ -569,6 +570,7 @@
         "official_gazette"
       ],
       "source_ids": [
+        "pi-teresina-property-services",
         "pi-teresina-urban-law"
       ]
     },
@@ -671,10 +673,11 @@
       ]
     },
     "RO": {
-      "sources": 1,
+      "sources": 2,
       "municipalities": 1,
       "key_domains_present": [
         "cadastre",
+        "zoning",
         "urban_planning"
       ],
       "key_domains_missing": [
@@ -683,7 +686,6 @@
         "iptu",
         "itbi",
         "plan_director",
-        "zoning",
         "building_permits",
         "licensing",
         "habite_se",
@@ -695,7 +697,8 @@
         "official_gazette"
       ],
       "source_ids": [
-        "ro-porto-velho-geoportal"
+        "ro-porto-velho-geoportal",
+        "ro-porto-velho-geoserver"
       ]
     },
     "RR": {
@@ -837,23 +840,23 @@
       ]
     },
     "TO": {
-      "sources": 1,
-      "municipalities": 0,
+      "sources": 2,
+      "municipalities": 1,
       "key_domains_present": [
+        "cadastre",
+        "iptu",
+        "building_permits",
+        "habite_se",
         "environment"
       ],
       "key_domains_missing": [
-        "cadastre",
         "lots",
         "buildings",
-        "iptu",
         "itbi",
         "plan_director",
         "zoning",
         "urban_planning",
-        "building_permits",
         "licensing",
-        "habite_se",
         "imagery",
         "terrain",
         "risk",
@@ -861,7 +864,8 @@
         "official_gazette"
       ],
       "source_ids": [
-        "to-geoportal-seplan"
+        "to-geoportal-seplan",
+        "to-palmas-property-tax-services"
       ]
     }
   },
@@ -1160,6 +1164,24 @@
       ]
     },
     {
+      "ibge": "5002704",
+      "uf": "MS",
+      "source_count": 1,
+      "source_ids": [
+        "ms-campo-grande-simgeo"
+      ],
+      "domains": [
+        "cadastre",
+        "cartography",
+        "imagery",
+        "lots",
+        "multifinalitary_cadastre",
+        "plan_director",
+        "urban_planning",
+        "zoning"
+      ]
+    },
+    {
       "ibge": "5103403",
       "uf": "MT",
       "source_count": 1,
@@ -1264,15 +1286,21 @@
     {
       "ibge": "2211001",
       "uf": "PI",
-      "source_count": 1,
+      "source_count": 2,
       "source_ids": [
+        "pi-teresina-property-services",
         "pi-teresina-urban-law"
       ],
       "domains": [
+        "building_area",
+        "cadastre",
+        "historical_tax_record",
+        "iptu",
         "land_use",
         "legal_annexes",
         "parceling",
         "plan_director",
+        "property_services",
         "urban_law",
         "zoning"
       ]
@@ -1406,16 +1434,19 @@
     {
       "ibge": "1100205",
       "uf": "RO",
-      "source_count": 1,
+      "source_count": 2,
       "source_ids": [
-        "ro-porto-velho-geoportal"
+        "ro-porto-velho-geoportal",
+        "ro-porto-velho-geoserver"
       ],
       "domains": [
         "cadastre",
+        "geospatial",
         "multifinalitary_cadastre",
         "territorial_information",
         "urban_planning",
-        "zoneamento"
+        "zoneamento",
+        "zoning"
       ]
     },
     {
@@ -1812,52 +1843,70 @@
         "urban_planning",
         "zoning"
       ]
+    },
+    {
+      "ibge": "1721000",
+      "uf": "TO",
+      "source_count": 1,
+      "source_ids": [
+        "to-palmas-property-tax-services"
+      ],
+      "domains": [
+        "building_permits",
+        "cadastre",
+        "habite_se",
+        "iptu",
+        "pgv",
+        "property_services",
+        "valuation"
+      ]
     }
   ],
   "domain_counts": {
-    "cadastre": 37,
-    "zoning": 32,
-    "plan_director": 28,
+    "cadastre": 41,
+    "zoning": 34,
+    "plan_director": 29,
+    "urban_planning": 26,
     "environment": 25,
-    "urban_planning": 24,
-    "lots": 17,
-    "geospatial": 16,
+    "lots": 18,
+    "geospatial": 17,
     "itbi": 15,
-    "imagery": 12,
+    "imagery": 13,
+    "iptu": 13,
     "risk": 11,
     "heritage": 11,
     "law": 11,
     "land_use": 11,
-    "iptu": 11,
     "buildings": 11,
     "terrain": 10,
     "planning": 10,
-    "cartography": 8,
+    "cartography": 9,
     "licensing": 8,
     "hydrology": 7,
     "protected_areas": 7,
+    "multifinalitary_cadastre": 7,
+    "building_permits": 6,
     "urban_law": 6,
     "water": 6,
     "property_attributes": 6,
-    "multifinalitary_cadastre": 6,
     "open_data": 5,
     "urban_parameters": 5,
-    "building_permits": 5,
+    "pgv": 5,
     "roads": 5,
+    "valuation": 5,
     "legal_annexes": 5,
     "transactions": 5,
     "parceling": 5,
     "blocks": 5,
     "flood": 4,
     "streets": 4,
-    "pgv": 4,
     "transmission": 4,
     "substations": 4,
-    "valuation": 4,
     "property_identity": 4,
     "sewerage": 4,
     "infrastructure": 4,
     "utilities": 4,
+    "property_services": 4,
     "socioeconomic": 3,
     "agriculture": 3,
     "finance": 3,
@@ -1869,6 +1918,7 @@
     "official_gazette": 3,
     "geospatial_catalog": 3,
     "property_registry": 3,
+    "habite_se": 3,
     "approved_projects": 3,
     "addresses": 3,
     "property": 3,
@@ -1909,7 +1959,7 @@
     "geodiversity": 2,
     "rural": 2,
     "sanitation": 2,
-    "habite_se": 2,
+    "building_area": 2,
     "urban_control": 2,
     "aviation_constraints": 2,
     "height": 2,
@@ -1917,7 +1967,6 @@
     "rural_properties": 2,
     "car": 2,
     "property_certificate": 2,
-    "property_services": 2,
     "development_rights": 2,
     "subdivision": 2,
     "lot": 2,
@@ -2035,7 +2084,6 @@
     "public_works": 1,
     "infrastructure_projects": 1,
     "geocoded_projects": 1,
-    "building_area": 1,
     "eiv": 1,
     "iptu_related": 1,
     "topography": 1,
@@ -2059,6 +2107,7 @@
     "historical_imagery": 1,
     "reservoirs": 1,
     "urban_instrument": 1,
+    "historical_tax_record": 1,
     "cadastral_blocks": 1,
     "road_classification": 1,
     "legal_boundaries": 1,
