@@ -11,6 +11,7 @@ import json
 import math
 import urllib.parse
 import urllib.request
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timezone
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -67,6 +68,101 @@ FIELD_LABELS = {
     "terrain": "Terreno/topografia", "public works": "Obras públicas",
     "public processes": "Processos públicos", "official gazette": "Diário Oficial",
     "historical data": "Histórico",
+}
+
+
+THEMATIC_LAYERS = {
+    "zoning": {
+        "type_name": "geoportal:perimetro_zona_lei_18177_24",
+        "geometry": "ge_poligono",
+        "fields": [
+            "cd_identificador", "tx_zoneamento_perimetro",
+            "tx_observacao_perimetro", "cd_zoneamento_perimetro",
+            "cd_tipo_legislacao_zoneamento",
+            "cd_numero_legislacao_zoneamento",
+            "an_legislacao_zoneamento", "dt_atualizacao",
+        ],
+    },
+    "macroarea": {
+        "type_name": "geoportal:pde_macroarea_lei_18209",
+        "geometry": "ge_poligono",
+        "fields": [
+            "cd_identificador_pde_macroarea_lei_18209",
+            "nm_macroarea", "sg_macroarea", "dt_atualizacao",
+        ],
+    },
+    "macrozone": {
+        "type_name": "geoportal:pde2014_v_mcrz_01_map",
+        "geometry": "ge_poligono",
+        "fields": [
+            "cd_identificador", "sg_macro_divisao_pde",
+            "nm_perimetro_divisao_pde", "nm_tema_divisao_pde",
+            "tx_macro_divisao_pde", "cd_macro_divisao_pde",
+        ],
+    },
+    "geological_risk": {
+        "type_name": "geoportal:area_risco_geologico",
+        "geometry": "ge_poligono",
+        "fields": [
+            "cd_identificador", "nm_area_risco",
+            "tx_grau_de_risco_geologico", "sg_area_risco",
+            "sg_setor_risco", "tx_tipo_processo_geologico",
+            "cd_grau_risco_geologico", "dt_atualizacao",
+            "dt_vistoria", "sg_fonte_original",
+        ],
+    },
+    "hydrological_risk": {
+        "type_name": "geoportal:risco_hidrologico",
+        "geometry": "ge_poligono",
+        "fields": [
+            "cd_identificador_risco_hidrologico",
+            "nm_area_risco_hidrologico",
+            "tx_grau_risco_hidrologico",
+            "sg_area_risco_hidrologico",
+            "sg_setor_risco_hidrologico",
+            "tx_tipo_processo", "dt_vistoria",
+            "nm_subprefeitura", "nm_bacia_hidrografica",
+        ],
+    },
+    "heritage_asset": {
+        "type_name": "geoportal:patrimonio_cultural_bem_tombado",
+        "geometry": "ge_poligono",
+        "fields": [
+            "cd_identificador", "nm_area_tombada",
+            "tx_resolucao_conpresp", "tx_resolucao_condephaat",
+            "tx_resolucao_iphan", "nm_endereco", "tx_link_resolucao",
+            "tx_zepec", "tx_nivel_tombamento",
+            "tx_situacao_tombamento", "tx_tipo_categoria_zepec",
+            "dt_carga",
+        ],
+    },
+    "heritage_buffer_conpresp": {
+        "type_name": "geoportal:patrimonio_cultural_area_envoltoria_CONPRESP",
+        "geometry": "ge_poligono",
+        "fields": [
+            "cd_identificador", "nm_area",
+            "tx_resolucao_conpresp", "tx_link_resolucao",
+            "sg_fonte_original", "dt_carga",
+        ],
+    },
+    "heritage_buffer_condephaat": {
+        "type_name": "geoportal:patrimonio_cultural_area_envoltoria_CONDEPHAAT",
+        "geometry": "ge_poligono",
+        "fields": [
+            "cd_identificador", "nm_area",
+            "tx_resolucao_condephaat", "tx_link_resolucao",
+            "dt_carga",
+        ],
+    },
+    "heritage_buffer_iphan": {
+        "type_name": "geoportal:patrimonio_cultural_area_envoltoria_IPHAN",
+        "geometry": "ge_poligono",
+        "fields": [
+            "cd_identificador", "nm_area",
+            "tx_resolucao_iphan", "sg_fonte_original",
+            "dt_carga",
+        ],
+    },
 }
 
 
@@ -165,6 +261,106 @@ def fetch_candidates(lat: float, lng: float) -> dict:
     return payload
 
 
+
+def fetch_point_layer(key: str, lat: float, lng: float) -> list[dict]:
+    config = THEMATIC_LAYERS[key]
+    delta = 0.0007
+    bbox = f"{lng-delta},{lat-delta},{lng+delta},{lat+delta},EPSG:4326"
+    query = {
+        "service": "WFS",
+        "version": "2.0.0",
+        "request": "GetFeature",
+        "typeNames": config["type_name"],
+        "srsName": "EPSG:4326",
+        "bbox": bbox,
+        "count": "60",
+        "propertyName": ",".join([config["geometry"], *config["fields"]]),
+        "outputFormat": "application/json",
+    }
+    url = WFS + "?" + urllib.parse.urlencode(query)
+    request = urllib.request.Request(
+        url,
+        headers={
+            "User-Agent": "LoteDiretor/0.1 (+https://lotediretor.com)",
+            "Accept": "application/json",
+        },
+    )
+    with urllib.request.urlopen(request, timeout=12) as response:
+        body = response.read(4 * 1024 * 1024 + 1)
+        if response.status != 200:
+            raise RuntimeError(
+                f"GeoSampa {config['type_name']} returned HTTP {response.status}"
+            )
+        if len(body) > 4 * 1024 * 1024:
+            raise RuntimeError(
+                f"GeoSampa {config['type_name']} exceeded safety limit"
+            )
+    payload = json.loads(body)
+    if payload.get("type") != "FeatureCollection":
+        raise RuntimeError(
+            f"GeoSampa {config['type_name']} did not return FeatureCollection"
+        )
+    output = []
+    for feature in payload.get("features") or []:
+        if contains_point(feature, lng, lat):
+            props = feature.get("properties") or {}
+            unexpected = set(props) - set(config["fields"])
+            if unexpected:
+                raise RuntimeError(
+                    f"GeoSampa {config['type_name']} returned unexpected fields: "
+                    + ", ".join(sorted(unexpected))
+                )
+            output.append({
+                "id": feature.get("id"),
+                "properties": props,
+            })
+    return output
+
+
+def build_context(lat: float, lng: float) -> dict:
+    results = {}
+    errors = {}
+    with ThreadPoolExecutor(max_workers=8) as pool:
+        futures = {
+            pool.submit(fetch_point_layer, key, lat, lng): key
+            for key in THEMATIC_LAYERS
+        }
+        for future in as_completed(futures):
+            key = futures[future]
+            try:
+                results[key] = future.result()
+            except Exception as exc:
+                errors[key] = type(exc).__name__
+                results[key] = []
+
+    zoning = (results.get("zoning") or [None])[0]
+    macroarea = (results.get("macroarea") or [None])[0]
+    macrozone = (results.get("macrozone") or [None])[0]
+
+    return {
+        "planning": {
+            "zoning": zoning,
+            "macroarea": macroarea,
+            "macrozone": macrozone,
+        },
+        "risk": {
+            "geological": results.get("geological_risk") or [],
+            "hydrological": results.get("hydrological_risk") or [],
+        },
+        "heritage": {
+            "assets": results.get("heritage_asset") or [],
+            "buffers": {
+                "CONPRESP": results.get("heritage_buffer_conpresp") or [],
+                "CONDEPHAAT": results.get("heritage_buffer_condephaat") or [],
+                "IPHAN": results.get("heritage_buffer_iphan") or [],
+            },
+        },
+        "query_errors": errors,
+        "queried_at": utc_now(),
+        "source": "Prefeitura de São Paulo / GeoSampa WFS",
+    }
+
+
 def public_feature(feature: dict) -> dict:
     props = feature.get("properties") or {}
     return {
@@ -203,18 +399,33 @@ def load_report_contract() -> tuple[dict, dict]:
     return spec, {row["field"]: row for row in city["rows"]}
 
 
-def actual_values_for_section(section_id: str, parcel: dict) -> list[dict]:
+def actual_values_for_section(
+    section_id: str,
+    parcel: dict,
+    context: dict,
+) -> list[dict]:
     p = parcel["properties"]
     address = ", ".join(filter(None, [p.get("street"), p.get("number")])) or None
+    planning = context.get("planning") or {}
+    zoning = (planning.get("zoning") or {}).get("properties") or {}
+    macroarea = (planning.get("macroarea") or {}).get("properties") or {}
+    macrozone = (planning.get("macrozone") or {}).get("properties") or {}
+    risk = context.get("risk") or {}
+    heritage = context.get("heritage") or {}
+
     if section_id == "executive_summary":
-        return [
+        values = [
             {"label": "Endereço", "value": address},
             {"label": "SQL", "value": p.get("sql_reference")},
             {"label": "CIB", "value": p.get("cib")},
             {"label": "Área do terreno", "value": p.get("land_area_m2"), "unit": "m²"},
             {"label": "Área construída fiscal", "value": p.get("built_area_m2"), "unit": "m²"},
             {"label": "Uso cadastral", "value": p.get("use_description")},
+            {"label": "Zona", "value": zoning.get("cd_zoneamento_perimetro")},
+            {"label": "Macroárea", "value": macroarea.get("nm_macroarea")},
         ]
+        return values
+
     if section_id == "identity_location":
         return [
             {"label": "SQL", "value": p.get("sql_reference")},
@@ -227,6 +438,7 @@ def actual_values_for_section(section_id: str, parcel: dict) -> list[dict]:
             {"label": "Complemento", "value": p.get("complement")},
             {"label": "Área do terreno", "value": p.get("land_area_m2"), "unit": "m²"},
         ]
+
     if section_id == "building_existing":
         return [
             {"label": "Área construída fiscal", "value": p.get("built_area_m2"), "unit": "m²"},
@@ -234,10 +446,66 @@ def actual_values_for_section(section_id: str, parcel: dict) -> list[dict]:
             {"label": "Tipo de lote", "value": p.get("parcel_type")},
             {"label": "Situação do lote", "value": p.get("parcel_status")},
         ]
+
+    if section_id == "planning_buildability":
+        law_no = zoning.get("cd_numero_legislacao_zoneamento")
+        law_year = zoning.get("an_legislacao_zoneamento")
+        law = f"Lei {int(law_no):,}/{int(law_year)}".replace(",", ".") if law_no and law_year else None
+        return [
+            {"label": "Zona vigente", "value": zoning.get("cd_zoneamento_perimetro")},
+            {"label": "Descrição da zona", "value": zoning.get("tx_zoneamento_perimetro")},
+            {"label": "Base legal", "value": law},
+            {"label": "Atualização da camada", "value": zoning.get("dt_atualizacao")},
+            {"label": "Macroárea", "value": macroarea.get("nm_macroarea")},
+            {"label": "Sigla da macroárea", "value": macroarea.get("sg_macroarea")},
+            {
+                "label": "Macrozona",
+                "value": macrozone.get("tx_macro_divisao_pde")
+                or macrozone.get("nm_perimetro_divisao_pde"),
+            },
+        ]
+
+    if section_id == "environment_risk_heritage":
+        values = []
+        for item in risk.get("geological") or []:
+            props = item.get("properties") or {}
+            values.extend([
+                {"label": "Risco geológico", "value": props.get("tx_grau_de_risco_geologico")},
+                {"label": "Processo geológico", "value": props.get("tx_tipo_processo_geologico")},
+                {"label": "Data de vistoria (risco geo.)", "value": props.get("dt_vistoria")},
+            ])
+        for item in risk.get("hydrological") or []:
+            props = item.get("properties") or {}
+            values.extend([
+                {"label": "Risco hidrológico", "value": props.get("tx_grau_risco_hidrologico")},
+                {"label": "Processo hidrológico", "value": props.get("tx_tipo_processo")},
+                {"label": "Bacia hidrográfica", "value": props.get("nm_bacia_hidrografica")},
+            ])
+        for item in heritage.get("assets") or []:
+            props = item.get("properties") or {}
+            values.extend([
+                {"label": "Bem tombado", "value": props.get("nm_area_tombada")},
+                {"label": "Situação do tombamento", "value": props.get("tx_situacao_tombamento")},
+                {"label": "ZEPEC", "value": props.get("tx_zepec")},
+            ])
+        for authority, items in (heritage.get("buffers") or {}).items():
+            for item in items:
+                props = item.get("properties") or {}
+                values.append({
+                    "label": f"Área envoltória {authority}",
+                    "value": props.get("nm_area") or "Incidência identificada",
+                })
+        if not values:
+            values.append({
+                "label": "Triagem espacial",
+                "value": "Sem incidência nas camadas consultadas neste ponto",
+            })
+        return values
+
     return []
 
 
-def build_report(parcel: dict) -> dict:
+def build_report(parcel: dict, context: dict) -> dict:
     spec, rows = load_report_contract()
     sections = []
     for section in sorted(spec["sections"], key=lambda item: item["order"]):
@@ -256,7 +524,7 @@ def build_report(parcel: dict) -> dict:
                 "missing_fields": row.get("missing_fields") or [],
             })
         values = [
-            item for item in actual_values_for_section(section["id"], parcel)
+            item for item in actual_values_for_section(section["id"], parcel, context)
             if item.get("value") not in (None, "")
         ]
         sections.append({
@@ -323,10 +591,13 @@ class Handler(BaseHTTPRequestHandler):
                     "candidate_count": len(features),
                     "source": "GeoSampa lote_cidadao",
                 })
+            parcel = public_feature(selected)
+            context = build_context(lat, lng)
             return self.send_json(200, {
                 "found": True,
                 "clicked": {"lat": lat, "lng": lng},
-                "feature": public_feature(selected),
+                "feature": parcel,
+                "context": context,
                 "source": {
                     "id": "sp-sao-paulo-geosampa-wfs",
                     "authority": "Prefeitura de São Paulo / GeoSampa",
@@ -335,7 +606,7 @@ class Handler(BaseHTTPRequestHandler):
                     "queried_at": utc_now(),
                     "method": "WFS 2.0 bbox candidate query + server-side point-in-polygon",
                 },
-                "report": build_report(public_feature(selected)),
+                "report": build_report(parcel, context),
             })
         except Exception as exc:
             print(f"upstream error: {exc!r}", flush=True)
