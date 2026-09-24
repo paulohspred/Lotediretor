@@ -1,0 +1,122 @@
+{
+  "schema_version": "0.1.0",
+  "quality_levels": [
+    {
+      "id": "T0",
+      "name": "engineering_survey",
+      "suitable_for": [
+        "engineering_design_subject_to_professional_validation"
+      ],
+      "examples": [
+        "RTK/GNSS",
+        "total_station",
+        "signed_topographic_survey"
+      ]
+    },
+    {
+      "id": "T1",
+      "name": "official_high_resolution",
+      "suitable_for": [
+        "professional_preliminary_study",
+        "detailed_site_analysis"
+      ],
+      "examples": [
+        "municipal_DTM",
+        "LiDAR",
+        "high_resolution_photogrammetry"
+      ]
+    },
+    {
+      "id": "T2",
+      "name": "official_regional",
+      "suitable_for": [
+        "preliminary_site_analysis",
+        "risk_context"
+      ],
+      "examples": [
+        "state_or_regional_DEM"
+      ]
+    },
+    {
+      "id": "T3",
+      "name": "global_30m",
+      "suitable_for": [
+        "regional_context",
+        "large_parcel_preliminary"
+      ],
+      "examples": [
+        "Copernicus_GLO30",
+        "JAXA_AW3D30"
+      ]
+    },
+    {
+      "id": "T4",
+      "name": "global_90m",
+      "suitable_for": [
+        "regional_context_only"
+      ],
+      "examples": [
+        "Copernicus_GLO90"
+      ]
+    }
+  ],
+  "source_priority": [
+    "user_or_professional_topographic_survey",
+    "municipal_or_state_DTM_LiDAR",
+    "official_regional_DEM",
+    "Copernicus_GLO30",
+    "JAXA_AW3D30",
+    "Copernicus_GLO90"
+  ],
+  "outputs": [
+    "min_elevation_m",
+    "max_elevation_m",
+    "mean_elevation_m",
+    "elevation_range_m",
+    "mean_slope_percent",
+    "max_slope_percent",
+    "dominant_aspect_deg",
+    "slope_class_area_percent",
+    "contours",
+    "hillshade",
+    "hypsometry",
+    "high_low_points",
+    "front_to_rear_delta_m"
+  ],
+  "profiles": [
+    {
+      "id": "AA",
+      "method": "principal_axis_inside_parcel",
+      "description": "Profile along parcel principal/longest axis."
+    },
+    {
+      "id": "BB",
+      "method": "perpendicular_to_principal_axis",
+      "description": "Transverse profile through representative parcel center."
+    },
+    {
+      "id": "FRONT_REAR",
+      "method": "road_frontage_to_opposite_boundary",
+      "description": "Profile from frontage/street edge toward parcel rear when frontage can be resolved."
+    },
+    {
+      "id": "DIAGONALS",
+      "method": "selected_irregular_parcel_diagonals",
+      "description": "Additional profiles for irregular parcels or strong terrain variation."
+    }
+  ],
+  "profile_fields": [
+    "distance_m",
+    "elevation_m",
+    "source_id",
+    "source_resolution_m",
+    "horizontal_crs",
+    "vertical_datum",
+    "observed_or_interpolated"
+  ],
+  "warnings": {
+    "coarse_dem": "Global 30/90m DEM is not an engineering topographic survey and may be unsuitable for small urban parcels.",
+    "dsm_vs_dtm": "DSM may include roofs/vegetation; terrain cuts should prefer DTM/ground returns.",
+    "cut_fill": "Cut/fill derived without engineering-grade terrain and a defined design surface is preliminary only."
+  }
+}
