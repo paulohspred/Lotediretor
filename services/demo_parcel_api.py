@@ -58,6 +58,8 @@ REPORT_SPEC_PATH = ROOT / "data/property-dossier/report-spec.json"
 MATRIX_PATH = ROOT / "data/deployment/professional-completion-matrix.json"
 UTILITY_RESOLVER_PATH = ROOT / "data/utilities/municipality-provider-resolver.json"
 SOURCE_REGISTRY_PATH = ROOT / "data/source-registry/bootstrap.json"
+PGV_INDEX_PATH = Path("/srv/lotediretor/data/pgv2026/pgv-terrain-values-2026.json")
+_PGV_INDEX_CACHE = None
 
 FIELD_LABELS = {
     "identity": "Identidade", "land": "Terreno", "building": "Edificação",
@@ -560,6 +562,54 @@ def fetch_point_layer(key: str, lat: float, lng: float) -> list[dict]:
 
 
 
+def load_pgv_index() -> dict:
+    global _PGV_INDEX_CACHE
+    if _PGV_INDEX_CACHE is None:
+        payload = json.loads(PGV_INDEX_PATH.read_text(encoding="utf-8"))
+        if payload.get("source_id") != "sp-sao-paulo-pgv-2026":
+            raise ValueError("unexpected PGV source")
+        if payload.get("annex") != "II":
+            raise ValueError("PGV index is not Annex II")
+        records = payload.get("records")
+        if not isinstance(records, dict) or len(records) < 100_000:
+            raise ValueError("PGV index failed record-count validation")
+        _PGV_INDEX_CACHE = payload
+    return _PGV_INDEX_CACHE
+
+
+def resolve_pgv(parcel: dict) -> dict:
+    props = parcel.get("properties") or {}
+    codlog = props.get("street_code")
+    sector = props.get("fiscal_sector")
+    block = props.get("fiscal_block")
+    if not all(isinstance(value, str) and value for value in (codlog, sector, block)):
+        return {
+            "found": False,
+            "reason": "parcel_missing_codlog_or_sq",
+        }
+    sq = f"{sector}{block}"
+    key = f"{codlog}:{sq}"
+    index = load_pgv_index()
+    value = index["records"].get(key)
+    return {
+        "found": value is not None,
+        "codlog": codlog,
+        "sq": sq,
+        "key": key,
+        "vm2t_brl_per_m2": value,
+        "law": index.get("law"),
+        "effective_from": index.get("effective_from"),
+        "annex": index.get("annex"),
+        "source_id": index.get("source_id"),
+        "source_pdf_sha256": index.get("source_pdf_sha256"),
+        "record_count": index.get("record_count"),
+        "interpretation": (
+            "Valor unitário de terreno da PGV. Não é, isoladamente, "
+            "valor venal do imóvel nem valor do IPTU."
+        ),
+    }
+
+
 def load_utility_context() -> dict:
     resolver = json.loads(UTILITY_RESOLVER_PATH.read_text(encoding="utf-8"))
     registry = json.loads(SOURCE_REGISTRY_PATH.read_text(encoding="utf-8"))
@@ -588,7 +638,7 @@ def load_utility_context() -> dict:
     return output
 
 
-def build_context(lat: float, lng: float, parcel_geometry: dict) -> dict:
+def build_context(lat: float, lng: float, parcel_geometry: dict, parcel: dict) -> dict:
     results = {}
     errors = {}
     with ThreadPoolExecutor(max_workers=8) as pool:
@@ -629,6 +679,7 @@ def build_context(lat: float, lng: float, parcel_geometry: dict) -> dict:
             },
         },
         "utilities": load_utility_context(),
+        "fiscal": {"pgv": resolve_pgv(parcel)},
         "query_errors": errors,
         "queried_at": utc_now(),
         "source": "Prefeitura de São Paulo / GeoSampa WFS",
@@ -653,6 +704,7 @@ def public_feature(feature: dict) -> dict:
             "sql_reference": sql_reference(props),
             "cib": props.get("cd_cib"),
             "cib_status": props.get("tx_situacao_cib"),
+            "street_code": props.get("cd_logradouro"),
             "street": props.get("nm_logradouro_completo"),
             "number": props.get("cd_numero_porta"),
             "complement": props.get("tx_complemento_endereco"),
@@ -697,6 +749,11 @@ def actual_values_for_section(
             {"label": "Uso cadastral", "value": p.get("use_description")},
             {"label": "Zona", "value": zoning.get("cd_zoneamento_perimetro")},
             {"label": "Macroárea", "value": macroarea.get("nm_macroarea")},
+            {
+                "label": "PGV 2026 · terreno",
+                "value": (context.get("fiscal") or {}).get("pgv", {}).get("vm2t_brl_per_m2"),
+                "unit": "BRL/m²",
+            },
         ]
         return values
 
@@ -770,6 +827,34 @@ def actual_values_for_section(
                 "value": macrozone.get("tx_macro_divisao_pde")
                 or macrozone.get("nm_perimetro_divisao_pde"),
             },
+        ]
+
+    if section_id == "fiscal_market":
+        fiscal = context.get("fiscal") or {}
+        pgv = fiscal.get("pgv") or {}
+        if pgv.get("found"):
+            return [
+                {
+                    "label": "PGV 2026 · valor unitário de terreno",
+                    "value": pgv.get("vm2t_brl_per_m2"),
+                    "unit": "BRL/m²",
+                },
+                {
+                    "label": "Chave PGV · Codlog / SQ",
+                    "value": f"{pgv.get('codlog')} / {pgv.get('sq')}",
+                },
+                {"label": "Base legal PGV", "value": pgv.get("law")},
+                {"label": "Vigência", "value": pgv.get("effective_from")},
+                {
+                    "label": "Interpretação",
+                    "value": pgv.get("interpretation"),
+                },
+            ]
+        return [
+            {
+                "label": "PGV 2026",
+                "value": "Valor unitário não localizado para a chave cadastral do lote.",
+            }
         ]
 
     if section_id == "infrastructure_utilities":
@@ -954,7 +1039,7 @@ class Handler(BaseHTTPRequestHandler):
                     "source": "GeoSampa lote_cidadao",
                 })
             parcel = public_feature(selected)
-            context = build_context(lat, lng, parcel["geometry"])
+            context = build_context(lat, lng, parcel["geometry"], parcel)
             return self.send_json(200, {
                 "found": True,
                 "clicked": {"lat": lat, "lng": lng},
