@@ -305,6 +305,17 @@ function formatReportValue(item){
   }
   return text(item.value);
 }
+function renderRegistrySummary(itbi){
+  if(!itbi||!itbi.available)return "";
+  const refs=itbi.registry_references||[];
+  if(!refs.length){
+    return '<div class="zola-registry-summary"><h4>Referência registral</h4><div class="zola-registry-row"><span>Nenhuma matrícula localizada nas DTIs públicas deste SQL.</span><span>Isso não significa ausência de matrícula atual.</span></div></div>';
+  }
+  return '<div class="zola-registry-summary"><h4>Matrículas / cartórios encontrados no histórico ITBI</h4>'+
+    refs.slice(0,6).map(ref=>'<div class="zola-registry-row"><div><span>Cartório</span><b>'+escapeHtml(ref.registry_office||"—")+'</b></div><div><span>Matrícula</span><b>'+escapeHtml(ref.registry_number||"—")+'</b><span>'+escapeHtml(ref.transaction_date||"")+'</span></div></div>').join("")+
+    '</div>';
+}
+
 function renderItbiTimeline(itbi){
   if(!itbi||!itbi.available)return "";
   const years=itbi.coverage_years||[];
@@ -329,6 +340,16 @@ function renderItbiTimeline(itbi){
         (registry?'<div style="grid-column:1/-1">Registro<strong>'+escapeHtml(registry)+'</strong></div>':"")+
       '</div></div>';
   }).join("")+'</div>';
+}
+
+function renderTerrainSummary(terrain){
+  if(!terrain||!terrain.available)return "";
+  return '<div class="terrain-summary">'+
+    '<div><small>Cota mínima</small><b>'+escapeHtml(formatReportValue({value:terrain.min_elevation_m,unit:"m"}))+'</b></div>'+
+    '<div><small>Cota máxima</small><b>'+escapeHtml(formatReportValue({value:terrain.max_elevation_m,unit:"m"}))+'</b></div>'+
+    '<div><small>Desnível</small><b>'+escapeHtml(formatReportValue({value:terrain.amplitude_m,unit:"m"}))+'</b></div>'+
+    '<div><small>Qualidade</small><b>'+escapeHtml(terrain.quality||"—")+'</b></div>'+
+    '</div>';
 }
 
 function renderTerrainProfiles(terrain){
@@ -417,7 +438,7 @@ function renderReport(report,p,context){
     ["Cota máx.",formatReportValue({value:terrain.max_elevation_m,unit:"m"})],
     ["Desnível",formatReportValue({value:terrain.amplitude_m,unit:"m"})]
   ];
-  const keyFactsHtml='<div class="zola-keyfacts">'+keyFacts.map(([label,value])=>
+  const keyFactsHtml='<div class="zola-facts-title">Informações do lote</div><div class="zola-keyfacts">'+keyFacts.map(([label,value])=>
     '<div class="zola-keyfact"><small>'+escapeHtml(label)+'</small><b>'+escapeHtml(value||"—")+'</b></div>'
   ).join("")+'</div>';
   const intersectionHtml='<div class="zola-intersections">'+
@@ -455,8 +476,8 @@ function renderReport(report,p,context){
       '</div>';
     }).join("");
     if(!values && !fields)return "";
-    const terrainCharts=section.id==="terrain_visual"?renderTerrainProfiles(context&&context.terrain):"";
-    const transactionTimeline=section.id==="fiscal_market"?renderItbiTimeline(context&&context.fiscal&&context.fiscal.itbi):"";
+    const terrainCharts=section.id==="terrain_visual"?(renderTerrainSummary(context&&context.terrain)+renderTerrainProfiles(context&&context.terrain)):"";
+    const transactionTimeline=section.id==="fiscal_market"?(renderRegistrySummary(context&&context.fiscal&&context.fiscal.itbi)+renderItbiTimeline(context&&context.fiscal&&context.fiscal.itbi)):"";
     return '<section class="zola-report-section" id="report-section-'+escapeHtml(section.id)+'"><h3 class="zola-section-title">'+escapeHtml(section.title)+'</h3>'+
       terrainCharts+transactionTimeline+
       (values?'<div class="report-values">'+values+'</div>':"")+
