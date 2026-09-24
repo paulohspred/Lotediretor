@@ -46,6 +46,41 @@
       "notes": "SIT expõe cadastro de unidade imobiliária, histórico PGV, temáticos ITBI e legislação do Plano Diretor. Descobrir serviços/APIs e licença antes de ingestão."
     },
     {
+      "id": "ba-conder-arcgis",
+      "authority": "CONDER Bahia",
+      "scope": "state",
+      "uf": "BA",
+      "domain": [
+        "cartography",
+        "housing",
+        "urban_projects",
+        "imagery",
+        "heritage"
+      ],
+      "source_type": "ArcGIS_REST",
+      "base_url": "https://mapas.conder.ba.gov.br/arcgis/rest/services",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_ENDPOINT_LICENSE_REVIEW"
+    },
+    {
+      "id": "ba-sei-arcgis",
+      "authority": "Superintendência de Estudos Econômicos e Sociais da Bahia (SEI)",
+      "scope": "state",
+      "uf": "BA",
+      "domain": [
+        "cartography",
+        "planning",
+        "socioeconomic",
+        "geodesy",
+        "climate"
+      ],
+      "source_type": "ArcGIS_REST",
+      "base_url": "https://map.geo.sei.ba.gov.br/arcgis/rest/services",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_ENDPOINT_LICENSE_REVIEW",
+      "notes": "Diretório REST oficial expõe múltiplas pastas temáticas e Feature/MapServers. Licença deve ser determinada por serviço/dataset."
+    },
+    {
       "id": "br-ana-open-data",
       "authority": "Agência Nacional de Águas e Saneamento Básico",
       "scope": "BR",
@@ -96,6 +131,23 @@
       "verification_status": "VERIFIED"
     },
     {
+      "id": "br-embrapa-geoinfo",
+      "authority": "Embrapa",
+      "scope": "BR",
+      "domain": [
+        "soil",
+        "agriculture",
+        "zoning",
+        "land",
+        "geospatial"
+      ],
+      "source_type": "geospatial_catalog",
+      "discovery_url": "https://www.embrapa.br/geoinfo",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED",
+      "notes": "Plataforma oficial para mapas, estudos, zoneamentos e dados georreferenciados, com acesso automatizado em formatos abertos."
+    },
+    {
       "id": "br-funai-geospatial",
       "authority": "FUNAI",
       "scope": "BR",
@@ -132,6 +184,39 @@
       "access_class": "OPEN_REUSABLE",
       "verification_status": "VERIFIED",
       "notes": "Backbone nacional de endereços georreferenciados; não é cadastro dominial."
+    },
+    {
+      "id": "br-ibge-geoftp",
+      "authority": "IBGE",
+      "scope": "BR",
+      "domain": [
+        "cartography",
+        "census_geography",
+        "geodesy",
+        "territorial_divisions"
+      ],
+      "source_type": "public_directory",
+      "base_url": "https://geoftp.ibge.gov.br/",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED",
+      "notes": "Diretórios HTTP públicos com malhas municipais, setores censitários, bairros/distritos/subdistritos, RBMC e outros produtos. O próprio índice declara que os arquivos são públicos."
+    },
+    {
+      "id": "br-icmbio-geoservices",
+      "authority": "ICMBio",
+      "scope": "BR",
+      "domain": [
+        "protected_areas",
+        "embargo",
+        "infraction",
+        "caves",
+        "biodiversity"
+      ],
+      "source_type": "WFS_WMS_download",
+      "base_url": "https://geoservicos.inde.gov.br/geoserver/ICMBio/ows",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED",
+      "notes": "WFS/WMS oficial via INDE e downloads SHP/KML/XLSX para UCs, cavernas, áreas embargadas, autos de infração e PANs."
     },
     {
       "id": "br-incra-sigef",
@@ -180,6 +265,21 @@
       "verification_status": "VERIFIED"
     },
     {
+      "id": "br-iphan-geoserver",
+      "authority": "IPHAN",
+      "scope": "BR",
+      "domain": [
+        "heritage",
+        "archaeology",
+        "protected_assets"
+      ],
+      "source_type": "GeoServer",
+      "base_url": "https://geoserver.iphan.gov.br/geoserver/",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED",
+      "notes": "IPHAN informa que dados geoespaciais de sítios arqueológicos do SICG podem ser acessados e baixados diretamente no GeoServer. Revisar licença por camada."
+    },
+    {
       "id": "br-rfb-sinter-cib",
       "authority": "Receita Federal do Brasil",
       "scope": "BR",
@@ -192,6 +292,44 @@
       "access_class": "PUBLIC_QUERY_ONLY",
       "verification_status": "VERIFIED",
       "notes": "CIB é identificador nacional em implantação. Consulta pública não equivale a acesso aos campos pessoais/restritos existentes na origem."
+    },
+    {
+      "id": "br-sgb-geosgb",
+      "authority": "Serviço Geológico do Brasil (SGB/CPRM)",
+      "scope": "BR",
+      "domain": [
+        "geology",
+        "geodiversity",
+        "terrain",
+        "risk",
+        "susceptibility"
+      ],
+      "source_type": "download_portal_wms",
+      "base_url": "https://geosgb.sgb.gov.br/downloads/",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED",
+      "notes": "GeoSGB oferece downloads vetoriais, shapefile/KML e serviços WMS; cartas de suscetibilidade possuem SIG vetorial/raster para centenas de municípios."
+    },
+    {
+      "id": "br-sgb-susceptibility",
+      "authority": "Serviço Geológico do Brasil (SGB/CPRM)",
+      "scope": "BR_PARTIAL_MUNICIPAL",
+      "domain": [
+        "risk",
+        "landslide",
+        "flood",
+        "geomorphology"
+      ],
+      "source_type": "download_portal",
+      "discovery_url": "https://www.sgb.gov.br/produtos-por-estado-cartografia-de-suscetibilidade",
+      "formats": [
+        "PDF",
+        "SHP",
+        "raster"
+      ],
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED",
+      "notes": "815 municípios listados na cartografia de suscetibilidade na data da pesquisa; cobertura deve ser registrada por município e versão."
     },
     {
       "id": "br-sicar-car",
@@ -290,6 +428,27 @@
       "notes": "Portal disponibiliza LC 450/2025, macrozoneamento, zonas especiais e KMZ."
     },
     {
+      "id": "es-geobases",
+      "authority": "Governo do Espírito Santo / GEOBASES",
+      "scope": "state",
+      "uf": "ES",
+      "domain": [
+        "geospatial",
+        "cadastre",
+        "environment",
+        "planning",
+        "transport",
+        "addresses"
+      ],
+      "source_type": "GeoNode_GeoServer_ArcGIS",
+      "base_url": "https://ide.geobases.es.gov.br/",
+      "wfs_url": "https://ide.geobases.es.gov.br/geoserver/ows?service=wfs&version=1.1.0&request=GetCapabilities",
+      "arcgis_url": "https://gis.geobases.es.gov.br/server/rest/services",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED",
+      "notes": "Termos oficiais dizem que consulta e download são livres e descrevem dados geoespaciais abertos; IDE exibia 1.387 camadas na pesquisa."
+    },
+    {
       "id": "es-vitoria-plan-director",
       "authority": "Prefeitura de Vitória",
       "scope": "municipality",
@@ -306,6 +465,23 @@
       "notes": "PDU Lei 9.271/2018, com conjunto amplo de anexos."
     },
     {
+      "id": "go-goiania-buildings-pgv",
+      "authority": "Prefeitura de Goiânia",
+      "scope": "municipality",
+      "municipality_ibge": "5208707",
+      "domain": [
+        "buildings",
+        "height",
+        "valuation",
+        "pgv"
+      ],
+      "source_type": "ArcGIS_MapServer",
+      "base_url": "https://portalmapa.goiania.go.gov.br/servicogyn/rest/services/MapaServer/Mapa_Edificios/MapServer",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_ENDPOINT_LICENSE_REVIEW",
+      "notes": "Serviço público contém classes de edifícios em altura e Planta de Valores."
+    },
+    {
       "id": "go-goiania-plan-director",
       "authority": "Prefeitura de Goiânia",
       "scope": "municipality",
@@ -319,6 +495,22 @@
       "access_class": "OPEN_REUSABLE",
       "verification_status": "VERIFIED",
       "notes": "Plano Diretor LC 349/2022."
+    },
+    {
+      "id": "go-goiania-tributario-mapserver",
+      "authority": "Prefeitura de Goiânia",
+      "scope": "municipality",
+      "municipality_ibge": "5208707",
+      "domain": [
+        "cadastre",
+        "tax_parcel",
+        "iptu"
+      ],
+      "source_type": "ArcGIS_MapServer",
+      "base_url": "https://portalmapa.goiania.go.gov.br/servicogyn/rest/services/MapaServer/Mapa_Tributario_Web/MapServer",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_ENDPOINT_LICENSE_REVIEW",
+      "notes": "Layer Unidade Territorial expõe inscrição, área de banco, área geométrica e inscrição de lotes em polígonos consultáveis via REST/GeoJSON."
     },
     {
       "id": "ma-sao-luis-plan-director",
@@ -390,6 +582,64 @@
       "notes": "Lei 11.181/2019 e regulamentos; BHMAP/GeoSiurbe complementam a geometria."
     },
     {
+      "id": "mg-ide-sisema",
+      "authority": "Governo de Minas Gerais / SISEMA",
+      "scope": "state",
+      "uf": "MG",
+      "domain": [
+        "environment",
+        "water",
+        "land_use",
+        "protected_areas",
+        "licensing",
+        "geospatial"
+      ],
+      "source_type": "GeoServer_GeoNetwork",
+      "base_url": "https://geoserver.meioambiente.mg.gov.br/",
+      "catalog_url": "https://idesisema.meioambiente.mg.gov.br/geonetwork/",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED",
+      "notes": "GeoServer oficial com WMS/WFS/WCS/WMTS; catálogo GeoNetwork retornava 215 registros WFS na pesquisa. Licença deve ser verificada por camada/metadado."
+    },
+    {
+      "id": "ms-pinms-arcgis",
+      "authority": "Governo do Mato Grosso do Sul",
+      "scope": "state",
+      "uf": "MS",
+      "domain": [
+        "environment",
+        "car",
+        "land",
+        "imagery",
+        "licensing",
+        "agriculture"
+      ],
+      "source_type": "ArcGIS_REST",
+      "base_url": "https://www.pinms.ms.gov.br/arcgis/rest/services",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_ENDPOINT_LICENSE_REVIEW",
+      "notes": "Diretório REST contém CAR, IMASUL, imagens, monitoramento, supressão legal e outras pastas."
+    },
+    {
+      "id": "mt-sema-geospatial",
+      "authority": "SEMA Mato Grosso",
+      "scope": "state",
+      "uf": "MT",
+      "domain": [
+        "environment",
+        "land_use",
+        "protected_areas",
+        "hydrology",
+        "indigenous_lands"
+      ],
+      "source_type": "download_WFS",
+      "discovery_url": "https://www.sema.mt.gov.br/transparencia/index.php/gestao-ambiental/base-de-referencia",
+      "base_url": "https://geo.sema.mt.gov.br/geoserver/",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_ENDPOINT_LICENSE_REVIEW",
+      "notes": "Página oficial oferece SHP por tema e endpoint WFS de uso consolidado. Validar termos/licença antes de espelhamento."
+    },
+    {
       "id": "pa-belem-plan-director",
       "authority": "Prefeitura de Belém",
       "scope": "municipality",
@@ -403,6 +653,56 @@
       "access_class": "OPEN_REUSABLE",
       "verification_status": "DISCOVERY",
       "notes": "Lei 8.655/2008 localizada; validar revisão/consolidação vigente."
+    },
+    {
+      "id": "pb-pbgeo-arcgis",
+      "authority": "Governo da Paraíba / PBGeo",
+      "scope": "state",
+      "uf": "PB",
+      "domain": [
+        "geospatial",
+        "imagery",
+        "planning"
+      ],
+      "source_type": "ArcGIS_REST",
+      "base_url": "https://server.pbgeo.pb.gov.br/server/rest/services",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_ENDPOINT_LICENSE_REVIEW"
+    },
+    {
+      "id": "pe-apac-arcgis",
+      "authority": "APAC Pernambuco",
+      "scope": "state",
+      "uf": "PE",
+      "domain": [
+        "water",
+        "rainfall",
+        "reservoirs",
+        "terrain",
+        "water_rights"
+      ],
+      "source_type": "ArcGIS_REST",
+      "base_url": "https://geoportal.apac.pe.gov.br/server/rest/services",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_ENDPOINT_LICENSE_REVIEW",
+      "notes": "Diretório inclui APACGEO, SIRH, PE3D, Topodata, MDT e serviços de reservatórios/chuva/outorgas."
+    },
+    {
+      "id": "pe-recife-financas-lotes",
+      "authority": "Prefeitura do Recife",
+      "scope": "municipality",
+      "municipality_ibge": "2611606",
+      "domain": [
+        "cadastre",
+        "tax_parcel",
+        "finance",
+        "property"
+      ],
+      "source_type": "ArcGIS_REST_folder",
+      "base_url": "https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Financas",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_ENDPOINT_LICENSE_REVIEW",
+      "notes": "Pasta pública Finanças expõe serviços de lotes, numeração, levantamentos e análises de localização."
     },
     {
       "id": "pe-recife-iptu",
@@ -513,6 +813,21 @@
       "notes": "Geolocalização, características do empreendimento, alvará e valores outorgados."
     },
     {
+      "id": "pe-recife-parcelamento-solo",
+      "authority": "Prefeitura do Recife",
+      "scope": "municipality",
+      "municipality_ibge": "2611606",
+      "domain": [
+        "subdivision",
+        "planning",
+        "land"
+      ],
+      "source_type": "ArcGIS_MapServer",
+      "base_url": "https://esigportal2.recife.pe.gov.br/arcgis/rest/services/parcelamentosolo/BASES_PROD_PUPS_CONSULTA/MapServer",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_ENDPOINT_LICENSE_REVIEW"
+    },
+    {
       "id": "pe-recife-zoning-arcgis",
       "authority": "Prefeitura do Recife",
       "scope": "municipality",
@@ -543,6 +858,22 @@
       "notes": "Plano Diretor Lei 14.771/2015; zoneamento Lei 15.511/2019. Revisão em curso em 2026."
     },
     {
+      "id": "pr-state-geoserver",
+      "authority": "Governo do Paraná",
+      "scope": "state",
+      "uf": "PR",
+      "domain": [
+        "geospatial",
+        "environment",
+        "planning"
+      ],
+      "source_type": "GeoServer",
+      "base_url": "https://geoserver.pr.gov.br/",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_ENDPOINT_LICENSE_REVIEW",
+      "notes": "GeoServer oficial com acesso anônimo, 34 workspaces e 144 camadas na data da pesquisa; licença precisa ser validada por camada."
+    },
+    {
       "id": "rj-rio-data-rio",
       "authority": "Prefeitura do Rio de Janeiro",
       "scope": "municipality",
@@ -571,6 +902,57 @@
       "access_class": "OPEN_REUSABLE",
       "verification_status": "VERIFIED",
       "notes": "Plano Diretor: Lei Complementar 270/2024. Localizar endpoint oficial consolidado e anexos no próximo ciclo."
+    },
+    {
+      "id": "rs-caxias-cadastro-territorial",
+      "authority": "Prefeitura de Caxias do Sul",
+      "scope": "municipality",
+      "municipality_ibge": "4305108",
+      "domain": [
+        "cadastre",
+        "building",
+        "lot",
+        "subdivision",
+        "registry_boundary",
+        "street_number"
+      ],
+      "source_type": "ArcGIS_MapServer",
+      "base_url": "https://gis.caxias.rs.gov.br/server/rest/services/Cadastro_Territorial/MapServer",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_ENDPOINT_LICENSE_REVIEW",
+      "notes": "Serviço inclui edificações, unidades edificadas, sublotes, quadras, parcelamentos, numeração predial, lotes e limites registrais."
+    },
+    {
+      "id": "rs-caxias-projetos-aprovados",
+      "authority": "Prefeitura de Caxias do Sul / SEPLAN",
+      "scope": "municipality",
+      "municipality_ibge": "4305108",
+      "domain": [
+        "approved_projects",
+        "building_permits",
+        "urban_planning"
+      ],
+      "source_type": "ArcGIS_MapServer",
+      "base_url": "https://gis.caxias.rs.gov.br/server/rest/services/ProjetosAprovados/MapServer",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_RESTRICTIVE_COPYRIGHT",
+      "notes": "Serviço público de projetos aprovados; copyright do serviço declara 'Todos os Direitos Reservados'. Usar para consulta/integração conforme termos, não espelhar sem autorização."
+    },
+    {
+      "id": "rs-defesa-civil-arcgis",
+      "authority": "Defesa Civil do Rio Grande do Sul",
+      "scope": "state",
+      "uf": "RS",
+      "domain": [
+        "risk",
+        "disaster",
+        "flood",
+        "sigef_reference"
+      ],
+      "source_type": "ArcGIS_REST",
+      "base_url": "https://grd.defesacivil.rs.gov.br/server/rest/services",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_ENDPOINT_LICENSE_REVIEW"
     },
     {
       "id": "rs-porto-alegre-iptu",
@@ -623,6 +1005,42 @@
       "access_class": "OPEN_REUSABLE",
       "verification_status": "VERIFIED",
       "notes": "Novo PDUS e LUOS sancionados em 14/07/2026. Registrar números legais e anexos a partir do DOPA antes do motor normativo."
+    },
+    {
+      "id": "rs-sema-arcgis",
+      "authority": "SEMA Rio Grande do Sul",
+      "scope": "state",
+      "uf": "RS",
+      "domain": [
+        "environment",
+        "water",
+        "biodiversity",
+        "soil",
+        "land_use",
+        "heritage",
+        "infrastructure"
+      ],
+      "source_type": "ArcGIS_REST",
+      "base_url": "https://hsig.sema.rs.gov.br/arcgis/rest/services",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_ENDPOINT_LICENSE_REVIEW",
+      "notes": "Diretório REST público com dezenas de pastas temáticas, incluindo patrimônio, estrutura fundiária, uso do solo e zoneamento."
+    },
+    {
+      "id": "sc-ima-arcgis",
+      "authority": "Instituto do Meio Ambiente de Santa Catarina",
+      "scope": "state",
+      "uf": "SC",
+      "domain": [
+        "environment",
+        "licensing",
+        "protected_areas"
+      ],
+      "source_type": "ArcGIS_REST",
+      "base_url": "https://geo.ima.sc.gov.br/server/rest/services",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_ENDPOINT_LICENSE_REVIEW",
+      "notes": "Serviços públicos incluem FeatureServer de licenciamento ambiental; revisar licença e exposição de atributos por serviço."
     },
     {
       "id": "sp-campinas-spatial-data",
