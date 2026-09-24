@@ -4223,6 +4223,61 @@
       "access_class": "PUBLIC_QUERY_ONLY",
       "verification_status": "VERIFIED_PROVIDER_SERVICE_TERRITORY",
       "notes": "Distribuidora de energia em Pernambuco; documentos operacionais oficiais incluem Recife na área de concessão. Usar como resolvedor de prestador e para contexto/consultas oficiais; ativos técnicos geoespaciais devem vir preferencialmente da BDGD/ANEEL ou de publicação expressamente licenciada."
+    },
+    {
+      "id": "rj-rio-licenses-habite-se",
+      "authority": "Prefeitura do Rio de Janeiro / SMDU / Gerência de Informações e Monitoramento",
+      "scope": "municipality",
+      "municipality_ibge": "3304557",
+      "domain": [
+        "building_permits",
+        "licensing",
+        "habite_se",
+        "building_history",
+        "urban_data"
+      ],
+      "source_type": "official_urban_information_reports_and_query",
+      "discovery_url": "https://desenvolvimentourbano.prefeitura.rio/informacoes-urbanisticas/",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_OFFICIAL_PUBLIC_DATA_TERMS_LIMITED",
+      "notes": "A área oficial de Informações Urbanas usa bases georreferenciadas e registros administrativos, especialmente licenciamento urbanístico, e publica links para 'Licenças e Habite-se' e relação mensal. O termo da página permite uso livre das análises e mapas com referência à fonte; isso não é tratado como licença irrestrita de todos os registros brutos. Usar relatórios/consulta como evidência e revisar cada recurso antes de materialização."
+    },
+    {
+      "id": "rj-rio-official-gazette-doweb",
+      "authority": "Prefeitura do Rio de Janeiro / Imprensa Oficial",
+      "scope": "municipality",
+      "municipality_ibge": "3304557",
+      "domain": [
+        "official_gazette",
+        "legal_publication",
+        "municipal_acts",
+        "historical_law",
+        "public_documents"
+      ],
+      "source_type": "official_public_search_and_json_endpoint",
+      "portal_url": "https://doweb.rio.rj.gov.br/",
+      "service_url": "https://doweb.rio.rj.gov.br/apifront/portal/edicoes/edicoes_from_data/",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PUBLIC_SEARCH_ENDPOINT_LICENSE_REVIEW",
+      "notes": "D.O. Rio permite busca pública por edição/data/palavra, download da edição completa e consulta de autenticidade. Endpoint público JSON de edições foi confirmado. Licença de redistribuição não localizada; manter consulta/snapshot de metadados e documentos oficiais, sem presumir open data."
+    },
+    {
+      "id": "rj-rio-urban-uses-activities",
+      "authority": "Prefeitura do Rio de Janeiro / SMDU",
+      "scope": "municipality",
+      "municipality_ibge": "3304557",
+      "domain": [
+        "zoning",
+        "urban_parameters",
+        "land_use",
+        "legal_rules",
+        "urban_planning"
+      ],
+      "source_type": "ArcGIS_MapServer_tables",
+      "service_url": "https://pgeo3.rio.rj.gov.br/arcgis/rest/services/Urbanismo/IU_Usos_e_atividades/MapServer",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PUBLIC_SERVICE_LICENSE_REVIEW",
+      "notes": "Serviço oficial espacializa atividades/usos permitidos com base inicialmente na LC 270/2024 e Decreto 56.561/2025, sendo atualizado conforme novas normas entram em vigor. Possui camada de áreas e tabelas de atividades/usos/relacionamentos; suporta JSON/GeoJSON/PBF. A própria descrição alerta que a camada isolada não contém a informação completa, exigindo resolver os códigos nas tabelas e preservar vigência normativa."
     }
   ]
 }
