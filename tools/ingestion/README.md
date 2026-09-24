@@ -36,3 +36,27 @@ O script é somente leitura. Ele não:
 - materializa feições cuja licença ainda não foi aprovada.
 
 `metadata_first` significa que primeiro congelamos contrato/schema/metadados. A materialização de registros/feições é uma etapa posterior e separada.
+
+## Validação do dossiê normalizado
+
+O contrato machine-readable do dossiê está em
+`data/property-dossier/dossier-contract.schema.json`.
+
+Além do JSON Schema, o validador em stdlib verifica invariantes de proveniência
+que não devem depender apenas do frontend:
+
+- fato `AVAILABLE` precisa carregar valor e evidência;
+- fato `DERIVED` precisa registrar método e fatos de origem;
+- `NO_EVIDENCE` nunca pode carregar valor;
+- dados `QUERY_ONLY`, `RESTRICTED` ou dependentes de documento do usuário não
+  podem ser públicos por padrão;
+- referências a geometrias e fatos upstream precisam resolver.
+
+Exemplo:
+
+```bash
+python tools/ingestion/validate_dossier.py \
+  data/property-dossier/example-minimal.json
+```
+
+O exemplo é propositalmente fictício e serve apenas para validar o contrato.
