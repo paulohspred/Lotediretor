@@ -529,6 +529,50 @@
       "verification_status": "VERIFIED"
     },
     {
+      "id": "br-gov360-historical-snapshots",
+      "authority": "SEGES/MGI",
+      "scope": "BR",
+      "domain": [
+        "federal_property",
+        "historical_snapshots",
+        "public_administration"
+      ],
+      "source_type": "public_directory_versioned_archives",
+      "base_url": "https://repositorio.dados.gov.br/seges/raio-x/",
+      "formats": [
+        "ZIP",
+        "CSV",
+        "Data Package JSON"
+      ],
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED",
+      "notes": "Diretório preserva ZIPs mensais desde 2020 e metadados/hashes, permitindo reconstruir mudanças temporais em patrimônio/imóveis da União. Capturar manifesto, não apenas CSV corrente."
+    },
+    {
+      "id": "br-gov360-imoveis-uniao",
+      "authority": "SEGES/MGI e Secretaria do Patrimônio da União",
+      "scope": "BR",
+      "domain": [
+        "federal_property",
+        "public_property",
+        "property_attributes",
+        "valuation"
+      ],
+      "source_type": "Frictionless_Data_Package_CSV",
+      "base_url": "https://repositorio.dados.gov.br/seges/raio-x/",
+      "resource_url": "https://repositorio.dados.gov.br/seges/raio-x/imoveis-da-uniao.csv",
+      "metadata_url": "https://repositorio.dados.gov.br/seges/raio-x/datapackage.json",
+      "formats": [
+        "CSV",
+        "Data Package JSON",
+        "ZIP historical snapshots"
+      ],
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED",
+      "update_frequency": "monthly_or_release_cycle",
+      "notes": "Gov360/Raio-X declara reutilização como dados abertos. Recurso de maio/2026: 56.803 linhas, 19 campos, SHA-256 publicado. Campos incluem tipo/destinação/regime, endereço, região/UF/município, área total, área construída, valor do imóvel, aluguel e contagem. São imóveis de uso especial da União administrados pela SPU."
+    },
+    {
       "id": "br-ibama-embargos",
       "authority": "IBAMA",
       "scope": "BR",
@@ -691,6 +735,24 @@
       "notes": "ArcGIS REST público com múltiplos modais. Serviços confirmados incluem Rodovias Federais, Ferrovias Concedidas, Pro Trilhos, pátios/terminais ferroviários, terminais portuários, hidrovias, gasodutos, oleodutos e minerodutos. Algumas camadas agregam dados de ANTT, DNIT, ANTAQ, EPE/ANP; preservar lineage."
     },
     {
+      "id": "br-inpe-cptec-transfer",
+      "authority": "INPE / CPTEC / CGIP / COIDS",
+      "scope": "BR_AND_REGIONAL",
+      "domain": [
+        "weather",
+        "rainfall",
+        "climate",
+        "nowcasting",
+        "ocean",
+        "forecast_models"
+      ],
+      "source_type": "public_transfer_directory",
+      "base_url": "https://ftp.cptec.inpe.br/",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_DIRECTORY_LICENSE_REVIEW",
+      "notes": "Servidor público de transferência com diretórios de chuva, clima, nowcasting, oceano e modelos. Pode alimentar risco climático/hidrológico; registrar produto/licença/temporalidade antes de usar em análises do imóvel."
+    },
+    {
       "id": "br-inpe-terrabrasilis",
       "authority": "INPE",
       "scope": "BR",
@@ -767,7 +829,7 @@
       "base_url": "https://repositorio.dados.gov.br/",
       "access_class": "PUBLIC_QUERY_ONLY",
       "verification_status": "VERIFIED_DIRECTORY_LICENSE_PER_DATASET",
-      "notes": "Repositório HTTP com diretórios e arquivos governamentais. Usar crawler em modo metadados; licença e semântica devem ser verificadas por coleção."
+      "notes": "Repositório HTTP com diretórios/arquivos governamentais, inclusive séries históricas e datasets retirados de portais ativos. Usar crawler em modo metadados; licença/semântica devem ser verificadas por coleção."
     },
     {
       "id": "br-rfb-sinter-cib",
@@ -837,7 +899,7 @@
       ],
       "access_class": "PUBLIC_QUERY_ONLY",
       "verification_status": "SEMANTIC_REVIEW_REQUIRED",
-      "notes": "Diretório público contém séries de 'bens da União' em uso/não uso/doados/incorporados. Não assumir que sejam imóveis: inspecionar dicionário e granularidade antes de vincular ao domínio imobiliário."
+      "notes": "SIADS contém bens móveis/patrimoniais e séries 'bens da União'; não confundir automaticamente com imóveis. Para imóveis de uso especial, preferir Gov360/SPU com semântica e dicionário explícitos."
     },
     {
       "id": "br-sicar-car",
@@ -891,6 +953,21 @@
       "access_class": "PUBLIC_QUERY_ONLY",
       "verification_status": "VERIFIED_DOWNLOAD_LICENSE_REVIEW",
       "notes": "Geoportal SPU disponível ao cidadão para visualizar e baixar localização de imóveis da União, Terrenos de Marinha e Terrenos Marginais de Rios Federais. Confirmar licença de cada camada antes de espelhamento. SPIUNET/SISREI foram desativados em 09/03/2026 e fluxos migraram ao SPUnet."
+    },
+    {
+      "id": "br-transferegov-public-works",
+      "authority": "SEGES/MGI / Transferegov.br",
+      "scope": "BR",
+      "domain": [
+        "public_works",
+        "infrastructure_projects",
+        "geocoded_projects"
+      ],
+      "source_type": "public_directory_CSV_ZIP",
+      "base_url": "https://repositorio.dados.gov.br/seges/detru/",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_DIRECTORY_LICENSE_REVIEW",
+      "notes": "Diretório oficial contém coordenadas de obras, dados ObrasGov, contratos, convênios e séries SICONV. Útil para contexto de infraestrutura/projetos públicos próximos ao imóvel; revisar licença e granularidade antes de materialização."
     },
     {
       "id": "ce-fortaleza-iptu",
