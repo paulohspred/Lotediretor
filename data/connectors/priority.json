@@ -1,0 +1,90 @@
+{
+  "schema_version": "0.1.0",
+  "as_of": "2026-09-24",
+  "connectors": [
+    {
+      "id": "gov360-imoveis-uniao",
+      "source_id": "br-gov360-imoveis-uniao",
+      "kind": "frictionless_datapackage",
+      "url": "https://repositorio.dados.gov.br/seges/raio-x/datapackage.json",
+      "mode": "materialize_metadata_then_resource",
+      "approved": true,
+      "notes": "Data Package oficial com hashes/recursos; CSV de imóveis da União é open reusable."
+    },
+    {
+      "id": "rio-iptu",
+      "source_id": "rj-rio-iptu",
+      "kind": "arcgis_service",
+      "url": "https://pgeo3.rio.rj.gov.br/arcgis/rest/services/Fazenda/IPTU/MapServer",
+      "mode": "metadata_first",
+      "approved": true,
+      "notes": "Metadata oficial indica CC BY 4.0. Snapshot inicial deve guardar itemInfo/metadata/schema antes de consultas de dados."
+    },
+    {
+      "id": "rio-itbi",
+      "source_id": "rj-rio-itbi",
+      "kind": "arcgis_service",
+      "url": "https://pgeo3.rio.rj.gov.br/arcgis/rest/services/Fazenda/ITBI/MapServer",
+      "mode": "metadata_first",
+      "approved": true,
+      "notes": "CC BY 4.0; dados são agregados/estatísticos por divisão/logradouro."
+    },
+    {
+      "id": "blumenau-wfs",
+      "source_id": "sc-blumenau-geospatial",
+      "kind": "wfs_capabilities",
+      "url": "https://geo.blumenau.sc.gov.br/server/services/publicacao/Publicacao_WFS/MapServer/WFSServer",
+      "mode": "metadata_only_until_layer_license_review",
+      "approved": true,
+      "notes": "Catalogar capabilities e schemas; materialização de feições é posterior à revisão por camada."
+    },
+    {
+      "id": "bhgeo-wfs",
+      "source_id": "mg-belo-horizonte-bhgeo",
+      "kind": "wfs_capabilities",
+      "url": "https://bhmap.pbh.gov.br/v2/api/idebhgeo/wfs",
+      "mode": "metadata_only_until_dataset_license_review",
+      "approved": true
+    },
+    {
+      "id": "recife-ckan",
+      "source_id": "pe-recife-open-data",
+      "kind": "ckan_catalog",
+      "url": "https://dados.recife.pe.gov.br",
+      "mode": "catalog_metadata",
+      "approved": true
+    },
+    {
+      "id": "fortaleza-ckan",
+      "source_id": "ce-fortaleza-open-data",
+      "kind": "ckan_catalog",
+      "url": "https://dados.fortaleza.ce.gov.br",
+      "mode": "catalog_metadata",
+      "approved": true
+    },
+    {
+      "id": "porto-alegre-ckan",
+      "source_id": "rs-porto-alegre-itbi",
+      "kind": "ckan_catalog",
+      "url": "https://dadosabertos.poa.br",
+      "mode": "catalog_metadata",
+      "approved": true
+    },
+    {
+      "id": "dados-gov-br",
+      "source_id": "br-dados-gov-api",
+      "kind": "json_api",
+      "url": "https://dados.gov.br/dados/api/publico/conjuntos-dados",
+      "mode": "catalog_metadata",
+      "approved": true
+    },
+    {
+      "id": "ibge-geoftp-index",
+      "source_id": "br-ibge-geoftp",
+      "kind": "public_directory",
+      "url": "https://geoftp.ibge.gov.br/organizacao_do_territorio/",
+      "mode": "directory_metadata_only",
+      "approved": true
+    }
+  ]
+}
