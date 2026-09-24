@@ -257,6 +257,10 @@ function statusClass(status){return "status-"+String(status||"").toLowerCase()}
 function formatReportValue(item){
   if(item.value===null||item.value===undefined||item.value==="")return "—";
   if(item.unit==="m²" && typeof item.value==="number")return area(item.value);
+  if(item.unit==="m" && typeof item.value==="number")return new Intl.NumberFormat("pt-BR",{maximumFractionDigits:2}).format(item.value)+" m";
+  if(item.unit==="BRL/m²" && typeof item.value==="number"){
+    return new Intl.NumberFormat("pt-BR",{style:"currency",currency:"BRL",maximumFractionDigits:0}).format(item.value)+"/m²";
+  }
   return text(item.value);
 }
 function renderReport(report,p){
