@@ -1,0 +1,126 @@
+{
+  "schema_version": "0.1.0",
+  "as_of": "2026-09-24",
+  "purpose": "Consultas avançadas para descoberta de fontes públicas/oficiais. Não usar para localizar segredos, credenciais, backups privados, painéis administrativos, documentos pessoais ou conteúdo que aparente publicação indevida.",
+  "operators": [
+    {
+      "operator": "site:",
+      "use": "Restringir à autoridade oficial ou domínio legislativo."
+    },
+    {
+      "operator": "filetype:",
+      "use": "Encontrar PDF/CSV/JSON/XML/GPKG/KMZ/DWG publicados."
+    },
+    {
+      "operator": "ext:",
+      "use": "Sinônimo suportado por alguns buscadores para extensão."
+    },
+    {
+      "operator": "intitle:",
+      "use": "Encontrar índices, Swagger, ArcGIS REST, catálogos e títulos oficiais."
+    },
+    {
+      "operator": "inurl:",
+      "use": "Encontrar caminhos técnicos públicos: rest/services, geoserver, geonetwork, api, dados-abertos."
+    },
+    {
+      "operator": "intext:",
+      "use": "Exigir termos de domínio como lote, zoneamento, inscrição imobiliária."
+    },
+    {
+      "operator": "\"...\"",
+      "use": "Frase exata para leis, nomes de datasets e sistemas."
+    },
+    {
+      "operator": "OR",
+      "use": "Ampliar sinônimos/fontes."
+    },
+    {
+      "operator": "-",
+      "use": "Excluir ruído como notícias, licitações ou redes sociais quando necessário."
+    }
+  ],
+  "query_templates": [
+    {
+      "id": "gis-arcgis",
+      "category": "geospatial_api",
+      "query": "site:{domain} inurl:rest/services (lote OR edificacao OR \"cadastro imobiliario\" OR zoneamento OR \"plano diretor\")"
+    },
+    {
+      "id": "gis-geoserver",
+      "category": "geospatial_api",
+      "query": "site:{domain} inurl:geoserver (WFS OR WMS OR GetCapabilities) (lote OR edificacao OR zoneamento)"
+    },
+    {
+      "id": "gis-geonetwork",
+      "category": "metadata_catalog",
+      "query": "site:{domain} inurl:geonetwork (cadastro OR zoneamento OR lote OR ortofoto)"
+    },
+    {
+      "id": "swagger-openapi",
+      "category": "documented_api",
+      "query": "site:{domain} (intitle:\"Swagger UI\" OR inurl:swagger OR inurl:openapi OR \"OpenAPI\") (cadastro OR imobiliario OR urbanismo OR zoneamento OR dados)"
+    },
+    {
+      "id": "iptu-itbi-csv",
+      "category": "fiscal",
+      "query": "site:{domain} (filetype:csv OR filetype:xlsx OR filetype:json) (IPTU OR ITBI OR \"cadastro fiscal\" OR \"cadastro imobiliario\")"
+    },
+    {
+      "id": "plan-director-files",
+      "category": "legal",
+      "query": "site:{domain} (\"plano diretor\" OR LUOS OR zoneamento) (filetype:pdf OR filetype:zip OR filetype:kmz OR filetype:gpkg OR filetype:dwg)"
+    },
+    {
+      "id": "legal-annexes",
+      "category": "legal",
+      "query": "site:{legislative_domain} (\"plano diretor\" OR \"uso e ocupacao do solo\") (anexo OR mapa OR \"lei complementar\")"
+    },
+    {
+      "id": "sapl",
+      "category": "legal_api",
+      "query": "site:{legislative_domain} (inurl:sapl OR \"normajuridica\" OR \"materia legislativa\") (\"plano diretor\" OR zoneamento)"
+    },
+    {
+      "id": "public-index",
+      "category": "public_directory",
+      "query": "site:{domain} intitle:\"Index of\" (shp OR gpkg OR geojson OR kmz OR zip) (zoneamento OR lotes OR cartografia OR ortofoto)"
+    },
+    {
+      "id": "historical",
+      "category": "historical_data",
+      "query": "site:{domain} (historico OR historica OR acervo OR \"versao anterior\" OR \"arquivos retirados\") (zoneamento OR cartografia OR lote OR plano)"
+    },
+    {
+      "id": "orthophoto-lidar",
+      "category": "imagery_terrain",
+      "query": "site:{domain} (ortofoto OR ortomosaico OR aerofotogrametria OR lidar OR MDT OR MDS) (download OR WMS OR ImageServer OR arquivo)"
+    },
+    {
+      "id": "registry-official",
+      "category": "registry_ecosystem",
+      "query": "site:{registry_domain} (API OR \"web service\" OR integração OR interoperabilidade OR manual OR especificacao) (matricula OR certidao OR registro)"
+    },
+    {
+      "id": "official-gazette",
+      "category": "gazette",
+      "query": "site:{domain} (\"diario oficial\" OR \"atos oficiais\") (API OR busca OR edicoes OR arquivo OR acervo)"
+    }
+  ],
+  "blocked_intents": [
+    "credenciais, senhas, tokens, chaves privadas ou secrets",
+    "arquivos de configuração/backup com intenção de obter acesso",
+    "painéis administrativos ou rotas internas com intenção de contornar autenticação",
+    "bancos de dados expostos ou dumps não publicados oficialmente",
+    "documentos pessoais ou registrais que aparentem exposição acidental",
+    "índices por CPF/CNPJ/proprietário fora de serviços oficiais e finalidade legítima",
+    "Google Maps/Street View como alvo de scraping ou cópia massiva"
+  ],
+  "accidental_exposure_protocol": [
+    "não baixar nem consultar em massa",
+    "não registrar conteúdo sensível no Source Registry",
+    "registrar somente autoridade/domínio e natureza geral do risco em área privada de segurança, se necessário",
+    "não testar escrita, autenticação ou escalada de privilégio",
+    "preferir comunicação responsável à autoridade responsável quando aplicável"
+  ]
+}
