@@ -799,7 +799,9 @@
         "downloads"
       ],
       "access_class": "OPEN_REUSABLE",
-      "verification_status": "VERIFIED"
+      "verification_status": "VERIFIED",
+      "wfs_url": "https://www.geoservicos.inde.gov.br/geoserver/wfs",
+      "notes": "Catálogo nacional de geosserviços. WFS público observado com centenas de camadas; usar discovery por capabilities/metadata e preservar autoridade original de cada camada."
     },
     {
       "id": "br-infrasa-arcgis",
@@ -1025,6 +1027,25 @@
       "notes": "Plataforma Meu Registro lançada em 22/06/2026 como interface do SERP. Provimento CNJ 229/2026 organiza interoperabilidade entre ONSERP, ONR, ON-RCPN e ON-RTDPJ. Serviços e documentos seguem regras, autenticação e emolumentos próprios."
     },
     {
+      "id": "br-sgb-arcgis",
+      "authority": "Serviço Geológico do Brasil (SGB)",
+      "scope": "BR",
+      "domain": [
+        "geology",
+        "risk",
+        "susceptibility",
+        "groundwater",
+        "siagas",
+        "terrain",
+        "geodiversity"
+      ],
+      "source_type": "ArcGIS_REST",
+      "base_url": "https://geoportal.sgb.gov.br/server/rest/services",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_ENDPOINT_LICENSE_PER_SERVICE",
+      "notes": "ArcGIS REST oficial; pasta Hosted inclui Base_Suscet, aquíferos, Base_IBGE_Siagas e outras camadas. Priorizar metadados, cobertura municipal e licença por serviço."
+    },
+    {
       "id": "br-sgb-geosgb",
       "authority": "Serviço Geológico do Brasil (SGB/CPRM)",
       "scope": "BR",
@@ -1039,7 +1060,8 @@
       "base_url": "https://geosgb.sgb.gov.br/downloads/",
       "access_class": "OPEN_REUSABLE",
       "verification_status": "VERIFIED",
-      "notes": "GeoSGB oferece downloads vetoriais, shapefile/KML e serviços WMS; cartas de suscetibilidade possuem SIG vetorial/raster para centenas de municípios."
+      "notes": "GeoSGB oferece downloads vetoriais, shapefile/KML e serviços WMS; SGB também mantém ArcGIS REST oficial com camadas hospedadas como suscetibilidade, aquíferos, SIAGAS e geodiversidade. Licença/metadados por dataset.",
+      "arcgis_url": "https://geoportal.sgb.gov.br/server/rest/services"
     },
     {
       "id": "br-sgb-susceptibility",
