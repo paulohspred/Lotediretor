@@ -4356,6 +4356,79 @@
       "access_class": "PUBLIC_QUERY_ONLY",
       "verification_status": "VERIFIED_PUBLIC_SEARCH_LICENSE_REVIEW",
       "notes": "DOM oficial permite pesquisa por termo com busca avançada, período, edição e categoria, além de visualização de atos. A própria PBH orienta esse uso. Não foi identificada licença/API pública de reutilização em massa; tratar como consulta/evidência até revisão."
+    },
+    {
+      "id": "pb-joao-pessoa-ficha-cadastral-imovel",
+      "authority": "Prefeitura de João Pessoa / Secretaria da Receita Municipal",
+      "scope": "municipality",
+      "municipality_ibge": "2507507",
+      "domain": [
+        "cadastre",
+        "building",
+        "iptu",
+        "pgv",
+        "property_query",
+        "property_services"
+      ],
+      "source_type": "official_property_query_service",
+      "portal_url": "https://receita.joaopessoa.pb.gov.br/dsf_jpa_portal/inicial.do?acronym=COMPROVANTEINSCRICAOESITUACAOMUNICIPAL&evento=montaMenu",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_SERVICE_SCHEMA_REVIEW",
+      "notes": "Portal de Serviços municipal lista Ficha Cadastral Imóvel, Extrato/Guia e Certidão Financeira Imóvel. Usar como fluxo por imóvel e fonte de evidência; não presumir que todos os campos fiscais/prediais são públicos nem automatizar em massa antes de revisar parâmetros, CAPTCHA, termos e schema."
+    },
+    {
+      "id": "pb-joao-pessoa-itbi-service",
+      "authority": "Prefeitura de João Pessoa / Secretaria da Receita Municipal",
+      "scope": "municipality",
+      "municipality_ibge": "2507507",
+      "domain": [
+        "itbi",
+        "transactions",
+        "property_services",
+        "tax"
+      ],
+      "source_type": "authenticated_online_tax_service",
+      "portal_url": "https://receita.joaopessoa.pb.gov.br/portal-serem",
+      "access_class": "AUTHENTICATED_PUBLIC",
+      "verification_status": "VERIFIED_SERVICE_NOT_BULK_DATA",
+      "notes": "Solicitação e emissão de ITBI são realizadas online no Portal do Contribuinte, com análise fiscal e guia/certidão. É fluxo transacional individual, não dataset público em massa; integrar somente por mecanismo autorizado e nunca reutilizar dados pessoais fora da finalidade."
+    },
+    {
+      "id": "pb-joao-pessoa-ctm-pgv-modernization",
+      "authority": "Prefeitura de João Pessoa / Programa João Pessoa Sustentável / SEREM / SEPLAN",
+      "scope": "municipality",
+      "municipality_ibge": "2507507",
+      "domain": [
+        "pgv",
+        "multifinalitary_cadastre",
+        "cadastre",
+        "building",
+        "valuation",
+        "infrastructure"
+      ],
+      "source_type": "official_program_documentation",
+      "discovery_url": "https://www.joaopessoa.pb.gov.br/joao-pessoa-sustentavel/joao-pessoa-sustentavel-avanca-no-desenvolvimento-urbano-com-economia-superior-a-us-40-milhoes/",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_EXISTENCE_ACCESS_PATH_PENDING",
+      "notes": "Documentação oficial confirma atualização da PGV, recadastramento imobiliário municipal e levantamento territorial/infraestrutura. A PGV modernizada e o cadastro existem operacionalmente, mas não foi confirmado um canal bulk reutilizável. Fonte serve para provenance/existência e direciona a busca por publicação oficial do produto."
+    },
+    {
+      "id": "pb-joao-pessoa-official-gazette",
+      "authority": "Prefeitura de João Pessoa",
+      "scope": "municipality",
+      "municipality_ibge": "2507507",
+      "domain": [
+        "official_gazette",
+        "legal_publication",
+        "municipal_acts",
+        "historical_law",
+        "public_documents"
+      ],
+      "source_type": "official_public_archive",
+      "portal_url": "https://www.joaopessoa.pb.gov.br/doe-jp/",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PUBLIC_ARCHIVE_LICENSE_REVIEW",
+      "notes": "Arquivo oficial do Diário Oficial/Semanário apresenta listagem pública de edições, datas, suplementos e páginas individuais com acesso aos documentos. Licença/API de reutilização em massa não identificada; usar como consulta/snapshot documental até revisão."
     }
   ]
 }
