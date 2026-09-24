@@ -184,6 +184,42 @@
       "mode": "metadata_and_schema_first",
       "approved": true,
       "notes": "Capture service/layer/table schema first. Legal normalizer must join activity/use tables and preserve LC 270/2024 / Decreto 56.561/2025 provenance and future amendments."
+    },
+    {
+      "id": "bh-iptu-cadastro-regionais",
+      "source_id": "mg-belo-horizonte-cadastro-imobiliario-regionais",
+      "kind": "public_page",
+      "url": "https://dados.pbh.gov.br/dataset/?license_id=cc-by&organization=smfa&res_format=CSV&tags=IPTU&tags=cadastro+imobili%C3%A1rio",
+      "mode": "dataset_index_then_allowlisted_resources",
+      "approved": true,
+      "notes": "CC BY. Enumerate the nine regional cadastral datasets and dictionaries first; resource normalizer must explicitly distinguish cadastral attributes from actual tax-liability fields."
+    },
+    {
+      "id": "bh-zona-homogenea-iptu",
+      "source_id": "mg-belo-horizonte-zona-homogenea-iptu",
+      "kind": "json_api",
+      "url": "https://dados.pbh.gov.br/api/3/action/package_show?id=zona-homogenea-iptu",
+      "mode": "dataset_metadata_then_resources",
+      "approved": true,
+      "notes": "CC BY. Preserve monthly/historical resource lineage and legal reference used for valuation."
+    },
+    {
+      "id": "bh-risk-geologico",
+      "source_id": "mg-belo-horizonte-risk-geologico",
+      "kind": "json_api",
+      "url": "https://dados.pbh.gov.br/api/3/action/package_show?id=area-risco-geologico",
+      "mode": "dataset_metadata_then_resources",
+      "approved": true,
+      "notes": "CC BY. Capture dictionary plus spatial resources; preserve the age/methodology of risk mapping and do not present it as a current site-specific geotechnical report."
+    },
+    {
+      "id": "bh-dom",
+      "source_id": "mg-belo-horizonte-dom",
+      "kind": "public_page",
+      "url": "https://dom-web.pbh.gov.br/",
+      "mode": "public_search_metadata_only",
+      "approved": true,
+      "notes": "Public official gazette search. No bulk reuse license confirmed; query/snapshot evidence only."
     }
   ]
 }
