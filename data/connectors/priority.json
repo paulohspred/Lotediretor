@@ -49,10 +49,13 @@
     {
       "id": "recife-ckan",
       "source_id": "pe-recife-open-data",
-      "kind": "ckan_catalog",
+      "kind": "custom_ckan_datastore_materializer",
       "url": "https://dados.recife.pe.gov.br",
-      "mode": "catalog_metadata",
-      "approved": true
+      "mode": "closed_allowlist_paginated_materialization",
+      "approved": true,
+      "tool": "tools/ingestion/recife_datastore.py",
+      "config_file": "data/connectors/recife-datasets.json",
+      "notes": "ODbL property datasets. DataStore requests project a closed field allowlist. IPTU excludes masked CPF/CNPJ and contributor-person type; licensing excludes CNPJ/razao social/mercantile identity and fee/payment fields. ITBI 2026 schema is property-centric."
     },
     {
       "id": "fortaleza-ckan",
