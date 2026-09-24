@@ -113,8 +113,8 @@ def main() -> int:
     total_reported: int | None = None
     total_returned = 0
 
+    offset = 0
     for page_index in range(max_pages):
-        offset = page_index * page_size
         url = build_url(config, dataset, offset=offset, limit=page_size)
         response = fetch_json(
             url,
@@ -153,8 +153,10 @@ def main() -> int:
             break
         if total_returned >= total:
             break
-        if len(records) < page_size:
-            break
+
+        # Recife currently caps DataStore responses at 500 rows. Advance by
+        # what was actually returned so a server-side cap cannot skip rows.
+        offset += len(records)
 
     complete = (
         total_reported is not None
