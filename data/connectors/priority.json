@@ -121,6 +121,15 @@
       "mode": "public_index_metadata_only",
       "approved": true,
       "notes": "Public index snapshot only. Annual XLSX/ODS resource materialization remains blocked until reuse/license terms and field allowlist are finalized."
+    },
+    {
+      "id": "sp-pgv-2026-law",
+      "source_id": "sp-sao-paulo-pgv-2026",
+      "kind": "public_page",
+      "url": "https://legislacao.prefeitura.sp.gov.br/lei-18330-de-11-de-novembro-de-2025",
+      "mode": "legal_document_metadata_and_annex_discovery",
+      "approved": true,
+      "notes": "Snapshot official law page first; parser must preserve effective date and annex provenance. Do not silently replace older PGV versions."
     }
   ]
 }
