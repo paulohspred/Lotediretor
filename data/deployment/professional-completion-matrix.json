@@ -71,12 +71,12 @@
           "endpoint": "https://geosampa.prefeitura.sp.gov.br/",
           "access_class": "OPEN_REUSABLE",
           "license": null,
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "connector_status": "READ_ONLY_PARCEL_INTERSECTION_IMPLEMENTED",
           "missing_fields": [
             "current building footprint reconciliation",
             "licensed-vs-fiscal area reconciliation"
           ],
-          "notes": "GeoSampa supplies official 2D building footprints, but the mapped geometry is primarily historical photogrammetric restitution; currentness must be reconciled against fiscal/licensing/imaging sources."
+          "notes": "GeoSampa 2D building footprints are now queried with a closed allowlist and intersected with the selected parcel for report/map context. The geometry remains historical cartography and is not treated as current/licensed building geometry."
         },
         {
           "field": "IPTU",
@@ -149,11 +149,11 @@
           "endpoint": "https://wfs.geosampa.prefeitura.sp.gov.br/geoserver/geoportal/wfs",
           "access_class": "OPEN_REUSABLE",
           "license": null,
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "connector_status": "READ_ONLY_PROPERTY_RESOLVER_IMPLEMENTED",
           "missing_fields": [
             "temporal zoning/version reconciliation"
           ],
-          "notes": null
+          "notes": "Current Lei 18.177/2024 zoning polygon, PDE macroarea and macrozone are resolved for the clicked parcel through closed-allowlist GeoSampa WFS queries. Temporal zoning reconciliation remains required."
         },
         {
           "field": "urban parameters",
@@ -166,11 +166,11 @@
           "endpoint": "https://wfs.geosampa.prefeitura.sp.gov.br/geoserver/geoportal/wfs",
           "access_class": "OPEN_REUSABLE",
           "license": null,
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "connector_status": "PARTIAL_PROPERTY_RESOLVER_IMPLEMENTED",
           "missing_fields": [
             "citywide resolver across LPUOS, PIUs, OUCs, overlays and temporal amendments"
           ],
-          "notes": "GeoSampa exposes structured legal-parameter layers for multiple instruments, including fields for CA max, gabarito and cota-parte in some PIU/OUC datasets. A citywide temporal rule resolver is still required."
+          "notes": "Parcel resolver now returns zoning, macroarea and macrozone. Citywide CA/gabarito/other rule resolution across LPUOS, PIUs, OUCs and overlays is still pending; no buildability coefficient is inferred from zone name alone."
         },
         {
           "field": "permits",
@@ -180,12 +180,12 @@
           "endpoint": "https://metadados.geosampa.prefeitura.sp.gov.br/geonetwork/srv/search?orgName=Prefeitura+do+Munic%C3%ADpio+de+S%C3%A3o+Paulo+-+PMSP+%2F+Secretaria+Municipal+de+Urbanismo+e+Licenciamento+-+SMUL",
           "access_class": "OPEN_REUSABLE",
           "license": null,
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "connector_status": "READ_ONLY_PROPERTY_QUERY_IMPLEMENTED",
           "missing_fields": [
             "layer-by-layer normalization",
             "legacy process reconciliation"
           ],
-          "notes": null
+          "notes": "Public GeoSampa licensing layers are queried with privacy-filtered allowlists. HIS/HMP records use exact SQL matching when available; polygon-based licenses are reported only as spatial incidence, not as parcel-specific permits without an official identifier link."
         },
         {
           "field": "habite-se",
@@ -212,12 +212,12 @@
           "endpoint": "https://wfs.geosampa.prefeitura.sp.gov.br/geoserver/geoportal/wfs",
           "access_class": "OPEN_REUSABLE",
           "license": null,
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "connector_status": "PARTIAL_PROPERTY_RESOLVER_IMPLEMENTED",
           "missing_fields": [
             "complete environmental layer allowlist",
             "state/federal overlays"
           ],
-          "notes": null
+          "notes": "Privacy-filtered environmental-license spatial incidence is implemented for the clicked parcel. Complete municipal/state/federal environmental overlay resolution remains pending."
         },
         {
           "field": "risk",
@@ -229,11 +229,11 @@
           "endpoint": "https://wfs.geosampa.prefeitura.sp.gov.br/geoserver/geoportal/wfs",
           "access_class": "OPEN_REUSABLE",
           "license": null,
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "connector_status": "READ_ONLY_PROPERTY_RESOLVER_IMPLEMENTED",
           "missing_fields": [
             "site-specific geotechnical confirmation when professional decision requires it"
           ],
-          "notes": "Official GeoSampa risk layers include geological/hydrological risk and historical flood/waterlogging occurrences. They support L3 screening, not executive geotechnical conclusions."
+          "notes": "Geological and hydrological risk layers are queried with closed allowlists for the clicked parcel. Results are screening context, not a site-specific geotechnical conclusion."
         },
         {
           "field": "heritage",
@@ -246,12 +246,12 @@
           "endpoint": "https://metadados.geosampa.prefeitura.sp.gov.br/geonetwork/srv/search?keyword=Patrim%C3%B4nio+cultural",
           "access_class": "OPEN_REUSABLE",
           "license": "CC BY-SA 4.0 for PMSP-produced geospatial layers",
-          "connector_status": "HERITAGE_THREE_LEVEL_RESOLVER_CONFIGURED",
+          "connector_status": "HERITAGE_PROPERTY_RESOLVER_IMPLEMENTED",
           "missing_fields": [
             "state IDE-SP reuse terms for independent state-layer materialization",
             "property-specific archaeological certificate/query where required"
           ],
-          "notes": "L3 resolves federal/state/municipal protection, pending tombamento, surrounding areas and archaeology. GeoSampa preserves links to legal resolutions; state/federal authority sources remain separate."
+          "notes": "Clicked-parcel resolver now returns municipal protected assets and CONPRESP/CONDEPHAAT/IPHAN surrounding-area incidences exposed through GeoSampa, while preserving the need for independent authority evidence and archaeology queries where required."
         },
         {
           "field": "electricity",
@@ -363,12 +363,12 @@
           "endpoint": "https://wms.geosampa.prefeitura.sp.gov.br/geoserver/geoportal/wms",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "connector_status": "READ_ONLY_MAP_INDEX_IMPLEMENTED",
           "missing_fields": [
             "artifact license/terms per imagery vintage",
             "snapshot/version manifest"
           ],
-          "notes": null
+          "notes": "Public UI now exposes the GeoSampa 2020 orthophoto index as a map overlay. It is explicitly an index, not the orthophoto raster itself; artifact license/version handling remains pending."
         },
         {
           "field": "terrain",
@@ -378,13 +378,13 @@
           "endpoint": "https://metadados.geosampa.prefeitura.sp.gov.br/geonetwork/geoprodam/search?orgName=Coordenadoria+de+Produ%C3%A7%C3%A3o+e+An%C3%A1lise+da+Informa%C3%A7%C3%A3o+%E2%80%93+GEOINFO",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "connector_status": "READ_ONLY_TERRAIN_OVERLAYS_IMPLEMENTED",
           "missing_fields": [
             "artifact license review",
             "tile/index connector",
             "quality metadata normalization"
           ],
-          "notes": null
+          "notes": "Public UI now exposes GeoSampa hillshade (MDC 2004) and declividade WMS layers for visual terrain context. Executive/topographic use still requires quality metadata and approved artifact workflow."
         },
         {
           "field": "public works",
