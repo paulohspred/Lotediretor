@@ -294,3 +294,117 @@ A validação estrutural realizada após esta rodada confirmou:
 - campos mínimos de autoridade, escopo, domínio, tipo e status.
 
 A escala já exige validação automática antes de cada merge.
+
+
+## Operadores avançados de busca e ecossistema cartorial
+
+### Decisão
+
+Operadores como `site:`, `filetype:`, `intitle:`, `inurl:`, `intext:`, busca exata, OR e exclusões são oficialmente incorporados ao processo de descoberta, mas somente para localizar conteúdo público/oficial e documentação técnica.
+
+A biblioteca de consultas está em:
+- `data/source-registry/search-playbook.json`;
+- `tools/discovery/generate_search_queries.py`;
+- `docs/ADVANCED_PUBLIC_SOURCE_DISCOVERY.md`.
+
+A pesquisa não procura credenciais, secrets, backups privados, dumps, painéis administrativos, documentos pessoais expostos acidentalmente ou rotas para contornar autenticação.
+
+### Descobertas por dorks seguros
+
+#### SINTER
+
+A Receita Federal mantém documentação oficial da API SINTER/CADURB e Swagger em ambiente oficial. A documentação confirma:
+- HTTP/HTTPS + JSON;
+- versionamento `/v1/`;
+- Bearer token obtido por Client ID/Client Secret;
+- operações de inclusão, alteração, desativação e consulta;
+- Swagger oficial;
+- até 25 unidades em certas operações de escrita.
+
+O registry foi atualizado para distinguir consulta pública de API autenticada.
+
+#### Portal Brasileiro de Dados Abertos
+
+O `dados.gov.br` mantém Swagger/OAS 3.1 e API REST oficial para listar/detalhar conjuntos de dados, organizações, temas, tags e reúsos. Esse endpoint passa a ser fonte-mãe para descoberta automática nacional.
+
+#### ONR / RI Digital
+
+Documentação pública localizada:
+- especificação de Web Service para Visualização de Matrícula;
+- Manual de Integração de Cartórios;
+- exemplos de integração;
+- documentação de Certidão Digital;
+- Swagger público de serviço autenticado de atualização de matrículas.
+
+Esses materiais revelam contratos técnicos, mas não tornam matrículas open data. Operações autenticadas não serão testadas sem autorização.
+
+#### SERP / Meu Registro
+
+O Provimento CNJ 229/2026 consolida o ecossistema SERP/Meu Registro e a interoperabilidade entre:
+- ONSERP;
+- ONR;
+- ON-RCPN;
+- ON-RTDPJ;
+- serventias vinculadas.
+
+A Receita Federal também informa que a integração das serventias ao SINTER está em construção conjunta com RFB, CNJ, ONR, CNB, municípios, Incra e MGI.
+
+#### Justiça Aberta
+
+O painel público do CNJ fornece cadastro institucional, produtividade e arrecadação de serventias, com atualização diária e exportação CSV/XLSX. Deve ser nossa fonte oficial para diretório de cartórios/CNS.
+
+#### CENSEC
+
+A Busca CEP é serviço pago e a consulta pública é deliberadamente limitada. A documentação técnica pública também descreve API para transmissão de cargas CEP, CESDI, RCTO e CTP, mas o uso operacional é reservado a atores autorizados.
+
+Isso é valioso arquiteturalmente porque a CTP explicita o conceito de Comunicação de Transações às Prefeituras, mas não será tratada como API pública.
+
+### São Bento do Sul
+
+Operadores avançados revelaram serviço ArcGIS municipal `integracao/Cadastro_Imobiliario` com:
+- Lotes;
+- Edificações;
+- Zoneamentos;
+- Testadas;
+- ITBI;
+- Informações de unidade/terreno;
+- Endereços;
+- cadastro imobiliário.
+
+O mesmo serviço lista uma tabela `Proprietarios` e campos potencialmente pessoais/sensíveis em tabelas relacionadas.
+
+Decisão: fonte registrada com status `VERIFIED_SENSITIVE_TABLES_BLOCKED`. Camadas de lote/edificação poderão ser avaliadas; `Proprietarios` e dados pessoais ficam bloqueados independentemente de o endpoint ser tecnicamente consultável.
+
+### Vitória
+
+Foi identificado ArcGIS oficial da Prefeitura de Vitória com:
+- `MapaBaseImobiliario`;
+- `DominioFundiario`;
+- `ImoveisCentro`;
+- imagens;
+- pasta `Opendata`.
+
+Será enumerado serviço a serviço e cada licença/campo receberá classificação própria.
+
+### Poços de Caldas
+
+A Prefeitura mantém API REST oficial de dados abertos com JSON, CSV/XML, filtros, paginação e token temporário de visitante. O portal documenta geração legítima de token e playground.
+
+A Câmara mantém acervo urbanístico de alto valor:
+- diagnóstico histórico;
+- dezenas de mapas em ZIP;
+- DWG hidrogeológico;
+- leis de Plano Diretor;
+- LC 225/2022 com mapas;
+- SIAVE com situação, vínculos e anexos de normas urbanísticas.
+
+### Regra reforçada
+
+**Indexado no Google/Bing ≠ autorizado para ingestão.**
+
+Para o LoteDiretor, um endpoint só sai de `DISCOVERY` quando:
+1. autoridade é confirmada;
+2. finalidade/licença/termos são avaliados;
+3. schema é inspecionado;
+4. campos pessoais são filtrados;
+5. ingestão/materialização é explicitamente aprovada.
