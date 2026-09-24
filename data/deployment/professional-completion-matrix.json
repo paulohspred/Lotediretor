@@ -117,13 +117,13 @@
           "endpoint": "https://www2.prefeitura.sp.gov.br/web/fazenda/w/acesso_a_informacao/31501",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "connector_status": "MATERIALIZER_VALIDATED_END_TO_END",
           "missing_fields": [
-            "schema inspection",
-            "license/terms review",
-            "property linkage confidence"
+            "monthly refresh/diff automation",
+            "pre-2022 backfill if broader historical depth is required",
+            "condominium/unit-level reconciliation when SQL geometry represents a parent lot"
           ],
-          "notes": null
+          "notes": "Official São Paulo ITBI transparency workbooks are materialized into a privacy-safe SQLite index keyed by 11-digit SQL. 2022-2026 currently contain 828,583 DTI rows across 472,057 distinct SQLs. Public fields include transaction values/date/nature, VVR, tax base, financing, registry office/matrícula, SQL status, frontage, ideal fraction, land/built area, use, pattern and ACC. Buyer/seller names and CPF/CNPJ are not materialized. Matrícula/cartório from DTI are historical public references, not substitutes for a current registry certificate."
         },
         {
           "field": "registry reference",
@@ -378,13 +378,13 @@
           "endpoint": "https://metadados.geosampa.prefeitura.sp.gov.br/geonetwork/geoprodam/search?orgName=Coordenadoria+de+Produ%C3%A7%C3%A3o+e+An%C3%A1lise+da+Informa%C3%A7%C3%A3o+%E2%80%93+GEOINFO",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "READ_ONLY_TERRAIN_OVERLAYS_IMPLEMENTED",
+          "connector_status": "LIDAR_MDT_PROPERTY_PROFILE_IMPLEMENTED",
           "missing_fields": [
-            "artifact license review",
-            "tile/index connector",
-            "quality metadata normalization"
+            "multi-tile parcel stitching for parcels crossing MDT quadrícula boundaries",
+            "terrain result persistence/version history beyond runtime cache",
+            "field-survey confirmation for executive/topographic decisions"
           ],
-          "notes": "Public UI now exposes GeoSampa hillshade (MDC 2004) and declividade WMS layers for visual terrain context. Executive/topographic use still requires quality metadata and approved artifact workflow."
+          "notes": "GeoSampa MDT 2020 parcel resolver is live. It resolves the official 2020 quadrícula by parcel point, downloads the official MDT_2020 LAZ tile into a hardened cache with SHA-256, reads SIRGAS 2000 / UTM 23S coordinates and Imbituba/MAPGEO2015 vertical datum, interpolates a 1 m parcel grid, and generates A-A longest-axis and B-B perpendicular elevation profiles. Results explicitly remain derived from official LiDAR and do not replace RTK/total-station survey."
         },
         {
           "field": "public works",
