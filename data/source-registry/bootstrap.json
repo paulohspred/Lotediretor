@@ -602,6 +602,22 @@
       "notes": "WFS/WMS oficial via INDE e downloads SHP/KML/XLSX para UCs, cavernas, áreas embargadas, autos de infração e PANs."
     },
     {
+      "id": "br-imprensa-nacional-dou",
+      "authority": "Imprensa Nacional / Presidência da República",
+      "scope": "BR_FEDERAL",
+      "domain": [
+        "official_gazette",
+        "federal_law",
+        "regulation",
+        "acts"
+      ],
+      "source_type": "open_data_XML",
+      "discovery_url": "https://www.gov.br/imprensanacional/pt-br/centrais-de-conteudo/dados-abertos",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED",
+      "notes": "Edições do Diário Oficial da União são disponibilizadas em dados abertos/formatos legíveis por máquina. Útil para publicação e vigência de atos federais; não substitui diários oficiais estaduais/municipais."
+    },
+    {
       "id": "br-incra-acervo-fundiario",
       "authority": "INCRA",
       "scope": "BR",
@@ -689,6 +705,25 @@
       "verification_status": "VERIFIED"
     },
     {
+      "id": "br-interlegis-sapl",
+      "authority": "Senado Federal / Interlegis e casas legislativas usuárias do SAPL",
+      "scope": "BR_DISTRIBUTED",
+      "domain": [
+        "municipal_law",
+        "state_law",
+        "bills",
+        "amendments",
+        "legislative_process",
+        "legal_annexes"
+      ],
+      "source_type": "distributed_REST_OpenAPI_platform",
+      "discovery_url": "https://git.interlegis.leg.br/SPDT/sapl",
+      "api_pattern": "{instance}/api/norma/normajuridica/",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PLATFORM_PER_INSTANCE_REVIEW",
+      "notes": "SAPL oferece REST/OpenAPI com NormaJuridica, AnexoNormaJuridica, LegislacaoCitada, NormaRelacionada, MateriaLegislativa e Tramitacao. Instâncias e permissões variam; usar somente GETs públicos e respeitar autenticação quando exigida."
+    },
+    {
       "id": "br-iphan-geoserver",
       "authority": "IPHAN",
       "scope": "BR",
@@ -702,6 +737,23 @@
       "access_class": "PUBLIC_QUERY_ONLY",
       "verification_status": "VERIFIED",
       "notes": "IPHAN informa que dados geoespaciais de sítios arqueológicos do SICG podem ser acessados e baixados diretamente no GeoServer. Revisar licença por camada."
+    },
+    {
+      "id": "br-lexml-sru",
+      "authority": "Rede de Informação Legislativa e Jurídica / LexML Brasil",
+      "scope": "BR",
+      "domain": [
+        "legislation",
+        "legal_metadata",
+        "legal_urn",
+        "federal_state_municipal_law"
+      ],
+      "source_type": "SRU_URN_resolution_OAI_PMH_ecosystem",
+      "base_url": "https://www.lexml.gov.br/busca/SRU",
+      "urn_resolver": "https://www.lexml.gov.br/urn/",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED",
+      "notes": "LexML integra metadados legislativos/jurídicos das três esferas e usa URNs persistentes. O padrão de coleta dos provedores é OAI-PMH; o portal oferece pesquisa SRU. Usar para descoberta, normalização e ligação a ocorrências oficiais, preservando a fonte primária."
     },
     {
       "id": "br-repositorio-dados-gov",
@@ -1711,6 +1763,28 @@
       "access_class": "OPEN_REUSABLE",
       "verification_status": "VERIFIED",
       "notes": "Novo PDUS e LUOS sancionados em 14/07/2026. Registrar números legais e anexos a partir do DOPA antes do motor normativo."
+    },
+    {
+      "id": "rs-porto-alegre-smamus-arcgis",
+      "authority": "Prefeitura de Porto Alegre / SMAMUS",
+      "scope": "municipality",
+      "municipality_ibge": "4314902",
+      "domain": [
+        "zoning",
+        "urban_parameters",
+        "buildings_3d",
+        "height",
+        "heritage",
+        "licensing",
+        "drainage",
+        "utilities",
+        "rural_properties"
+      ],
+      "source_type": "ArcGIS_REST",
+      "base_url": "https://gis-smamus.portoalegre.rs.gov.br/server/rest/services",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_ENDPOINT_LICENSE_PER_SERVICE",
+      "notes": "Diretório oficial contém DMWEB/PDDUA, zoneamento, Altura Máxima LUOS/PDDUA, edificações 3D com campo de altura, alinhamento predial, AEIS, patrimônio, projetos/licenciamento 2020-2026, drenagem, redes e propriedades rurais. Licença/copyright varia por serviço e deve ser registrada individualmente."
     },
     {
       "id": "rs-sema-arcgis",
