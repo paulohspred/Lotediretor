@@ -75,8 +75,10 @@ PGV_INDEX_PATH = Path("/srv/lotediretor/data/pgv2026/pgv-terrain-values-2026.jso
 ITBI_DB_PATH = Path("/srv/lotediretor/data/itbi-public/itbi-transactions.sqlite3")
 IPTU_DB_PATH = Path("/srv/lotediretor/data/iptu-public/iptu-cadastre.sqlite3")
 LPUOS_INDEX_PATH = Path("/srv/lotediretor/data/lpuos/lpuos-parameters.json")
+AIU_SCE_INDEX_PATH = Path("/srv/lotediretor/data/aiu-sce/aiu-sce-parameters.json")
 SISZON_URL = "https://consultasiszon.prefeitura.sp.gov.br/FormsRestrict/frmConsultaSQCL.aspx"
 _LPUOS_INDEX_CACHE = None
+_AIU_SCE_INDEX_CACHE = None
 _SISZON_CACHE = {}
 TERRAIN_CACHE_DIR = Path("/var/cache/lotediretor/terrain/mdt2020")
 TERRAIN_DOWNLOAD = "https://download.geosampa.prefeitura.sp.gov.br/PaginasPublicas/downloadArquivo.aspx"
@@ -1319,6 +1321,19 @@ def load_lpuos_index() -> dict:
     return _LPUOS_INDEX_CACHE
 
 
+def load_aiu_sce_index() -> dict:
+    global _AIU_SCE_INDEX_CACHE
+    if _AIU_SCE_INDEX_CACHE is None:
+        payload = json.loads(AIU_SCE_INDEX_PATH.read_text(encoding="utf-8"))
+        if payload.get("source_id") != "sp-sao-paulo-aiu-sce-parameters":
+            raise ValueError("unexpected AIU-SCE source")
+        params = payload.get("parameters")
+        if not isinstance(params, dict) or "Q8b" not in params:
+            raise ValueError("invalid AIU-SCE parameter index")
+        _AIU_SCE_INDEX_CACHE = payload
+    return _AIU_SCE_INDEX_CACHE
+
+
 def resolve_siszon_qa(parcel: dict) -> dict:
     props = parcel.get("properties") or {}
     sector = props.get("fiscal_sector")
@@ -1415,11 +1430,19 @@ def collect_special_urban_regimes(results: dict) -> list[dict]:
     output = []
     for key, label in mappings:
         for item in results.get(key) or []:
+            props = item.get("properties") or {}
+            legal_status = "CURRENT_CONTEXT"
+            if (
+                key == "urban_operation"
+                and (props.get("nm_operacao_urbana") or "").strip().upper() == "CENTRO"
+            ):
+                legal_status = "HISTORICAL_LEGACY_REVOKED_BY_LEI_17844_2022"
             output.append({
                 "type": key,
                 "label": label,
                 "feature_id": item.get("id"),
-                "properties": item.get("properties") or {},
+                "legal_status": legal_status,
+                "properties": props,
             })
     return output
 
@@ -1513,11 +1536,51 @@ def resolve_lpuos_parameters(
         and area > 0
         else None
     )
+    aiu_index = load_aiu_sce_index()
+    special_parameter_code = None
+    for regime in special_regimes:
+        if regime.get("type") != "aiu_area_parameter":
+            continue
+        props = regime.get("properties") or {}
+        candidate = (props.get("cd_parametro") or "").strip()
+        if candidate in (aiu_index.get("parameters") or {}):
+            special_parameter_code = candidate
+            break
+
+    special_override = None
+    effective_theoretical = {}
+    if special_parameter_code:
+        raw_override = (aiu_index.get("parameters") or {}).get(special_parameter_code) or {}
+        sidewalk_applies = (
+            isinstance(area, (int, float))
+            and area >= 2500
+            and isinstance(raw_override.get("min_sidewalk_width_m"), (int, float))
+        )
+        special_override = {
+            **raw_override,
+            "parameter_code": special_parameter_code,
+            "law": aiu_index.get("law"),
+            "amendments_considered": aiu_index.get("amendments_considered") or [],
+            "source_pdf_sha256": aiu_index.get("source_pdf_sha256"),
+            "source_url": aiu_index.get("source_url"),
+            "notes": aiu_index.get("notes") or {},
+            "min_sidewalk_applies_to_this_lot": sidewalk_applies,
+        }
+        special_ca_max = raw_override.get("ca_max")
+        if isinstance(area, (int, float)) and isinstance(special_ca_max, (int, float)):
+            effective_theoretical["max_computable_area_m2"] = round(
+                area * special_ca_max, 2
+            )
+
     return {
         "available": True,
         "status": (
-            "BASE_PARAMETERS_SPECIAL_REGIME_REVIEW_REQUIRED"
-            if special_regimes else "BASE_ZONE_PARAMETERS"
+            "SPECIAL_REGIME_PARAMETER_RESOLVED_ADDITIONAL_REVIEW_REQUIRED"
+            if special_override
+            else (
+                "BASE_PARAMETERS_SPECIAL_REGIME_REVIEW_REQUIRED"
+                if special_regimes else "BASE_ZONE_PARAMETERS"
+            )
         ),
         "zone": normalized_zone,
         "land_area_m2": area,
@@ -1538,6 +1601,8 @@ def resolve_lpuos_parameters(
             "drainage_factor_beta": (qa_table or {}).get("drainage_factor_beta"),
         },
         "theoretical_base": theoretical,
+        "special_override": special_override,
+        "effective_theoretical": effective_theoretical,
         "existing_built_area_m2": built,
         "existing_gross_built_land_ratio": gross_ratio,
         "special_regimes": special_regimes,
@@ -1547,10 +1612,12 @@ def resolve_lpuos_parameters(
             for key, value in (index.get("documents") or {}).items()
         },
         "interpretation": (
-            "Parâmetros-base da LPUOS para a zona vigente. Não constituem "
-            "parecer definitivo de edificabilidade. Regimes especiais, ZEPEC, "
-            "restrições registrais, uso/projeto, áreas não computáveis, "
-            "incentivos e outras regras podem alterar o potencial efetivo."
+            "A resolução combina a zona vigente com parâmetros-base da LPUOS "
+            "e, quando identificado, o parâmetro especial da AIU-SCE. Ainda "
+            "não constitui parecer definitivo de edificabilidade: patrimônio/"
+            "ZEPEC, restrições registrais, uso e projeto, áreas computáveis e "
+            "não computáveis, incentivos, alinhamentos e demais regras podem "
+            "alterar o potencial efetivo."
         ),
     }
 
@@ -1690,66 +1757,4 @@ def public_feature(feature: dict) -> dict:
             "fiscal_block": props.get("cd_quadra_fiscal"),
             "fiscal_subblock": props.get("cd_subquadra_fiscal"),
             "fiscal_lot": props.get("cd_lote"),
-            "fiscal_digit": props.get("cd_digito_sql"),
-            "condominium_code": props.get("cd_condominio"),
-            "sql_reference": sql_reference(props),
-            "cib": props.get("cd_cib"),
-            "cib_status": props.get("tx_situacao_cib"),
-            "street_code": props.get("cd_logradouro"),
-            "street": props.get("nm_logradouro_completo"),
-            "number": props.get("cd_numero_porta"),
-            "complement": props.get("tx_complemento_endereco"),
-            "land_area_m2": props.get("qt_area_terreno"),
-            "built_area_m2": props.get("qt_area_construida"),
-            "use_code": props.get("cd_tipo_uso_imovel"),
-            "use_description": props.get("dc_tipo_uso_imovel"),
-            "parcel_type": props.get("tx_tipo_lote"),
-            "parcel_status": props.get("tx_situ_lote"),
-        },
-    }
-
-
-def load_report_contract() -> tuple[dict, dict]:
-    spec = json.loads(REPORT_SPEC_PATH.read_text(encoding="utf-8"))
-    matrix = json.loads(MATRIX_PATH.read_text(encoding="utf-8"))
-    city = next(item for item in matrix["first_wave"] if item.get("ibge") == "3550308")
-    return spec, {row["field"]: row for row in city["rows"]}
-
-
-def actual_values_for_section(
-    section_id: str,
-    parcel: dict,
-    context: dict,
-) -> list[dict]:
-    p = parcel["properties"]
-    address = ", ".join(filter(None, [p.get("street"), p.get("number")])) or None
-    planning = context.get("planning") or {}
-    zoning = (planning.get("zoning") or {}).get("properties") or {}
-    macroarea = (planning.get("macroarea") or {}).get("properties") or {}
-    macrozone = (planning.get("macrozone") or {}).get("properties") or {}
-    risk = context.get("risk") or {}
-    heritage = context.get("heritage") or {}
-
-    if section_id == "executive_summary":
-        values = [
-            {"label": "Endereço", "value": address},
-            {"label": "SQL", "value": p.get("sql_reference")},
-            {"label": "CIB", "value": p.get("cib")},
-            {"label": "Área do terreno", "value": p.get("land_area_m2"), "unit": "m²"},
-            {"label": "Área construída fiscal", "value": p.get("built_area_m2"), "unit": "m²"},
-            {"label": "Uso cadastral", "value": p.get("use_description")},
-            {"label": "Zona", "value": zoning.get("cd_zoneamento_perimetro")},
-            {"label": "Macroárea", "value": macroarea.get("nm_macroarea")},
-            {
-                "label": "PGV 2026 · terreno",
-                "value": (context.get("fiscal") or {}).get("pgv", {}).get("vm2t_brl_per_m2"),
-                "unit": "BRL/m²",
-            },
-            {
-                "label": "Pavimentos · IPTU",
-                "value": ((context.get("fiscal") or {}).get("iptu") or {}).get("latest", {}).get("floors"),
-            },
-            {
-                "label": "Ano construção · IPTU",
-                "value": ((context.get("fiscal") or {}).get("iptu") or {}).get("latest", {}).get("corrected_construction_year"),
-          
+            "fiscal_digit": props.get("cd_digito_
