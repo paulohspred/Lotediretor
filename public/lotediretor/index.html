@@ -149,9 +149,23 @@ const spParcelWms=L.tileLayer.wms("https://wms.geosampa.prefeitura.sp.gov.br/geo
   format:"image/png",
   transparent:true,
   version:"1.1.1",
-  opacity:.58,
+  opacity:.62,
   attribution:"Prefeitura de São Paulo · GeoSampa"
-});
+}).setZIndex(420);
+
+const spZoningWms=L.tileLayer.wms("https://wms.geosampa.prefeitura.sp.gov.br/geoserver/geoportal/wms",{
+  layers:"perimetro_zona_lei_18177_24",
+  format:"image/png",
+  transparent:true,
+  version:"1.1.1",
+  opacity:.30,
+  attribution:"Zoneamento vigente · Prefeitura de São Paulo · GeoSampa"
+}).setZIndex(380);
+
+L.control.layers(null,{
+  "Lotes fiscais · GeoSampa":spParcelWms,
+  "Zoneamento vigente · Lei 18.177/2024":spZoningWms
+},{collapsed:true,position:"topright"}).addTo(map);
 
 const markers=[];
 let selectedParcelLayer=null;
@@ -168,9 +182,11 @@ cities.forEach((c,i)=>{
 function applyCity(idx,fly=true){
   const c=cities[idx],total=c.r+c.p+c.q+c.v;
   if(c.ibge==="3550308"){
+    if(!map.hasLayer(spZoningWms))spZoningWms.addTo(map);
     if(!map.hasLayer(spParcelWms))spParcelWms.addTo(map);
-  }else if(map.hasLayer(spParcelWms)){
-    map.removeLayer(spParcelWms);
+  }else{
+    if(map.hasLayer(spParcelWms))map.removeLayer(spParcelWms);
+    if(map.hasLayer(spZoningWms))map.removeLayer(spZoningWms);
   }
   document.getElementById("cityName").textContent=`${c.name} · ${c.uf}`;
   document.getElementById("ibge").textContent=`IBGE ${c.ibge}`;
