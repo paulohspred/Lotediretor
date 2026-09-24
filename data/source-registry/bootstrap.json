@@ -13,6 +13,26 @@
   ],
   "sources": [
     {
+      "id": "am-manaus-arcgis",
+      "authority": "Prefeitura de Manaus",
+      "scope": "municipality",
+      "municipality_ibge": "1302603",
+      "domain": [
+        "cadastre",
+        "finance",
+        "urban_planning",
+        "building_permits",
+        "heritage",
+        "imagery",
+        "3d"
+      ],
+      "source_type": "ArcGIS_REST",
+      "base_url": "https://pmm.manaus.am.gov.br/arcgis/rest/services",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_ENDPOINT_MIXED_ACCESS",
+      "notes": "Diretório público expõe SEMEF/SEMEF_PROJETO_GEOMANAUS e IMPLURB com alvará simplificado/patrimônio. Algumas pastas (SEMEF_DIGEO, MANAUS_3D_TESTE) exigem login e devem ser tratadas como indisponíveis sem autorização."
+    },
+    {
       "id": "am-manaus-plan-director",
       "authority": "Prefeitura de Manaus",
       "scope": "municipality",
@@ -874,6 +894,25 @@
       "notes": "GeoServer oficial com acesso anônimo, 34 workspaces e 144 camadas na data da pesquisa; licença precisa ser validada por camada."
     },
     {
+      "id": "rj-niteroi-geoservices",
+      "authority": "Prefeitura de Niterói",
+      "scope": "municipality",
+      "municipality_ibge": "3303302",
+      "domain": [
+        "plan_director",
+        "cadastre",
+        "lot",
+        "urban_process",
+        "imagery",
+        "open_data"
+      ],
+      "source_type": "ArcGIS_REST",
+      "base_url": "https://geo.niteroi.rj.gov.br/arcgis/rest/services",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_WITH_PERSONAL_DATA_FILTER",
+      "notes": "Pasta dadosabertos publica Plano Diretor; existem serviços de quadra/lote e processos urbanísticos. Alguns serviços expõem campos potencialmente pessoais/registrários (ex.: requerente, documento, proprietário, matrícula). Esses campos devem ser bloqueados da ingestão pública e submetidos a revisão LGPD/termos."
+    },
+    {
       "id": "rj-rio-data-rio",
       "authority": "Prefeitura do Rio de Janeiro",
       "scope": "municipality",
@@ -1041,6 +1080,27 @@
       "access_class": "PUBLIC_QUERY_ONLY",
       "verification_status": "VERIFIED_ENDPOINT_LICENSE_REVIEW",
       "notes": "Serviços públicos incluem FeatureServer de licenciamento ambiental; revisar licença e exposição de atributos por serviço."
+    },
+    {
+      "id": "sc-joinville-simgeo-arcgis",
+      "authority": "Prefeitura de Joinville",
+      "scope": "municipality",
+      "municipality_ibge": "4209102",
+      "domain": [
+        "cadastre",
+        "tax_parcel",
+        "itbi",
+        "urban_planning",
+        "terrain",
+        "heritage",
+        "development_rights"
+      ],
+      "source_type": "ArcGIS_REST",
+      "base_url": "https://geo.joinville.sc.gov.br/server/rest/services",
+      "image_url": "https://geo.joinville.sc.gov.br/image/rest/services",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_ENDPOINT_LICENSE_REVIEW",
+      "notes": "Diretório público possui SEFAZ com lotes urbanos, certidão cadastral, SEPUR com macrozoneamento, EIV, outorga onerosa, TDC, IPTU progressivo, topografia e histórico do perímetro. ImageServer publica ortofotos 2007/2010, imagens 2016/2021/2022 e pastas 2025/2026. Pasta 'itbi' redireciona para login e NÃO deve ser contornada."
     },
     {
       "id": "sp-campinas-spatial-data",
