@@ -30,6 +30,64 @@
       "notes": "Portal oficial declara livre reutilização e redistribuição com crédito à fonte; catalogar datasets espaciais relevantes."
     },
     {
+      "id": "ac-rio-branco-rbgeo",
+      "authority": "Prefeitura de Rio Branco",
+      "scope": "municipality",
+      "municipality_ibge": "1200401",
+      "domain": [
+        "cadastre",
+        "lots",
+        "risk",
+        "flood",
+        "terrain",
+        "lidar",
+        "imagery",
+        "heritage",
+        "urban_perimeter",
+        "streets"
+      ],
+      "source_type": "ArcGIS_REST",
+      "base_url": "https://rbgeo.riobranco.ac.gov.br/server/rest/services",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_ENDPOINT_LICENSE_REVIEW",
+      "notes": "ArcGIS público com Cadastro_Imobiliario, Areas_Risco, Fotos2022, Relevo e Hosted. Lotes cadastrais 2023/2024, loteamentos, logradouros 2025, LiDAR/curvas 1m, MDT, enchentes e patrimônio. Revisar licença e campos antes de espelhamento."
+    },
+    {
+      "id": "al-maceio-iplam-cartography",
+      "authority": "Prefeitura de Maceió / IPLAM",
+      "scope": "municipality",
+      "municipality_ibge": "2704302",
+      "domain": [
+        "cadastre",
+        "cartography",
+        "property_location",
+        "planning"
+      ],
+      "source_type": "document_request_and_institutional_files",
+      "discovery_url": "https://www.iplam.maceio.al.gov.br/servicos/servicos",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_RESTRICTED_DISTRIBUTION",
+      "notes": "IPLAM emite Planta de Localização com base em cartografia/cadastro técnico; arquivos editáveis SHP/DWG são descritos como destinados a órgãos conveniados. Não tratar como download público em massa."
+    },
+    {
+      "id": "al-maceio-massayo360",
+      "authority": "Prefeitura de Maceió / IPLAM",
+      "scope": "municipality",
+      "municipality_ibge": "2704302",
+      "domain": [
+        "lots",
+        "zoning",
+        "urban_parameters",
+        "planning",
+        "3d"
+      ],
+      "source_type": "urban_intelligence_portal",
+      "discovery_url": "https://massayo360.iplam.maceio.al.gov.br/",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PORTAL_ENDPOINT_DISCOVERY_PENDING",
+      "notes": "Lançado em 09/04/2026 para consultas urbanísticas de lotes, zoneamento, potencial construtivo, taxa de ocupação e restrições. O portal usa login em parte do fluxo; não contornar autenticação. Descobrir APIs apenas se publicamente documentadas."
+    },
+    {
       "id": "am-manaus-arcgis",
       "authority": "Prefeitura de Manaus",
       "scope": "municipality",
@@ -1112,6 +1170,28 @@
       "access_class": "PUBLIC_QUERY_ONLY",
       "verification_status": "VERIFIED_ENDPOINT_LICENSE_REVIEW",
       "notes": "Diretório REST contém CAR, IMASUL, imagens, monitoramento, supressão legal e outras pastas."
+    },
+    {
+      "id": "mt-cuiaba-urban-law-maps",
+      "authority": "Prefeitura de Cuiabá / SMADESS",
+      "scope": "municipality",
+      "municipality_ibge": "5103403",
+      "domain": [
+        "zoning",
+        "land_use",
+        "road_hierarchy",
+        "urban_law",
+        "neighborhoods"
+      ],
+      "source_type": "official_download_documents",
+      "discovery_url": "https://smades.cuiaba.mt.gov.br/legislacao/uso-ocupacao",
+      "formats": [
+        "PDF",
+        "documents"
+      ],
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_DOWNLOAD_LICENSE_REVIEW",
+      "notes": "Portal disponibiliza LUOUS, mapas de zoneamento/hierarquia viária, composição de bairros e logradouros. Cadastro imobiliário fiscal existe em sistema próprio, mas não foi confirmado como base aberta."
     },
     {
       "id": "mt-sema-geospatial",
