@@ -247,6 +247,26 @@
       "mode": "public_archive_metadata_only",
       "approved": true,
       "notes": "Public official-edition archive. Discover stable pagination/document URLs; bulk reuse/API terms remain under review."
+    },
+    {
+      "id": "obrasgov-current",
+      "source_id": "br-obrasgov-api",
+      "kind": "custom_python_client",
+      "url": "https://api-publica.obrasgov.gestao.gov.br/obras",
+      "mode": "bounded_paginated_read_only",
+      "approved": true,
+      "tool": "tools/ingestion/obrasgov.py",
+      "notes": "Current 2026 API only. GET, no authentication, explicit resource/filter allowlist, page cap and source update timestamp. Default is one page; national crawl is never implicit."
+    },
+    {
+      "id": "pncp-public-consultation",
+      "source_id": "br-pncp-open-api",
+      "kind": "custom_python_client",
+      "url": "https://pncp.gov.br/api/consulta",
+      "mode": "bounded_date_window_read_only",
+      "approved": true,
+      "tool": "tools/ingestion/pncp.py",
+      "notes": "Public consultation API only. GET, no login. Publications require explicit modality and date window; optional municipality filter. Contract search is date-bounded. Write/maintenance APIs are out of scope."
     }
   ]
 }
