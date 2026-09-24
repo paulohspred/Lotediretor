@@ -359,6 +359,66 @@
         "identify newer official orthophoto/aerial imagery",
         "define render-only fallback"
       ]
+    },
+    {
+      "id": "cand-rj-rio-licenses-habite-se",
+      "status": "SCHEMA_REVIEW",
+      "category": "licensing_habite_se",
+      "authority": "Prefeitura do Rio de Janeiro / SMDU",
+      "url": "https://desenvolvimentourbano.prefeitura.rio/informacoes-urbanisticas/",
+      "discovered_via": "official SMDU urban-information page",
+      "goal": "Resolve the monthly licenses/habite-se resources into a safe property-centric schema and determine resource-specific reuse terms.",
+      "risks": [
+        "page-level term explicitly covers analyses/maps but may not automatically license every raw administrative record",
+        "administrative records may include applicant/professional data",
+        "historical resource URLs may redirect through legacy portal"
+      ],
+      "next_checks": [
+        "enumerate monthly resource files",
+        "inspect columns and personal-data fields",
+        "capture terms per downloadable resource",
+        "define property identifier/address join"
+      ]
+    },
+    {
+      "id": "cand-rj-rio-doweb",
+      "status": "TERMS_REVIEW",
+      "category": "official_gazette",
+      "authority": "Prefeitura do Rio de Janeiro / Imprensa Oficial",
+      "url": "https://doweb.rio.rj.gov.br/",
+      "discovered_via": "official D.O. Rio public portal and public edition JSON endpoint",
+      "goal": "Create a stable incremental official-gazette ingestion contract for edition metadata and legal-event extraction.",
+      "risks": [
+        "public accessibility does not establish bulk redistribution license",
+        "internal-looking frontend endpoints can change without notice",
+        "full-text PDFs may contain personal data unrelated to property intelligence"
+      ],
+      "next_checks": [
+        "document endpoint behavior and pagination/date parameters",
+        "review terms/robots/publication reuse",
+        "define event allowlist for urbanism/heritage/works/expropriation",
+        "preserve PDF hash and edition provenance"
+      ]
+    },
+    {
+      "id": "cand-rj-rio-urban-uses",
+      "status": "SCHEMA_REVIEW",
+      "category": "urban_rules",
+      "authority": "Prefeitura do Rio de Janeiro / SMDU",
+      "url": "https://pgeo3.rio.rj.gov.br/arcgis/rest/services/Urbanismo/IU_Usos_e_atividades/MapServer",
+      "discovered_via": "official ArcGIS REST service",
+      "goal": "Normalize activity/use rules by spatial area and legal validity under LC 270/2024 and subsequent regulations.",
+      "risks": [
+        "service description explicitly says the map layer alone is incomplete",
+        "rules are relational across tables and spatial areas",
+        "future decrees/amendments can change validity"
+      ],
+      "next_checks": [
+        "snapshot all layer/table schemas",
+        "map relationship keys",
+        "capture itemInfo/license",
+        "build temporal legal-rule join tests"
+      ]
     }
   ]
 }
