@@ -339,6 +339,26 @@
         "lidar_2020": "~10 pts/m²; MDT/MDS 0.50 m; PEC-PCD Classe A",
         "lidar_2017": "5-30 pts/m²; 0.50 m products; PEC-PCD Classe A"
       }
+    },
+    {
+      "id": "cand-pe-recife-ortho-2013-2014",
+      "status": "TERMS_REVIEW",
+      "category": "imagery",
+      "authority": "Prefeitura do Recife / SEMOC / SELCA / UIG",
+      "url": "https://esigportal2.recife.pe.gov.br/arcgis/rest/services/MeioAmbiente/MA_Ortofoto2013_2014MapService/MapServer",
+      "discovered_via": "official public ArcGIS REST service",
+      "goal": "Determine whether the 2013/2014 orthophoto can be cached/materialized or should remain render/query-only.",
+      "risks": [
+        "copyright notice exists but reuse license is not explicit",
+        "imagery caching/materialization has different legal implications than viewing a public map service",
+        "dataset is historical, not current imagery"
+      ],
+      "next_checks": [
+        "ArcGIS itemInfo/metadata terms",
+        "municipal open-data policy applicability to this service",
+        "identify newer official orthophoto/aerial imagery",
+        "define render-only fallback"
+      ]
     }
   ]
 }
