@@ -253,19 +253,20 @@
         {
           "field": "electricity",
           "status": "PARTIAL",
-          "source_id": "br-aneel-bdgd",
+          "source_id": "sp-enel-distribuicao-provider",
           "supporting_source_ids": [
+            "br-aneel-bdgd",
             "sp-arsesp-utility-concessions"
           ],
-          "endpoint": "https://dadosabertos.aneel.gov.br/dataset/base-de-dados-geografica-da-distribuidora-bdgd",
-          "access_class": "OPEN_REUSABLE",
-          "license": "ODbL",
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "endpoint": "https://www.enel.com.br/pt-saopaulo/cidades-atendidas-pela-enel-distribuicao.html",
+          "access_class": "PUBLIC_QUERY_ONLY",
+          "license": null,
+          "connector_status": "UTILITY_RESOLVER_CONFIGURED",
           "missing_fields": [
-            "BDGD distributor-specific materialization",
-            "do not infer available load"
+            "BDGD distributor package/version resolver",
+            "parcel-specific connection/load confirmation"
           ],
-          "notes": null
+          "notes": "Enel Distribuição São Paulo is the provider for the capital. BDGD supplies technical asset context; provider territory and nearby grid do not prove available capacity."
         },
         {
           "field": "gas",
@@ -287,20 +288,21 @@
         {
           "field": "water/sewer",
           "status": "PARTIAL",
-          "source_id": "sp-sao-paulo-water-sewer-geoconvias",
+          "source_id": "sp-sabesp-provider",
           "supporting_source_ids": [
-            "sp-arsesp-utility-concessions",
-            "br-sinisa-results"
+            "br-sinisa-results",
+            "sp-sao-paulo-water-sewer-geoconvias",
+            "sp-arsesp-utility-concessions"
           ],
-          "endpoint": "https://www.arsesp.sp.gov.br/prefeituras/Paginas/SeuMunicipio.aspx",
+          "endpoint": "https://www.arsesp.sp.gov.br/SitePages/saneamento/municipios-conveniados-saneamento.aspx",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "connector_status": "UTILITY_RESOLVER_CONFIGURED",
           "missing_fields": [
-            "complete current utility network",
-            "frontage availability evidence from provider"
+            "complete current network dataset",
+            "frontage connection/availability evidence"
           ],
-          "notes": "GeoConvias As Built data records punctual works/services and is explicitly not a complete network inventory. Provider/regulatory confirmation remains necessary."
+          "notes": "ARSESP confirms Sabesp serves the capital. GeoConvias remains only historical/punctual network-work evidence, not a complete network inventory."
         },
         {
           "field": "drainage",
@@ -662,19 +664,19 @@
         {
           "field": "electricity",
           "status": "PARTIAL",
-          "source_id": "br-aneel-bdgd",
+          "source_id": "pe-neoenergia-pernambuco-provider",
           "supporting_source_ids": [
-            "pe-neoenergia-pernambuco-provider"
+            "br-aneel-bdgd"
           ],
-          "endpoint": "https://dadosabertos.aneel.gov.br/dataset/base-de-dados-geografica-da-distribuidora-bdgd",
-          "access_class": "OPEN_REUSABLE",
-          "license": "ODbL",
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "endpoint": "https://www.neoenergia.com/web/pernambuco",
+          "access_class": "PUBLIC_QUERY_ONLY",
+          "license": null,
+          "connector_status": "UTILITY_RESOLVER_CONFIGURED",
           "missing_fields": [
-            "BDGD distributor-specific materialization",
-            "do not infer available load/capacity"
+            "BDGD distributor package/version resolver",
+            "parcel-specific connection/load confirmation"
           ],
-          "notes": "Neoenergia Pernambuco is the local distributor; use BDGD for technical assets and provider channels for availability/capacity confirmation."
+          "notes": "Neoenergia Pernambuco is the electricity distributor; BDGD is the technical asset source."
         },
         {
           "field": "gas",
@@ -700,11 +702,12 @@
           "endpoint": "https://servicos.compesa.com.br/giscomp/",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "connector_status": "UTILITY_RESOLVER_CONFIGURED",
           "missing_fields": [
-            "public network-layer license/access"
+            "approved public network-layer license",
+            "frontage availability evidence"
           ],
-          "notes": null
+          "notes": "COMPESA is the service provider; its GIS ecosystem has mixed access and must not be treated as reusable bulk network data without per-layer approval."
         },
         {
           "field": "drainage",
@@ -1067,16 +1070,19 @@
         {
           "field": "electricity",
           "status": "PARTIAL",
-          "source_id": "br-aneel-bdgd",
-          "supporting_source_ids": [],
-          "endpoint": "https://dadosabertos.aneel.gov.br/dataset/base-de-dados-geografica-da-distribuidora-bdgd",
-          "access_class": "OPEN_REUSABLE",
-          "license": "ODbL",
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
-          "missing_fields": [
-            "local distributor resolver/materialization"
+          "source_id": "rj-light-distribuicao-provider",
+          "supporting_source_ids": [
+            "br-aneel-bdgd"
           ],
-          "notes": null
+          "endpoint": "https://www.light.com.br/SitePages/page-distribuicao.aspx",
+          "access_class": "PUBLIC_QUERY_ONLY",
+          "license": null,
+          "connector_status": "UTILITY_RESOLVER_CONFIGURED",
+          "missing_fields": [
+            "BDGD distributor package/version resolver",
+            "parcel-specific connection/load confirmation"
+          ],
+          "notes": "Light serves the Rio metropolitan concession area including the capital; BDGD supplies technical asset context."
         },
         {
           "field": "gas",
@@ -1095,18 +1101,22 @@
         {
           "field": "water/sewer",
           "status": "PARTIAL",
-          "source_id": "rj-cedae-open-data",
+          "source_id": "rj-aguas-do-rio-provider",
           "supporting_source_ids": [
+            "rj-igua-rio-provider",
+            "rj-rio-mais-saneamento-provider",
+            "rj-cedae-open-data",
             "br-sinisa-results"
           ],
-          "endpoint": "https://www.cedae.com.br/dadosabertos",
+          "endpoint": "https://www.aguasdorio.com.br/quem-somos/",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "connector_status": "UTILITY_RESOLVER_SUBMUNICIPAL",
           "missing_fields": [
-            "current provider split and sewer network sources"
+            "authoritative service-territory polygons",
+            "frontage availability evidence"
           ],
-          "notes": null
+          "notes": "Rio requires submunicipal resolution: Águas do Rio, Iguá Rio and Rio+ serve different parts of the capital. CEDAE remains upstream water producer in parts of the system. Municipality-level lookup alone is insufficient."
         },
         {
           "field": "drainage",
@@ -1470,16 +1480,20 @@
         {
           "field": "electricity",
           "status": "PARTIAL",
-          "source_id": "br-aneel-bdgd",
-          "supporting_source_ids": [],
-          "endpoint": "https://dadosabertos.aneel.gov.br/dataset/base-de-dados-geografica-da-distribuidora-bdgd",
-          "access_class": "OPEN_REUSABLE",
-          "license": "ODbL",
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
-          "missing_fields": [
-            "local distributor resolver/materialization"
+          "source_id": "mg-cemig-distribuicao-provider",
+          "supporting_source_ids": [
+            "br-aneel-bdgd",
+            "mg-cemig-load-availability-map"
           ],
-          "notes": null
+          "endpoint": "https://www.cemig.com.br/",
+          "access_class": "PUBLIC_QUERY_ONLY",
+          "license": null,
+          "connector_status": "UTILITY_RESOLVER_CONFIGURED",
+          "missing_fields": [
+            "BDGD distributor package/version resolver",
+            "formal connection study for definitive capacity"
+          ],
+          "notes": "CEMIG Distribuição serves Belo Horizonte. Its public load-availability map is useful preliminary context but does not replace formal connection analysis."
         },
         {
           "field": "gas",
@@ -1498,16 +1512,19 @@
         {
           "field": "water/sewer",
           "status": "PARTIAL",
-          "source_id": "br-sinisa-results",
-          "supporting_source_ids": [],
-          "endpoint": "https://www.gov.br/cidades/pt-br/acesso-a-informacao/acoes-e-programas/saneamento/sinisa/resultados-sinisa",
+          "source_id": "mg-belo-horizonte-copasa-provider",
+          "supporting_source_ids": [
+            "br-sinisa-results"
+          ],
+          "endpoint": "https://arsae.mg.gov.br/panoramas/belo_horizonte_copasa.pdf",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "connector_status": "UTILITY_RESOLVER_CONFIGURED",
           "missing_fields": [
-            "COPASA provider/network technical dataset"
+            "approved technical network dataset",
+            "frontage availability evidence"
           ],
-          "notes": null
+          "notes": "ARSAE-MG identifies Copasa as the water and sewer provider in Belo Horizonte."
         },
         {
           "field": "drainage",
@@ -1869,16 +1886,19 @@
         {
           "field": "electricity",
           "status": "PARTIAL",
-          "source_id": "br-aneel-bdgd",
-          "supporting_source_ids": [],
-          "endpoint": "https://dadosabertos.aneel.gov.br/dataset/base-de-dados-geografica-da-distribuidora-bdgd",
-          "access_class": "OPEN_REUSABLE",
-          "license": "ODbL",
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
-          "missing_fields": [
-            "local distributor resolver/materialization"
+          "source_id": "pb-energisa-paraiba-provider",
+          "supporting_source_ids": [
+            "br-aneel-bdgd"
           ],
-          "notes": null
+          "endpoint": "https://www.energisa.com.br/regioes/paraiba",
+          "access_class": "PUBLIC_QUERY_ONLY",
+          "license": null,
+          "connector_status": "UTILITY_RESOLVER_CONFIGURED",
+          "missing_fields": [
+            "BDGD distributor package/version resolver",
+            "parcel-specific connection/load confirmation"
+          ],
+          "notes": "Energisa Paraíba serves João Pessoa; use BDGD for technical asset context."
         },
         {
           "field": "gas",
@@ -1897,30 +1917,35 @@
         {
           "field": "water/sewer",
           "status": "PARTIAL",
-          "source_id": "br-sinisa-results",
-          "supporting_source_ids": [],
-          "endpoint": "https://www.gov.br/cidades/pt-br/acesso-a-informacao/acoes-e-programas/saneamento/sinisa/resultados-sinisa",
+          "source_id": "pb-joao-pessoa-cagepa-provider",
+          "supporting_source_ids": [
+            "br-sinisa-results"
+          ],
+          "endpoint": "https://www.joaopessoa.pb.gov.br/noticias/prefeito-e-governador-renovam-concessao-para-que-cagepa-opere-sistema-de-agua-e-esgoto-da-capital/",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "connector_status": "UTILITY_RESOLVER_CONFIGURED",
           "missing_fields": [
-            "CAGEPA technical network/provider dataset"
+            "approved geospatial network dataset",
+            "frontage availability evidence"
           ],
-          "notes": null
+          "notes": "João Pessoa renewed CAGEPA's water/sewer concession for 30 years in 2023."
         },
         {
           "field": "drainage",
           "status": "PARTIAL",
-          "source_id": "pb-joao-pessoa-filipeia",
-          "supporting_source_ids": [],
-          "endpoint": "https://filipeia.joaopessoa.pb.gov.br/",
+          "source_id": "pb-joao-pessoa-drainage-service",
+          "supporting_source_ids": [
+            "pb-joao-pessoa-filipeia"
+          ],
+          "endpoint": "https://www.joaopessoa.pb.gov.br/noticias/seinfra-realiza-manutencao-na-malha-viaria-rede-de-drenagem-e-iluminacao-publica-em-38-bairros-da-capital/",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "connector_status": "UTILITY_RESOLVER_CONFIGURED",
           "missing_fields": [
-            "stormwater asset network"
+            "approved complete georeferenced stormwater-network inventory"
           ],
-          "notes": null
+          "notes": "SEINFRA is the municipal drainage operator; Filipeia supplies complementary hydrographic/cartographic context, but a complete network dataset is still pending."
         },
         {
           "field": "telecom",
