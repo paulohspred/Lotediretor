@@ -107,3 +107,34 @@ Plano Diretor Lei 7.122/2023. O portal mantém versões históricas, incluindo 2
 4. Expandir para cidades médias, evitando arquitetura desenhada apenas para capitais.
 
 5. Construir monitor de mudança: novos arquivos, alteração de endpoint, nova lei, revisão de Plano Diretor e mudança de esquema.
+
+
+## Fiscal, ITBI e licenciamento — aprofundamento
+
+### São Paulo
+
+A legislação municipal determina disponibilização para consulta e download dos dados do cadastro imobiliário fiscal do IPTU via GeoSampa, em dados abertos e sob licença livre (Decreto 56.701/2015 com redação do Decreto 56.932/2016). A aplicação deve, porém, respeitar a orientação posterior da PGM sobre anonimização/inibição de dados pessoais à luz da LGPD.
+
+Há evidências documentais e históricas de bases de ITBI vinculáveis por SQL, com natureza e valor da transação, proporção transmitida, VVR/base de cálculo e, em bases divulgadas em períodos anteriores, cartório/matrícula e atributos cadastrais. O endpoint oficial atual de download em massa de ITBI ainda precisa ser confirmado antes de promovê-lo a fonte ingerível automática.
+
+### Recife
+
+O IPTU 2026 é uma fonte excepcionalmente rica e licenciada sob ODbL. O dicionário inclui: número do contribuinte, CPF/CNPJ mascarado, endereço, fração ideal, área do terreno, área construída, área ocupada, valores unitários, ano da construção, pavimentos, uso, padrão, obsolescência, valor total estimado, IPTU, tipo construtivo e latitude/longitude.
+
+O ITBI possui série 2015–2026+, também sob ODbL, com transações e características dos imóveis. O licenciamento urbanístico é atualizado diariamente e a outorga onerosa contém geolocalização, empreendimento, alvará e valores.
+
+### Fortaleza
+
+O portal de dados abertos da SEFIN expõe IPTU e ITBI em CSV. O ITBI é descrito como relação de transações imobiliárias com geolocalização, características dos imóveis e informações das operações. O portal também publica áreas edificadas por uso, trechos de logradouro e outros dados cadastrais.
+
+### Porto Alegre
+
+O portal publica IPTU em CSV de 2013 a 2026 e ITBI de 2020 a 2026, ambos sob Creative Commons Attribution. O IPTU 2026 tinha atualização registrada em 08/09/2026. Há ainda base de imunidades/benefícios fiscais.
+
+### Belo Horizonte
+
+Os relatórios mensais de ITBI incluem endereço, bairro, ano da construção, área de terreno, área construída adquirida, fração ideal, padrão de acabamento, tipo construtivo, ocupação, valor declarado, base de cálculo, zona de uso e data de quitação. O recurso consultado informa 'Nenhuma Licença Fornecida'; por isso foi classificado como LICENSE_REVIEW_REQUIRED e não como redistribuível automaticamente.
+
+## Regra adicional de produto
+
+Uma licença aberta de uma base fiscal não autoriza transformar identificadores de contribuintes em um mecanismo de busca de pessoas. A ingestão será property-centric: atributos do imóvel e transações ligadas ao imóvel, com minimização/segregação de campos pessoais quando presentes.
