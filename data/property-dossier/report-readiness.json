@@ -1,0 +1,1646 @@
+{
+  "schema_version": "0.1.0",
+  "as_of": "2026-09-24",
+  "report_spec": "data/property-dossier/report-spec.json",
+  "source_matrix": "data/deployment/professional-completion-matrix.json",
+  "interpretation": {
+    "READY": "All primary L3 matrix inputs for the section are READY.",
+    "REPORTABLE_WITH_LIMITATIONS": "No GAP remains, but PARTIAL/QUERY_ONLY/PRIVATE_ON_DEMAND inputs must be rendered explicitly as limitations or next actions.",
+    "BLOCKED": "At least one required L3 matrix field is GAP.",
+    "ON_DEMAND": "Private L4 evidence is acquired only for the user's case."
+  },
+  "cities": [
+    {
+      "ibge": "3550308",
+      "city": "São Paulo",
+      "uf": "SP",
+      "l3_report_status": "REPORTABLE_WITH_LIMITATIONS",
+      "matrix_summary": {
+        "READY": 12,
+        "PARTIAL": 10,
+        "PRIVATE_ON_DEMAND": 1,
+        "QUERY_ONLY": 3
+      },
+      "public_report": {
+        "status": "REPORTABLE_WITH_LIMITATIONS",
+        "hidden_sections": [
+          "registry_due_diligence"
+        ],
+        "query_only_disclosure_required": [
+          "habite-se",
+          "gas",
+          "official gazette"
+        ]
+      },
+      "private_l4_report": {
+        "status": "ON_DEMAND",
+        "requires_private_evidence": [
+          "registry/certificates",
+          "user documents",
+          "restricted query results as applicable"
+        ]
+      },
+      "sections": [
+        {
+          "section_id": "identity_location",
+          "status": "READY",
+          "matrix_statuses": {
+            "identity": "READY",
+            "land": "READY"
+          },
+          "unresolved_items": [
+            {
+              "field": "identity",
+              "item": "CIB public linkage"
+            },
+            {
+              "field": "identity",
+              "item": "registry reconciliation"
+            },
+            {
+              "field": "land",
+              "item": "frontage normalization"
+            },
+            {
+              "field": "land",
+              "item": "official-vs-GIS area reconciliation"
+            }
+          ],
+          "query_only_fields": [],
+          "private_on_demand_fields": []
+        },
+        {
+          "section_id": "building_existing",
+          "status": "REPORTABLE_WITH_LIMITATIONS",
+          "matrix_statuses": {
+            "building": "PARTIAL"
+          },
+          "unresolved_items": [
+            {
+              "field": "building",
+              "item": "current building footprint reconciliation"
+            },
+            {
+              "field": "building",
+              "item": "licensed-vs-fiscal area reconciliation"
+            }
+          ],
+          "query_only_fields": [],
+          "private_on_demand_fields": []
+        },
+        {
+          "section_id": "planning_buildability",
+          "status": "REPORTABLE_WITH_LIMITATIONS",
+          "matrix_statuses": {
+            "zoning": "READY",
+            "urban parameters": "PARTIAL"
+          },
+          "unresolved_items": [
+            {
+              "field": "zoning",
+              "item": "temporal zoning/version reconciliation"
+            },
+            {
+              "field": "urban parameters",
+              "item": "citywide resolver across LPUOS, PIUs, OUCs, overlays and temporal amendments"
+            }
+          ],
+          "query_only_fields": [],
+          "private_on_demand_fields": []
+        },
+        {
+          "section_id": "fiscal_market",
+          "status": "READY",
+          "matrix_statuses": {
+            "IPTU": "READY",
+            "PGV": "READY",
+            "ITBI": "READY"
+          },
+          "unresolved_items": [
+            {
+              "field": "IPTU",
+              "item": "historical exercise normalizer"
+            },
+            {
+              "field": "PGV",
+              "item": "annex parser and temporal version chain"
+            },
+            {
+              "field": "ITBI",
+              "item": "schema inspection"
+            },
+            {
+              "field": "ITBI",
+              "item": "license/terms review"
+            },
+            {
+              "field": "ITBI",
+              "item": "property linkage confidence"
+            }
+          ],
+          "query_only_fields": [],
+          "private_on_demand_fields": []
+        },
+        {
+          "section_id": "licensing_history",
+          "status": "REPORTABLE_WITH_LIMITATIONS",
+          "matrix_statuses": {
+            "permits": "READY",
+            "habite-se": "QUERY_ONLY",
+            "public processes": "PARTIAL",
+            "official gazette": "QUERY_ONLY"
+          },
+          "unresolved_items": [
+            {
+              "field": "permits",
+              "item": "layer-by-layer normalization"
+            },
+            {
+              "field": "permits",
+              "item": "legacy process reconciliation"
+            },
+            {
+              "field": "habite-se",
+              "item": "bulk/public index not confirmed"
+            },
+            {
+              "field": "habite-se",
+              "item": "document linkage by property"
+            },
+            {
+              "field": "public processes",
+              "item": "stable machine interface for known process numbers"
+            },
+            {
+              "field": "public processes",
+              "item": "property/process linkage normalizer"
+            },
+            {
+              "field": "public processes",
+              "item": "authorized Diário Oficial API credential"
+            },
+            {
+              "field": "official gazette",
+              "item": "authorized API token/subscription"
+            },
+            {
+              "field": "official gazette",
+              "item": "gazette legal-event parser"
+            }
+          ],
+          "query_only_fields": [
+            "habite-se",
+            "official gazette"
+          ],
+          "private_on_demand_fields": []
+        },
+        {
+          "section_id": "environment_risk_heritage",
+          "status": "REPORTABLE_WITH_LIMITATIONS",
+          "matrix_statuses": {
+            "environment": "PARTIAL",
+            "risk": "READY",
+            "heritage": "READY"
+          },
+          "unresolved_items": [
+            {
+              "field": "environment",
+              "item": "complete environmental layer allowlist"
+            },
+            {
+              "field": "environment",
+              "item": "state/federal overlays"
+            },
+            {
+              "field": "risk",
+              "item": "site-specific geotechnical confirmation when professional decision requires it"
+            },
+            {
+              "field": "heritage",
+              "item": "state IDE-SP reuse terms for independent state-layer materialization"
+            },
+            {
+              "field": "heritage",
+              "item": "property-specific archaeological certificate/query where required"
+            }
+          ],
+          "query_only_fields": [],
+          "private_on_demand_fields": []
+        },
+        {
+          "section_id": "infrastructure_utilities",
+          "status": "REPORTABLE_WITH_LIMITATIONS",
+          "matrix_statuses": {
+            "electricity": "PARTIAL",
+            "gas": "QUERY_ONLY",
+            "water/sewer": "PARTIAL",
+            "drainage": "READY",
+            "telecom": "PARTIAL",
+            "transport": "PARTIAL"
+          },
+          "unresolved_items": [
+            {
+              "field": "electricity",
+              "item": "BDGD distributor package/version resolver"
+            },
+            {
+              "field": "electricity",
+              "item": "parcel-specific connection/load confirmation"
+            },
+            {
+              "field": "gas",
+              "item": "machine-readable network license"
+            },
+            {
+              "field": "gas",
+              "item": "availability confirmation at frontage"
+            },
+            {
+              "field": "water/sewer",
+              "item": "complete current network dataset"
+            },
+            {
+              "field": "water/sewer",
+              "item": "frontage connection/availability evidence"
+            },
+            {
+              "field": "drainage",
+              "item": "coverage/recency flags per basin"
+            },
+            {
+              "field": "telecom",
+              "item": "lot-level service evidence"
+            },
+            {
+              "field": "telecom",
+              "item": "provider network availability"
+            },
+            {
+              "field": "transport",
+              "item": "municipal/federal right-of-way normalization"
+            }
+          ],
+          "query_only_fields": [
+            "gas"
+          ],
+          "private_on_demand_fields": []
+        },
+        {
+          "section_id": "terrain_visual",
+          "status": "REPORTABLE_WITH_LIMITATIONS",
+          "matrix_statuses": {
+            "imagery": "READY",
+            "terrain": "READY",
+            "historical data": "PARTIAL"
+          },
+          "unresolved_items": [
+            {
+              "field": "imagery",
+              "item": "artifact license/terms per imagery vintage"
+            },
+            {
+              "field": "imagery",
+              "item": "snapshot/version manifest"
+            },
+            {
+              "field": "terrain",
+              "item": "artifact license review"
+            },
+            {
+              "field": "terrain",
+              "item": "tile/index connector"
+            },
+            {
+              "field": "terrain",
+              "item": "quality metadata normalization"
+            },
+            {
+              "field": "historical data",
+              "item": "unified temporal index across tax, risk, imagery, law and permits"
+            }
+          ],
+          "query_only_fields": [],
+          "private_on_demand_fields": []
+        },
+        {
+          "section_id": "public_change_context",
+          "status": "REPORTABLE_WITH_LIMITATIONS",
+          "matrix_statuses": {
+            "public works": "PARTIAL"
+          },
+          "unresolved_items": [
+            {
+              "field": "public works",
+              "item": "city-bounded materialization schedule"
+            },
+            {
+              "field": "public works",
+              "item": "project geometry to parcel-distance normalizer"
+            },
+            {
+              "field": "public works",
+              "item": "PNCP procurement-to-project relationship when upstream does not provide a direct key"
+            }
+          ],
+          "query_only_fields": [],
+          "private_on_demand_fields": []
+        },
+        {
+          "section_id": "registry_due_diligence",
+          "status": "REPORTABLE_WITH_LIMITATIONS",
+          "matrix_statuses": {
+            "registry reference": "PRIVATE_ON_DEMAND"
+          },
+          "unresolved_items": [
+            {
+              "field": "registry reference",
+              "item": "matricula/CNS lookup via legitimate registral flow"
+            }
+          ],
+          "query_only_fields": [],
+          "private_on_demand_fields": [
+            "registry reference"
+          ]
+        }
+      ]
+    },
+    {
+      "ibge": "2611606",
+      "city": "Recife",
+      "uf": "PE",
+      "l3_report_status": "REPORTABLE_WITH_LIMITATIONS",
+      "matrix_summary": {
+        "READY": 12,
+        "PARTIAL": 12,
+        "PRIVATE_ON_DEMAND": 1,
+        "QUERY_ONLY": 1
+      },
+      "public_report": {
+        "status": "REPORTABLE_WITH_LIMITATIONS",
+        "hidden_sections": [
+          "registry_due_diligence"
+        ],
+        "query_only_disclosure_required": [
+          "gas"
+        ]
+      },
+      "private_l4_report": {
+        "status": "ON_DEMAND",
+        "requires_private_evidence": [
+          "registry/certificates",
+          "user documents",
+          "restricted query results as applicable"
+        ]
+      },
+      "sections": [
+        {
+          "section_id": "identity_location",
+          "status": "READY",
+          "matrix_statuses": {
+            "identity": "READY",
+            "land": "READY"
+          },
+          "unresolved_items": [
+            {
+              "field": "identity",
+              "item": "property identifier reconciliation"
+            },
+            {
+              "field": "land",
+              "item": "parcel geometry/fiscal area reconciliation"
+            }
+          ],
+          "query_only_fields": [],
+          "private_on_demand_fields": []
+        },
+        {
+          "section_id": "building_existing",
+          "status": "READY",
+          "matrix_statuses": {
+            "building": "READY"
+          },
+          "unresolved_items": [
+            {
+              "field": "building",
+              "item": "footprint geometry linkage"
+            }
+          ],
+          "query_only_fields": [],
+          "private_on_demand_fields": []
+        },
+        {
+          "section_id": "planning_buildability",
+          "status": "REPORTABLE_WITH_LIMITATIONS",
+          "matrix_statuses": {
+            "zoning": "READY",
+            "urban parameters": "PARTIAL"
+          },
+          "unresolved_items": [
+            {
+              "field": "zoning",
+              "item": "license per service"
+            },
+            {
+              "field": "urban parameters",
+              "item": "full parameter/legal-rule parser"
+            }
+          ],
+          "query_only_fields": [],
+          "private_on_demand_fields": []
+        },
+        {
+          "section_id": "fiscal_market",
+          "status": "REPORTABLE_WITH_LIMITATIONS",
+          "matrix_statuses": {
+            "IPTU": "READY",
+            "PGV": "PARTIAL",
+            "ITBI": "READY"
+          },
+          "unresolved_items": [
+            {
+              "field": "PGV",
+              "item": "explicit PGV/value-table source and legal version"
+            }
+          ],
+          "query_only_fields": [],
+          "private_on_demand_fields": []
+        },
+        {
+          "section_id": "licensing_history",
+          "status": "REPORTABLE_WITH_LIMITATIONS",
+          "matrix_statuses": {
+            "permits": "READY",
+            "habite-se": "PARTIAL",
+            "public processes": "PARTIAL",
+            "official gazette": "READY"
+          },
+          "unresolved_items": [
+            {
+              "field": "permits",
+              "item": "property join"
+            },
+            {
+              "field": "habite-se",
+              "item": "explicit conclusion/habite-se field coverage"
+            },
+            {
+              "field": "public processes",
+              "item": "documented machine API for public process search"
+            },
+            {
+              "field": "public processes",
+              "item": "property/process linkage normalizer"
+            },
+            {
+              "field": "official gazette",
+              "item": "legal-event parser and edition/PDF reconciliation"
+            }
+          ],
+          "query_only_fields": [],
+          "private_on_demand_fields": []
+        },
+        {
+          "section_id": "environment_risk_heritage",
+          "status": "REPORTABLE_WITH_LIMITATIONS",
+          "matrix_statuses": {
+            "environment": "READY",
+            "risk": "PARTIAL",
+            "heritage": "READY"
+          },
+          "unresolved_items": [
+            {
+              "field": "environment",
+              "item": "license per service"
+            },
+            {
+              "field": "risk",
+              "item": "landslide/geotechnical coverage"
+            },
+            {
+              "field": "heritage",
+              "item": "ZEPH ArcGIS reuse license"
+            },
+            {
+              "field": "heritage",
+              "item": "state Fundarpe geometry normalized by asset/process"
+            }
+          ],
+          "query_only_fields": [],
+          "private_on_demand_fields": []
+        },
+        {
+          "section_id": "infrastructure_utilities",
+          "status": "REPORTABLE_WITH_LIMITATIONS",
+          "matrix_statuses": {
+            "electricity": "PARTIAL",
+            "gas": "QUERY_ONLY",
+            "water/sewer": "PARTIAL",
+            "drainage": "READY",
+            "telecom": "PARTIAL",
+            "transport": "PARTIAL"
+          },
+          "unresolved_items": [
+            {
+              "field": "electricity",
+              "item": "BDGD distributor package/version resolver"
+            },
+            {
+              "field": "electricity",
+              "item": "parcel-specific connection/load confirmation"
+            },
+            {
+              "field": "gas",
+              "item": "machine-readable licensed network"
+            },
+            {
+              "field": "water/sewer",
+              "item": "approved public network-layer license"
+            },
+            {
+              "field": "water/sewer",
+              "item": "frontage availability evidence"
+            },
+            {
+              "field": "drainage",
+              "item": "asset-level completeness"
+            },
+            {
+              "field": "telecom",
+              "item": "lot-level availability evidence"
+            },
+            {
+              "field": "transport",
+              "item": "municipal road hierarchy connector"
+            }
+          ],
+          "query_only_fields": [
+            "gas"
+          ],
+          "private_on_demand_fields": []
+        },
+        {
+          "section_id": "terrain_visual",
+          "status": "REPORTABLE_WITH_LIMITATIONS",
+          "matrix_statuses": {
+            "imagery": "PARTIAL",
+            "terrain": "PARTIAL",
+            "historical data": "READY"
+          },
+          "unresolved_items": [
+            {
+              "field": "imagery",
+              "item": "reuse/cache license"
+            },
+            {
+              "field": "imagery",
+              "item": "newer official imagery"
+            },
+            {
+              "field": "terrain",
+              "item": "high-resolution terrain source/licence"
+            },
+            {
+              "field": "historical data",
+              "item": "unified temporal index"
+            }
+          ],
+          "query_only_fields": [],
+          "private_on_demand_fields": []
+        },
+        {
+          "section_id": "public_change_context",
+          "status": "REPORTABLE_WITH_LIMITATIONS",
+          "matrix_statuses": {
+            "public works": "PARTIAL"
+          },
+          "unresolved_items": [
+            {
+              "field": "public works",
+              "item": "city-bounded materialization schedule"
+            },
+            {
+              "field": "public works",
+              "item": "project geometry to parcel-distance normalizer"
+            },
+            {
+              "field": "public works",
+              "item": "PNCP procurement-to-project relationship when upstream does not provide a direct key"
+            }
+          ],
+          "query_only_fields": [],
+          "private_on_demand_fields": []
+        },
+        {
+          "section_id": "registry_due_diligence",
+          "status": "REPORTABLE_WITH_LIMITATIONS",
+          "matrix_statuses": {
+            "registry reference": "PRIVATE_ON_DEMAND"
+          },
+          "unresolved_items": [
+            {
+              "field": "registry reference",
+              "item": "matricula/CNS official workflow"
+            }
+          ],
+          "query_only_fields": [],
+          "private_on_demand_fields": [
+            "registry reference"
+          ]
+        }
+      ]
+    },
+    {
+      "ibge": "3304557",
+      "city": "Rio de Janeiro",
+      "uf": "RJ",
+      "l3_report_status": "REPORTABLE_WITH_LIMITATIONS",
+      "matrix_summary": {
+        "READY": 9,
+        "PARTIAL": 14,
+        "QUERY_ONLY": 3
+      },
+      "public_report": {
+        "status": "REPORTABLE_WITH_LIMITATIONS",
+        "hidden_sections": [
+          "registry_due_diligence"
+        ],
+        "query_only_disclosure_required": [
+          "habite-se",
+          "gas",
+          "official gazette"
+        ]
+      },
+      "private_l4_report": {
+        "status": "ON_DEMAND",
+        "requires_private_evidence": [
+          "registry/certificates",
+          "user documents",
+          "restricted query results as applicable"
+        ]
+      },
+      "sections": [
+        {
+          "section_id": "identity_location",
+          "status": "READY",
+          "matrix_statuses": {
+            "identity": "READY",
+            "land": "READY"
+          },
+          "unresolved_items": [
+            {
+              "field": "identity",
+              "item": "property reconciliation across fiscal/registry refs"
+            },
+            {
+              "field": "land",
+              "item": "area reconciliation"
+            }
+          ],
+          "query_only_fields": [],
+          "private_on_demand_fields": []
+        },
+        {
+          "section_id": "building_existing",
+          "status": "READY",
+          "matrix_statuses": {
+            "building": "READY"
+          },
+          "unresolved_items": [
+            {
+              "field": "building",
+              "item": "license per item"
+            },
+            {
+              "field": "building",
+              "item": "refresh/currentness"
+            }
+          ],
+          "query_only_fields": [],
+          "private_on_demand_fields": []
+        },
+        {
+          "section_id": "planning_buildability",
+          "status": "REPORTABLE_WITH_LIMITATIONS",
+          "matrix_statuses": {
+            "zoning": "PARTIAL",
+            "urban parameters": "PARTIAL"
+          },
+          "unresolved_items": [
+            {
+              "field": "zoning",
+              "item": "complete zone/overlay geometry inventory"
+            },
+            {
+              "field": "zoning",
+              "item": "resource license review"
+            },
+            {
+              "field": "zoning",
+              "item": "temporal amendment resolver"
+            },
+            {
+              "field": "urban parameters",
+              "item": "full building-intensity parameter set"
+            },
+            {
+              "field": "urban parameters",
+              "item": "legal-rule temporal joins"
+            },
+            {
+              "field": "urban parameters",
+              "item": "article/annex citations"
+            }
+          ],
+          "query_only_fields": [],
+          "private_on_demand_fields": []
+        },
+        {
+          "section_id": "fiscal_market",
+          "status": "REPORTABLE_WITH_LIMITATIONS",
+          "matrix_statuses": {
+            "IPTU": "READY",
+            "PGV": "PARTIAL",
+            "ITBI": "READY"
+          },
+          "unresolved_items": [
+            {
+              "field": "PGV",
+              "item": "explicit current PGV/value table linkage"
+            }
+          ],
+          "query_only_fields": [],
+          "private_on_demand_fields": []
+        },
+        {
+          "section_id": "licensing_history",
+          "status": "REPORTABLE_WITH_LIMITATIONS",
+          "matrix_statuses": {
+            "permits": "PARTIAL",
+            "habite-se": "QUERY_ONLY",
+            "public processes": "PARTIAL",
+            "official gazette": "QUERY_ONLY"
+          },
+          "unresolved_items": [
+            {
+              "field": "permits",
+              "item": "monthly resource schema/terms"
+            },
+            {
+              "field": "permits",
+              "item": "property join"
+            },
+            {
+              "field": "permits",
+              "item": "legacy/current system reconciliation"
+            },
+            {
+              "field": "habite-se",
+              "item": "resource-specific terms"
+            },
+            {
+              "field": "habite-se",
+              "item": "safe field allowlist"
+            },
+            {
+              "field": "habite-se",
+              "item": "stable bulk schema"
+            },
+            {
+              "field": "public processes",
+              "item": "system resolver by process date/identifier"
+            },
+            {
+              "field": "public processes",
+              "item": "machine-safe query interface"
+            },
+            {
+              "field": "public processes",
+              "item": "property/process linkage"
+            },
+            {
+              "field": "official gazette",
+              "item": "reuse terms"
+            },
+            {
+              "field": "official gazette",
+              "item": "stable date/pagination contract"
+            },
+            {
+              "field": "official gazette",
+              "item": "legal-event parser"
+            }
+          ],
+          "query_only_fields": [
+            "habite-se",
+            "official gazette"
+          ],
+          "private_on_demand_fields": []
+        },
+        {
+          "section_id": "environment_risk_heritage",
+          "status": "READY",
+          "matrix_statuses": {
+            "environment": "READY",
+            "risk": "READY",
+            "heritage": "READY"
+          },
+          "unresolved_items": [
+            {
+              "field": "environment",
+              "item": "license per service"
+            },
+            {
+              "field": "risk",
+              "item": "landslide/geotechnical complements"
+            },
+            {
+              "field": "heritage",
+              "item": "structured current INEPAC inventory"
+            },
+            {
+              "field": "heritage",
+              "item": "explicit reuse license for municipal FeatureServices"
+            },
+            {
+              "field": "heritage",
+              "item": "consolidated individual tombed/preserved asset layer"
+            }
+          ],
+          "query_only_fields": [],
+          "private_on_demand_fields": []
+        },
+        {
+          "section_id": "infrastructure_utilities",
+          "status": "REPORTABLE_WITH_LIMITATIONS",
+          "matrix_statuses": {
+            "electricity": "PARTIAL",
+            "gas": "QUERY_ONLY",
+            "water/sewer": "PARTIAL",
+            "drainage": "READY",
+            "telecom": "PARTIAL",
+            "transport": "PARTIAL"
+          },
+          "unresolved_items": [
+            {
+              "field": "electricity",
+              "item": "BDGD distributor package/version resolver"
+            },
+            {
+              "field": "electricity",
+              "item": "parcel-specific connection/load confirmation"
+            },
+            {
+              "field": "gas",
+              "item": "machine-readable licensed network"
+            },
+            {
+              "field": "water/sewer",
+              "item": "authoritative service-territory polygons"
+            },
+            {
+              "field": "water/sewer",
+              "item": "frontage availability evidence"
+            },
+            {
+              "field": "drainage",
+              "item": "asset-level completeness"
+            },
+            {
+              "field": "telecom",
+              "item": "lot-level availability"
+            },
+            {
+              "field": "transport",
+              "item": "municipal right-of-way normalizer"
+            }
+          ],
+          "query_only_fields": [
+            "gas"
+          ],
+          "private_on_demand_fields": []
+        },
+        {
+          "section_id": "terrain_visual",
+          "status": "REPORTABLE_WITH_LIMITATIONS",
+          "matrix_statuses": {
+            "imagery": "PARTIAL",
+            "terrain": "PARTIAL",
+            "historical data": "PARTIAL"
+          },
+          "unresolved_items": [
+            {
+              "field": "imagery",
+              "item": "dedicated imagery source/license/version inventory"
+            },
+            {
+              "field": "terrain",
+              "item": "high-resolution DTM/LiDAR official source"
+            },
+            {
+              "field": "historical data",
+              "item": "unified temporal index"
+            }
+          ],
+          "query_only_fields": [],
+          "private_on_demand_fields": []
+        },
+        {
+          "section_id": "public_change_context",
+          "status": "REPORTABLE_WITH_LIMITATIONS",
+          "matrix_statuses": {
+            "public works": "PARTIAL"
+          },
+          "unresolved_items": [
+            {
+              "field": "public works",
+              "item": "city-bounded materialization schedule"
+            },
+            {
+              "field": "public works",
+              "item": "project geometry to parcel-distance normalizer"
+            },
+            {
+              "field": "public works",
+              "item": "PNCP procurement-to-project relationship when upstream does not provide a direct key"
+            }
+          ],
+          "query_only_fields": [],
+          "private_on_demand_fields": []
+        },
+        {
+          "section_id": "registry_due_diligence",
+          "status": "REPORTABLE_WITH_LIMITATIONS",
+          "matrix_statuses": {
+            "registry reference": "PARTIAL"
+          },
+          "unresolved_items": [
+            {
+              "field": "registry reference",
+              "item": "coverage/completeness of matricula reference"
+            },
+            {
+              "field": "registry reference",
+              "item": "no ownership indexing"
+            }
+          ],
+          "query_only_fields": [],
+          "private_on_demand_fields": []
+        }
+      ]
+    },
+    {
+      "ibge": "3106200",
+      "city": "Belo Horizonte",
+      "uf": "MG",
+      "l3_report_status": "REPORTABLE_WITH_LIMITATIONS",
+      "matrix_summary": {
+        "READY": 8,
+        "PARTIAL": 15,
+        "PRIVATE_ON_DEMAND": 1,
+        "QUERY_ONLY": 2
+      },
+      "public_report": {
+        "status": "REPORTABLE_WITH_LIMITATIONS",
+        "hidden_sections": [
+          "registry_due_diligence"
+        ],
+        "query_only_disclosure_required": [
+          "gas",
+          "official gazette"
+        ]
+      },
+      "private_l4_report": {
+        "status": "ON_DEMAND",
+        "requires_private_evidence": [
+          "registry/certificates",
+          "user documents",
+          "restricted query results as applicable"
+        ]
+      },
+      "sections": [
+        {
+          "section_id": "identity_location",
+          "status": "READY",
+          "matrix_statuses": {
+            "identity": "READY",
+            "land": "READY"
+          },
+          "unresolved_items": [
+            {
+              "field": "identity",
+              "item": "identifier reconciliation"
+            },
+            {
+              "field": "land",
+              "item": "license per dataset"
+            }
+          ],
+          "query_only_fields": [],
+          "private_on_demand_fields": []
+        },
+        {
+          "section_id": "building_existing",
+          "status": "READY",
+          "matrix_statuses": {
+            "building": "READY"
+          },
+          "unresolved_items": [
+            {
+              "field": "building",
+              "item": "license per dataset"
+            }
+          ],
+          "query_only_fields": [],
+          "private_on_demand_fields": []
+        },
+        {
+          "section_id": "planning_buildability",
+          "status": "READY",
+          "matrix_statuses": {
+            "zoning": "READY",
+            "urban parameters": "READY"
+          },
+          "unresolved_items": [
+            {
+              "field": "zoning",
+              "item": "license per dataset"
+            },
+            {
+              "field": "urban parameters",
+              "item": "legal citation normalization"
+            }
+          ],
+          "query_only_fields": [],
+          "private_on_demand_fields": []
+        },
+        {
+          "section_id": "fiscal_market",
+          "status": "REPORTABLE_WITH_LIMITATIONS",
+          "matrix_statuses": {
+            "IPTU": "PARTIAL",
+            "PGV": "PARTIAL",
+            "ITBI": "PARTIAL"
+          },
+          "unresolved_items": [
+            {
+              "field": "IPTU",
+              "item": "confirm per-property tax assessed/payable fields"
+            },
+            {
+              "field": "IPTU",
+              "item": "tax-year normalization"
+            },
+            {
+              "field": "PGV",
+              "item": "current unit-value tables/formula normalization"
+            },
+            {
+              "field": "PGV",
+              "item": "legal-version chain"
+            },
+            {
+              "field": "ITBI",
+              "item": "license review"
+            }
+          ],
+          "query_only_fields": [],
+          "private_on_demand_fields": []
+        },
+        {
+          "section_id": "licensing_history",
+          "status": "REPORTABLE_WITH_LIMITATIONS",
+          "matrix_statuses": {
+            "permits": "READY",
+            "habite-se": "PARTIAL",
+            "public processes": "PARTIAL",
+            "official gazette": "QUERY_ONLY"
+          },
+          "unresolved_items": [
+            {
+              "field": "permits",
+              "item": "license review"
+            },
+            {
+              "field": "habite-se",
+              "item": "explicit baixa/conclusion semantics and completeness"
+            },
+            {
+              "field": "public processes",
+              "item": "protocol/system resolver"
+            },
+            {
+              "field": "public processes",
+              "item": "stable machine query interface"
+            },
+            {
+              "field": "public processes",
+              "item": "property/process linkage"
+            },
+            {
+              "field": "official gazette",
+              "item": "bulk reuse terms"
+            },
+            {
+              "field": "official gazette",
+              "item": "stable machine API"
+            },
+            {
+              "field": "official gazette",
+              "item": "legal-event parser"
+            }
+          ],
+          "query_only_fields": [
+            "official gazette"
+          ],
+          "private_on_demand_fields": []
+        },
+        {
+          "section_id": "environment_risk_heritage",
+          "status": "REPORTABLE_WITH_LIMITATIONS",
+          "matrix_statuses": {
+            "environment": "PARTIAL",
+            "risk": "READY",
+            "heritage": "READY"
+          },
+          "unresolved_items": [
+            {
+              "field": "environment",
+              "item": "municipal layer allowlist"
+            },
+            {
+              "field": "risk",
+              "item": "current site-specific technical inspection when required"
+            },
+            {
+              "field": "heritage",
+              "item": "incidence-specific protection/height guideline normalizer"
+            }
+          ],
+          "query_only_fields": [],
+          "private_on_demand_fields": []
+        },
+        {
+          "section_id": "infrastructure_utilities",
+          "status": "REPORTABLE_WITH_LIMITATIONS",
+          "matrix_statuses": {
+            "electricity": "PARTIAL",
+            "gas": "QUERY_ONLY",
+            "water/sewer": "PARTIAL",
+            "drainage": "PARTIAL",
+            "telecom": "PARTIAL",
+            "transport": "PARTIAL"
+          },
+          "unresolved_items": [
+            {
+              "field": "electricity",
+              "item": "BDGD distributor package/version resolver"
+            },
+            {
+              "field": "electricity",
+              "item": "formal connection study for definitive capacity"
+            },
+            {
+              "field": "gas",
+              "item": "machine-readable licensed network"
+            },
+            {
+              "field": "water/sewer",
+              "item": "approved technical network dataset"
+            },
+            {
+              "field": "water/sewer",
+              "item": "frontage availability evidence"
+            },
+            {
+              "field": "drainage",
+              "item": "drainage asset inventory/coverage"
+            },
+            {
+              "field": "telecom",
+              "item": "lot-level availability"
+            },
+            {
+              "field": "transport",
+              "item": "municipal road hierarchy connector"
+            }
+          ],
+          "query_only_fields": [
+            "gas"
+          ],
+          "private_on_demand_fields": []
+        },
+        {
+          "section_id": "terrain_visual",
+          "status": "REPORTABLE_WITH_LIMITATIONS",
+          "matrix_statuses": {
+            "imagery": "PARTIAL",
+            "terrain": "PARTIAL",
+            "historical data": "PARTIAL"
+          },
+          "unresolved_items": [
+            {
+              "field": "imagery",
+              "item": "license review"
+            },
+            {
+              "field": "imagery",
+              "item": "current imagery"
+            },
+            {
+              "field": "terrain",
+              "item": "high-resolution DTM/LiDAR source and license"
+            },
+            {
+              "field": "historical data",
+              "item": "unified temporal index"
+            }
+          ],
+          "query_only_fields": [],
+          "private_on_demand_fields": []
+        },
+        {
+          "section_id": "public_change_context",
+          "status": "REPORTABLE_WITH_LIMITATIONS",
+          "matrix_statuses": {
+            "public works": "PARTIAL"
+          },
+          "unresolved_items": [
+            {
+              "field": "public works",
+              "item": "city-bounded materialization schedule"
+            },
+            {
+              "field": "public works",
+              "item": "project geometry to parcel-distance normalizer"
+            },
+            {
+              "field": "public works",
+              "item": "PNCP procurement-to-project relationship when upstream does not provide a direct key"
+            }
+          ],
+          "query_only_fields": [],
+          "private_on_demand_fields": []
+        },
+        {
+          "section_id": "registry_due_diligence",
+          "status": "REPORTABLE_WITH_LIMITATIONS",
+          "matrix_statuses": {
+            "registry reference": "PRIVATE_ON_DEMAND"
+          },
+          "unresolved_items": [
+            {
+              "field": "registry reference",
+              "item": "matricula/CNS official workflow"
+            }
+          ],
+          "query_only_fields": [],
+          "private_on_demand_fields": [
+            "registry reference"
+          ]
+        }
+      ]
+    },
+    {
+      "ibge": "2507507",
+      "city": "João Pessoa",
+      "uf": "PB",
+      "l3_report_status": "REPORTABLE_WITH_LIMITATIONS",
+      "matrix_summary": {
+        "READY": 7,
+        "QUERY_ONLY": 8,
+        "PARTIAL": 10,
+        "PRIVATE_ON_DEMAND": 1
+      },
+      "public_report": {
+        "status": "REPORTABLE_WITH_LIMITATIONS",
+        "hidden_sections": [
+          "registry_due_diligence"
+        ],
+        "query_only_disclosure_required": [
+          "building",
+          "IPTU",
+          "ITBI",
+          "permits",
+          "habite-se",
+          "gas",
+          "public processes",
+          "official gazette"
+        ]
+      },
+      "private_l4_report": {
+        "status": "ON_DEMAND",
+        "requires_private_evidence": [
+          "registry/certificates",
+          "user documents",
+          "restricted query results as applicable"
+        ]
+      },
+      "sections": [
+        {
+          "section_id": "identity_location",
+          "status": "READY",
+          "matrix_statuses": {
+            "identity": "READY",
+            "land": "READY"
+          },
+          "unresolved_items": [
+            {
+              "field": "identity",
+              "item": "fiscal identifier reconciliation"
+            },
+            {
+              "field": "land",
+              "item": "license review"
+            }
+          ],
+          "query_only_fields": [],
+          "private_on_demand_fields": []
+        },
+        {
+          "section_id": "building_existing",
+          "status": "REPORTABLE_WITH_LIMITATIONS",
+          "matrix_statuses": {
+            "building": "QUERY_ONLY"
+          },
+          "unresolved_items": [
+            {
+              "field": "building",
+              "item": "verified building-field schema"
+            },
+            {
+              "field": "building",
+              "item": "bulk reusable building footprint/cadastre"
+            },
+            {
+              "field": "building",
+              "item": "safe field allowlist"
+            }
+          ],
+          "query_only_fields": [
+            "building"
+          ],
+          "private_on_demand_fields": []
+        },
+        {
+          "section_id": "planning_buildability",
+          "status": "REPORTABLE_WITH_LIMITATIONS",
+          "matrix_statuses": {
+            "zoning": "READY",
+            "urban parameters": "PARTIAL"
+          },
+          "unresolved_items": [
+            {
+              "field": "zoning",
+              "item": "license review"
+            },
+            {
+              "field": "urban parameters",
+              "item": "structured parameter/legal-rule parser"
+            }
+          ],
+          "query_only_fields": [],
+          "private_on_demand_fields": []
+        },
+        {
+          "section_id": "fiscal_market",
+          "status": "REPORTABLE_WITH_LIMITATIONS",
+          "matrix_statuses": {
+            "IPTU": "QUERY_ONLY",
+            "PGV": "PARTIAL",
+            "ITBI": "QUERY_ONLY"
+          },
+          "unresolved_items": [
+            {
+              "field": "IPTU",
+              "item": "verified per-property IPTU field schema"
+            },
+            {
+              "field": "IPTU",
+              "item": "bulk reusable dataset"
+            },
+            {
+              "field": "PGV",
+              "item": "authoritative published PGV tables/maps"
+            },
+            {
+              "field": "PGV",
+              "item": "approval act and effective date/version"
+            },
+            {
+              "field": "PGV",
+              "item": "machine-readable layer"
+            },
+            {
+              "field": "ITBI",
+              "item": "bulk public transaction dataset"
+            },
+            {
+              "field": "ITBI",
+              "item": "authorized integration contract"
+            }
+          ],
+          "query_only_fields": [
+            "IPTU",
+            "ITBI"
+          ],
+          "private_on_demand_fields": []
+        },
+        {
+          "section_id": "licensing_history",
+          "status": "REPORTABLE_WITH_LIMITATIONS",
+          "matrix_statuses": {
+            "permits": "QUERY_ONLY",
+            "habite-se": "QUERY_ONLY",
+            "public processes": "QUERY_ONLY",
+            "official gazette": "QUERY_ONLY"
+          },
+          "unresolved_items": [
+            {
+              "field": "permits",
+              "item": "bulk/index availability"
+            },
+            {
+              "field": "habite-se",
+              "item": "bulk/index availability"
+            },
+            {
+              "field": "public processes",
+              "item": "authorized non-CAPTCHA machine interface"
+            },
+            {
+              "field": "public processes",
+              "item": "property/process linkage"
+            },
+            {
+              "field": "official gazette",
+              "item": "bulk reuse terms/API"
+            },
+            {
+              "field": "official gazette",
+              "item": "incremental edition contract"
+            },
+            {
+              "field": "official gazette",
+              "item": "legal-event parser"
+            }
+          ],
+          "query_only_fields": [
+            "permits",
+            "habite-se",
+            "public processes",
+            "official gazette"
+          ],
+          "private_on_demand_fields": []
+        },
+        {
+          "section_id": "environment_risk_heritage",
+          "status": "REPORTABLE_WITH_LIMITATIONS",
+          "matrix_statuses": {
+            "environment": "PARTIAL",
+            "risk": "PARTIAL",
+            "heritage": "READY"
+          },
+          "unresolved_items": [
+            {
+              "field": "environment",
+              "item": "environmental overlay completeness"
+            },
+            {
+              "field": "risk",
+              "item": "formal flood/landslide authoritative datasets"
+            },
+            {
+              "field": "heritage",
+              "item": "reuse license for heritage layers"
+            },
+            {
+              "field": "heritage",
+              "item": "current municipal heritage-authority organizational reconciliation"
+            },
+            {
+              "field": "heritage",
+              "item": "vectorized preservation-grade rules"
+            }
+          ],
+          "query_only_fields": [],
+          "private_on_demand_fields": []
+        },
+        {
+          "section_id": "infrastructure_utilities",
+          "status": "REPORTABLE_WITH_LIMITATIONS",
+          "matrix_statuses": {
+            "electricity": "PARTIAL",
+            "gas": "QUERY_ONLY",
+            "water/sewer": "PARTIAL",
+            "drainage": "PARTIAL",
+            "telecom": "PARTIAL",
+            "transport": "PARTIAL"
+          },
+          "unresolved_items": [
+            {
+              "field": "electricity",
+              "item": "BDGD distributor package/version resolver"
+            },
+            {
+              "field": "electricity",
+              "item": "parcel-specific connection/load confirmation"
+            },
+            {
+              "field": "gas",
+              "item": "machine-readable licensed network"
+            },
+            {
+              "field": "water/sewer",
+              "item": "approved geospatial network dataset"
+            },
+            {
+              "field": "water/sewer",
+              "item": "frontage availability evidence"
+            },
+            {
+              "field": "drainage",
+              "item": "approved complete georeferenced stormwater-network inventory"
+            },
+            {
+              "field": "telecom",
+              "item": "lot-level availability"
+            },
+            {
+              "field": "transport",
+              "item": "municipal hierarchy/right-of-way"
+            }
+          ],
+          "query_only_fields": [
+            "gas"
+          ],
+          "private_on_demand_fields": []
+        },
+        {
+          "section_id": "terrain_visual",
+          "status": "READY",
+          "matrix_statuses": {
+            "imagery": "READY",
+            "terrain": "READY",
+            "historical data": "READY"
+          },
+          "unresolved_items": [
+            {
+              "field": "imagery",
+              "item": "license per imagery vintage"
+            },
+            {
+              "field": "terrain",
+              "item": "resolution/quality metadata normalization"
+            },
+            {
+              "field": "historical data",
+              "item": "unified imagery/legal temporal index"
+            }
+          ],
+          "query_only_fields": [],
+          "private_on_demand_fields": []
+        },
+        {
+          "section_id": "public_change_context",
+          "status": "REPORTABLE_WITH_LIMITATIONS",
+          "matrix_statuses": {
+            "public works": "PARTIAL"
+          },
+          "unresolved_items": [
+            {
+              "field": "public works",
+              "item": "city-bounded materialization schedule"
+            },
+            {
+              "field": "public works",
+              "item": "project geometry to parcel-distance normalizer"
+            },
+            {
+              "field": "public works",
+              "item": "PNCP procurement-to-project relationship when upstream does not provide a direct key"
+            }
+          ],
+          "query_only_fields": [],
+          "private_on_demand_fields": []
+        },
+        {
+          "section_id": "registry_due_diligence",
+          "status": "REPORTABLE_WITH_LIMITATIONS",
+          "matrix_statuses": {
+            "registry reference": "PRIVATE_ON_DEMAND"
+          },
+          "unresolved_items": [
+            {
+              "field": "registry reference",
+              "item": "matricula/CNS official workflow"
+            }
+          ],
+          "query_only_fields": [],
+          "private_on_demand_fields": [
+            "registry reference"
+          ]
+        }
+      ]
+    }
+  ]
+}
