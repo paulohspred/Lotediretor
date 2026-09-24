@@ -267,6 +267,87 @@
       "approved": true,
       "tool": "tools/ingestion/pncp.py",
       "notes": "Public consultation API only. GET, no login. Publications require explicit modality and date window; optional municipality filter. Contract search is date-bounded. Write/maintenance APIs are out of scope."
+    },
+    {
+      "id": "sp-condephaat-heritage",
+      "source_id": "sp-condephaat-protected-heritage",
+      "kind": "public_page",
+      "url": "https://www.cultura.sp.gov.br/sec_cultura/CONDEPHAAT/Bens_Protegidos",
+      "mode": "authority_and_legal_metadata_only",
+      "approved": true,
+      "notes": "Portal estadual é autoridade para bens/processos/atos. Geometria pode ser resolvida por IDE-SP/GeoSampa, mas materialização estadual independente fica condicionada aos termos do IDE-SP."
+    },
+    {
+      "id": "pe-fundarpe-heritage",
+      "source_id": "pe-fundarpe-protected-heritage",
+      "kind": "public_page",
+      "url": "https://www.cultura.pe.gov.br/pagina/patrimonio-cultural/acervo/processos-de-tombamento/",
+      "mode": "official_lists_and_documents_metadata",
+      "approved": true,
+      "notes": "Snapshot de página/listas oficiais. Processos pendentes devem manter estado separado de tombamento definitivo; PDFs/documentos preservam ato e data."
+    },
+    {
+      "id": "recife-zeph",
+      "source_id": "pe-recife-zeph",
+      "kind": "arcgis_service",
+      "url": "https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Planejamento/BASES_ZONEAMENTO_G_PD2020/FeatureServer/3",
+      "mode": "metadata_first_until_service_license_review",
+      "approved": true,
+      "notes": "ZEPH municipal. Capturar schema/metadados; materialização de feições aguarda licença explícita do serviço."
+    },
+    {
+      "id": "rio-irph-apac",
+      "source_id": "rj-rio-irph-apac",
+      "kind": "arcgis_service",
+      "url": "https://pgeo3.rio.rj.gov.br/arcgis/rest/services/Urbanismo/LBB_APAC/FeatureServer",
+      "mode": "metadata_first_until_item_license_review",
+      "approved": true,
+      "notes": "Geometria oficial de APAC. Incidência precisa ser ligada ao decreto/ato do IRPH; APAC não equivale a tombamento individual."
+    },
+    {
+      "id": "rio-heritage-protected-areas",
+      "source_id": "rj-rio-heritage-protected-areas",
+      "kind": "arcgis_service",
+      "url": "https://pgeo3.rio.rj.gov.br/arcgis/rest/services/Urbanismo/LBB_Areas_Protegidas/FeatureServer",
+      "mode": "metadata_and_schema_first",
+      "approved": true,
+      "notes": "Camada ampla de áreas protegidas. Normalizador deve classificar tipo/autoridade antes de emitir restrição patrimonial."
+    },
+    {
+      "id": "bh-heritage-protected-area",
+      "source_id": "mg-belo-horizonte-heritage-open-data",
+      "kind": "json_api",
+      "url": "https://dados.pbh.gov.br/api/3/action/package_show?id=area-de-protecao-cultural",
+      "mode": "dataset_metadata_then_resources",
+      "approved": true,
+      "notes": "CC BY. Perímetros de áreas protegidas municipal/estadual/federal; manter esfera e versão mensal."
+    },
+    {
+      "id": "bh-heritage-building",
+      "source_id": "mg-belo-horizonte-heritage-open-data",
+      "kind": "json_api",
+      "url": "https://dados.pbh.gov.br/api/3/action/package_show?id=bem-cultural-imovel",
+      "mode": "dataset_metadata_then_resources",
+      "approved": true,
+      "notes": "CC BY. Distingue tombado, processo de tombamento aberto e registros documentais; não colapsar os graus de proteção."
+    },
+    {
+      "id": "pb-iphaep-heritage",
+      "source_id": "pb-iphaep-protected-heritage",
+      "kind": "public_page",
+      "url": "https://iphaep.pb.gov.br/municipios-com-centros-historicos-tombados",
+      "mode": "legal_metadata_query_only",
+      "approved": true,
+      "notes": "Fonte estadual para centro histórico e regra de preservação. Geometria complementar é resolvida pelo Filipeia; consulta de grau de proteção permanece fluxo oficial."
+    },
+    {
+      "id": "joao-pessoa-heritage-index",
+      "source_id": "pb-joao-pessoa-filipeia",
+      "kind": "public_page",
+      "url": "https://filipeia.joaopessoa.pb.gov.br/",
+      "mode": "heritage_map_metadata_only_until_license_review",
+      "approved": true,
+      "notes": "Filipeia publica mapas de áreas/tombamentos IPHAN-IPHAEP. Licença dos artefatos patrimoniais deve ser confirmada antes de espelhamento."
     }
   ]
 }
