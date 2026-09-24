@@ -63,8 +63,9 @@
         {
           "field": "building",
           "status": "PARTIAL",
-          "source_id": "sp-sao-paulo-iptu-cadastro-fiscal",
+          "source_id": "sp-sao-paulo-buildings-2d-geosampa",
           "supporting_source_ids": [
+            "sp-sao-paulo-iptu-cadastro-fiscal",
             "sp-sao-paulo-licenciamento-geosampa"
           ],
           "endpoint": "https://geosampa.prefeitura.sp.gov.br/",
@@ -72,10 +73,10 @@
           "license": null,
           "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
           "missing_fields": [
-            "complete footprint/building join",
+            "current building footprint reconciliation",
             "licensed-vs-fiscal area reconciliation"
           ],
-          "notes": null
+          "notes": "GeoSampa supplies official 2D building footprints, but the mapped geometry is primarily historical photogrammetric restitution; currentness must be reconciled against fiscal/licensing/imaging sources."
         },
         {
           "field": "IPTU",
@@ -93,18 +94,19 @@
         },
         {
           "field": "PGV",
-          "status": "PARTIAL",
-          "source_id": "sp-sao-paulo-iptu-cadastro-fiscal",
-          "supporting_source_ids": [],
+          "status": "READY",
+          "source_id": "sp-sao-paulo-pgv-2026",
+          "supporting_source_ids": [
+            "sp-sao-paulo-iptu-cadastro-fiscal"
+          ],
           "endpoint": "https://geosampa.prefeitura.sp.gov.br/",
           "access_class": "OPEN_REUSABLE",
           "license": null,
           "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
           "missing_fields": [
-            "current PGV legal table/version mapping",
-            "street/zone value normalization"
+            "annex parser and temporal version chain"
           ],
-          "notes": null
+          "notes": "Lei 18.330/2025 sets the PGV effective from 2026-01-01; preserve historical PGV versions instead of overwriting."
         },
         {
           "field": "ITBI",
@@ -155,8 +157,9 @@
         {
           "field": "urban parameters",
           "status": "PARTIAL",
-          "source_id": "sp-sao-paulo-geosampa-wfs",
+          "source_id": "sp-sao-paulo-urban-parameters-geosampa",
           "supporting_source_ids": [
+            "sp-sao-paulo-geosampa-wfs",
             "sp-sao-paulo-pde-law"
           ],
           "endpoint": "https://wfs.geosampa.prefeitura.sp.gov.br/geoserver/geoportal/wfs",
@@ -164,10 +167,9 @@
           "license": null,
           "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
           "missing_fields": [
-            "LPUOS parameter parser by zone/overlay",
-            "article/annex citations"
+            "citywide resolver across LPUOS, PIUs, OUCs, overlays and temporal amendments"
           ],
-          "notes": null
+          "notes": "GeoSampa exposes structured legal-parameter layers for multiple instruments, including fields for CA max, gabarito and cota-parte in some PIU/OUC datasets. A citywide temporal rule resolver is still required."
         },
         {
           "field": "permits",
@@ -218,17 +220,19 @@
         },
         {
           "field": "risk",
-          "status": "PARTIAL",
-          "source_id": "sp-sao-paulo-geosampa-wfs",
-          "supporting_source_ids": [],
+          "status": "READY",
+          "source_id": "sp-sao-paulo-risk-geosampa",
+          "supporting_source_ids": [
+            "sp-sao-paulo-geosampa-wfs"
+          ],
           "endpoint": "https://wfs.geosampa.prefeitura.sp.gov.br/geoserver/geoportal/wfs",
           "access_class": "OPEN_REUSABLE",
           "license": null,
           "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
           "missing_fields": [
-            "flood/landslide/geotechnical source-specific connectors"
+            "site-specific geotechnical confirmation when professional decision requires it"
           ],
-          "notes": null
+          "notes": "Official GeoSampa risk layers include geological/hydrological risk and historical flood/waterlogging occurrences. They support L3 screening, not executive geotechnical conclusions."
         },
         {
           "field": "heritage",
@@ -283,8 +287,9 @@
         {
           "field": "water/sewer",
           "status": "PARTIAL",
-          "source_id": "sp-arsesp-utility-concessions",
+          "source_id": "sp-sao-paulo-water-sewer-geoconvias",
           "supporting_source_ids": [
+            "sp-arsesp-utility-concessions",
             "br-sinisa-results"
           ],
           "endpoint": "https://www.arsesp.sp.gov.br/prefeituras/Paginas/SeuMunicipio.aspx",
@@ -292,25 +297,26 @@
           "license": null,
           "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
           "missing_fields": [
-            "Sabesp parcel/street network dataset",
-            "frontage availability evidence"
+            "complete current utility network",
+            "frontage availability evidence from provider"
           ],
-          "notes": null
+          "notes": "GeoConvias As Built data records punctual works/services and is explicitly not a complete network inventory. Provider/regulatory confirmation remains necessary."
         },
         {
           "field": "drainage",
-          "status": "PARTIAL",
-          "source_id": "sp-sao-paulo-geosampa-wfs",
-          "supporting_source_ids": [],
+          "status": "READY",
+          "source_id": "sp-sao-paulo-drainage-geosampa",
+          "supporting_source_ids": [
+            "sp-sao-paulo-geosampa-wfs"
+          ],
           "endpoint": "https://wfs.geosampa.prefeitura.sp.gov.br/geoserver/geoportal/wfs",
           "access_class": "OPEN_REUSABLE",
           "license": null,
           "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
           "missing_fields": [
-            "stormwater network layer inventory",
-            "asset-level normalization"
+            "coverage/recency flags per basin"
           ],
-          "notes": null
+          "notes": "Official vector drainage network maintained from basin/drainage studies, with field/topographic verification in source methodology."
         },
         {
           "field": "telecom",
@@ -429,6 +435,7 @@
           "status": "PARTIAL",
           "source_id": "sp-sao-paulo-itbi-transactions",
           "supporting_source_ids": [
+            "sp-sao-paulo-risk-geosampa",
             "sp-sao-paulo-geosampa-wms",
             "sp-sao-paulo-diario-oficial-api"
           ],
@@ -437,9 +444,9 @@
           "license": null,
           "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
           "missing_fields": [
-            "unified temporal index across imagery/tax/law/permits"
+            "unified temporal index across tax, risk, imagery, law and permits"
           ],
-          "notes": null
+          "notes": "ITBI annual series reaches 2006-2026 on the official index; GeoSampa risk occurrences include historical series from 2013. Temporal unification remains pending."
         }
       ]
     },
@@ -1997,8 +2004,8 @@
   ],
   "summary": {
     "São Paulo": {
-      "READY": 9,
-      "PARTIAL": 13,
+      "READY": 12,
+      "PARTIAL": 10,
       "PRIVATE_ON_DEMAND": 1,
       "QUERY_ONLY": 3
     },
