@@ -1685,59 +1685,70 @@
         },
         {
           "field": "building",
-          "status": "GAP",
-          "source_id": null,
-          "supporting_source_ids": [],
-          "endpoint": null,
-          "access_class": null,
-          "license": null,
-          "connector_status": "NOT_DISCOVERED",
-          "missing_fields": [
-            "open cadastral building dataset"
+          "status": "QUERY_ONLY",
+          "source_id": "pb-joao-pessoa-ficha-cadastral-imovel",
+          "supporting_source_ids": [
+            "pb-joao-pessoa-filipeia",
+            "pb-joao-pessoa-ctm-pgv-modernization"
           ],
-          "notes": null
+          "endpoint": "https://receita.joaopessoa.pb.gov.br/dsf_jpa_portal/inicial.do?acronym=COMPROVANTEINSCRICAOESITUACAOMUNICIPAL&evento=montaMenu",
+          "access_class": "PUBLIC_QUERY_ONLY",
+          "license": null,
+          "connector_status": "APPROVED_SERVICE_METADATA_ONLY",
+          "missing_fields": [
+            "verified building-field schema",
+            "bulk reusable building footprint/cadastre",
+            "safe field allowlist"
+          ],
+          "notes": "The official service exposes a property cadastral-card workflow and the municipality confirms recent recadastramento, but a reusable bulk building dataset is not yet confirmed."
         },
         {
           "field": "IPTU",
-          "status": "GAP",
-          "source_id": null,
+          "status": "QUERY_ONLY",
+          "source_id": "pb-joao-pessoa-ficha-cadastral-imovel",
           "supporting_source_ids": [],
-          "endpoint": null,
-          "access_class": null,
+          "endpoint": "https://receita.joaopessoa.pb.gov.br/dsf_jpa_portal/inicial.do?acronym=COMPROVANTEINSCRICAOESITUACAOMUNICIPAL&evento=montaMenu",
+          "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "NOT_DISCOVERED",
+          "connector_status": "APPROVED_SERVICE_METADATA_ONLY",
           "missing_fields": [
-            "bulk/public IPTU source"
+            "verified per-property IPTU field schema",
+            "bulk reusable dataset"
           ],
-          "notes": null
+          "notes": "Portal lists Ficha Cadastral Imóvel, Extrato/Guia and Certidão Financeira Imóvel. Keep property-level fiscal data in query-only workflow until field/access review."
         },
         {
           "field": "PGV",
-          "status": "GAP",
-          "source_id": null,
-          "supporting_source_ids": [],
-          "endpoint": null,
-          "access_class": null,
-          "license": null,
-          "connector_status": "NOT_DISCOVERED",
-          "missing_fields": [
-            "PGV/value-table source"
+          "status": "PARTIAL",
+          "source_id": "pb-joao-pessoa-ctm-pgv-modernization",
+          "supporting_source_ids": [
+            "pb-joao-pessoa-ficha-cadastral-imovel"
           ],
-          "notes": null
+          "endpoint": "https://www.joaopessoa.pb.gov.br/joao-pessoa-sustentavel/joao-pessoa-sustentavel-avanca-no-desenvolvimento-urbano-com-economia-superior-a-us-40-milhoes/",
+          "access_class": "PUBLIC_QUERY_ONLY",
+          "license": null,
+          "connector_status": "SOURCE_REGISTERED_PUBLICATION_DISCOVERY_PENDING",
+          "missing_fields": [
+            "authoritative published PGV tables/maps",
+            "approval act and effective date/version",
+            "machine-readable layer"
+          ],
+          "notes": "Official documentation confirms the PGV was updated and implemented, but the authoritative public data/legal artifact has not yet been located."
         },
         {
           "field": "ITBI",
-          "status": "GAP",
-          "source_id": null,
+          "status": "QUERY_ONLY",
+          "source_id": "pb-joao-pessoa-itbi-service",
           "supporting_source_ids": [],
-          "endpoint": null,
-          "access_class": null,
+          "endpoint": "https://receita.joaopessoa.pb.gov.br/portal-serem",
+          "access_class": "AUTHENTICATED_PUBLIC",
           "license": null,
-          "connector_status": "NOT_DISCOVERED",
+          "connector_status": "QUERY_WORKFLOW_ONLY",
           "missing_fields": [
-            "bulk/public ITBI source"
+            "bulk public transaction dataset",
+            "authorized integration contract"
           ],
-          "notes": null
+          "notes": "ITBI is an official online workflow with fiscal analysis and guide issuance; treat it as authenticated due-diligence evidence, not open bulk data."
         },
         {
           "field": "registry reference",
@@ -2006,17 +2017,19 @@
         },
         {
           "field": "official gazette",
-          "status": "GAP",
-          "source_id": null,
+          "status": "QUERY_ONLY",
+          "source_id": "pb-joao-pessoa-official-gazette",
           "supporting_source_ids": [],
-          "endpoint": null,
-          "access_class": null,
+          "endpoint": "https://www.joaopessoa.pb.gov.br/doe-jp/",
+          "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "NOT_DISCOVERED",
+          "connector_status": "APPROVED_ARCHIVE_METADATA_ONLY",
           "missing_fields": [
-            "official structured gazette source/API"
+            "bulk reuse terms/API",
+            "incremental edition contract",
+            "legal-event parser"
           ],
-          "notes": null
+          "notes": "Official archive publicly lists editions and supplements. Use as query/document evidence until a stable machine interface and reuse terms are confirmed."
         },
         {
           "field": "historical data",
@@ -2061,10 +2074,9 @@
     },
     "João Pessoa": {
       "READY": 6,
-      "GAP": 5,
-      "PRIVATE_ON_DEMAND": 1,
-      "PARTIAL": 11,
-      "QUERY_ONLY": 3
+      "QUERY_ONLY": 7,
+      "PARTIAL": 12,
+      "PRIVATE_ON_DEMAND": 1
     }
   },
   "second_wave": [
