@@ -2,7 +2,7 @@
   "schema_version": "0.1.0",
   "as_of": "2026-09-24",
   "summary": {
-    "registry_sources": 169,
+    "registry_sources": 214,
     "registry_municipalities": 50,
     "ufs_with_any_catalogued_source": 27,
     "zola_ready_now_cities": 18,
