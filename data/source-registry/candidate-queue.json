@@ -189,6 +189,65 @@
         "identify public access environment only",
         "license/privacy review"
       ]
+    },
+    {
+      "id": "cand-to-palmas-2024-aerofoto-lidar",
+      "status": "DISCOVERED",
+      "category": "imagery_terrain_cadastre_update",
+      "authority": "Prefeitura de Palmas",
+      "url": "https://portal.palmas.to.gov.br/core/noticias/prefeitura-de-palmas-usa-tecnologia-para-atualizar-planta-de-imoveis-da-capital-no-iptu-2026/",
+      "discovered_via": "official municipal publication",
+      "goal": "Locate official reusable delivery/API/catalog for 2024 aerophotogrammetry, LiDAR/profile data and updated building footprints used for IPTU 2026.",
+      "risks": [
+        "project still in staged delivery",
+        "imagery may have contractual redistribution restrictions",
+        "street-level imagery must not be confused with Google Street View"
+      ],
+      "next_checks": [
+        "procurement/contract metadata",
+        "Geoportal catalog",
+        "license/terms",
+        "public raster/vector services"
+      ]
+    },
+    {
+      "id": "cand-pi-teresina-public-gis",
+      "status": "DISCOVERED",
+      "category": "municipal_ctm",
+      "authority": "Prefeitura de Teresina / PRODATER",
+      "url": "https://www.teresina.pi.gov.br/",
+      "discovered_via": "official cadastral/urban service documentation plus institutional references",
+      "goal": "Locate current legitimate public geospatial endpoint for cadastral/urban base maintained by the municipality.",
+      "risks": [
+        "internal PostGIS existence does not imply public access",
+        "avoid guessing internal hosts"
+      ],
+      "next_checks": [
+        "official portal search",
+        "WMS/WFS/ArcGIS/GeoServer documentation",
+        "data portal",
+        "terms/license"
+      ]
+    },
+    {
+      "id": "cand-pa-belem-cadastral-open-data",
+      "status": "DISCOVERED",
+      "category": "municipal_cadastre",
+      "authority": "Prefeitura de Belém / SEFIN / CODEM",
+      "url": "https://financas.belem.pa.gov.br/areas/iptu/",
+      "discovered_via": "official finance and CODEM portals",
+      "goal": "Determine whether current cadastral geometry/attributes or recadastramento outputs have an official open/download/API channel.",
+      "risks": [
+        "tax portal is service-oriented",
+        "historical recadastramento may contain façade/personal information",
+        "no bulk license confirmed"
+      ],
+      "next_checks": [
+        "CODEM geoservices",
+        "SEFIN open data",
+        "municipal transparency datasets",
+        "privacy and image licensing"
+      ]
     }
   ]
 }
