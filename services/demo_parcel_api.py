@@ -10,6 +10,7 @@ from __future__ import annotations
 import json
 import math
 import re
+import sqlite3
 import urllib.parse
 import urllib.request
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -59,6 +60,7 @@ MATRIX_PATH = ROOT / "data/deployment/professional-completion-matrix.json"
 UTILITY_RESOLVER_PATH = ROOT / "data/utilities/municipality-provider-resolver.json"
 SOURCE_REGISTRY_PATH = ROOT / "data/source-registry/bootstrap.json"
 PGV_INDEX_PATH = Path("/srv/lotediretor/data/pgv2026/pgv-terrain-values-2026.json")
+ITBI_DB_PATH = Path("/srv/lotediretor/data/itbi-public/itbi-transactions.sqlite3")
 _PGV_INDEX_CACHE = None
 
 FIELD_LABELS = {
@@ -712,6 +714,94 @@ def resolve_pgv(parcel: dict) -> dict:
     }
 
 
+def resolve_itbi_history(parcel: dict, limit: int = 12) -> dict:
+    sql = (parcel.get("properties") or {}).get("sql_reference")
+    if not sql or not re.fullmatch(r"\d{11}", sql):
+        return {
+            "available": ITBI_DB_PATH.exists(),
+            "count": 0,
+            "transactions": [],
+            "registry_references": [],
+            "reason": "parcel_without_sql",
+        }
+    if not ITBI_DB_PATH.exists():
+        return {
+            "available": False,
+            "count": 0,
+            "transactions": [],
+            "registry_references": [],
+            "reason": "itbi_index_not_materialized",
+        }
+
+    uri = f"file:{ITBI_DB_PATH}?mode=ro"
+    db = sqlite3.connect(uri, uri=True, timeout=3)
+    db.row_factory = sqlite3.Row
+    try:
+        count = db.execute(
+            "SELECT COUNT(*) FROM transactions WHERE sql = ?",
+            (sql,),
+        ).fetchone()[0]
+        rows = db.execute(
+            """
+            SELECT source_year, source_sheet, transaction_date,
+                   transaction_nature, transaction_value, vvr,
+                   transmitted_pct, vvr_proportional, tax_base,
+                   financing_type, financed_value,
+                   registry_office, registry_number, sql_status,
+                   land_area_m2, frontage_m, ideal_fraction,
+                   built_area_m2, use_code, use_description,
+                   pattern_code, pattern_description, construction_year,
+                   street, number, complement, neighborhood, cep,
+                   source_file_sha256
+            FROM transactions
+            WHERE sql = ?
+            ORDER BY COALESCE(transaction_date, '') DESC,
+                     source_year DESC, source_row DESC
+            LIMIT ?
+            """,
+            (sql, limit),
+        ).fetchall()
+    finally:
+        db.close()
+
+    transactions = [dict(row) for row in rows]
+    registry_refs = []
+    seen = set()
+    for tx in transactions:
+        office = tx.get("registry_office")
+        number = tx.get("registry_number")
+        if not office or not number:
+            continue
+        key = (office, number)
+        if key in seen:
+            continue
+        seen.add(key)
+        registry_refs.append({
+            "registry_office": office,
+            "registry_number": number,
+            "transaction_date": tx.get("transaction_date"),
+            "source_year": tx.get("source_year"),
+        })
+
+    return {
+        "available": True,
+        "count": count,
+        "coverage_years": [2022, 2023, 2024, 2025, 2026],
+        "transactions": transactions,
+        "registry_references": registry_refs,
+        "source_id": "sp-sao-paulo-itbi-transactions",
+        "interpretation": (
+            "Cada registro é uma DTI com ITBI efetivamente pago no mês "
+            "de referência. Matrícula/cartório são referências declaradas "
+            "na DTI e não substituem certidão registral atualizada."
+        ),
+        "privacy": (
+            "O índice público não materializa nomes de compradores/vendedores "
+            "nem CPF/CNPJ."
+        ),
+    }
+
+
 def load_utility_context() -> dict:
     resolver = json.loads(UTILITY_RESOLVER_PATH.read_text(encoding="utf-8"))
     registry = json.loads(SOURCE_REGISTRY_PATH.read_text(encoding="utf-8"))
@@ -797,7 +887,10 @@ def build_context(lat: float, lng: float, parcel_geometry: dict, parcel: dict) -
             },
         },
         "utilities": load_utility_context(),
-        "fiscal": {"pgv": resolve_pgv(parcel)},
+        "fiscal": {
+            "pgv": resolve_pgv(parcel),
+            "itbi": resolve_itbi_history(parcel),
+        },
         "query_errors": errors,
         "queried_at": utc_now(),
         "source": "Prefeitura de São Paulo / GeoSampa WFS",
@@ -950,8 +1043,11 @@ def actual_values_for_section(
     if section_id == "fiscal_market":
         fiscal = context.get("fiscal") or {}
         pgv = fiscal.get("pgv") or {}
+        itbi = fiscal.get("itbi") or {}
+        values = []
+
         if pgv.get("found"):
-            return [
+            values.extend([
                 {
                     "label": "PGV 2026 · valor unitário de terreno",
                     "value": pgv.get("vm2t_brl_per_m2"),
@@ -962,18 +1058,60 @@ def actual_values_for_section(
                     "value": f"{pgv.get('codlog')} / {pgv.get('sq')}",
                 },
                 {"label": "Base legal PGV", "value": pgv.get("law")},
-                {"label": "Vigência", "value": pgv.get("effective_from")},
-                {
-                    "label": "Interpretação",
-                    "value": pgv.get("interpretation"),
-                },
-            ]
-        return [
-            {
+                {"label": "Vigência PGV", "value": pgv.get("effective_from")},
+            ])
+        else:
+            values.append({
                 "label": "PGV 2026",
                 "value": "Valor unitário não localizado para a chave cadastral do lote.",
-            }
-        ]
+            })
+
+        txs = itbi.get("transactions") or []
+        values.append({
+            "label": "DTIs/ITBI encontradas · 2022–2026",
+            "value": itbi.get("count", 0),
+        })
+        if not txs:
+            values.append({
+                "label": "Histórico ITBI",
+                "value": (
+                    "Nenhuma DTI paga encontrada para este SQL no índice "
+                    "público materializado de 2022 a 2026."
+                ),
+            })
+        for idx, tx in enumerate(txs[:5], start=1):
+            prefix = f"ITBI #{idx}"
+            values.extend([
+                {"label": f"{prefix} · data da transação", "value": tx.get("transaction_date")},
+                {"label": f"{prefix} · natureza", "value": tx.get("transaction_nature")},
+                {"label": f"{prefix} · valor declarado", "value": tx.get("transaction_value"), "unit": "BRL"},
+                {"label": f"{prefix} · VVR", "value": tx.get("vvr"), "unit": "BRL"},
+                {"label": f"{prefix} · base de cálculo", "value": tx.get("tax_base"), "unit": "BRL"},
+                {"label": f"{prefix} · proporção transmitida", "value": tx.get("transmitted_pct"), "unit": "%"},
+                {"label": f"{prefix} · financiamento", "value": tx.get("financing_type")},
+                {"label": f"{prefix} · valor financiado", "value": tx.get("financed_value"), "unit": "BRL"},
+                {"label": f"{prefix} · cartório", "value": tx.get("registry_office")},
+                {"label": f"{prefix} · matrícula", "value": tx.get("registry_number")},
+            ])
+
+        if txs:
+            latest = txs[0]
+            values.extend([
+                {"label": "Situação do SQL · snapshot IPTU/DTI mais recente", "value": latest.get("sql_status")},
+                {"label": "Testada · snapshot IPTU/DTI", "value": latest.get("frontage_m"), "unit": "m"},
+                {"label": "Fração ideal · snapshot IPTU/DTI", "value": latest.get("ideal_fraction")},
+                {"label": "Área terreno · snapshot IPTU/DTI", "value": latest.get("land_area_m2"), "unit": "m²"},
+                {"label": "Área construída · snapshot IPTU/DTI", "value": latest.get("built_area_m2"), "unit": "m²"},
+                {"label": "Uso IPTU · snapshot DTI", "value": latest.get("use_description")},
+                {"label": "Padrão IPTU · snapshot DTI", "value": latest.get("pattern_description")},
+                {"label": "ACC / ano construção · snapshot DTI", "value": latest.get("construction_year")},
+            ])
+
+        values.extend([
+            {"label": "Interpretação ITBI", "value": itbi.get("interpretation")},
+            {"label": "Privacidade", "value": itbi.get("privacy")},
+        ])
+        return values
 
     if section_id == "licensing_history":
         licensing = context.get("licensing") or {}
@@ -1050,6 +1188,43 @@ def actual_values_for_section(
             "value": (
                 "Prestador/território ou contexto de rede não comprovam "
                 "ligação, disponibilidade ou capacidade técnica no lote."
+            ),
+        })
+        return values
+
+    if section_id == "registry_due_diligence":
+        itbi = (context.get("fiscal") or {}).get("itbi") or {}
+        refs = itbi.get("registry_references") or []
+        values = []
+        for idx, ref in enumerate(refs[:8], start=1):
+            values.extend([
+                {
+                    "label": f"Referência registral pública #{idx} · cartório",
+                    "value": ref.get("registry_office"),
+                },
+                {
+                    "label": f"Referência registral pública #{idx} · matrícula",
+                    "value": ref.get("registry_number"),
+                },
+                {
+                    "label": f"Referência registral pública #{idx} · transação",
+                    "value": ref.get("transaction_date"),
+                },
+            ])
+        if not refs:
+            values.append({
+                "label": "Referência matrícula/cartório via ITBI",
+                "value": (
+                    "Nenhuma referência encontrada para este SQL no índice "
+                    "ITBI público de 2022–2026."
+                ),
+            })
+        values.append({
+            "label": "Limite registral",
+            "value": (
+                "A matrícula informada em DTI é uma referência histórica "
+                "pública. Certidão/matrícula atualizada, titularidade, ônus e "
+                "averbações permanecem no fluxo privado sob demanda."
             ),
         })
         return values
