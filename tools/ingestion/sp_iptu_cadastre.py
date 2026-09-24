@@ -218,9 +218,15 @@ INSERT OR REPLACE INTO cadastre (
 """
 
 
-def materialize(year: int, out: Path) -> dict:
+def materialize(year: int, out: Path, archive_path: Path | None = None) -> dict:
     out.mkdir(parents=True, exist_ok=True)
-    raw, final_url = download_year(year)
+    if archive_path is not None:
+        raw = archive_path.read_bytes()
+        if not raw.startswith(b"PK"):
+            raise ValueError("provided IPTU archive is not ZIP")
+        final_url = "local-validation-copy:" + str(archive_path)
+    else:
+        raw, final_url = download_year(year)
     zip_sha = sha256_bytes(raw)
     zip_path = out / f"IPTU_{year}.zip"
     zip_path.write_bytes(raw)
@@ -346,8 +352,14 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--year", type=int, default=2026)
+    parser.add_argument(
+        "--archive",
+        type=Path,
+        default=None,
+        help="optional already-downloaded official IPTU_<year>.zip for validation/replay",
+    )
     args = parser.parse_args()
-    materialize(args.year, args.out)
+    materialize(args.year, args.out, args.archive)
     return 0
 
 
