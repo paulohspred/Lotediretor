@@ -79,7 +79,9 @@
         "environment",
         "risk",
         "heritage",
-        "infrastructure"
+        "electricity",
+        "water/sewer",
+        "public works"
       ],
       "panels": [
         "property_identity",
@@ -89,7 +91,8 @@
         "critical_unknowns",
         "recommended_next_actions"
       ],
-      "rule": "Summary may only restate facts/derived findings present in detailed sections."
+      "rule": "Summary may only restate facts/derived findings present in detailed sections.",
+      "section_type": "SUMMARY"
     },
     {
       "id": "identity_location",
@@ -110,7 +113,8 @@
         "property geometry or spatial reference",
         "municipal identifier",
         "location/address"
-      ]
+      ],
+      "section_type": "DETAIL"
     },
     {
       "id": "building_existing",
@@ -126,7 +130,8 @@
         "building_area_reconciliation",
         "construction_history"
       ],
-      "rule": "Fiscal footprint/area and licensed/observed footprint/area must remain separate when they diverge."
+      "rule": "Fiscal footprint/area and licensed/observed footprint/area must remain separate when they diverge.",
+      "section_type": "DETAIL"
     },
     {
       "id": "planning_buildability",
@@ -145,7 +150,8 @@
         "legal_citations",
         "temporal_validity"
       ],
-      "rule": "Each parameter requires the rule/act and applicable geometry; derived buildable area must show assumptions."
+      "rule": "Each parameter requires the rule/act and applicable geometry; derived buildable area must show assumptions.",
+      "section_type": "DETAIL"
     },
     {
       "id": "fiscal_market",
@@ -163,7 +169,8 @@
         "transactions",
         "market_context"
       ],
-      "rule": "Do not expose taxpayer/person identifiers. ITBI transaction evidence is property-centric or aggregated."
+      "rule": "Do not expose taxpayer/person identifiers. ITBI transaction evidence is property-centric or aggregated.",
+      "section_type": "DETAIL"
     },
     {
       "id": "licensing_history",
@@ -183,7 +190,8 @@
         "gazette_events",
         "timeline"
       ],
-      "rule": "CAPTCHA/authenticated sources stay query/manual unless an authorized machine interface exists."
+      "rule": "CAPTCHA/authenticated sources stay query/manual unless an authorized machine interface exists.",
+      "section_type": "DETAIL"
     },
     {
       "id": "environment_risk_heritage",
@@ -202,7 +210,8 @@
         "archaeology",
         "required_approvals"
       ],
-      "rule": "Screening layers do not replace site-specific environmental/geotechnical/heritage approvals."
+      "rule": "Screening layers do not replace site-specific environmental/geotechnical/heritage approvals.",
+      "section_type": "DETAIL"
     },
     {
       "id": "infrastructure_utilities",
@@ -236,7 +245,8 @@
         "TECHNICAL_DRAWING_REQUIRED",
         "NOT_AVAILABLE",
         "RESTRICTED_INFORMATION"
-      ]
+      ],
+      "section_type": "DETAIL"
     },
     {
       "id": "terrain_visual",
@@ -258,7 +268,8 @@
         "profiles",
         "source_accuracy"
       ],
-      "terrain_quality_required": true
+      "terrain_quality_required": true,
+      "section_type": "DETAIL"
     },
     {
       "id": "public_change_context",
@@ -275,7 +286,8 @@
         "distance_to_parcel",
         "timeline"
       ],
-      "rule": "Text-only PNCP matches cannot be shown as parcel-confirmed projects."
+      "rule": "Text-only PNCP matches cannot be shown as parcel-confirmed projects.",
+      "section_type": "DETAIL"
     },
     {
       "id": "registry_due_diligence",
@@ -291,7 +303,8 @@
         "l4_checklist"
       ],
       "public_release_default": false,
-      "rule": "Ownership, liens and certificates are private/on-demand unless lawfully supplied for the user's case."
+      "rule": "Ownership, liens and certificates are private/on-demand unless lawfully supplied for the user's case.",
+      "section_type": "DETAIL"
     },
     {
       "id": "evidence_unknowns",
@@ -335,7 +348,8 @@
         "unknowns",
         "next_actions"
       ],
-      "required": true
+      "required": true,
+      "section_type": "EVIDENCE_INDEX"
     }
   ],
   "visual_requirements": {
