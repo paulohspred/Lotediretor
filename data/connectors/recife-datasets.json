@@ -12,9 +12,9 @@
       "resource_name": "IPTU - 2026",
       "record_kind": "FISCAL_PROPERTY",
       "observed_total": 422776,
-      "page_size": 5000,
-      "max_page_size": 10000,
-      "max_pages": 200,
+      "page_size": 500,
+      "max_page_size": 500,
+      "max_pages": 1000,
       "field_allowlist": [
         "_id",
         "Número do contribuinte",
@@ -63,8 +63,8 @@
       "resource_name": "ITBI 2026 - Imposto sobre a Transmissão de Bens Imóveis",
       "record_kind": "PROPERTY_TRANSACTION",
       "observed_total": 12305,
-      "page_size": 5000,
-      "max_page_size": 10000,
+      "page_size": 500,
+      "max_page_size": 500,
       "max_pages": 50,
       "field_allowlist": [
         "_id",
@@ -101,9 +101,9 @@
       "resource_name": "Licenciamento Urbanístico",
       "record_kind": "PERMIT_EVENT",
       "observed_total": 113305,
-      "page_size": 5000,
-      "max_page_size": 10000,
-      "max_pages": 100,
+      "page_size": 500,
+      "max_page_size": 500,
+      "max_pages": 300,
       "field_allowlist": [
         "_id",
         "﻿areatotalconstruida",
@@ -158,5 +158,10 @@
       "telefone"
     ],
     "projection_rule": "Every DataStore request sends fields=<closed allowlist>; excluded/upstream-new fields are never fetched."
+  },
+  "server_behavior": {
+    "verified_at": "2026-09-24",
+    "datastore_max_records_per_response": 500,
+    "rule": "Pagination offset advances by the actual record count returned, not by the requested limit."
   }
 }
