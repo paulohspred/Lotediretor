@@ -9,49 +9,54 @@
 <link rel="preconnect" href="https://tile.openstreetmap.org">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
 <style>
-:root{color-scheme:dark;--bg:#071019;--panel:#0d1925;--panel2:#122130;--line:#22364b;--text:#eef5fb;--muted:#94a8bb;--green:#3bd790;--blue:#55aaff;--amber:#f1b84b;--violet:#a38cff;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#071019;color:var(--text)}body{background:radial-gradient(circle at 80% -10%,#153149 0,transparent 30%),var(--bg)}button,select,input{font:inherit}
-header{height:64px;border-bottom:1px solid rgba(255,255,255,.07);background:rgba(7,16,25,.92);backdrop-filter:blur(14px);display:flex;align-items:center;position:sticky;top:0;z-index:1001}.top{width:min(1440px,100%);margin:auto;padding:0 22px;display:flex;align-items:center;gap:18px}.brand{font-weight:850;font-size:21px;letter-spacing:-.04em;white-space:nowrap}.brand i{font-style:normal;color:var(--green)}.phase{font-size:11px;border:1px solid #2d455b;color:#a9bfd1;border-radius:999px;padding:6px 9px;text-transform:uppercase;letter-spacing:.08em}.spacer{flex:1}.headstat{font-size:12px;color:var(--muted);white-space:nowrap}
-.shell{width:min(1440px,100%);margin:auto;padding:18px 22px 30px}.intro{display:flex;align-items:flex-end;gap:25px;padding:18px 0 22px}.intro h1{margin:0;max-width:820px;font-size:clamp(35px,5vw,66px);line-height:.98;letter-spacing:-.055em}.intro p{margin:0 0 5px;color:var(--muted);max-width:470px;line-height:1.5;font-size:15px}
-.workbench{display:grid;grid-template-columns:330px minmax(0,1fr);border:1px solid var(--line);border-radius:20px;overflow:hidden;min-height:610px;background:var(--panel);box-shadow:0 30px 80px rgba(0,0,0,.25)}.sidebar{padding:20px;border-right:1px solid var(--line);overflow:auto}.sidebar h2{font-size:14px;text-transform:uppercase;letter-spacing:.08em;color:#8199ad;margin:2px 0 13px}.control{margin-bottom:18px}.control label{display:block;font-size:12px;color:var(--muted);margin-bottom:7px}.control select,.control input{width:100%;background:#08131d;color:var(--text);border:1px solid #2a4056;border-radius:10px;padding:11px 12px;outline:none}.control select:focus,.control input:focus{border-color:#4c87b8}.searchline{display:grid;grid-template-columns:1fr auto;gap:7px}.searchline input{min-width:0}.searchbtn{border:1px solid #31506a;background:#153149;color:#e8f3fb;border-radius:10px;padding:0 13px;cursor:pointer;font-weight:700}.searchbtn:disabled{opacity:.45;cursor:not-allowed}.search-status{font-size:10px;color:#7f96a9;line-height:1.4;margin-top:6px;min-height:14px}.city-summary{border:1px solid #263c50;background:#0a1621;border-radius:14px;padding:15px;margin-bottom:18px}.city-title{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.city-title h3{font-size:19px;margin:0}.city-title span{font-size:11px;color:var(--muted)}.bar{height:8px;display:flex;overflow:hidden;border-radius:99px;background:#02070b;margin:14px 0 12px}.bar i{height:100%}.bar .r{background:var(--green)}.bar .p{background:var(--blue)}.bar .q{background:var(--amber)}.bar .v{background:var(--violet)}.metrics{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.metric{border:1px solid #1d3042;background:#0c1a27;border-radius:9px;padding:9px}.metric b{font-size:18px;display:block}.metric small{font-size:10px;color:var(--muted);letter-spacing:.04em}.status-list{display:grid;gap:9px}.status-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 10px;border:1px solid #1e3244;border-radius:10px;background:#0a1621}.status-row span{font-size:12px;color:#bfd0de}.status-row b{font-size:11px}.green{color:var(--green)}.blue{color:var(--blue)}.amber{color:var(--amber)}
-.parcel-box{margin:0 0 18px;border:1px solid #31506a;background:#091824;border-radius:14px;overflow:hidden}.parcel-head{padding:12px 14px;border-bottom:1px solid #233b50;display:flex;align-items:center;justify-content:space-between;gap:10px}.parcel-head b{font-size:13px}.parcel-state{font-size:10px;color:#9db2c3;text-transform:uppercase;letter-spacing:.06em}.parcel-body{padding:13px 14px}.parcel-hint{font-size:12px;color:#94a9bb;line-height:1.5}.parcel-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:10px}.parcel-datum{border-top:1px solid #193045;padding-top:7px}.parcel-datum small{display:block;color:#71899d;font-size:9px;text-transform:uppercase;letter-spacing:.05em}.parcel-datum strong{display:block;font-size:12px;margin-top:3px;word-break:break-word}.parcel-source{font-size:10px;color:#6f879a;margin-top:11px;line-height:1.45}
-.mapwrap{position:relative;min-width:0}.maptop{position:absolute;z-index:500;left:14px;right:14px;top:14px;display:flex;gap:8px;pointer-events:none}.mapbadge{pointer-events:auto;background:rgba(8,19,29,.92);backdrop-filter:blur(10px);border:1px solid #294157;border-radius:999px;padding:8px 11px;font-size:11px;color:#bcd0e0;box-shadow:0 10px 25px rgba(0,0,0,.2)}#map{height:100%;min-height:610px;background:#0b1721}.leaflet-control-attribution{background:rgba(6,14,21,.82)!important;color:#8197aa!important}.leaflet-control-attribution a{color:#a9c0d4!important}.leaflet-control-zoom a{background:#0e1c29!important;color:#eaf3fa!important;border-color:#294057!important}.leaflet-popup-content-wrapper,.leaflet-popup-tip{background:#0d1c29;color:#e9f2f9}.leaflet-popup-content{margin:14px}.popup-title{font-weight:800;font-size:15px;margin-bottom:6px}.popup-meta{color:#93a9bb;font-size:12px;line-height:1.45}
-.blocks{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:18px 0}.block{border:1px solid var(--line);background:linear-gradient(180deg,#0f1d2a,#0a1620);border-radius:15px;padding:16px}.block b{display:block;font-size:27px;letter-spacing:-.035em}.block span{font-size:11px;color:var(--muted)}
-.section{padding:34px 0 10px}.section h2{font-size:27px;letter-spacing:-.04em;margin:0 0 8px}.section>p{color:var(--muted);max-width:800px;line-height:1.55;margin:0 0 18px}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.card{border:1px solid var(--line);background:#0b1722;border-radius:15px;padding:18px}.card h3{font-size:15px;margin:0 0 8px}.card p{font-size:13px;color:var(--muted);line-height:1.5;margin:0}.note{border-left:3px solid var(--green);background:#0b1823;padding:15px 17px;margin-top:20px;color:#adc0cf;font-size:13px;line-height:1.55}.note b{color:#fff}
-footer{border-top:1px solid rgba(255,255,255,.07);margin-top:40px;padding:24px 0 38px;color:#647c90;font-size:12px}
-@media(max-width:960px){.intro{display:block}.intro p{margin-top:16px}.workbench{grid-template-columns:1fr}.sidebar{border-right:0;border-bottom:1px solid var(--line)}#map{min-height:500px}.blocks{grid-template-columns:repeat(2,1fr)}.cards{grid-template-columns:1fr}.headstat{display:none}}
-@media(max-width:560px){.shell{padding:12px}.top{padding:0 14px}.phase{display:none}.intro{padding-top:12px}.blocks{grid-template-columns:1fr}.workbench{border-radius:14px}.sidebar{padding:14px}#map{min-height:440px}}
+:root{color-scheme:light;--nav:#29485b;--nav2:#355c72;--ink:#273942;--muted:#6f7f88;--line:#d7dfe3;--soft:#f3f5f6;--white:#fff;--accent:#a8562f;--green:#2f7d61;--blue:#3d78a3;--amber:#a97018;--violet:#705395;font-family:Arial,Helvetica,sans-serif}
+*{box-sizing:border-box}html,body{margin:0;height:100%;overflow:hidden;background:#e3e9ec;color:var(--ink)}body{font-size:14px}button,input,select{font:inherit}
+header{height:56px;background:var(--nav);color:#fff;border-bottom:4px solid var(--accent);display:flex;align-items:center;position:relative;z-index:1200}.top{width:100%;padding:0 16px;display:flex;align-items:center;gap:15px}.brand{font-size:20px;font-weight:800;white-space:nowrap}.brand i{font-style:normal;color:#fff}.phase{font-size:10px;color:#d8e2e8;text-transform:uppercase;letter-spacing:.08em}.spacer{flex:1}.headstat{font-size:11px;color:#d7e2e8}
+.shell{height:calc(100vh - 56px);margin:0;padding:0;max-width:none}.intro,.blocks,.section,footer{display:none!important}
+.workbench{height:100%;min-height:0;display:grid;grid-template-columns:310px minmax(0,1fr);border:0;border-radius:0;background:#fff;box-shadow:none}
+.sidebar{padding:0;background:#f7f8f8;border-right:1px solid #c8d1d6;overflow:auto}.sidebar h2{font-size:12px;text-transform:uppercase;letter-spacing:.055em;color:#536873;margin:0;padding:11px 14px;background:#e9eef0;border-top:1px solid #fff;border-bottom:1px solid #ccd5da}
+.control{padding:12px 14px 0;margin:0}.control label{display:block;font-size:10px;font-weight:800;color:#5d707b;margin-bottom:5px;text-transform:uppercase;letter-spacing:.04em}.control select,.control input{width:100%;height:35px;background:#fff;color:#273942;border:1px solid #b9c6cd;border-radius:3px;padding:0 9px;outline:none}.control select:focus,.control input:focus{border-color:#648ea7}
+.searchline{display:grid;grid-template-columns:1fr auto;gap:0}.searchline input{border-radius:3px 0 0 3px}.searchbtn{border:1px solid #9eafb8;border-left:0;background:#eef2f4;color:#29485b;border-radius:0 3px 3px 0;padding:0 12px;font-weight:700}.searchbtn:disabled{opacity:.5}.search-status{font-size:10px;color:#72828b;line-height:1.4;margin-top:6px;min-height:14px}
+.city-summary{margin:12px 14px;border:1px solid #cfd8dc;background:#fff;border-radius:3px;padding:10px}.city-title{display:flex;justify-content:space-between;gap:8px}.city-title h3{font-size:14px;margin:0}.city-title span{font-size:9px;color:#7b8a92}.bar{height:5px;display:flex;margin:9px 0;background:#e6ebed}.bar i{height:100%}.bar .r{background:#4d997d}.bar .p{background:#5790b8}.bar .q{background:#d4a246}.bar .v{background:#8066a2}.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:3px}.metric{text-align:center;border-left:1px solid #e1e6e8}.metric:first-child{border-left:0}.metric b{display:block;font-size:13px}.metric small{font-size:7px;color:#7b8991}
+.parcel-box{margin:10px 14px 14px;border:1px solid #cfd8dc;background:#fff;border-radius:3px}.parcel-head{padding:8px 9px;border-bottom:1px solid #e0e5e8;display:flex;justify-content:space-between}.parcel-head b{font-size:11px}.parcel-state{font-size:8px;color:#778993;text-transform:uppercase}.parcel-body{padding:9px}.parcel-hint{font-size:11px;color:#657780;line-height:1.4}.parcel-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:7px}.parcel-datum{border-top:1px solid #e8ecee;padding-top:5px}.parcel-datum small{display:block;color:#7b8a92;font-size:8px;text-transform:uppercase}.parcel-datum strong{display:block;font-size:10px;margin-top:2px}.parcel-source{font-size:8px;color:#85949b;margin-top:8px;line-height:1.4}
+.status-list{display:block;padding:5px 0 9px}.status-row{display:flex;align-items:center;justify-content:space-between;padding:6px 14px;border-bottom:1px solid #e2e7e9;background:#fff}.status-row span{font-size:11px;color:#536772}.status-row b{font-size:9px}.green{color:var(--green)}.blue{color:var(--blue)}.amber{color:var(--amber)}
+.layer-list{background:#fff}.layer-toggle{display:flex;gap:8px;align-items:flex-start;padding:7px 14px;border-bottom:1px solid #e4e9eb;font-size:11px;color:#394d58}.layer-toggle input{margin:1px 0 0}.layer-toggle small{display:block;color:#819099;margin-top:2px;font-size:9px}
+.mapwrap{position:relative;min-width:0;height:100%;overflow:hidden}.maptop{position:absolute;z-index:500;left:12px;top:12px;display:flex;gap:6px;pointer-events:none}.mapbadge{background:rgba(255,255,255,.94);border:1px solid #ccd6da;border-radius:2px;padding:6px 8px;font-size:9px;color:#596c76;box-shadow:0 1px 4px rgba(0,0,0,.12)}#map{height:100%;min-height:0;background:#dce4e7}.leaflet-control-attribution{font-size:9px}.leaflet-popup-content-wrapper,.leaflet-popup-tip{background:#fff;color:#2d414b}.popup-title{font-weight:700;font-size:13px}.popup-meta{font-size:10px;color:#6c7c84}
+.report-panel{position:absolute;z-index:800;top:0;right:0;bottom:0;width:min(520px,48%);background:#fff;border-left:1px solid #c9d3d8;box-shadow:-5px 0 18px rgba(25,45,56,.16);transform:translateX(101%);transition:transform .18s ease;display:flex;flex-direction:column}.report-panel.open{transform:translateX(0)}
+.report-top{padding:17px 45px 13px 20px;border-bottom:1px solid #d8e0e4;background:#fff;position:relative}.report-topline{display:flex;align-items:center;justify-content:space-between;gap:10px}.report-kicker{font-size:10px;font-weight:800;color:#697b84;text-transform:uppercase;letter-spacing:.05em}.report-actions{display:flex;gap:5px;position:absolute;right:8px;top:7px}.report-btn{border:1px solid #bdc8ce;background:#f5f7f8;color:#334a57;border-radius:2px;padding:5px 7px;font-size:9px}.report-title{font-size:23px;line-height:1.15;margin:7px 0 5px;font-weight:500;color:#273d48}.report-subtitle{font-size:11px;color:#697b85;line-height:1.4}.report-scroll{overflow:auto;padding:0 20px 25px}.report-legend{margin:13px 0 3px;background:#f4f6f7;border-left:3px solid #7b98a7;padding:8px 9px;font-size:10px;line-height:1.45;color:#61737c}
+.report-section{border:0;border-bottom:1px solid #dce3e6;background:#fff;border-radius:0;margin:0;overflow:visible}.report-section summary{cursor:pointer;list-style:none;padding:14px 0 10px;display:flex;align-items:center;justify-content:space-between;gap:10px}.report-section summary::-webkit-details-marker{display:none}.report-section summary:before{content:"▸";color:#81919a;margin-right:6px}.report-section[open] summary:before{content:"▾"}.report-section summary strong{font-size:14px;color:#304650;flex:1}.report-section summary span{font-size:9px;color:#829199}.report-content{padding:0 0 13px;border:0}
+.report-values{display:block;border-top:1px solid #edf0f2}.report-value{display:grid;grid-template-columns:minmax(135px,42%) 1fr;border-bottom:1px solid #edf0f2;padding:0;background:#fff}.report-value small{display:block;color:#667984;font-size:10px;font-weight:700;padding:7px 5px;text-transform:none;letter-spacing:0}.report-value b{display:block;font-size:11px;font-weight:400;padding:7px 5px;color:#263d48;word-break:break-word}
+.sources-detail{margin-top:10px;background:#f8f9f9;border:1px solid #e0e5e8}.sources-detail>summary{padding:7px 8px!important;font-size:9px!important;color:#667983}.field-state{padding:7px 8px;border-top:1px solid #e4e9eb;background:#fafbfb}.field-line{display:flex;justify-content:space-between;gap:8px}.field-name{font-size:10px;color:#4f6571;font-weight:700}.status-chip{font-size:7px;border-radius:9px;padding:2px 4px;border:1px solid #b9c5cb}.status-ready{color:var(--green)}.status-partial{color:var(--blue)}.status-query_only{color:var(--amber)}.status-private_on_demand{color:var(--violet)}.field-source,.field-missing{font-size:8px;color:#7a8991;margin-top:3px;line-height:1.35}
+@media(max-width:960px){.workbench{grid-template-columns:245px 1fr}.report-panel{width:min(500px,62%)}.headstat{display:none}}
+@media(max-width:680px){html,body{overflow:auto}.workbench{grid-template-columns:1fr;height:auto}.sidebar{max-height:43vh}.mapwrap{height:57vh}.report-panel{position:fixed;top:56px;width:94%;z-index:1300}.phase{display:none}}
+@media print{header,.sidebar,#map,.maptop,.report-actions{display:none!important}html,body,.shell,.workbench,.mapwrap{height:auto;overflow:visible;display:block}.report-panel{position:static;transform:none!important;width:100%;box-shadow:none;border:0}.report-scroll{overflow:visible}.sources-detail{display:none}}
 </style>
 </head>
 <body>
 <header><div class="top">
-  <div class="brand">Lote<i>Diretor</i> Brasil</div>
-  <span class="phase">Demo técnica</span>
+  <div class="brand">LoteDiretor Brasil</div>
+  <span class="phase">consulta territorial</span>
   <div class="spacer"></div>
-  <span class="headstat">Fontes oficiais · evidência versionada · PostGIS</span>
+  <span class="headstat">Lote · zoneamento · fiscal · risco · patrimônio · infraestrutura</span>
 </div></header>
 
 <main class="shell">
-<section class="intro">
-  <h1>O imóvel como unidade de inteligência territorial.</h1>
-  <p>Selecione uma das cidades prioritárias para visualizar a cobertura atual. O mapa usa base aberta e não depende de chaves Mapbox ou Google.</p>
-</section>
-
 <section class="workbench">
   <aside class="sidebar">
-    <h2>Consulta territorial</h2>
     <div class="control">
-      <label for="citySelect">Município prioritário</label>
+      <label for="citySelect">Município</label>
       <select id="citySelect"></select>
     </div>
-    <div class="control">
-      <label for="lotInput">Buscar imóvel por SQL ou CIB</label>
+    <div class="control" style="padding-bottom:8px">
+      <label for="lotInput">Localizar lote por SQL ou CIB</label>
       <div class="searchline">
-        <input id="lotInput" autocomplete="off" inputmode="text" placeholder="Ex.: 00205900496 ou SFPRPQ1W">
+        <input id="lotInput" autocomplete="off" inputmode="text" placeholder="00205900496 ou SFPRPQ1W">
         <button class="searchbtn" id="lotSearch" type="button">Buscar</button>
       </div>
-      <div class="search-status" id="searchStatus">Busca oficial disponível para São Paulo.</div>
+      <div class="search-status" id="searchStatus">São Paulo: busca cadastral oficial ativa.</div>
     </div>
+
+    <h2>Situação do município</h2>
     <div class="city-summary">
       <div class="city-title"><h3 id="cityName">São Paulo · SP</h3><span id="ibge">IBGE 3550308</span></div>
       <div class="bar" id="bar"></div>
@@ -64,70 +69,49 @@ footer{border-top:1px solid rgba(255,255,255,.07);margin-top:40px;padding:24px 0
     </div>
 
     <div class="parcel-box" id="parcelBox">
-      <div class="parcel-head"><b>Terreno selecionado</b><span class="parcel-state" id="parcelState">clique no mapa</span></div>
-      <div class="parcel-body" id="parcelBody">
-        <div class="parcel-hint">Em São Paulo, clique diretamente sobre um terreno. O LoteDiretor consulta o lote oficial do GeoSampa e destaca o polígono cadastral.</div>
-      </div>
+      <div class="parcel-head"><b>Lote selecionado</b><span class="parcel-state" id="parcelState">clique no mapa</span></div>
+      <div class="parcel-body" id="parcelBody"><div class="parcel-hint">Clique dentro de um lote ou localize por SQL/CIB. A ficha abre à direita, como no fluxo do ZoLa.</div></div>
     </div>
 
-    <h2>Camadas do dossiê</h2>
+    <h2>Camadas do mapa</h2>
+    <div class="layer-list">
+      <label class="layer-toggle"><input type="checkbox" data-zlayer="parcel" checked><span>Lotes fiscais<small>GeoSampa · lote_cidadao</small></span></label>
+      <label class="layer-toggle"><input type="checkbox" data-zlayer="zoning" checked><span>Zoneamento vigente<small>Lei 18.177/2024</small></span></label>
+      <label class="layer-toggle"><input type="checkbox" data-zlayer="heritage"><span>Patrimônio cultural<small>Tombamento / envoltórias</small></span></label>
+      <label class="layer-toggle"><input type="checkbox" data-zlayer="geoRisk"><span>Risco geológico<small>Triagem espacial</small></span></label>
+      <label class="layer-toggle"><input type="checkbox" data-zlayer="hydroRisk"><span>Risco hidrológico<small>Triagem espacial</small></span></label>
+      <label class="layer-toggle"><input type="checkbox" data-zlayer="hillshade"><span>Hillshade MDC 2004<small>Contexto histórico</small></span></label>
+      <label class="layer-toggle"><input type="checkbox" data-zlayer="slope"><span>Declividade<small>GeoSampa</small></span></label>
+      <label class="layer-toggle"><input type="checkbox" data-zlayer="ortho"><span>Índice de ortofotos 2020<small>Índice de folhas</small></span></label>
+    </div>
+
+    <h2>Cobertura do dossiê</h2>
     <div class="status-list">
       <div class="status-row"><span>Cadastro / lote</span><b class="green">ATIVO</b></div>
-      <div class="status-row"><span>Zoneamento / regras</span><b class="blue">PARCIAL</b></div>
-      <div class="status-row"><span>Patrimônio</span><b class="green">ATIVO</b></div>
-      <div class="status-row"><span>Infraestrutura</span><b class="blue">PARCIAL</b></div>
-      <div class="status-row"><span>Obras e processos</span><b class="blue">PARCIAL</b></div>
+      <div class="status-row"><span>Zoneamento / PDE</span><b class="green">ATIVO</b></div>
+      <div class="status-row"><span>PGV 2026</span><b class="green">ATIVO</b></div>
+      <div class="status-row"><span>Patrimônio / risco</span><b class="green">ATIVO</b></div>
+      <div class="status-row"><span>IPTU / ITBI</span><b class="blue">EM INTEGRAÇÃO</b></div>
       <div class="status-row"><span>Matrícula / certidões</span><b class="amber">SOB DEMANDA</b></div>
     </div>
   </aside>
 
   <div class="mapwrap">
-    <div class="maptop">
-      <span class="mapbadge">Base cartográfica © OpenStreetMap</span>
-      <span class="mapbadge">Cobertura L3 em construção</span>
-    </div>
+    <div class="maptop"><span class="mapbadge">Base © OpenStreetMap · dados temáticos GeoSampa</span></div>
     <div id="map"></div>
-
-    <aside class="report-panel" id="reportPanel" aria-label="Relatório do imóvel">
+    <aside class="report-panel" id="reportPanel" aria-label="Ficha do lote">
       <div class="report-top">
-        <div class="report-topline">
-          <span class="report-kicker">Dossiê do imóvel</span>
-          <div class="report-actions">
-            <button class="report-btn" id="printReport" type="button">Imprimir / PDF</button>
-            <button class="report-btn" id="closeReport" type="button">Fechar</button>
-          </div>
+        <div class="report-topline"><span class="report-kicker">Lote / dossiê territorial</span>
+          <div class="report-actions"><button class="report-btn" id="printReport" type="button">Imprimir</button><button class="report-btn" id="closeReport" type="button">×</button></div>
         </div>
-        <div class="report-title" id="reportTitle">Terreno selecionado</div>
-        <div class="report-subtitle" id="reportSubtitle">Selecione um lote no mapa.</div>
+        <div class="report-title" id="reportTitle">Selecione um lote</div>
+        <div class="report-subtitle" id="reportSubtitle">Clique no mapa ou busque por SQL/CIB.</div>
       </div>
       <div class="report-scroll" id="reportContent"></div>
     </aside>
   </div>
 </section>
-
-<div class="blocks">
-  <div class="block"><b>265</b><span>fontes registradas</span></div>
-  <div class="block"><b>39</b><span>conectores catalogados</span></div>
-  <div class="block"><b>5</b><span>municípios prioritários</span></div>
-  <div class="block"><b>0</b><span>GAP na matriz de descoberta</span></div>
-</div>
-
-<section class="section">
-  <h2>O que está por trás da interface</h2>
-  <p>A demo pública não inventa cobertura. Cada campo futuro do dossiê deve carregar fonte, autoridade, data de captura, validade, método, precisão e evidência.</p>
-  <div class="cards">
-    <article class="card"><h3>Cadastro e geometrias</h3><p>Materialização real já implementada para GeoSampa e Recife CKAN/DataStore, com allowlists e normalização.</p></article>
-    <article class="card"><h3>Modelo nacional</h3><p>PostgreSQL/PostGIS preparado para PropertySubject, SpatialUnit, Identifier, Building, Evidence, LegalRule, Document e RRR.</p></article>
-    <article class="card"><h3>Rastreabilidade</h3><p>Snapshots imutáveis, hash, provenance e distinção entre dado oficial, calculado, derivado ou informado pelo usuário.</p></article>
-    <article class="card"><h3>Infraestrutura</h3><p>Resolvers municipais para energia, gás, saneamento, telecom, drenagem e iluminação, sem confundir presença de rede com disponibilidade no lote.</p></article>
-    <article class="card"><h3>Obras e processos</h3><p>ObrasGov e PNCP já têm clientes e normalização de eventos; vínculos com imóveis exigem geometria ou identificador oficial.</p></article>
-    <article class="card"><h3>Privacidade</h3><p>Dados pessoais e matrícula não formam índice público. Conteúdo registral fica em fluxo privado e sob demanda.</p></article>
-  </div>
-  <div class="note"><b>Leitura correta do status:</b> “READY” significa que a linha tem fonte/fluxo apto na matriz atual; não significa que todo o município já está materializado em produção. PARTIAL e QUERY_ONLY permanecem visíveis até a integração ser fechada.</div>
-</section>
 </main>
-
-<footer><div class="shell">LoteDiretor Brasil · interface de demonstração conectada ao estado técnico atual do projeto · sem chaves herdadas</div></footer>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 <script>
@@ -234,6 +218,14 @@ L.control.layers(null,{
   "Índice das ortofotos 2020":spOrthoIndex2020Wms
 },{collapsed:true,position:"topright"}).addTo(map);
 
+const zLayerMap={parcel:spParcelWms,zoning:spZoningWms,heritage:spHeritageWms,geoRisk:spGeoRiskWms,hydroRisk:spHydroRiskWms,hillshade:spHillshadeWms,slope:spSlopeWms,ortho:spOrthoIndex2020Wms};
+document.querySelectorAll("[data-zlayer]").forEach(input=>{
+  input.addEventListener("change",()=>{
+    const layer=zLayerMap[input.dataset.zlayer];
+    if(!layer)return;
+    if(input.checked){layer.addTo(map)}else if(map.hasLayer(layer)){map.removeLayer(layer)}
+  });
+});
 const markers=[];
 let selectedParcelLayer=null;
 let selectedBuildingLayer=null;
@@ -301,7 +293,7 @@ function renderReport(report,p){
   document.getElementById("reportTitle").textContent=[p.street,p.number].filter(Boolean).join(", ")||("Lote "+text(p.sql_reference));
   document.getElementById("reportSubtitle").textContent="São Paulo · "+[p.fiscal_sector,p.fiscal_block,p.fiscal_lot].filter(Boolean).join(" / ")+" · relatório público L3 em construção";
   const sections=report&&Array.isArray(report.sections)?report.sections:[];
-  const intro='<div class="report-legend">Valores exibidos no topo de cada seção já foram obtidos para este lote. As linhas abaixo mostram o estado das demais fontes: READY indica fonte apta, não necessariamente valor já integrado.</div>';
+  const intro='<div class="report-legend">Os valores visíveis foram obtidos para este lote. Abra “Fontes, estado e pendências” somente quando quiser conferir provenance ou o que ainda falta integrar.</div>';
   const html=sections.map((section,index)=>{
     const values=(section.actual_values||[]).map(item=>
       '<div class="report-value"><small>'+escapeHtml(item.label)+'</small><b>'+escapeHtml(formatReportValue(item))+'</b></div>'
@@ -314,10 +306,11 @@ function renderReport(report,p){
         (missing.length?'<div class="field-missing">Ainda falta: '+escapeHtml(missing.join(" · "))+'</div>':"")+
       '</div>';
     }).join("");
-    return '<details class="report-section" '+(index<3?"open":"")+'>'+
-      '<summary><strong>'+escapeHtml(section.title)+'</strong><span>'+(section.fields||[]).length+' verificações</span></summary>'+
-      '<div class="report-content">'+(values?'<div class="report-values">'+values+'</div>':"")+fields+'</div>'+
-    '</details>';
+    return '<details class="report-section" '+(((section.actual_values||[]).length||index<4)?"open":"")+'>'+
+      '<summary><strong>'+escapeHtml(section.title)+'</strong><span>'+((section.actual_values||[]).length)+' dados</span></summary>'+
+      '<div class="report-content">'+(values?'<div class="report-values">'+values+'</div>':"")+
+      (fields?'<details class="sources-detail"><summary>Fontes, estado e pendências</summary>'+fields+'</details>':"")+
+      '</div></details>';
   }).join("");
   document.getElementById("reportContent").innerHTML=intro+html;
   panel.classList.add("open");
