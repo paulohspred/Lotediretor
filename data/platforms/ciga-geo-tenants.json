@@ -1,0 +1,146 @@
+{
+  "schema_version": "0.1.0",
+  "as_of": "2026-09-24",
+  "platform": "CIGA GEO",
+  "authority": "Consórcio de Inovação na Gestão Pública (CIGA)",
+  "discovery_rule": "Only public external environments discovered through official CIGA/municipal pages or public indexing are listed. Internal/login-only paths are not probed.",
+  "tenants": [
+    {
+      "municipality": "Corupá",
+      "uf": "SC",
+      "ibge": "4204509",
+      "public_url": "https://corupa.geo.ciga.sc.gov.br/externo",
+      "verified_public": true,
+      "observed_layers": [
+        "Perímetro Urbano",
+        "Zona",
+        "Setor",
+        "Bairro",
+        "Quadra",
+        "Lote",
+        "Edificações",
+        "Sistema Viário",
+        "Logradouros",
+        "Drenagem"
+      ],
+      "status": "TERMS_REVIEW"
+    },
+    {
+      "municipality": "Balneário Piçarras",
+      "uf": "SC",
+      "ibge": "4202057",
+      "public_url": "https://balneariopicarras.geo.ciga.sc.gov.br/externo",
+      "verified_public": true,
+      "observed_layers": [
+        "Lotes 2017",
+        "Lotes 2025",
+        "Edificações",
+        "Terras de Marinha",
+        "BR-101",
+        "SC-414",
+        "Gasoduto",
+        "CAR",
+        "APP",
+        "Manguezais",
+        "Risco",
+        "Curvas de Nível",
+        "Saneamento"
+      ],
+      "status": "TERMS_REVIEW"
+    },
+    {
+      "municipality": "Guabiruba",
+      "uf": "SC",
+      "ibge": "4206306",
+      "public_url": "https://guabiruba.geo.ciga.sc.gov.br/externo",
+      "verified_public": true,
+      "observed_layers": [
+        "Perímetro Urbano",
+        "Zona",
+        "Setor",
+        "Zoneamento",
+        "Bairro",
+        "Quadra",
+        "Lote",
+        "Edificações",
+        "Logradouro",
+        "Loteamentos",
+        "Curvas de Nível",
+        "Hidrografia"
+      ],
+      "status": "TERMS_REVIEW"
+    },
+    {
+      "municipality": "Canoinhas",
+      "uf": "SC",
+      "ibge": "4203808",
+      "public_url": "https://canoinhas.geo.ciga.sc.gov.br/externo",
+      "verified_public": true,
+      "observed_layers": [
+        "Lote",
+        "Edificações",
+        "Bairro",
+        "Perímetro Urbano",
+        "Zoneamento",
+        "Quadra",
+        "Logradouro"
+      ],
+      "status": "SCHEMA_DISCOVERY"
+    },
+    {
+      "municipality": "Petrolândia",
+      "uf": "SC",
+      "ibge": "4212700",
+      "public_url": "https://petrolandia.geo.ciga.sc.gov.br/",
+      "verified_public": false,
+      "observed_layers": [],
+      "status": "PUBLIC_ENTRYPOINT_ONLY",
+      "notes": "Portal mostra acesso público, mas camada/externo não foi validado nesta rodada."
+    },
+    {
+      "municipality": "Irani",
+      "uf": "SC",
+      "ibge": "4207809",
+      "public_url": "https://irani.geo.ciga.sc.gov.br/",
+      "verified_public": false,
+      "observed_layers": [],
+      "status": "PUBLIC_ENTRYPOINT_ONLY"
+    },
+    {
+      "municipality": "Mondaí",
+      "uf": "SC",
+      "ibge": "4211009",
+      "public_url": "https://mondai.geo.ciga.sc.gov.br/",
+      "verified_public": false,
+      "observed_layers": [],
+      "status": "PUBLIC_ENTRYPOINT_ONLY"
+    },
+    {
+      "municipality": "Tangará",
+      "uf": "SC",
+      "ibge": "4217907",
+      "public_url": "https://tangara.geo.ciga.sc.gov.br/",
+      "verified_public": false,
+      "observed_layers": [],
+      "status": "PUBLIC_ENTRYPOINT_ONLY"
+    },
+    {
+      "municipality": "Massaranduba",
+      "uf": "SC",
+      "ibge": "4210605",
+      "public_url": "https://massaranduba.geo.ciga.sc.gov.br/",
+      "verified_public": false,
+      "observed_layers": [],
+      "status": "PUBLIC_ENTRYPOINT_ONLY"
+    },
+    {
+      "municipality": "Garuva",
+      "uf": "SC",
+      "ibge": "4205803",
+      "public_url": "https://garuva.geo.ciga.sc.gov.br/",
+      "verified_public": false,
+      "observed_layers": [],
+      "status": "PUBLIC_ENTRYPOINT_ONLY"
+    }
+  ]
+}
