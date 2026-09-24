@@ -1,0 +1,120 @@
+{
+  "schema_version": "0.1.0",
+  "as_of": "2026-09-24",
+  "purpose": "Fontes públicas com listagem de diretório ou estrutura equivalente. O crawler registra árvore, nomes, datas e links; não baixa arquivos automaticamente.",
+  "sources": [
+    {
+      "id": "ibge-geoftp",
+      "authority": "IBGE",
+      "root": "https://geoftp.ibge.gov.br/",
+      "access": "PUBLIC_DIRECTORY",
+      "crawl": {
+        "max_depth_default": 2,
+        "max_items_default": 5000,
+        "same_origin_only": true
+      },
+      "useful_roots": [
+        "https://geoftp.ibge.gov.br/organizacao_do_territorio/",
+        "https://geoftp.ibge.gov.br/cartas_e_mapas/",
+        "https://geoftp.ibge.gov.br/imagens_do_territorio/",
+        "https://geoftp.ibge.gov.br/informacoes_sobre_posicionamento_geodesico/"
+      ],
+      "priority_patterns": [
+        "shp",
+        "shapefile",
+        "geopackage",
+        "post_gis",
+        "ortomosaico",
+        "setores_censitarios",
+        "malhas",
+        "limites",
+        "relevo",
+        "hidrografia",
+        "metadados",
+        "informacoes_tecnicas"
+      ],
+      "notes": "O próprio índice declara os arquivos públicos. Preservar versões antigas, datas e tamanhos."
+    },
+    {
+      "id": "dados-gov-repository",
+      "authority": "Governo Federal / dados.gov.br",
+      "root": "https://repositorio.dados.gov.br/",
+      "access": "PUBLIC_DIRECTORY_PER_COLLECTION_LICENSE",
+      "crawl": {
+        "max_depth_default": 2,
+        "max_items_default": 5000,
+        "same_origin_only": true
+      },
+      "useful_roots": [
+        "https://repositorio.dados.gov.br/seges/raio-x/",
+        "https://repositorio.dados.gov.br/seges/detru/",
+        "https://repositorio.dados.gov.br/seges/siads/",
+        "https://repositorio.dados.gov.br/governo-politica/administracao-publica/pac/"
+      ],
+      "priority_patterns": [
+        "imoveis",
+        "patrimonio",
+        "obras",
+        "coordenadas",
+        "dicionario",
+        "datapackage",
+        "historico",
+        "zip",
+        "csv",
+        "Arquivos retirados"
+      ],
+      "notes": "Pode conter versões históricas e subpastas removidas da navegação principal. Licença/semântica são por coleção."
+    },
+    {
+      "id": "inpe-cptec-transfer",
+      "authority": "INPE / CPTEC / CGIP / COIDS",
+      "root": "https://ftp.cptec.inpe.br/",
+      "access": "PUBLIC_TRANSFER_SERVER_LICENSE_PER_PRODUCT",
+      "crawl": {
+        "max_depth_default": 2,
+        "max_items_default": 5000,
+        "same_origin_only": true
+      },
+      "useful_roots": [
+        "https://ftp.cptec.inpe.br/chuva/",
+        "https://ftp.cptec.inpe.br/clima/",
+        "https://ftp.cptec.inpe.br/nowcasting/",
+        "https://ftp.cptec.inpe.br/modelos/produtos/",
+        "https://ftp.cptec.inpe.br/rainfall/"
+      ],
+      "priority_patterns": [
+        "chuva",
+        "precipit",
+        "nowcast",
+        "eta",
+        "wrf",
+        "brams",
+        "grib",
+        "netcdf"
+      ],
+      "notes": "Servidor público de transferência; produtos têm temporalidade e licença próprias."
+    },
+    {
+      "id": "anm-sigmine-directory",
+      "authority": "Agência Nacional de Mineração",
+      "root": "https://dadosabertos.anm.gov.br/SIGMINE/",
+      "access": "OPEN_DATA_DIRECTORY",
+      "crawl": {
+        "max_depth_default": 3,
+        "max_items_default": 5000,
+        "same_origin_only": true
+      },
+      "useful_roots": [
+        "https://dadosabertos.anm.gov.br/SIGMINE/PROCESSOS_MINERARIOS/"
+      ],
+      "priority_patterns": [
+        "BRASIL.zip",
+        ".zip",
+        ".kmz",
+        ".ods",
+        "UF"
+      ],
+      "notes": "Diretório oficial atual da ANM para SIGMINE; registrar data de modificação por snapshot."
+    }
+  ]
+}
