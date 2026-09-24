@@ -1146,27 +1146,38 @@ def resolve_itbi_history(parcel: dict, limit: int = 12) -> dict:
             """,
             (sql, limit),
         ).fetchall()
+        registry_rows = db.execute(
+            """
+            SELECT registry_office, registry_number,
+                   MAX(COALESCE(transaction_date, '')) AS latest_transaction_date,
+                   MAX(source_year) AS latest_source_year,
+                   COUNT(*) AS occurrence_count
+            FROM transactions
+            WHERE sql = ?
+              AND registry_office IS NOT NULL
+              AND TRIM(registry_office) <> ''
+              AND registry_number IS NOT NULL
+              AND TRIM(registry_number) <> ''
+            GROUP BY registry_office, registry_number
+            ORDER BY latest_transaction_date DESC, latest_source_year DESC
+            LIMIT 24
+            """,
+            (sql,),
+        ).fetchall()
     finally:
         db.close()
 
     transactions = [dict(row) for row in rows]
-    registry_refs = []
-    seen = set()
-    for tx in transactions:
-        office = tx.get("registry_office")
-        number = tx.get("registry_number")
-        if not office or not number:
-            continue
-        key = (office, number)
-        if key in seen:
-            continue
-        seen.add(key)
-        registry_refs.append({
-            "registry_office": office,
-            "registry_number": number,
-            "transaction_date": tx.get("transaction_date"),
-            "source_year": tx.get("source_year"),
-        })
+    registry_refs = [
+        {
+            "registry_office": row["registry_office"],
+            "registry_number": row["registry_number"],
+            "transaction_date": row["latest_transaction_date"] or None,
+            "source_year": row["latest_source_year"],
+            "occurrence_count": row["occurrence_count"],
+        }
+        for row in registry_rows
+    ]
 
     return {
         "available": True,
@@ -1706,8 +1717,12 @@ def actual_values_for_section(
                     "value": ref.get("registry_number"),
                 },
                 {
-                    "label": f"Referência registral pública #{idx} · transação",
+                    "label": f"Referência registral pública #{idx} · transação mais recente",
                     "value": ref.get("transaction_date"),
+                },
+                {
+                    "label": f"Referência registral pública #{idx} · ocorrências DTI",
+                    "value": ref.get("occurrence_count"),
                 },
             ])
         if not refs:
