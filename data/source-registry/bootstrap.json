@@ -1209,6 +1209,29 @@
       "notes": "Plano Diretor Lei 7.122/2023; portal preserva documentos históricos úteis para versionamento."
     },
     {
+      "id": "mg-belo-horizonte-bhgeo",
+      "authority": "Prefeitura de Belo Horizonte / PRODABEL",
+      "scope": "municipality",
+      "municipality_ibge": "3106200",
+      "domain": [
+        "multifinalitary_cadastre",
+        "lots",
+        "buildings",
+        "addresses",
+        "zoning",
+        "urban_parameters",
+        "utilities",
+        "cartography"
+      ],
+      "source_type": "WFS_WMS_GeoNetwork_open_data",
+      "wfs_url": "https://bhmap.pbh.gov.br/v2/api/idebhgeo/wfs",
+      "wms_url": "https://bhmap.pbh.gov.br/v2/api/idebhgeo/wms",
+      "discovery_url": "https://prefeitura.pbh.gov.br/bhgeo/acesso-aos-dados",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_OFFICIAL_GEOSERVICE_LICENSE_PER_LAYER",
+      "notes": "PBH documenta oficialmente WFS/WMS da IDE-BHGEO. WFS permite acesso à estrutura e dados das camadas; shapefiles são orientados via Portal de Dados Abertos. BHMap tinha mais de 330 camadas em maio/2026. Entre as camadas observadas via catálogo WFS estão LOTE_CTM, SQLV_LOTE_CTM, ENDERECO_POR_LOTE_CTM, EDIFICACAO e parâmetros da Lei 11.181/2019. Confirmar licença por dataset antes de redistribuir."
+    },
+    {
       "id": "mg-belo-horizonte-itbi",
       "authority": "Prefeitura de Belo Horizonte",
       "scope": "municipality",
@@ -1243,7 +1266,7 @@
       "base_url": "https://dados.pbh.gov.br/",
       "access_class": "PUBLIC_QUERY_ONLY",
       "verification_status": "LICENSE_REVIEW_REQUIRED",
-      "notes": "Portal oficial confirmado. Recurso ITBI consultado não declara licença; revisar licença por dataset antes de redistribuição."
+      "notes": "Portal oficial confirmado. Recurso ITBI consultado não declara licença; revisar licença por dataset antes de redistribuição. IDE-BHGEO/BHMap também fornece WFS/WMS oficiais; ver fonte mg-belo-horizonte-bhgeo."
     },
     {
       "id": "mg-belo-horizonte-plan-director",
