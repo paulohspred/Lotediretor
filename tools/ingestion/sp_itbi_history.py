@@ -115,6 +115,14 @@ def discover_xlsx_links(index_html: str) -> dict[int, str]:
         year = int(year_raw)
         url = urllib.parse.urljoin(INDEX_URL, html.unescape(href))
         url = url.replace("http://", "https://", 1)
+        parts = urllib.parse.urlsplit(url)
+        url = urllib.parse.urlunsplit((
+            parts.scheme,
+            parts.netloc,
+            urllib.parse.quote(urllib.parse.unquote(parts.path), safe="/()%-._~"),
+            parts.query,
+            parts.fragment,
+        ))
         links[year] = url
     if len(links) < 5:
         raise ValueError(f"ITBI index discovery returned only {len(links)} XLSX links")
