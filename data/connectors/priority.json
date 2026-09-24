@@ -89,11 +89,13 @@
     {
       "id": "sp-geosampa-wfs",
       "source_id": "sp-sao-paulo-geosampa-wfs",
-      "kind": "wfs_capabilities",
+      "kind": "custom_wfs_materializer",
       "url": "https://wfs.geosampa.prefeitura.sp.gov.br/geoserver/geoportal/wfs",
-      "mode": "metadata_and_schema_first",
+      "mode": "closed_allowlist_sector_paginated_materialization",
       "approved": true,
-      "notes": "PMSP-produced GeoSampa geodata is CC BY-SA 4.0. Snapshot capabilities first; materialize only allowlisted PMSP-produced layers, preserving attribution and ShareAlike."
+      "notes": "PMSP GeoSampa parcel layer geoportal:lote_cidadao is licensed CC BY-SA 4.0. WFS 2.0 pagination verified. Materialization requires an explicit fiscal sector and sends a closed propertyName allowlist of 25 property-centric fields; unexpected fields are rejected.",
+      "tool": "tools/ingestion/geosampa_wfs.py",
+      "config_file": "data/connectors/geosampa-layers.json"
     },
     {
       "id": "sp-geosampa-wms",
