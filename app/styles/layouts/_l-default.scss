@@ -1,0 +1,329 @@
+// --------------------------------------------------
+// Default Layout
+// --------------------------------------------------
+
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  html, & {
+    @include breakpoint(large) {
+      max-height: 100vh;
+      overflow: hidden;
+    }
+  }
+}
+
+.site-header {
+  position: relative;
+  z-index: 2;
+}
+
+.site-main {
+  position: relative;
+  z-index: 1;
+  height: calc(100vh - 4.6875rem);
+
+  @include breakpoint(large) {
+    overflow: hidden;
+
+    .cell {
+      @include xy-cell-block($vertical:true);
+      overflow-x: hidden;
+    }
+  }
+}
+
+.search-container {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  height: 5.25rem;
+  overflow: visible;
+  box-shadow: 0 2px 0 rgba(0,0,0,0.1);
+
+  @include breakpoint(large) {
+    position: fixed;
+    top: 4.75rem;
+    left: 0;
+    width: 15rem;
+    box-shadow: 0 2px 0 rgba(0,0,0,0.1), 2px 0 0 rgba(0,0,0,0.1);
+  }
+
+  @include breakpoint(xlarge) {
+    width: 18rem;
+  }
+}
+
+
+.map-grid {
+  @include xy-grid;
+  position: relative;
+  z-index: 1;
+
+  @include breakpoint(medium) {
+    height: calc(50vh);
+  }
+
+  @include breakpoint(large) {
+    height: 100%;
+    overflow: hidden;
+  }
+}
+
+.map-container {
+  @include xy-cell(
+      $size: full,
+      $output: (base size),
+      $gutters: 0
+    );
+  position: relative;
+  z-index: 1;
+  height: calc(50vh);
+
+  @include breakpoint(medium) {
+    height: 100%;
+    width: calc(100% - 13rem);
+  }
+
+  @include breakpoint(large) {
+    order: 2;
+    width: calc(100% - 15rem);
+  }
+
+  @include breakpoint(xlarge) {
+    width: calc(100% - 18rem);
+  }
+
+  &.full-width {
+      width: 100%;
+  }
+
+}
+
+body.index {
+  @include breakpoint(small only) {
+    .map-grid,
+    .map-container {
+      height: calc(100vh - 16rem);
+    }
+  }
+
+  @include breakpoint(medium) {
+    .map-grid,
+    .map-container {
+      height: calc(100vh - 11.25rem);
+    }
+  }
+
+  @include breakpoint(large) {
+    .map-grid,
+    .map-container {
+      height: 100%;
+    }
+  }
+}
+
+// .search-and-layers {
+.layer-palette {
+  @include xy-cell(
+      $size: full,
+      $output: (base size),
+      $gutters: 0
+    );
+  position: relative;
+  z-index: 2;
+  background-color: $off-white;
+
+  @include breakpoint(medium) {
+    @include xy-cell-block($vertical:true);
+    width: 13rem;
+    box-shadow: -2px 0 0 rgba(0,0,0,0.1);
+  }
+
+  @include breakpoint(large) {
+    margin-top: 5.25rem;
+    order: 1;
+    width: 15rem;
+    box-shadow: 2px 0 0 rgba(0,0,0,0.1);
+    max-height: calc(100% - 5.25rem);
+    min-height: calc(100% - 5.25rem);
+  }
+
+  @include breakpoint(xlarge) {
+    width: 18rem;
+  }
+}
+
+.navigation-area {
+  @include breakpoint(large) {
+    height: 100%;
+  }
+}
+
+.content-area {
+  position: relative;
+  z-index: 2;
+  box-shadow: 0 -2px 0 rgba(0,0,0,0.1);
+  background-color: $white;
+  padding: $global-margin;
+  right: 0;
+  min-height: calc(50vh - 9.375rem);
+
+
+  @include breakpoint(large) {
+    @include xy-cell-block($vertical:true);
+    height: 100%;
+    box-shadow: -4px 0 0 rgba(0,0,0,0.1);
+    position: absolute;
+    right: 0;
+  }
+}
+
+.content-close-button-container {
+  position: relative;
+  z-index: 3;
+  box-shadow: 0 -2px 0 rgba(0,0,0,0.1);
+  background-color: $white;
+  text-align: right;
+
+  @include breakpoint(medium down) {
+    @include xy-cell(
+      $size: full,
+      $output: (base size),
+      $gutters: 0
+    );
+  }
+
+  & .close-button {
+    position: relative;
+    margin: 0;
+
+    @include breakpoint(large) {
+      display: block;
+      position: fixed;
+      z-index: 3;
+      top: 5.25rem;
+      right: 41.66667%;
+      background-color: $white;
+      margin-right: -4px;
+      padding: 0 rem-calc(6) rem-calc(3);
+      box-shadow: -4px 4px 0 rgba(0,0,0,0.1);
+    }
+    @include breakpoint(xxlarge) {
+      right: 33.33333%;
+    }
+  }
+}
+
+.content-toggle-layer-palette-container {
+  position: relative;
+  z-index: 3;
+  box-shadow: 0 2px 0 rgba(0,0,0,0.1);
+  background-color: $white;
+  text-align: left;
+
+  @include breakpoint(small down) {
+    display: none;
+  }
+
+  @include breakpoint(medium down) {
+    @include xy-cell(
+      $size: full,
+      $output: (base size),
+      $gutters: 0
+    );
+  }
+
+  & > .close-button {
+    position: relative;
+    margin: 0;
+    max-inline-size: max-content;
+    border: 2px solid rgba(0,0,0,0.25);
+    border-left: none;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+
+    @include breakpoint(large) {
+      display: block;
+      position: fixed;
+      z-index: 3;
+      top: 50%;
+      left: 18rem;
+      background-color: $white;
+      margin-left: -4px;
+      padding: 0 rem-calc(6) rem-calc(6);
+    }
+    @include breakpoint(xxlarge) {
+      left: 18rem;
+    }
+  }
+}
+
+.content-is-closed {
+
+  .navigation-area {
+    @include breakpoint(large) {
+      width: 100% !important;
+    }
+  }
+
+  .content-area {
+    display: none;
+  }
+}
+
+// HACK: dot and pulse misalign without this.
+.mapboxgl-user-location-dot {
+  box-sizing: initial;
+}
+
+.no-bookmarks {
+  @include breakpoint(large) {
+    color: $dark-gray;
+    height: 100%;
+    display: flex;
+  }
+}
+
+.cyclomedia {
+  width: 100%;
+  height:300px;
+  border: 0;
+}
+
+.ceqr-access {
+  width: 100%;
+  height:48px;
+  border: 0;
+}
+
+#browser-unsupported {
+  display: none;
+  opacity: 0.8;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  z-index: 9999;
+  background-color: white;
+  .fa {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+  }
+}
+
+.add-comparison-lot-button {
+  border: 1px solid;
+  border-color: green;
+  border-radius: 5px;
+  padding: .5rem;
+  margin-bottom: .5rem;
+  color: green;
+  &:hover {
+    background-color: green;
+    border: 1px solid;
+    color: white;
+  }
+}

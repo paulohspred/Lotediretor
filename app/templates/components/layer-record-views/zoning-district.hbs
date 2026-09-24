@@ -1,0 +1,35 @@
+<label class="header-type">
+  ZONING DISTRICT
+</label>
+<h1 class="header-large">
+  {{this.model.zonedist}}
+</h1>
+<p>
+  {{this.description}}
+</p>
+{{#if (eq this.model.zonedist "BPC")}}
+  <p>
+    <a
+      href="https://www.nyc.gov/content/planning/pages/zoning/zoning-districts-guide/special-purpose-districts#BPC"
+      target="_blank"
+      onclick={{action this.captureOutboundLink "Special Battery Park City"}} rel="noopener noreferrer"
+    >
+      <FaIcon @icon="external-link-alt" />
+      Learn more about the Special Battery Park City District&hellip;
+    </a>
+  </p>
+{{else}}
+  <p>
+    <a
+      href={{this.primaryzoneURL}}
+      target="_blank"
+      onclick={{action this.captureOutboundLink this.model.zonedist}} rel="noopener noreferrer"
+    >
+      <FaIcon @icon="external-link-alt" />
+      Learn more about
+      {{this.model.zonedist}}
+      districts&hellip;
+    </a>
+  </p>
+{{/if}}
+{{yield}}

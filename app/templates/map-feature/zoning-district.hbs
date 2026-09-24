@@ -1,0 +1,21 @@
+<CartoDataProvider
+  @modelId={{this.model.id}}
+  @modelName="zoning-district" as |zoningDistrict|
+>
+  <Mapbox::MapFeatureRenderer
+    @model={{zoningDistrict}}
+    @shouldFitBounds={{this.model.search}}
+  />
+  <Bookmarks::BookmarkButton
+    @bookmarkableModel={{zoningDistrict}}
+  />
+  <LayerRecordViews::ZoningDistrict
+    @model={{zoningDistrict.properties}}
+  />
+  <Mapbox::FitMapToAllButton
+    @model={{zoningDistrict}}>
+    Fit map to all
+    {{zoningDistrict.id}}
+    districts
+  </Mapbox::FitMapToAllButton>
+</CartoDataProvider>

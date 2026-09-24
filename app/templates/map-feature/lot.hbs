@@ -1,0 +1,11 @@
+<CartoDataProvider
+  @modelId={{this.model.id}}
+  @modelName="lot" as |lot|
+>
+  <Mapbox::MapFeatureRenderer
+    @model={{lot}} />
+  <Bookmarks::BookmarkButton
+    @bookmarkableModel={{lot}} />
+  <LayerRecordViews::TaxLot
+    @model={{lot.properties}} />
+</CartoDataProvider>

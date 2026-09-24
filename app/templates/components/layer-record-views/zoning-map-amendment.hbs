@@ -1,0 +1,59 @@
+<label class="header-type">
+  ZONING MAP AMENDMENT
+</label>
+<h1 class="header-large">
+  {{this.model.project_na}}
+</h1>
+<div class="data-grid">
+  <label class="data-label">
+    ULURP Number
+  </label>
+  <span class="datum">
+    {{#if this.zapId}}
+      <a
+        target="_blank"
+        href="https://zap.planning.nyc.gov/projects/{{this.zapId}}" rel="noopener noreferrer"
+      >
+        {{this.model.ulurpno}}
+        <FaIcon @icon="external-link-alt" @transform="shrink-3 up-1" />
+      </a>
+    {{else}}
+      {{this.model.ulurpno}}
+    {{/if}}
+  </span>
+</div>
+<div class="data-grid">
+  <label class="data-label">
+    Effective
+  </label>
+  <span class="datum">
+    {{#async-await this.effectiveDisplay as |date|}}
+      {{date}}
+    {{/async-await}}
+  </span>
+</div>
+<div class="data-grid">
+  <label class="data-label">
+    Status
+  </label>
+  <span class="datum">
+    {{this.model.status}}
+  </span>
+</div>
+<div class="data-grid">
+  <label class="data-label">
+    Zoning Sketch Map
+  </label>
+  <span class="datum">
+    <a
+      target="_blank"
+      href="https://nyc3.digitaloceanspaces.com/zoningmap/skz{{this.model.ulurpno}}.pdf" rel="noopener noreferrer"
+    >
+      {{this.model.ulurpno}}
+      <small>
+        (PDF)
+      </small>
+    </a>
+  </span>
+</div>
+{{yield}}

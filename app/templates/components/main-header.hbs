@@ -1,0 +1,62 @@
+<Deprecated::SiteHeader
+  @responsiveNav={{true}}
+  @betaNotice={{false}}
+  class={{if this.printSvc.enabled "hide-for-print"}} as |banner|
+>
+  <banner.title>
+    <LinkTo
+      @route="index"
+      @query={{hash print=false}}
+      class="site-title"
+      data-test-link-to="index"
+    >
+      ZoLa
+      <small class="site-subtitle show-for-medium">
+        {{#if (or (media "mobile") (media "tablet"))}}
+          NYC's 
+        {{else}}
+          <span class="show-for-large">
+            New
+          </span>
+          <span class="show-for-large">
+            York
+          </span>
+          <span class="show-for-large">
+            City's
+          </span>
+        {{/if}}
+        Zoning &amp; Land Use Map
+      </small>
+    </LinkTo>
+  </banner.title>
+  <banner.nav>
+    <ul class="menu vertical large-horizontal">
+      <li>
+        <LinkTo @route="about">About</LinkTo>
+      </li>
+      <li>
+        <LinkTo @route="features" class="features-header-link">
+          Features
+          <span class="badge sup">
+            <strong>New!</strong>
+          </span>
+        </LinkTo>
+      </li>
+      <li>
+        <LinkTo @route="data">Data</LinkTo>
+      </li>
+      <li class="saved-bookmarks-counter">
+        {{!-- This is causing prember to break. Not sure why yet. Seems to be font-awesome causing this. --}}
+        <LinkTo @route="bookmarks">
+          <FaIcon @icon="bookmark" />
+          Saved
+          {{#if this.totalBookmarks}}
+            <span class="badge sup">
+              {{this.totalBookmarks}}
+            </span>
+          {{/if}}
+        </LinkTo>
+      </li>
+    </ul>
+  </banner.nav>
+</Deprecated::SiteHeader>

@@ -1,0 +1,53 @@
+{{!--
+  The way this component is setup is awkward...
+  For some reason the yield has to appear first before the
+  re-renderable stuff
+  see https://github.com/miguelcobain/ember-composability-tools/issues/9#issuecomment-288081556 
+  Enable special handling for node-based fastboot pre-rendering
+  Ember wormhole gets skipped in fastboot because it requires the DOM
+--}}
+{{#unless this.fastboot.isFastBoot}}
+  <EmberWormhole @to={{this.elementId}}>
+    <div class="layer-groups-container-content">
+      {{yield (hash
+          layer-group-toggle=(component 'labs-ui-overrides/layer-group-toggle'
+            willDestroyHook=(action 'unregisterChild')
+            didInit=(action 'registerChild')
+            onToggle=(action this.handleToggle)
+          )
+        )
+      }}
+    </div>
+  </EmberWormhole>
+{{/unless}}
+<div onclick={{action 'toggleLayerGroupsContainer'}}
+  class="layer-groups-container-title
+    {{if this.open 'open' 'closed'}}
+    layer-groups-container--{{dasherize this.title}}"
+  role="button"
+>
+  {{this.title}}
+
+  {{#if this.numberMenuItems}}
+    <span class="badge">
+      {{this.numberMenuItems}}
+    </span>
+  {{/if}}
+
+  {{#if (and this.mapIsLoading this.open this.numberMenuItems)}}
+    <FaIcon @icon='spinner' class='fa-spin medium-gray' />
+  {{/if}}
+</div>
+
+<div id={{this.elementId}}>
+  {{#if this.fastboot.isFastBoot}}
+    <div class="layer-groups-container-content">
+      {{yield (hash
+          layer-group-toggle=(component 'labs-ui-overrides/layer-group-toggle'
+            onToggle=(action this.handleToggle)
+          )
+        )
+      }}
+    </div>
+  {{/if}}
+</div>

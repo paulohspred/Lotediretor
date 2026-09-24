@@ -1,0 +1,15 @@
+<CartoDataProvider
+  @modelId={{this.model.id}}
+  @modelName="special-purpose-district" as |specialPurposeDistrict|
+>
+  <Mapbox::MapFeatureRenderer
+    @model={{specialPurposeDistrict}}
+    @shouldFitBounds={{this.model.search}}
+  />
+  <Bookmarks::BookmarkButton
+    @bookmarkableModel={{specialPurposeDistrict}}
+  />
+  <LayerRecordViews::SpecialPurposeDistrict
+    @model={{specialPurposeDistrict.properties}}
+  />
+</CartoDataProvider>

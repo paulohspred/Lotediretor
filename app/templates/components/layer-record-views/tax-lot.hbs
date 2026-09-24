@@ -1,0 +1,661 @@
+<label class="header-label clearfix">
+
+  {{#if this.hidePlus}}
+    {{#if this.otherModelId}}
+      <button style="color: red;" type="button" {{action 'removeLotFromComparison' this.otherModelId}}>
+        {{fa-icon icon="times"  transform="grow-1 up-1"}}
+      </button>
+    {{/if}}
+  {{else}}
+    <button class="add-comparison-lot-button show-for-medium" type="button">
+      <span {{action 'linkToLotComparison'}}>
+        <span style="padding-right: 0.5em">
+          {{fa-icon icon="plus"  transform="grow-10 up-1"}}
+        </span>
+        Add Another Tax Lot for Comparison
+      </span>
+    </button>
+    <br />
+  {{/if}}
+
+  TAX LOT
+  <span class="medium-gray">
+    |
+  </span>
+  BBL
+  <span
+    data-test-tax-lot-bbl
+  >
+    {{this.model.bbl}}
+  </span>
+</label>
+<h1 class="content-header">
+  {{#if this.model.landmark}}
+    <span class="landmark">
+      {{this.model.landmark}}
+    </span>
+  {{/if}}
+  <span class="address">
+    {{this.model.address}}, {{this.model.zipcode}}
+  </span>
+</h1>
+<p class="text-small dark-gray" style="margin-bottom: 0.5rem">
+  {{this.boroname}}&nbsp;(Borough {{this.model.borocode}})
+
+  <span class="pipe">
+    |
+  </span>
+  Block
+  {{this.model.block}}
+  <span class="pipe">
+    |
+  </span>
+  Lot
+  {{this.model.lot}}
+</p>
+
+<div style="color: #ae561f; font-size: 1.25rem; display: flex; flex-flow: row wrap; gap: 1.25rem;">
+  <a target="_blank" onclick={{action this.captureOutboundLink "Icons - ZAP" preventDefault=false}} href="https://zap.planning.nyc.gov/projects?applied-filters=dcp_publicstatus%2Cdistance_from_point%2Cradius_from_point&distance_from_point={{this.model.lon}}%2C{{this.model.lat}}" rel="noopener noreferrer">
+    <EmberPopover @side="top" @popperContainer="body" @popoverHideDelay={{0}}>
+      View nearby projects in the Zoning Application Portal
+    </EmberPopover>
+    <FaIcon @icon="bolt" />
+  </a>
+
+  <a target="_blank" onclick={{action this.captureOutboundLink "Icons - PFF - Default (CD)" preventDefault=false}} href="https://popfactfinder.planning.nyc.gov/explorer/districts/{{this.model.cd}}" rel="noopener noreferrer">
+    <EmberPopover @side="top" @popperContainer="body" @popoverHideDelay={{250}}>
+      View Decennial Census and ACS data for the
+      <a target="_blank" onclick={{action this.captureOutboundLink "Icons - PFF - Boro" preventDefault=false}} href="https://popfactfinder.planning.nyc.gov/explorer/boroughs/{{this.model.borocode}}" rel="noopener noreferrer">Boro</a>,
+      <a target="_blank" onclick={{action this.captureOutboundLink "Icons - PFF - CD" preventDefault=false}} href="https://popfactfinder.planning.nyc.gov/explorer/districts/{{this.model.cd}}" rel="noopener noreferrer">Community District</a>, <br />
+      <a target="_blank" onclick={{action this.captureOutboundLink "Icons - PFF - CCD" preventDefault=false}} href="https://popfactfinder.planning.nyc.gov/explorer/ccds/CCD{{this.model.council}}" rel="noopener noreferrer">City Council District</a>, and
+      <a target="_blank" onclick={{action this.captureOutboundLink "Icons - PFF - More Geo Types" preventDefault=false}} href="https://popfactfinder.planning.nyc.gov/" rel="noopener noreferrer">more geographic area types</a> in Population FactFinder
+    </EmberPopover>
+    <FaIcon @icon="users-between-lines" />
+  </a>
+
+  <a target="_blank" onclick={{action this.captureOutboundLink "Icons - Streets" preventDefault=false}} href="https://streets.planning.nyc.gov/about?lat={{this.model.lat}}&layer-groups=%5B%22amendments%22%2C%22citymap%22%2C%22pierhead-bulkhead-lines%22%2C%22street-centerlines%22%5D&lng={{this.model.lon}}&zoom=15" rel="noopener noreferrer">
+    <EmberPopover @side="top" @popperContainer="body" @popoverHideDelay={{0}}>
+      View the street map for the area
+    </EmberPopover>
+    <FaIcon @icon="road" />
+  </a>
+
+  <a target="_blank" onclick={{action this.captureOutboundLink "Icons - CPE - Default (Capital Projects)" preventDefault=false}}  href="https://capitalplanning.nyc.gov/" rel="noopener noreferrer">
+    <EmberPopover @side="top" @popperContainer="body" @popoverHideDelay={{250}}>
+      View nearby
+      <a target="_blank" onclick={{action this.captureOutboundLink "Icons - CPE - Capital Projects" preventDefault=false}} href="https://capitalplanning.nyc.gov/map/capitalprojects" rel="noopener noreferrer">Capital Projects</a>,
+      <a target="_blank" onclick={{action this.captureOutboundLink "Icons - CPE - Housing Development" preventDefault=false}} href="https://capitalplanning.nyc.gov/map/housing" rel="noopener noreferrer">Housing Development</a>, <br />
+      and <a target="_blank" onclick={{action this.captureOutboundLink "Icons - CPE - Facilities" preventDefault=false}} href="https://capitalplanning.nyc.gov/map/facilities" rel="noopener noreferrer">Facilities</a> in Capital Planning Explorer
+    </EmberPopover>
+    <FaIcon @icon="dollar-sign" />
+  </a>
+
+  <a target="_blank" onclick={{action this.captureOutboundLink "Icons - CD Profiles" preventDefault=false}} href="https://communityprofiles.planning.nyc.gov/{{this.boroSlashCd}}" rel="noopener noreferrer">
+    <EmberPopover @side="top" @popperContainer="body" @popoverHideDelay={{0}}>
+      View data for the community district in Community District Profiles
+    </EmberPopover>
+    <FaIcon @icon="people-roof" />
+  </a>
+
+  <a target="_blank" onclick={{action this.captureOutboundLink "Icons - EDDE - Default (Home)" preventDefault=false}} href="https://equitableexplorer.planning.nyc.gov/" rel="noopener noreferrer">
+    <EmberPopover @side="top" @popperContainer="body" @popoverHideDelay={{250}}>
+      View
+      <a target="_blank" onclick={{action this.captureOutboundLink "Icons - EDDE - Citywide" preventDefault=false}} href="https://equitableexplorer.planning.nyc.gov/data/citywide/nyc/demo/tot" rel="noopener noreferrer">Citywide</a>,
+      <a target="_blank" onclick={{action this.captureOutboundLink "Icons - EDDE - Boro" preventDefault=false}} href="https://equitableexplorer.planning.nyc.gov/data/borough/{{this.model.borocode}}/demo/tot" rel="noopener noreferrer">Borough</a>,
+      and <a target="_blank" onclick={{action this.captureOutboundLink "Icons - EDDE - CD" preventDefault=false}} href="https://equitableexplorer.planning.nyc.gov/" rel="noopener noreferrer">Community District</a> <br />equity data in the Equitable Development Data Explorer
+    </EmberPopover>
+    <FaIcon @icon="equals" />
+  </a>
+
+  <a target="_blank" onclick={{action this.captureOutboundLink "Icons - Cyclomedia" preventDefault=false}} href="https://roadview.planninglabs.nyc/view/{{this.model.lon}}/{{this.model.lat}}" rel="noopener noreferrer">
+    <EmberPopover @side="top" @popperContainer="body" @popoverHideDelay={{0}}>
+      View this address in Cyclomedia Street View
+    </EmberPopover>
+    <FaIcon @icon="street-view" />
+  </a>
+
+  <a target="_blank" onclick={{action this.captureOutboundLink "Icons - Google Maps" preventDefault=false}} href="{{this.googleMapsURL}}" rel="noopener noreferrer">
+    <EmberPopover @side="top" @popperContainer="body" @popoverHideDelay={{0}}>
+      View this address in Google Maps
+    </EmberPopover>
+    {{!-- template-lint-disable require-valid-alt-text --}}
+    <img src="/google-maps-icon.svg" style="max-height: 1.25rem; max-width: 1.25rem; height: 1.25rem;" />
+  </a>
+</div>
+
+{{#if this.model.zonedist1}}
+  <ul class="lot-zoning-list">
+    <li class="menu-text">
+      {{#if (or this.model.zonedist2 this.model.spdist1)}}
+        Zoning Districts:
+      {{else}}
+        Zoning District:
+      {{/if}}
+    </li>
+    {{#if (not (eq this.model.zonedist1 "BPC"))}}
+      <li>
+        <a
+          data-test-zone-dist-link
+          target="_blank"
+          href={{this.zoneDistLinks.primaryzone1}}
+          onclick={{action this.captureOutboundLink "Zoning District" preventDefault=false}}
+          class="button" rel="noopener noreferrer"
+        >
+          {{fa-icon icon="external-link-alt" transform="shrink-3 up-1"}}
+          {{this.model.zonedist1}}
+        </a>
+      </li>
+    {{/if}}
+    {{#if this.model.zonedist2}}
+      <li>
+        <a
+          target="_blank"
+          href={{this.zoneDistLinks.primaryzone2}}
+          onclick={{action this.captureOutboundLink "Zoning District" preventDefault=false}}
+          class="button" rel="noopener noreferrer"
+        >
+          {{fa-icon icon="external-link-alt" transform="shrink-3 up-1"}}
+          {{this.model.zonedist2}}
+        </a>
+      </li>
+    {{/if}}
+    {{#if this.model.zonedist3}}
+      <li>
+        <a
+          target="_blank"
+          href={{this.zoneDistLinks.primaryzone3}}
+          onclick={{action this.captureOutboundLink "Zoning District" preventDefault=false}}
+          class="button" rel="noopener noreferrer"
+        >
+          {{fa-icon icon="external-link-alt" transform="shrink-3 up-1"}}
+          {{this.model.zonedist3}}
+        </a>
+      </li>
+    {{/if}}
+    {{#if this.model.zonedist4}}
+      <li>
+        <a
+          target="_blank"
+          href={{this.zoneDistLinks.primaryzone4}}
+          onclick={{action this.captureOutboundLink "Zoning District" preventDefault=false}}
+          class="button" rel="noopener noreferrer"
+        >
+          {{fa-icon icon="external-link-alt" transform="shrink-3 up-1"}}
+          {{this.model.zonedist4}}
+        </a>
+      </li>
+    {{/if}}
+    {{#each
+      (await this.parentSpecialPurposeDistricts) as |specialDistrict|
+    }}
+      <li
+        data-test-special-district
+      >
+        {{#if specialDistrict.anchorName}}
+          <a
+            target="_blank"
+            href="https://www.nyc.gov/content/planning/pages/zoning/zoning-districts-guide/special-purpose-districts#{{specialDistrict.anchorName}}"
+            onclick={{action this.captureOutboundLink "Special Purpose District" preventDefault=false}}
+            class="button" rel="noopener noreferrer"
+          >
+            {{fa-icon icon="external-link-alt" transform="shrink-3 up-1"}}
+            {{specialDistrict.label}}
+          </a>
+        {{else}}
+          <a class="button">
+            {{specialDistrict.label}}
+          </a>
+        {{/if}}
+      </li>
+    {{/each}}
+    {{#if this.model.overlay1}}
+      <li>
+        <a
+          href="https://www.nyc.gov/content/planning/pages/zoning/zoning-districts-guide/commercial-districts#C1-C2-overlays"
+          target="_blank"
+          class="button" rel="noopener noreferrer"
+        >
+          {{fa-icon icon="external-link-alt" transform="shrink-3 up-1"}}
+          {{this.model.overlay1}}
+        </a>
+      </li>
+    {{/if}}
+    {{#if this.model.overlay2}}
+      <li>
+        <a
+          href="https://www.nyc.gov/content/planning/pages/zoning/zoning-districts-guide/commercial-districts#C1-C2-overlays"
+          target="_blank"
+          class="button" rel="noopener noreferrer"
+        >
+          {{fa-icon icon="external-link-alt" transform="shrink-3 up-1"}}
+          {{this.model.overlay2}}
+        </a>
+      </li>
+    {{/if}}
+  </ul>
+{{/if}}
+<section class="dynamic-lists">
+  <div class="grid-x grid-margin-x">
+    <div class="cell {{if this.otherModelId "medium" "medium-shrink"}}">
+      <h6 class="">
+        Intersecting Map Layers
+        <LabsUi::IconTooltip
+          @tip="These intersections should be independently verified and should not be relied upon to determine the zoning rules applicable to a property."
+        />
+        :
+      </h6>
+      <ul class="no-bullet text-small">
+        <LayerRecordViews::TaxLot::IntersectingLayersViews
+          @model={{this.model}}
+        />
+      </ul>
+    </div>
+    <div class="cell medium-shrink">
+      <h6 class="no-margin-">
+        Zoning Details:
+      </h6>
+      <ul class="no-bullet text-small">
+        {{#if this.model.bbl}}
+          <li>
+            <a
+              data-test-tax-map-link
+              target="_blank"
+              href={{this.digitalTaxMapLink}}
+              onclick={{action this.captureOutboundLink "Digital Tax Map" preventDefault=false}} rel="noopener noreferrer"
+            >
+              {{fa-icon icon="external-link-alt" transform="shrink-3 up-1"}}
+              Digital Tax Map
+            </a>
+          </li>
+        {{/if}}
+        {{#if this.model.zonemap}}
+          <li>
+            <a
+              data-test-zoning-map-link
+              target="_blank"
+              href={{this.zoningMapLink}}
+              onclick={{action this.captureOutboundLink "Zoning Map" preventDefault=false}} rel="noopener noreferrer"
+            >
+              {{fa-icon icon="external-link-alt" transform="shrink-3 up-1"}}
+              Zoning Map:
+              {{this.model.zonemap}}
+              <small>
+                (PDF)
+              </small>
+            </a>
+          </li>
+        {{/if}}
+        {{#if this.model.zonemap}}
+          <li>
+            <a
+              data-test-historical-zoning-map-link
+              target="_blank"
+              href={{this.historicalZoningMapLink}}
+              onclick={{action this.captureOutboundLink "Historical Zoning Maps" preventDefault=false}} rel="noopener noreferrer"
+            >
+              {{fa-icon icon="external-link-alt" transform="shrink-3 up-1"}}
+              Historical Zoning Maps
+              <small>
+                (PDF)
+              </small>
+            </a>
+          </li>
+        {{/if}}
+      </ul>
+    </div>
+  </div>
+</section>
+<hr class="hide-for-print" />
+<section class="lot-details">
+  {{#if this.ownertypename}}
+    <div class="data-grid">
+      <label class="data-label">
+        Owner Type
+      </label>
+      <span class="datum">
+        {{#if this.ownertypename}}
+          {{this.ownertypename}}
+        {{else}}
+          Unknown/Private
+        {{/if}}
+      </span>
+    </div>
+  {{/if}}
+  {{#if this.model.ownername}}
+    <div class="data-grid">
+      <label class="data-label">
+        Owner
+      </label>
+      <span class="datum">
+        <RecaptchaBlock @buttonText="Show Owner">
+          {{this.model.ownername}}
+        </RecaptchaBlock>
+      </span>
+    </div>
+  {{/if}}
+  {{#if this.landusename}}
+    <div class="data-grid">
+      <label class="data-label">
+        Land Use
+      </label>
+      <span class="datum">
+        {{this.landusename}}
+      </span>
+    </div>
+  {{/if}}
+  {{#if this.model.lotarea}}
+    <div class="data-grid">
+      <label class="data-label">
+        Lot Area
+      </label>
+      <span class="datum">
+        {{#if this.model.lotarea}}
+          {{concat (numeral-format this.model.lotarea "0,0") " sq ft"}}
+        {{/if}}
+      </span>
+    </div>
+  {{/if}}
+  {{#if this.model.lotfront}}
+    <div class="data-grid">
+      <label class="data-label">
+        Lot Frontage
+      </label>
+      <span class="datum">
+        {{#if this.model.lotfront}}
+          {{concat this.model.lotfront " ft"}}
+        {{/if}}
+      </span>
+    </div>
+  {{/if}}
+  {{#if this.model.lotdepth}}
+    <div class="data-grid">
+      <label class="data-label">
+        Lot Depth
+      </label>
+      <span class="datum">
+        {{#if this.model.lotdepth}}
+          {{concat this.model.lotdepth " ft"}}
+        {{/if}}
+      </span>
+    </div>
+  {{/if}}
+  {{#if this.model.yearbuilt}}
+    <div class="data-grid">
+      <label class="data-label">
+        Year Built
+      </label>
+      <span class="datum">
+        {{this.model.yearbuilt}}
+      </span>
+    </div>
+  {{/if}}
+  {{#if this.model.yearalter1}}
+    <div class="data-grid">
+      <label class="data-label">
+        Year
+        {{if this.model.yearalter2 "s"}}
+        Altered
+      </label>
+      <span class="datum">
+        {{this.model.yearalter1}}
+        {{#if this.model.yearalter2}}
+          {{concat ", " this.model.yearalter2}}
+        {{/if}}
+      </span>
+    </div>
+  {{/if}}
+  {{#if this.bldgclassname}}
+    <div class="data-grid">
+      <label class="data-label">
+        Building Class
+      </label>
+      <span class="datum">
+        {{this.bldgclassname}}
+        {{#if this.model.bldgclass}}
+          <span class="dark-gray">
+            (
+            {{this.model.bldgclass}}
+            )
+          </span>
+        {{/if}}
+      </span>
+    </div>
+  {{/if}}
+  {{#if this.model.numbldgs}}
+    <div class="data-grid">
+      <label class="data-label">
+        Number of Buildings
+      </label>
+      <span class="datum">
+        {{this.model.numbldgs}}
+      </span>
+    </div>
+  {{/if}}
+  {{#if this.model.numfloors}}
+    <div class="data-grid">
+      <label class="data-label">
+        Number of Floors
+      </label>
+      <span class="datum">
+        {{this.model.numfloors}}
+      </span>
+    </div>
+  {{/if}}
+  {{#if this.model.bldgarea}}
+    <div class="data-grid">
+      <label class="data-label">
+        Gross Floor Area
+      </label>
+      <span class="datum">
+        {{#if this.model.bldgarea}}
+          {{concat (numeral-format this.model.bldgarea "0,0") " sq ft"}}
+        {{/if}}
+      </span>
+    </div>
+  {{/if}}
+  {{#if this.model.unitstotal}}
+    <div class="data-grid">
+      <label class="data-label">
+        Total # of Units
+      </label>
+      <span class="datum">
+        {{this.model.unitstotal}}
+      </span>
+    </div>
+  {{/if}}
+  {{#if this.model.unitsres}}
+    <div class="data-grid">
+      <label class="data-label">
+        Residential Units
+      </label>
+      <span class="datum">
+        {{this.model.unitsres}}
+      </span>
+    </div>
+  {{/if}}
+  {{#if this.model.condono}}
+    <div class="data-grid">
+      <label class="data-label">
+        Condominium Number
+      </label>
+      <span class="datum">
+        {{this.model.condono}}
+      </span>
+    </div>
+  {{/if}}
+  <div class="data-grid">
+    <label class="data-label">
+      Building Info
+      <span>
+        {{fa-icon icon="info-circle"}}
+        <EmberTooltip
+          @text="View this lot's building listing on the NYC Department of Buildings' Building Information System (BISWEB) Application"
+          @side="right"
+        />
+      </span>
+    </label>
+    <span class="datum">
+      <a
+        data-test-bisweb-link
+        href={{this.biswebLink}}
+        onclick={{action this.captureOutboundLink "BISWEB" preventDefault=false}}
+        target="_blank" rel="noopener noreferrer"
+      >
+        {{fa-icon icon="external-link-alt" transform="shrink-3 up-1"}}
+        BISWEB
+      </a>
+    </span>
+  </div>
+  {{#if this.model.borocode}}
+    <div class="data-grid">
+      <label class="data-label">
+        Property Records
+        <span>
+          {{fa-icon icon="info-circle"}}
+          <EmberTooltip
+            @text="View this lot's property records from 1966 to the present on the NYC Department of Finance's Automated City Register Information System (ACRIS)."
+            @side="right"
+          />
+        </span>
+      </label>
+      <span class="datum">
+        <a
+          data-test-acris-link
+          href={{this.ACRISLink}}
+          onclick={{action this.captureOutboundLink "ACRIS" preventDefault=false}}
+          target="_blank" rel="noopener noreferrer"
+        >
+          {{fa-icon icon="external-link-alt" transform="shrink-3 up-1"}}
+          View ACRIS
+        </a>
+      </span>
+    </div>
+  {{/if}}
+  {{#if (and this.model.borocode this.model.address)}}
+    <div class="data-grid">
+      <label class="data-label">
+        Housing Info
+        <span>
+        {{fa-icon icon="info-circle"}}
+        <EmberTooltip
+          @text="View additional information about the buildings on this lot, including Building, Registration & Violation Records by searching on the NYC Department of Housing Preservation & Development's online portal."
+          @side="right"
+        />
+      </span>
+      </label>
+      <span class="datum">
+        <a
+          data-test-housing-info-link
+          href="https://hpdonline.nyc.gov/hpdonline/"
+          onclick={{action this.captureOutboundLink "Housing Info" preventDefault=false}}
+          target="_blank" rel="noopener noreferrer"
+        >
+          {{fa-icon icon="external-link-alt" transform="shrink-3 up-1"}}
+          View HPD's Building, Registration & Violation Records
+        </a>
+      </span>
+    </div>
+  {{/if}}
+</section>
+<section class="neighborhood-info">
+  <h3 class="header-small lot-section-header hide-for-print">
+    Neighborhood Information
+  </h3>
+  {{#if this.cdURLSegment}}
+    <div class="data-grid">
+      <label class="data-label">
+        Community District
+      </label>
+      <span class="datum">
+        <a
+          data-test-full-cd-url
+          href={{this.fullCommunityDistrictURL}}
+          onclick={{action this.captureOutboundLink "Community District" preventDefault=false}}
+          target="_blank" rel="noopener noreferrer"
+        >
+          {{fa-icon icon="external-link-alt" transform="shrink-3 up-1"}}
+          {{this.cdName}}
+        </a>
+      </span>
+    </div>
+  {{/if}}
+  {{#if this.model.council}}
+    <div class="data-grid">
+      <label class="data-label">
+        City Council District
+      </label>
+      <span class="datum">
+        <a
+          data-test-council-link
+          href={{this.councilLink}}
+          onclick={{action this.captureOutboundLink "Council District" preventDefault=false}}
+          target="_blank" rel="noopener noreferrer"
+        >
+          {{fa-icon icon="external-link-alt" transform="shrink-3 up-1"}}
+          Council District
+          {{this.model.council}}
+        </a>
+      </span>
+    </div>
+  {{/if}}
+  {{#if this.model.schooldist}}
+    <div class="data-grid">
+      <label class="data-label">
+        School District
+      </label>
+      <span class="datum">
+        {{this.model.schooldist}}
+      </span>
+    </div>
+  {{/if}}
+  {{#if this.model.policeprct}}
+    <div class="data-grid">
+      <label class="data-label">
+        Police Precinct
+      </label>
+      <span class="datum">
+        {{this.model.policeprct}}
+      </span>
+    </div>
+  {{/if}}
+  {{#if this.model.firecomp}}
+    <div class="data-grid">
+      <label class="data-label">
+        Fire Company
+      </label>
+      <span class="datum">
+        {{this.model.firecomp}}
+      </span>
+    </div>
+  {{/if}}
+  {{#if this.model.sanitboro}}
+    <div class="data-grid">
+      <label class="data-label">
+        Sanitation Borough
+      </label>
+      <span class="datum">
+        {{this.model.sanitboro}}
+      </span>
+    </div>
+  {{/if}}
+  {{#if this.model.sanitdistr}}
+    <div class="data-grid">
+      <label class="data-label">
+        Sanitation District
+      </label>
+      <span class="datum">
+        {{this.model.sanitdistr}}
+      </span>
+    </div>
+  {{/if}}
+  {{#if this.model.sanitsub}}
+    <div class="data-grid">
+      <label class="data-label">
+        Sanitation Subsection
+      </label>
+      <span class="datum">
+        {{this.model.sanitsub}}
+      </span>
+    </div>
+  {{/if}}
+</section>

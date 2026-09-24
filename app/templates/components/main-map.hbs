@@ -1,0 +1,106 @@
+<Mapbox::BasicMap
+  @name="main-map"
+  @layerGroups={{this.layerGroups}}
+  @initOptions={{hash
+    style=this.layerGroupsMeta.mapboxStyle
+    preserveDrawingBuffer=true
+    zoom=this.mainMap.zoom
+    hash=true
+    center=this.mainMap.center
+    minZoom=this.mainMap.minZoom
+    maxBounds=this.mainMap.maxBounds
+  }}
+  @mapLoaded={{action "handleMapLoad"}} as |map|
+>
+  <div
+    data-test-main-map="loaded"
+    class="labs-map-loaded"
+    style="display:none"
+  ></div>
+
+  <div class="print-controls mapboxgl-ctrl mapboxgl-ctrl-group">
+    <button
+      class="mapboxgl-ctrl-icon"
+      data-test-map-print-button
+      onClick={{this.enablePrintView}} type="button"
+    >
+      <FaIcon @icon="print" />
+    </button>
+  </div>
+
+  <LabsLayers
+    @map={{map.instance}}
+    @hoveredFeature={{map.hoveredFeature}}
+    @layerGroups={{this.layerGroups}}
+    @interactivity={{this.interactivity}}
+    @onLayerClick={{action "handleLayerClick"}}
+    @onLayerHighlight={{action "handleLayerHighlight"}} as |layers|
+  >
+    <layers.tooltip as |tooltip|>
+      <TooltipRenderer
+        data-test-tooltip="true"
+        @feature={{tooltip.feature}}
+        @template={{tooltip.layer.tooltipTemplate}}
+      />
+    </layers.tooltip>
+  </LabsLayers>
+
+  {{#if this.bookmarkedLotsLayer}}
+    <MapboxGlLayer
+      @map={{map.instance}}
+      @layer={{this.bookmarkedLotsLayer}}
+      @before="place_other"
+    />
+  {{/if}}
+
+  {{#if this.mainMap.selected}}
+    <MapboxGlSource
+      @map={{map.instance}}
+      @sourceId="selected-lot"
+      @options={{this.selectedLotSource}} as |source|
+    >
+      <source.layer @layer={{this.selectedFillLayer}} @before="place_other" />
+      <source.layer @layer={{this.selectedLineLayer}} @before="place_other" />
+    </MapboxGlSource>
+  {{/if}}
+  {{#if this.mainMap.comparisonSelected}}
+    <MapboxGlSource
+      @map={{map.instance}}
+      @sourceId="comparison-selected-lot"
+      @options={{this.comparisonSelectedLotSource}} as |source|
+    >
+      <source.layer @layer={{this.comparisonSelectedFillLayer}} @before="place_other" />
+      <source.layer @layer={{this.comparisonSelectedLineLayer}} @before="place_other" />
+    </MapboxGlSource>
+  {{/if}}
+
+  <MapMeasurementTools
+    @map={{map.instance}}
+    @draw={{this.draw}} as |measurement|
+  >
+    {{#if measurement.features.length}}
+      {{#each measurement.features as |feature|}}
+        <MapboxGlSource
+          @map={{map.instance}}
+          @sourceId={{feature.id}}
+          @options={{hash type="geojson" data=feature}} as |source|
+        >
+          <source.layer
+            @id="{{source.id}}-line"
+            @layer={{this.drawnFeatureLayers.line}}
+            @before="place_other"
+          />
+          {{#if (eq this.mainMap.drawnFeature.type "Polygon")}}
+            <source.layer
+              @id="{{source.id}}-fill"
+              @layer={{this.drawnFeatureLayers.fill}}
+              @before="place_other"
+            />
+          {{/if}}        
+        </MapboxGlSource>
+      {{/each}}
+    {{/if}}
+  </MapMeasurementTools>
+</Mapbox::BasicMap>
+
+<LocateMeMobile />

@@ -1,0 +1,16 @@
+<CartoDataProvider
+  @modelId={{this.model.id}}
+  @modelName="zoning-map-amendment" as |zoningMapAmendment|
+>
+  <Mapbox::MapFeatureRenderer
+    @model={{zoningMapAmendment}}
+    @shouldFitBounds={{this.model.search}}
+  />
+  <Bookmarks::BookmarkButton
+    @bookmarkableModel={{zoningMapAmendment}}
+  />
+  <LayerRecordViews::ZoningMapAmendment
+    @model={{zoningMapAmendment.properties}}
+    @zapId={{this.model.zapId}}
+  />
+</CartoDataProvider>

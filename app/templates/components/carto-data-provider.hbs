@@ -1,0 +1,19 @@
+<NeedsAsync
+  @needs={{this.taskInstance}} as |data-task|
+>
+  <data-task.loaded
+    data-task-was-successful
+    as |model|
+  >
+    {{yield model}}
+  </data-task.loaded>
+  <data-task.loading>
+    <FaIcon @icon='spinner' class='fa-spin fa-3x loading-spinner' />
+  </data-task.loading>
+  <data-task.error as |error|>
+    <CartoDataProvider::ErrorHandler
+      data-test-error-handler
+      @errors={{error.errors}}
+    />
+  </data-task.error>
+</NeedsAsync>

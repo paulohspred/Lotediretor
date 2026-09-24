@@ -1,0 +1,235 @@
+// --------------------------------------------------
+// Base: Typography
+// --------------------------------------------------
+
+.content-header {
+  @extend h3;
+  margin-bottom: rem-calc(10);
+
+  .landmark {
+    display: block;
+    margin-bottom: 0;
+  }
+
+  .landmark + .address {
+    display: block;
+    @extend h4;
+    margin-bottom: 0;
+  }
+}
+
+.header-label {
+  color: $dark-gray;
+  font-size: rem-calc(13);
+}
+
+
+//
+// Buttons
+// --------------------------------------------------
+button.save-button {
+  float: right;
+  font-size: rem-calc(12);
+  padding: 0.25rem 0.5rem;
+  outline: 0;
+  position: relative;
+  transition: padding 0.5s;
+
+  &.saved {
+    padding-right: 2.5rem;
+  }
+
+  .state {
+    color: $green-dark;
+    font-size: rem-calc(10);
+    line-height: rem-calc(12);
+    font-weight: $global-weight-bold;
+    position: absolute;
+    top: 50%;
+    left: 1.5rem;
+    margin-top: rem-calc(-6);
+    opacity: 0;
+    transition: opacity 0.5s;
+  }
+  &.saved .state {
+    opacity: 1;
+  }
+
+  .fa-bookmark {
+    color: $light-gray;
+    font-size: rem-calc(16);
+    vertical-align: middle;
+    transition: color 0.5s;
+
+    &:hover {
+      color: $green-muted;
+    }
+  }
+
+  &.saved .fa-bookmark {
+    color: $green-muted;
+  }
+}
+
+
+//
+// Badges
+// --------------------------------------------------
+.badge {
+  font-weight: $global-weight-normal;
+  line-height: 1.5;
+  vertical-align: middle;
+
+  &.sup {
+    position: relative;
+    transform: translate(0, -50%);
+  }
+}
+
+
+//
+// Typography helper classes
+// --------------------------------------------------
+
+.pipe {
+  opacity: 0.25;
+  margin-right: 0.25em;
+  margin-left: 0.25em;
+}
+
+.link {
+  cursor: pointer;
+  color: $anchor-color;
+
+  &:hover {
+    color:$anchor-color-hover;
+  }
+}
+
+
+//
+// Lot Styles
+// --------------------------------------------------
+.lot-section-header {
+  margin: 1rem 0 rem-calc(6);
+}
+
+.lot-zoning-info {
+  font-size: rem-calc(13);
+}
+
+.lot-zoning-list {
+  margin: $paragraph-margin-bottom*0.5 0;
+  list-style: none;
+
+  li {
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  .menu-text {
+    font-weight: $global-weight-bold;
+    padding: rem-calc(4) 0;
+  }
+
+  .button {
+    font-size: rem-calc(13);
+    padding: rem-calc(4) rem-calc(6);
+    margin: 0;
+  }
+}
+
+
+//
+// Data Grid
+// --------------------------------------------------
+.data-grid {
+  @include xy-grid;
+  padding: rem-calc(3) 0;
+
+  &:hover {
+    background-color: $off-white;
+  }
+
+  @include breakpoint(medium) {
+    @include xy-gutters(
+      $gutters: rem-calc(10),
+      $gutter-type: margin,
+      $gutter-position: right left,
+      $negative: true
+    );
+  }
+
+  .data-label {
+    @include xy-cell(
+      $size: full,
+      $output: (base size),
+      $gutters: 0
+    );
+    padding: rem-calc(2) rem-calc(4);
+    background-color: $off-white;
+    color: $dark-gray;
+    font-size: rem-calc(10);
+    line-height: 1.2;
+
+    @include breakpoint(medium) {
+      @include xy-cell(
+        $size: 4,
+        $gutter-output: null,
+        $gutters: rem-calc(10),
+        $gutter-type: margin,
+        $breakpoint: null,
+        $vertical: false
+      );
+    }
+
+  }
+
+  .datum {
+    @include xy-cell(
+      $size: full,
+      $output: (base size),
+      $gutters: 0
+    );
+    font-size: rem-calc(13);
+    line-height: 1.2;
+
+    @include breakpoint(medium) {
+      @include xy-cell(
+        $size: 8,
+        $gutters: rem-calc(10),
+        $gutter-type: margin,
+        $breakpoint: null,
+        $vertical: false
+      );
+    }
+  }
+}
+
+
+//
+// Ember Tooltip
+// --------------------------------------------------
+// .ember-tooltip {
+//   font-size: rem-calc(10);
+// }
+
+
+//
+// Multi-column lists
+// --------------------------------------------------
+.list-float-3 {
+  @include clearfix;
+
+  li {
+    float: left;
+    width: 33%;
+  }
+}
+
+//
+// All caps
+// --------------------------------------------------
+.uppercase {
+  text-transform: uppercase;
+}

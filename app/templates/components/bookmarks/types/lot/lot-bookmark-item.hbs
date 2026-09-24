@@ -1,0 +1,17 @@
+<li class="lot-bookmark">
+  <span class="icon tax-lot"></span>
+  <LinkTo
+    @route="map-feature.lot"
+    @models={{array this.lot.properties.borocode this.lot.properties.block this.lot.properties.lot}}
+  >
+    {{this.lot.title}}
+    <span class="dark-gray" data-test-lot-property="bbl">
+      {{this.lot.subtitle}}
+    </span>
+  </LinkTo>
+  <button
+    class="float-right lu-red delete-bookmark-button" type="button" {{action "_deleteBookmark" this.lot}}
+  >
+    &times;
+  </button>
+</li>

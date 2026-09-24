@@ -1,0 +1,154 @@
+// --------------------------------------------------
+// Module: Layer Palette
+// --------------------------------------------------
+
+$layer-palette-padding: rem-calc(6);
+$layer-palette-hover-color: rgba($dark-gray,0.08);
+
+#layers-menu {
+
+  ul {
+    @extend .no-bullet;
+    margin-bottom: 0;
+  }
+
+  input {
+    margin-bottom: 0;
+  }
+}
+
+
+.checkbox-wrapper {
+  padding: $layer-palette-padding*0.5 $layer-palette-padding;
+  font-size: inherit;
+
+  &:hover {
+    cursor: pointer;
+    background-color: $layer-palette-hover-color;
+  }
+
+  input {
+    margin: 0;
+  }
+}
+
+.layer-menu-item--group-checkboxes {
+
+  > li {
+    margin-bottom: $layer-palette-padding;
+    position: relative;
+  }
+
+  label {
+    padding: 0 $layer-palette-padding;
+    font-size: inherit;
+    line-height: inherit;
+
+    &:hover {
+      cursor: pointer;
+      background-color: $layer-palette-hover-color;
+    }
+  }
+
+  .nested {
+    margin-bottom: $layer-palette-padding*0.5;
+
+    label {
+      padding-left: $layer-palette-padding*3;
+    }
+
+    &.columns-2,
+    &.columns-3 {
+      padding: 0 $layer-palette-padding*2 0 $layer-palette-padding*3;
+      column-count: 2;
+      column-gap: $layer-palette-padding;
+
+      label {
+        padding-left: $layer-palette-padding;
+      }
+    }
+    &.columns-3 {
+      column-count: 3;
+    }
+  }
+
+}
+
+
+//
+// Hide Adjacent Sibling UI
+// --------------------------------------------------
+.hidable-sibling-toggle {
+  color: $primary-color;
+
+  &.top-right {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 0;
+  }
+}
+
+.checkbox-hide-sibling {
+  display: none;
+
+  &:checked {
+
+    + .hidable-sibling-toggle {
+      transform: rotate(180deg);
+    }
+
+    & ~ .hidable-sibling {
+      display: none;
+    }
+  }
+}
+
+
+//
+// Layer key (e.g. land use colors)
+// --------------------------------------------------
+.layer-key {
+  padding: 0 $layer-palette-padding $layer-palette-padding;
+  font-size: rem-calc(10);
+  line-height: 1.2;
+
+  li {
+    padding: 0 0 $layer-palette-padding*0.5;
+  }
+
+  .fa {
+    margin-right: $layer-palette-padding;
+  }
+}
+
+
+//
+// "Reset Map Layers" button
+// --------------------------------------------------
+.reset-map-button {
+  margin: $layer-palette-padding*3 $layer-palette-padding*2;
+  width: calc(100% - #{$layer-palette-padding*4});
+}
+
+//
+// "Toggle All Map Layers Off" button
+// --------------------------------------------------
+.no-layers-button {
+  margin: $layer-palette-padding*3 $layer-palette-padding*2 $layer-palette-padding*2 $layer-palette-padding*2;
+  width: calc(100% - #{$layer-palette-padding*4});
+}
+
+//
+// Indeterminate hider (hides element alongside unchecked checkbox)
+// --------------------------------------------------
+.indeterminate-hider {
+  input:not(:checked):not(:indeterminate) ~ & {
+    display: none;
+  }
+
+  svg.svg-inline--fa.fa-minus.nyc-council-style {
+    margin-right: -4px;
+    vertical-align: top;
+  }
+}

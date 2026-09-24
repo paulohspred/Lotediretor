@@ -1,0 +1,163 @@
+<button
+  class="button tiny gray float-left"
+  data-test-exit-print type="button" {{action "disablePrintView"}}
+>
+  <FaIcon @icon="times" @fixedWidth="true" @transform="left-4" />
+  Exit Print View
+</button>
+<div class="print-view-controls--item orientation">
+  <h6 class="print-view-controls--header">
+    Orientation:
+  </h6>
+  <button
+    onclick={{action (mut this.printSvc.printViewOrientation) "landscape"}}
+    data-test-print-control="landscape" type="button"
+  >
+    <span class="fa-layers">
+      {{#if (eq this.printSvc.printViewOrientation "landscape")}}
+        <FaIcon @icon="circle" class="white" />
+        <FaIcon @icon="circle" @prefix="far" class="light-gray" />
+        <FaIcon @icon="circle" @transform="shrink-6" class="a11y-orange" />
+      {{else}}
+        <FaIcon @icon="circle" class="silver" />
+        <FaIcon @icon="circle" @prefix="far" class="light-gray" />
+      {{/if}}
+    </span>
+    Landscape
+  </button>
+  <button
+    onclick={{action (mut this.printSvc.printViewOrientation) "portrait"}}
+    data-test-print-control="portrait" type="button"
+  >
+    <span class="fa-layers">
+      {{#if (eq this.printSvc.printViewOrientation "portrait")}}
+        <FaIcon @icon="circle" class="white" />
+        <FaIcon @icon="circle" @prefix="far" class="light-gray" />
+        <FaIcon @icon="circle" @transform="shrink-6" class="a11y-orange" />
+      {{else}}
+        <FaIcon @icon="circle" class="silver" />
+        <FaIcon @icon="circle" @prefix="far" class="light-gray" />
+      {{/if}}
+    </span>
+    Portrait
+  </button>
+</div>
+<div class="print-view-controls--item size">
+  <h6 class="print-view-controls--header">
+    Size:
+  </h6>
+  <button
+    onclick={{action (mut this.printSvc.printViewPaperSize) "letter"}}
+    data-test-print-control="letter" type="button"
+  >
+    <span class="fa-layers">
+      {{#if (eq this.printSvc.printViewPaperSize "letter")}}
+        <FaIcon @icon="circle" class="white" />
+        <FaIcon @icon="circle" @prefix="far" class="light-gray" />
+        <FaIcon @icon="circle" @transform="shrink-6" class="a11y-orange" />
+      {{else}}
+        <FaIcon @icon="circle" class="silver" />
+        <FaIcon @icon="circle" @prefix="far" class="light-gray" />
+      {{/if}}
+    </span>
+    Letter
+  </button>
+  <button
+    onclick={{action (mut this.printSvc.printViewPaperSize) "legal"}}
+    data-test-print-control="legal" type="button"
+  >
+    <span class="fa-layers">
+      {{#if (eq this.printSvc.printViewPaperSize "legal")}}
+        <FaIcon @icon="circle" class="white" />
+        <FaIcon @icon="circle" @prefix="far" class="light-gray" />
+        <FaIcon @icon="circle" @transform="shrink-6" class="a11y-orange" />
+      {{else}}
+        <FaIcon @icon="circle" class="silver" />
+        <FaIcon @icon="circle" @prefix="far" class="light-gray" />
+      {{/if}}
+    </span>
+    Legal
+  </button>
+  <button
+    onclick={{action (mut this.printSvc.printViewPaperSize) "tabloid"}}
+    data-test-print-control="tabloid" type="button"
+  >
+    <span class="fa-layers">
+      {{#if (eq this.printSvc.printViewPaperSize "tabloid")}}
+        <FaIcon @icon="circle" class="white" />
+        <FaIcon @icon="circle" @prefix="far" class="light-gray" />
+        <FaIcon @icon="circle" @transform="shrink-6" class="a11y-orange" />
+      {{else}}
+        <FaIcon @icon="circle" class="silver" />
+        <FaIcon @icon="circle" @prefix="far" class="light-gray" />
+      {{/if}}
+    </span>
+    Tabloid
+  </button>
+</div>
+<div class="print-view-controls--item show">
+  <h6 class="print-view-controls--header">
+    Show:
+  </h6>
+  <button
+    class="map"
+    onclick={{action (mut this.printSvc.printViewShowMap) (not this.printSvc.printViewShowMap)}}
+    data-test-print-control="map" type="button"
+  >
+    <span class="fa-layers">
+      {{#if (eq this.printSvc.printViewShowMap true)}}
+        <FaIcon @icon="square" class="white" />
+        <FaIcon @icon="check-square" class="a11y-orange" />
+      {{else}}
+        <FaIcon @icon="square" class="silver" />
+        <FaIcon @icon="square" class="light-gray" @prefix="far" />
+      {{/if}}
+    </span>
+    Map
+  </button>
+  {{#if (eq this.printSvc.printViewShowMap true)}}
+    <button
+      class="legend"
+      onclick={{action (mut this.printSvc.printViewShowLegend) (not this.printSvc.printViewShowLegend)}}
+      data-test-print-control="legend" type="button"
+    >
+      <span class="fa-layers">
+        {{#if (eq this.printSvc.printViewShowLegend true)}}
+          <FaIcon @icon="square" class="white" />
+          <FaIcon @icon="check-square" class="a11y-orange" />
+        {{else}}
+          <FaIcon @icon="square" class="silver" />
+          <FaIcon @icon="square" class="light-gray" @prefix="far" />
+        {{/if}}
+      </span>
+      Legend
+    </button>
+  {{else}}
+    <button disabled="" type="button">
+      <span class="fa-layers">
+        <FaIcon @icon="square" class="silver" @prefix="far" />
+      </span>
+      Legend
+    </button>
+  {{/if}}
+  <button
+    class="content"
+    onclick={{action (mut this.printSvc.printViewShowContent) (not this.printSvc.printViewShowContent)}}
+    data-test-print-control="content" type="button"
+  >
+    <span class="fa-layers">
+      {{#if (eq this.printSvc.printViewShowContent true)}}
+        <FaIcon @icon="square" class="white" />
+        <FaIcon @icon="check-square" class="a11y-orange" />
+      {{else}}
+        <FaIcon @icon="square" class="silver" />
+        <FaIcon @icon="square" class="light-gray" @prefix="far" />
+      {{/if}}
+    </span>
+    Content
+  </button>
+</div>
+<a class="print-button button hide-for-print" href="javascript:window.print()">
+  PRINT
+</a>
+{{yield}}

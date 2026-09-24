@@ -1,0 +1,39 @@
+{{!
+  This template overrides the template for an addon, ember-mapbox-composer.
+  e-mapbox-composer uses private APIs in e-mapbox-gl. Those changed, so we need to
+  manually configure the interface here.
+}}
+{{#if this._loader.isLoaded}}
+  <div   {{did-insert (fn this._onLoad this._loader.map)}} class="labs-map-loaded"></div>
+  {{!-- TODO: Added here to trigger private method override. Please refactor --}}
+  {{!-- {{run this '_onLoad' this._loader.map}} --}}
+
+  {{yield
+    (hash
+      call=(component "mapbox-gl-call" obj=this._loader.map)
+      control=(component "mapbox-gl-control" map=this._loader.map)
+      image=(component "mapbox-gl-image" map=this._loader.map)
+      layer=(component "mapbox-gl-layer" map=this._loader.map)
+      marker=(component 'mapbox-gl-marker' map=this._loader.map MapboxGl=this._loader.MapboxGl)
+      on=(component "mapbox-gl-on" eventSource=this._loader.map)
+      popup=(component 'mapbox-gl-popup' map=this._loader.map MapboxGl=this._loader.MapboxGl)
+      source=(component "mapbox-gl-source" map=this._loader.map)
+      instance=this._loader.map
+      mapInstance=this._loader.map
+      labs-layers=(component
+        "labs-layers"
+        map=this._loader.map
+        layerGroups=this.layerGroups
+        hoveredFeature=this.hoveredFeature
+      )
+    )
+  }}
+{{else if this._loader.error}}
+  <div class="error" {{did-insert (fn this.handleError this._loader.error)}}></div>
+  {{#if (has-block 'inverse')}}
+    {{yield this._loader.error to='inverse'}}
+  {{else}}
+    {{! template-lint-disable no-log }}
+    {{log 'error rendering mapbox-gl' this._loader.error}}
+  {{/if}}
+{{/if}}

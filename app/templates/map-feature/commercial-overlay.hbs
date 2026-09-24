@@ -1,0 +1,21 @@
+<CartoDataProvider
+  @modelId={{this.model.id}}
+  @modelName="commercial-overlay" as |commercialOverlay|
+>
+  <Mapbox::MapFeatureRenderer
+    @model={{commercialOverlay}}
+    @shouldFitBounds={{this.model.search}}
+  />
+  <Bookmarks::BookmarkButton
+    @bookmarkableModel={{commercialOverlay}}
+  />
+  <LayerRecordViews::CommercialOverlay
+    @model={{commercialOverlay.properties}}
+  >
+    <Mapbox::FitMapToAllButton @model={{commercialOverlay}}>
+      Fit map to all
+      {{commercialOverlay.id}}
+      districts
+    </Mapbox::FitMapToAllButton>
+  </LayerRecordViews::CommercialOverlay>
+</CartoDataProvider>

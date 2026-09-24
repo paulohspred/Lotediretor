@@ -1,0 +1,8 @@
+<LabsMap
+  @mapLoaded={{action this.handleMapLoaded}}
+  @id={{this.name}}
+  @layerGroups={{this.layerGroups}}
+  @initOptions={{this.initOptions}} as |map|
+>
+  {{yield (hash instance=this.mapInstance hoveredFeature=this.hoveredFeature)}}
+</LabsMap>

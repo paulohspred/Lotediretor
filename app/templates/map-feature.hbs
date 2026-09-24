@@ -1,0 +1,10 @@
+<div class="content-close-button-container">
+  <LinkTo @route="index" class="close-button" data-test-button="close-route" onClick={{action "clearComparison"}}>
+    <span aria-hidden="true">
+      &times;
+    </span>
+  </LinkTo>
+</div>
+<div class="content-area cell large-5 large-cell-block-y xxlarge-4">
+  {{outlet}}
+</div>
