@@ -229,6 +229,50 @@
       "notes": "Listas de aeródromos públicos/privados, pistas, taxiways, pátios e posições. Para superfícies limitadoras/zoneamento aeronáutico, buscar DECEA/SAGA separadamente."
     },
     {
+      "id": "br-anatel-open-data",
+      "authority": "Anatel",
+      "scope": "BR",
+      "domain": [
+        "telecom",
+        "licensed_stations",
+        "mobile_network",
+        "fixed_broadband",
+        "backhaul",
+        "electromagnetic_fields",
+        "service_providers"
+      ],
+      "source_type": "open_data_catalog_files",
+      "discovery_url": "https://www.gov.br/anatel/pt-br/dados/dados-abertos",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED",
+      "notes": "PDA Anatel contempla estações licenciadas, infraestrutura de backhaul por município, prestadoras, banda larga fixa/móvel e medições de campos eletromagnéticos. Usar para contexto de cobertura/infraestrutura; presença de estação ou acessos municipais não garante disponibilidade de serviço em um lote específico."
+    },
+    {
+      "id": "br-aneel-bdgd",
+      "authority": "ANEEL",
+      "scope": "BR",
+      "domain": [
+        "electricity_distribution",
+        "power_network",
+        "transformers",
+        "substations",
+        "consumer_units",
+        "infrastructure"
+      ],
+      "source_type": "open_geodatabase_repository",
+      "discovery_url": "https://dadosabertos.aneel.gov.br/dataset/base-de-dados-geografica-da-distribuidora-bdgd",
+      "formats": [
+        "File Geodatabase",
+        "CSV",
+        "ZIP"
+      ],
+      "license": "ODbL",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED",
+      "update_frequency": "annual",
+      "notes": "BDGD/SIG-R representa de forma geográfica ativos reais das distribuidoras e dados técnicos/comerciais regulatórios. Para o LoteDiretor, priorizar rede/ativos técnicos e aplicar allowlist; não expor unidades consumidoras ou atributos comerciais desnecessários. Proximidade de rede NÃO prova disponibilidade de carga/conexão."
+    },
+    {
       "id": "br-aneel-gcem",
       "authority": "ANEEL",
       "scope": "BR",
@@ -392,6 +436,54 @@
       "access_class": "PUBLIC_QUERY_ONLY",
       "verification_status": "VERIFIED_DOWNLOAD_LICENSE_REVIEW",
       "notes": "Declaração de Rede 2025 publica Malha Ferroviária Federal em shapefile; página atualizada em 06/03/2026. Validar licença específica do arquivo antes de espelhar."
+    },
+    {
+      "id": "br-bcb-real-estate-market",
+      "authority": "Banco Central do Brasil",
+      "scope": "BR_UF",
+      "domain": [
+        "real_estate_finance",
+        "mortgage_credit",
+        "market_statistics",
+        "property_finance"
+      ],
+      "source_type": "open_data_OData_CSV_JSON",
+      "discovery_url": "https://dadosabertos.bcb.gov.br/dataset/informacoes-do-mercado-imobiliario",
+      "formats": [
+        "OData",
+        "CSV",
+        "JSON",
+        "XML",
+        "PDF"
+      ],
+      "license": "ODbL",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED",
+      "update_frequency": "monthly",
+      "notes": "Mais de 4.000 séries mensais sobre fontes de recursos, crédito, imóveis financiados e índices do mercado imobiliário, com detalhamento estadual em seções relevantes. Contexto financeiro/mercado, não avaliação individual do imóvel."
+    },
+    {
+      "id": "br-caixa-sinapi",
+      "authority": "CAIXA / IBGE",
+      "scope": "BR_UF",
+      "domain": [
+        "construction_costs",
+        "materials",
+        "labor",
+        "cost_compositions",
+        "feasibility"
+      ],
+      "source_type": "monthly_reference_files",
+      "discovery_url": "https://www.caixa.gov.br/poder-publico/modernizacao-gestao/sinapi/Paginas/default.aspx",
+      "formats": [
+        "XLSX",
+        "PDF",
+        "ZIP"
+      ],
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PUBLIC_REFERENCE",
+      "update_frequency": "monthly",
+      "notes": "SINAPI publica preços de insumos e custos/composições para todas as UFs, inclusive composições paramétricas para estudos de viabilidade. Usar como referência de custo, sempre com UF, competência e regime/desoneração apropriados."
     },
     {
       "id": "br-cemaden-monitoring",
@@ -946,6 +1038,25 @@
       "notes": "Dados públicos, abertos e gratuitos sob CC BY com citação da coleção/versão e data de acesso. Excelente para histórico ambiental e uso/cobertura, não para limite cadastral."
     },
     {
+      "id": "br-obrasgov-api",
+      "authority": "Ministério da Gestão e da Inovação em Serviços Públicos / ObrasGov.br",
+      "scope": "BR",
+      "domain": [
+        "public_works",
+        "infrastructure_projects",
+        "geolocation",
+        "physical_progress",
+        "financial_progress",
+        "public_investment"
+      ],
+      "source_type": "open_REST_API",
+      "base_url": "https://api-publica.obrasgov.gestao.gov.br/",
+      "discovery_url": "https://www.gov.br/obrasgov/pt-br/acesso-a-informacao/dados-abertos-obrasgov",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED",
+      "notes": "API aberta de obras/projetos públicos com georreferenciamento, execução física, financeira e situacional. Útil para mostrar obras existentes/planejadas/paralisadas próximas ao imóvel e histórico de investimento."
+    },
+    {
       "id": "br-onr-ridigital",
       "authority": "Operador Nacional do Sistema de Registro Eletrônico de Imóveis (ONR)",
       "scope": "BR",
@@ -1009,6 +1120,41 @@
       "notes": "Provimento CNJ 242/2026 disciplina base nacional estruturada do RTDPJ, identificadores nacionais e interoperabilidade. Não presumir consulta pública irrestrita nem usar dados pessoais/empresariais fora da finalidade."
     },
     {
+      "id": "br-pncp-open-api",
+      "authority": "Portal Nacional de Contratações Públicas / MGI",
+      "scope": "BR",
+      "domain": [
+        "public_procurement",
+        "contracts",
+        "bids",
+        "public_works_documents",
+        "public_investment"
+      ],
+      "source_type": "open_REST_API_and_documents",
+      "base_url": "https://pncp.gov.br/api/pncp",
+      "api_documentation_url": "https://pncp.gov.br/api/pncp/swagger-ui/index.html",
+      "discovery_url": "https://www.gov.br/pncp/pt-br/acesso-a-informacao/dados-abertos",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED_PUBLIC_QUERY_APIS",
+      "notes": "APIs de consulta/dados abertos são públicas sem login; APIs de manutenção exigem autenticação. Pode localizar editais, contratos, atas e documentos relacionados a obras/serviços públicos, mas nem todo contrato possui georreferenciamento."
+    },
+    {
+      "id": "br-receita-cno",
+      "authority": "Receita Federal do Brasil",
+      "scope": "BR",
+      "domain": [
+        "construction_registry",
+        "works",
+        "construction_regularization",
+        "private_due_diligence"
+      ],
+      "source_type": "authenticated_private_registry",
+      "discovery_url": "https://www.gov.br/receitafederal/pt-br/assuntos/construcao-civil/cno/consultar",
+      "access_class": "RESTRICTED_PERSONAL",
+      "verification_status": "VERIFIED_RESPONSIBLE_PARTIES_ONLY",
+      "notes": "CNO só pode ser consultado pelo responsável, corresponsável ou contratante via e-CAC. Não é fonte pública. O LoteDiretor pode aceitar comprovante/CNO fornecido pelo cliente em área privada e relacioná-lo ao imóvel/obra."
+    },
+    {
       "id": "br-repositorio-dados-gov",
       "authority": "Governo Federal",
       "scope": "BR",
@@ -1044,6 +1190,22 @@
         "desativacao",
         "consulta"
       ]
+    },
+    {
+      "id": "br-sei-public-search",
+      "authority": "Governo Federal / órgãos usuários do SEI e ColaboraGov",
+      "scope": "BR_DISTRIBUTED",
+      "domain": [
+        "administrative_processes",
+        "public_documents",
+        "licensing_process_context",
+        "official_evidence"
+      ],
+      "source_type": "distributed_public_process_search",
+      "discovery_url": "https://www.gov.br/servicoscompartilhados/pt-br/assuntos/gestao-documental/sistema-eletronico-de-informacoes-sei/pesquisa-publica",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PUBLIC_DOCUMENTS_ONLY",
+      "notes": "Módulo Pesquisa Pública permite consultar processos/documentos classificados como públicos em órgãos participantes. Não indexar documentos restritos/pessoais; não contornar CAPTCHAs ou interfaces sem API. Útil como evidência documental quando um processo público de licenciamento, regulação ou infraestrutura já é conhecido."
     },
     {
       "id": "br-serp-meu-registro",
@@ -1173,6 +1335,30 @@
       "access_class": "PUBLIC_QUERY_ONLY",
       "verification_status": "VERIFIED_DOWNLOAD_LICENSE_REVIEW",
       "notes": "Resultados SINISA por módulos. É contexto territorial/municipal e de prestadores, não cadastro predial individual."
+    },
+    {
+      "id": "br-sinisa-results",
+      "authority": "Ministério das Cidades",
+      "scope": "BR",
+      "domain": [
+        "water_supply",
+        "sewerage",
+        "stormwater",
+        "solid_waste",
+        "sanitation_provider",
+        "service_coverage",
+        "infrastructure_indicators"
+      ],
+      "source_type": "public_spreadsheets_reports",
+      "discovery_url": "https://www.gov.br/cidades/pt-br/acesso-a-informacao/acoes-e-programas/saneamento/sinisa/resultados-sinisa",
+      "formats": [
+        "XLSX",
+        "ZIP",
+        "PDF"
+      ],
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PUBLIC_RESULTS",
+      "notes": "Resultados e planilhas dos módulos Gestão Municipal, Água, Esgoto, Resíduos e Águas Pluviais. Excelente para prestador/cobertura/indicadores, mas não substitui rede predial ou disponibilidade na testada."
     },
     {
       "id": "br-spu-geoportal",
@@ -1822,6 +2008,23 @@
       "notes": "ArcGIS público confirmado com Base Urbanística, Parcelamento Territorial, Zoneamento e lotes de utilidade/patrimônio. Algumas camadas públicas expõem campo 'Proprietario'; aplicar privacy filter e não materializar esse atributo sem base jurídica/termos explícitos."
     },
     {
+      "id": "mg-gasmig-network-map",
+      "authority": "Companhia de Gás de Minas Gerais - Gasmig",
+      "scope": "MG",
+      "uf": "MG",
+      "domain": [
+        "gas_distribution",
+        "gas_network",
+        "utility_availability_context",
+        "safe_excavation"
+      ],
+      "source_type": "public_interactive_network_map",
+      "discovery_url": "https://www.mg.gov.br/servico/acessar-o-mapa-da-rede-de-gas-natural",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PUBLIC_MAP",
+      "notes": "Mapa público da rede de gás natural, diferenciando PEAD e aço carbono. Usar como contexto de proximidade; conexão/capacidade deve ser confirmada oficialmente com a concessionária."
+    },
+    {
       "id": "mg-ide-sisema",
       "authority": "Governo de Minas Gerais / SISEMA",
       "scope": "state",
@@ -1840,6 +2043,23 @@
       "access_class": "PUBLIC_QUERY_ONLY",
       "verification_status": "VERIFIED",
       "notes": "GeoServer oficial com WMS/WFS/WCS/WMTS; catálogo GeoNetwork retornava 215 registros WFS na pesquisa. Licença deve ser verificada por camada/metadado."
+    },
+    {
+      "id": "mg-iepha-protected-heritage",
+      "authority": "IEPHA-MG",
+      "scope": "MG",
+      "uf": "MG",
+      "domain": [
+        "heritage",
+        "protected_assets",
+        "cultural_landscape",
+        "legal_restriction"
+      ],
+      "source_type": "official_lists_and_public_feature_layer",
+      "discovery_url": "https://www.mg.gov.br/iepha/pagina/patrimonio-cultural-protegido",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_OFFICIAL_LIST_GEOMETRY_REVIEW",
+      "notes": "IEPHA publica listas/tabelas de bens materiais protegidos e séries do ICMS Patrimônio Cultural. Há camada pública georreferenciada de bens tombados; confirmar autoridade/metadados do serviço antes de materialização."
     },
     {
       "id": "mg-juiz-de-fora-projetos-aprovados",
@@ -3156,6 +3376,23 @@
       "notes": "SLIM reúne Plano Diretor, anexos, mapa do sistema viário, Código de Obras, Código de Urbanismo, parcelamento, regularização e instruções técnicas. Documentos jurídicos públicos podem ser versionados, mantendo publicação/vigência e fonte oficial."
     },
     {
+      "id": "sp-arsesp-utility-concessions",
+      "authority": "ARSESP",
+      "scope": "SP",
+      "uf": "SP",
+      "domain": [
+        "gas_concession",
+        "electricity_concession",
+        "sanitation_concession",
+        "utility_provider"
+      ],
+      "source_type": "regulatory_portal",
+      "discovery_url": "https://www.arsesp.sp.gov.br/prefeituras/Paginas/SeuMunicipio.aspx",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED",
+      "notes": "Identifica concessionárias reguladas de energia, gás e saneamento por município e contratos/concessões correspondentes. Útil para resolver quem atende o imóvel antes de consultar mapas/serviços da concessionária."
+    },
+    {
       "id": "sp-campinas-spatial-data",
       "authority": "Prefeitura de Campinas",
       "scope": "municipality",
@@ -3173,6 +3410,23 @@
       "access_class": "OPEN_REUSABLE",
       "verification_status": "VERIFIED",
       "notes": "Portal de metadados e camadas municipais; validar cada licença e atualização."
+    },
+    {
+      "id": "sp-comgas-network-query",
+      "authority": "Comgás",
+      "scope": "SP_CONCESSION_AREA",
+      "uf": "SP",
+      "domain": [
+        "gas_distribution",
+        "gas_network",
+        "safe_excavation",
+        "utility_availability_context"
+      ],
+      "source_type": "public_network_map_authenticated_technical_drawings",
+      "discovery_url": "https://www.comgas.com.br/nossa-rede/",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_QUERY_OFFICIAL_DRAWINGS_ON_REQUEST",
+      "notes": "Mapa informa onde há rede/tubulação; construtoras/profissionais podem solicitar desenhos/croquis e orientação técnica. A própria Comgás alerta que consulta não substitui cadastro técnico em campo e que dados devem ser revalidados se a obra atrasar. Não espelhar a rede sem autorização."
     },
     {
       "id": "sp-datageo",
@@ -3194,6 +3448,24 @@
       "access_class": "PUBLIC_QUERY_ONLY",
       "verification_status": "VERIFIED_ENDPOINT_LICENSE_PER_LAYER",
       "notes": "GeoServer público com WFS/WMS/WCS/WMTS/CSW; metadados frequentemente oferecem download Shapefile e lineage detalhado. Servidor se identifica com texto padrão/antigo, portanto autoridade deve ser confirmada pelo catálogo/metadados por camada."
+    },
+    {
+      "id": "sp-geosampa-cultural-heritage",
+      "authority": "Prefeitura de São Paulo / SMC-DPH",
+      "scope": "municipality",
+      "municipality_ibge": "3550308",
+      "domain": [
+        "heritage",
+        "archaeology",
+        "protected_assets",
+        "heritage_buffer",
+        "legal_restriction"
+      ],
+      "source_type": "GeoSampa_download_vector",
+      "discovery_url": "https://metadados.geosampa.prefeitura.sp.gov.br/geonetwork/srv/search?keyword=Patrim%C3%B4nio+cultural",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED_PUBLIC_DOWNLOAD",
+      "notes": "Camadas incluem bens tombados/em processo, áreas envoltórias e bens arqueológicos, cobrindo proteções municipal, estadual e federal. Vincular cada incidência à resolução/ato de proteção."
     },
     {
       "id": "sp-jundiai-geojundiai",
