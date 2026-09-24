@@ -13,6 +13,7 @@ import urllib.parse
 import urllib.request
 from datetime import datetime, timezone
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from pathlib import Path
 
 HOST = "127.0.0.1"
 PORT = 8765
@@ -50,6 +51,23 @@ FIELDS = [
 SP_BOUNDS = (-46.95, -24.05, -46.20, -23.30)
 DELTA = 0.00045
 MAX_FEATURES = 120
+ROOT = Path("/srv/lotediretor/app")
+REPORT_SPEC_PATH = ROOT / "data/property-dossier/report-spec.json"
+MATRIX_PATH = ROOT / "data/deployment/professional-completion-matrix.json"
+
+FIELD_LABELS = {
+    "identity": "Identidade", "land": "Terreno", "building": "Edificação",
+    "IPTU": "IPTU", "PGV": "PGV", "ITBI": "ITBI",
+    "registry reference": "Registro imobiliário", "zoning": "Zoneamento",
+    "urban parameters": "Parâmetros urbanísticos", "permits": "Licenciamento",
+    "habite-se": "Habite-se", "environment": "Ambiental", "risk": "Risco",
+    "heritage": "Patrimônio", "electricity": "Energia", "gas": "Gás",
+    "water/sewer": "Água e esgoto", "drainage": "Drenagem",
+    "telecom": "Telecom", "transport": "Sistema viário", "imagery": "Imagens",
+    "terrain": "Terreno/topografia", "public works": "Obras públicas",
+    "public processes": "Processos públicos", "official gazette": "Diário Oficial",
+    "historical data": "Histórico",
+}
 
 
 def utc_now() -> str:
@@ -178,6 +196,86 @@ def public_feature(feature: dict) -> dict:
     }
 
 
+def load_report_contract() -> tuple[dict, dict]:
+    spec = json.loads(REPORT_SPEC_PATH.read_text(encoding="utf-8"))
+    matrix = json.loads(MATRIX_PATH.read_text(encoding="utf-8"))
+    city = next(item for item in matrix["first_wave"] if item.get("ibge") == "3550308")
+    return spec, {row["field"]: row for row in city["rows"]}
+
+
+def actual_values_for_section(section_id: str, parcel: dict) -> list[dict]:
+    p = parcel["properties"]
+    address = ", ".join(filter(None, [p.get("street"), p.get("number")])) or None
+    if section_id == "executive_summary":
+        return [
+            {"label": "Endereço", "value": address},
+            {"label": "SQL", "value": p.get("sql_reference")},
+            {"label": "CIB", "value": p.get("cib")},
+            {"label": "Área do terreno", "value": p.get("land_area_m2"), "unit": "m²"},
+            {"label": "Área construída fiscal", "value": p.get("built_area_m2"), "unit": "m²"},
+            {"label": "Uso cadastral", "value": p.get("use_description")},
+        ]
+    if section_id == "identity_location":
+        return [
+            {"label": "SQL", "value": p.get("sql_reference")},
+            {"label": "CIB", "value": p.get("cib")},
+            {"label": "Situação CIB", "value": p.get("cib_status")},
+            {"label": "Setor", "value": p.get("fiscal_sector")},
+            {"label": "Quadra", "value": p.get("fiscal_block")},
+            {"label": "Lote", "value": p.get("fiscal_lot")},
+            {"label": "Endereço", "value": address},
+            {"label": "Complemento", "value": p.get("complement")},
+            {"label": "Área do terreno", "value": p.get("land_area_m2"), "unit": "m²"},
+        ]
+    if section_id == "building_existing":
+        return [
+            {"label": "Área construída fiscal", "value": p.get("built_area_m2"), "unit": "m²"},
+            {"label": "Uso cadastral", "value": p.get("use_description")},
+            {"label": "Tipo de lote", "value": p.get("parcel_type")},
+            {"label": "Situação do lote", "value": p.get("parcel_status")},
+        ]
+    return []
+
+
+def build_report(parcel: dict) -> dict:
+    spec, rows = load_report_contract()
+    sections = []
+    for section in sorted(spec["sections"], key=lambda item: item["order"]):
+        field_states = []
+        for field in section.get("source_matrix_fields", []):
+            row = rows.get(field)
+            if not row:
+                continue
+            field_states.append({
+                "field": field,
+                "label": FIELD_LABELS.get(field, field),
+                "status": row.get("status"),
+                "source_id": row.get("source_id"),
+                "connector_status": row.get("connector_status"),
+                "access_class": row.get("access_class"),
+                "missing_fields": row.get("missing_fields") or [],
+            })
+        values = [
+            item for item in actual_values_for_section(section["id"], parcel)
+            if item.get("value") not in (None, "")
+        ]
+        sections.append({
+            "id": section["id"],
+            "title": section["title"],
+            "order": section["order"],
+            "section_type": section.get("section_type"),
+            "actual_values": values,
+            "fields": field_states,
+        })
+    return {
+        "title": spec["title"],
+        "target_completion_level": spec["target_completion_level"],
+        "principle": spec["principle"],
+        "mode": "PUBLIC_PROPERTY_REPORT",
+        "sections": sections,
+    }
+
+
 class Handler(BaseHTTPRequestHandler):
     server_version = "LoteDiretorParcelAPI/0.1"
 
@@ -237,6 +335,7 @@ class Handler(BaseHTTPRequestHandler):
                     "queried_at": utc_now(),
                     "method": "WFS 2.0 bbox candidate query + server-side point-in-polygon",
                 },
+                "report": build_report(public_feature(selected)),
             })
         except Exception as exc:
             print(f"upstream error: {exc!r}", flush=True)
