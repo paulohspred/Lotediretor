@@ -138,3 +138,159 @@ Os relatórios mensais de ITBI incluem endereço, bairro, ano da construção, �
 ## Regra adicional de produto
 
 Uma licença aberta de uma base fiscal não autoriza transformar identificadores de contribuintes em um mecanismo de busca de pessoas. A ingestão será property-centric: atributos do imóvel e transações ligadas ao imóvel, com minimização/segregação de campos pessoais quando presentes.
+
+
+## Infraestrutura escondida, diretórios públicos e segunda onda municipal
+
+### Diretórios e séries históricas
+
+A pesquisa confirmou que mecanismos de busca tradicionais indexam mal diretórios de transferência. Por isso o projeto passou a manter `data/source-registry/public-directories.json` e um modo `directory` no harvester que enumera metadados sem baixar automaticamente os arquivos.
+
+Fontes-mãe confirmadas:
+
+- **IBGE GeoFTP**: malhas, setores censitários, bases cartográficas contínuas, ortomosaicos, geodésia e versões históricas. O próprio índice informa que os arquivos são públicos. Foram observadas BC250 2015, 2017, 2023 e 2025; a versão 2025 é distribuída em GeoPackage, PostGIS e shapefiles.
+- **repositorio.dados.gov.br**: diretórios públicos do Governo Federal com séries históricas, Data Packages, arquivos removidos da navegação principal e dados de obras/patrimônio.
+- **INPE/CPTEC**: servidor de transferência público para chuva, clima, nowcasting, oceano e modelos.
+- **ANM/SIGMINE**: diretórios abertos de processos minerários, Brasil/UF e outros recursos.
+
+A regra é guardar primeiro nome, caminho, data de modificação, tamanho, metadados, licença e lineage. Payloads grandes só entram no data lake depois da revisão.
+
+### Gov360 — Imóveis da União
+
+O `datapackage.json` oficial confirmou que `imoveis-da-uniao.csv` é explicitamente uma tabela de imóveis de uso especial da União administrados pela SPU, e não apenas um agregado genérico de patrimônio.
+
+Na extração de maio/2026:
+- 56.803 linhas;
+- 19 campos;
+- SHA-256 publicado;
+- tipo de imóvel;
+- tipo de destinação;
+- regime de utilização;
+- endereço;
+- município/UF;
+- área total;
+- área construída;
+- valor do imóvel;
+- valor de aluguel.
+
+O próprio pacote declara que as informações podem ser baixadas e utilizadas como dados abertos. Há snapshots históricos mensais, úteis para temporalidade.
+
+### INCRA GeoNode
+
+O portal de desenvolvedores do INCRA documenta WMS, WFS, WCS, CSW, OpenSearch, OAI-PMH e WMTS. Isso permite descobrir recursos/metadados programaticamente antes do download. Autenticação exigida por serviços específicos continua sendo respeitada sem bypass.
+
+### Belo Horizonte — IDE-BHGEO/BHMap
+
+A PBH confirma oficialmente WFS/WMS da IDE-BHGEO e acesso a dados pelo WFS. O BHMap tinha mais de 330 camadas em maio de 2026.
+
+Camadas relevantes observadas no catálogo incluem:
+- `LOTE_CTM`;
+- `SQLV_LOTE_CTM`;
+- `ENDERECO_POR_LOTE_CTM`;
+- `EDIFICACAO`;
+- tipologia de uso/ocupação;
+- parâmetros da Lei 11.181/2019;
+- redes de água/esgoto/energia;
+- lote aprovado.
+
+O endpoint oficial, não o diretório de terceiros que levou à descoberta, foi registrado como fonte.
+
+### Santos
+
+A página oficial de mapas urbanos é um dos melhores exemplos de distribuição municipal:
+
+- lotes 2022, 2023, 2024 e 2026 em SHP/DXF;
+- quadras;
+- Plano Diretor LC 1.181/2022;
+- alterações de perímetro pela LC 1.314/2025;
+- LUOS insular LC 1.187/2022, alterada em 2025;
+- zoneamento em SHP/GPKG;
+- hierarquia viária;
+- PEUC;
+- uso do solo;
+- risco/inundação;
+- sítios arqueológicos.
+
+Cada geometria deve guardar sua lei e data de referência.
+
+### São José dos Campos
+
+GeoSanja:
+- portal público;
+- WMS/WFS/WCS;
+- metadados;
+- exportações geoespaciais;
+- busca por endereço/coordenada/inscrição imobiliária;
+- camadas de zoneamento e Plano Diretor;
+- imagens/ortofotos;
+- comparação temporal.
+
+O município instituiu CTM e, pelo Decreto 20.316/2026, aderiu ao SINTER. É um excelente caso para testar reconciliação CTM municipal → SINTER/CIB.
+
+### Blumenau
+
+O WFS oficial documenta diretamente:
+- lotes;
+- edificações;
+- condomínios;
+- loteamentos aprovados;
+- drenagem;
+- risco de deslizamento/enchente.
+
+Há ainda FeatureServer público de lotes e endereços para a aplicação “Consulta para Construir”. É um caso de alto valor para a ficha predial.
+
+### Santo André
+
+O SIGA é a plataforma oficial municipal baseada em tecnologias livres e GeoServer. Setores, quadras e lotes fiscais foram abertos ao público em 2023, com download documentado. A própria prefeitura ressalva que a geometria fiscal não substitui levantamento topográfico/cartorial.
+
+### Osasco
+
+O OzMundi Cidadão abriu acesso visitante em maio de 2026. A prefeitura e o FAQ oficial afirmam que o sistema permite consultas e download; existe GeoNetwork próprio.
+
+O sistema cita cadastros, certidão de uso do solo, loteamentos e matrículas. Como essas últimas podem envolver dados registrais/pessoais, qualquer conector deve aplicar bloqueio de campos e revisão LGPD antes de materialização pública.
+
+### Balneário Camboriú
+
+O GIS municipal em acesso público permite:
+- lote;
+- lista de unidades;
+- itens cadastrais de edificação;
+- área construída;
+- valor venal total;
+- valor venal do terreno;
+- valor venal predial;
+- consulta de viabilidade urbanística.
+
+É fonte de consulta de alto valor, mas permanece `PUBLIC_QUERY_ONLY` até revisão explícita dos termos de reutilização.
+
+### Jundiaí
+
+GeoJundiaí combina:
+- lotes;
+- loteamentos;
+- condomínios;
+- áreas públicas;
+- Plano Diretor/zoneamento;
+- PGV;
+- cartografia histórica;
+- ortofotos 2012 e 2019;
+- imagem IGC 2023/24.
+
+O Cadastro Fiscal Imobiliário é explicitamente restrito a funcionários, portanto não há tentativa de bypass. A busca pública por matrícula/cartório também exige revisão antes de qualquer ingestão.
+
+### Sorocaba
+
+A SEPLAN fornece downloads ZIP de dados geoespaciais e explicita que as camadas são informativas, sem valor de documento oficial. Cada arquivo deve ser vinculado à respectiva norma e data.
+
+### Controle de qualidade
+
+O registry já possui `tools/discovery/validate_registry.py`.
+
+A validação estrutural realizada após esta rodada confirmou:
+- IDs únicos;
+- classes de acesso válidas;
+- códigos IBGE municipais com sete dígitos;
+- URLs HTTP(S) estruturalmente válidas;
+- campos mínimos de autoridade, escopo, domínio, tipo e status.
+
+A escala já exige validação automática antes de cada merge.
