@@ -996,7 +996,16 @@
       "discovery_url": "https://www.gov.br/receitafederal/pt-br/acesso-a-informacao/acoes-e-programas/programas-e-atividades/sinter",
       "access_class": "PUBLIC_QUERY_ONLY",
       "verification_status": "VERIFIED",
-      "notes": "CIB é identificador nacional em implantação. Consulta pública não equivale a acesso aos campos pessoais/restritos existentes na origem."
+      "notes": "CIB é identificador nacional em implantação. Consulta pública não equivale a acesso aos campos pessoais/restritos existentes na origem. A Receita documenta API CADURB v1 e Swagger oficial; operações exigem credenciais Client ID/Secret. Não testar escrita sem credenciais/convênio legítimos.",
+      "api_documentation_url": "https://docs.receitafederal.gov.br/sinter/literal/guide/ui/pre-requisitos.html",
+      "api_swagger_url": "https://api.receitafederal.gov.br/prr-sinter/api/swagger-ui/index.html",
+      "api_access": "AUTHENTICATED_WITH_CLIENT_ID_SECRET",
+      "api_operations": [
+        "inclusao",
+        "alteracao",
+        "desativacao",
+        "consulta"
+      ]
     },
     {
       "id": "br-serp-meu-registro",
