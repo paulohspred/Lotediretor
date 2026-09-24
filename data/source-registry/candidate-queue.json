@@ -518,6 +518,105 @@
         "define evidence/document retention class",
         "do not automate without legitimate credentials and terms"
       ]
+    },
+    {
+      "id": "cand-sp-conddephaat-idesp-reuse",
+      "status": "TERMS_REVIEW",
+      "category": "heritage_state_gis",
+      "authority": "Governo do Estado de São Paulo / CONDEPHAAT",
+      "url": "https://www.cultura.sp.gov.br/sec_cultura/CONDEPHAAT/Bens_Protegidos",
+      "discovered_via": "official CONDEPHAAT portal plus PMSP preservation guidance",
+      "goal": "Confirm current IDE-SP heritage layer terms and stable endpoints so state geometry can be materialized independently of GeoSampa.",
+      "risks": [
+        "municipal GeoSampa mirror/license does not automatically define the state IDE-SP license",
+        "surrounding-area rules vary by tombamento date and resolution"
+      ],
+      "next_checks": [
+        "IDE-SP service endpoint",
+        "license/terms",
+        "schema for tombed/pending/surrounding areas",
+        "resolution identifier/link"
+      ]
+    },
+    {
+      "id": "cand-pe-recife-zeph-license",
+      "status": "TERMS_REVIEW",
+      "category": "heritage_municipal_gis",
+      "authority": "Prefeitura do Recife / SEDUL",
+      "url": "https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Planejamento/BASES_ZONEAMENTO_G_PD2020/FeatureServer/3",
+      "discovered_via": "official Recife ArcGIS service",
+      "goal": "Approve materialization of ZEPH geometry/attributes and link each zone to current legal parameters.",
+      "risks": [
+        "public ArcGIS reachability is not redistribution permission",
+        "ZEPH polygon alone does not encode every project restriction"
+      ],
+      "next_checks": [
+        "itemInfo/license",
+        "field dictionary",
+        "legal-act identifiers",
+        "parameter/ficha service relationship"
+      ]
+    },
+    {
+      "id": "cand-rj-inepac-structured-inventory",
+      "status": "DISCOVERED",
+      "category": "heritage_state_inventory",
+      "authority": "Governo do Estado do Rio de Janeiro / SECEC-RJ / INEPAC",
+      "url": "https://cultura.rj.gov.br/estrutura/",
+      "discovered_via": "current official SECEC structure/INEPAC authority plus public state acts",
+      "goal": "Locate a current structured official inventory/search or downloadable list of INEPAC protected and pending assets suitable for stable lineage.",
+      "risks": [
+        "legacy INEPAC inventory URLs are unstable",
+        "news/acts prove individual protections but are not a complete inventory",
+        "pending/definitive statuses must not be conflated"
+      ],
+      "next_checks": [
+        "current INEPAC inventory portal",
+        "open-data/catalog search",
+        "state GIS",
+        "Diário Oficial linkage",
+        "terms/license"
+      ]
+    },
+    {
+      "id": "cand-rj-irph-feature-license",
+      "status": "TERMS_REVIEW",
+      "category": "heritage_municipal_gis",
+      "authority": "Prefeitura do Rio de Janeiro / IRPH / SMDU",
+      "url": "https://pgeo3.rio.rj.gov.br/arcgis/rest/services/Urbanismo/LBB_APAC/FeatureServer",
+      "discovered_via": "official municipal ArcGIS and IRPH legal guides",
+      "goal": "Approve materialization of APAC/protected-area geometries and identify any dedicated current layer for individual tombed/preserved buildings.",
+      "risks": [
+        "public FeatureServer does not declare redistribution license",
+        "APAC and individual tombamento are different legal constructs",
+        "generic protected-area layer mixes protection types"
+      ],
+      "next_checks": [
+        "itemInfo/license",
+        "IRPH individual asset layers",
+        "APAC decree keys",
+        "protected-area type dictionary"
+      ]
+    },
+    {
+      "id": "cand-pb-filipeia-heritage-license",
+      "status": "TERMS_REVIEW",
+      "category": "heritage_municipal_gis",
+      "authority": "Prefeitura de João Pessoa / SEPLAN",
+      "url": "https://filipeia.joaopessoa.pb.gov.br/",
+      "discovered_via": "official Filipeia heritage maps",
+      "goal": "Confirm reusable vector source/license for IPHAN/IPHAEP heritage boundaries and tombamentos shown in Filipeia.",
+      "risks": [
+        "map/PDF publication does not automatically authorize bulk vector redistribution",
+        "historic-center and isolated asset protection rules differ",
+        "municipal heritage governance has organizational changes to reconcile"
+      ],
+      "next_checks": [
+        "SigWEB/download vector layers",
+        "license/terms",
+        "current municipal heritage authority",
+        "IPHAEP grade/preservation rules linkage"
+      ]
     }
   ]
 }
