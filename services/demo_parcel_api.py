@@ -55,6 +55,8 @@ MAX_FEATURES = 120
 ROOT = Path("/srv/lotediretor/app")
 REPORT_SPEC_PATH = ROOT / "data/property-dossier/report-spec.json"
 MATRIX_PATH = ROOT / "data/deployment/professional-completion-matrix.json"
+UTILITY_RESOLVER_PATH = ROOT / "data/utilities/municipality-provider-resolver.json"
+SOURCE_REGISTRY_PATH = ROOT / "data/source-registry/bootstrap.json"
 
 FIELD_LABELS = {
     "identity": "Identidade", "land": "Terreno", "building": "Edificação",
@@ -317,6 +319,35 @@ def fetch_point_layer(key: str, lat: float, lng: float) -> list[dict]:
     return output
 
 
+
+def load_utility_context() -> dict:
+    resolver = json.loads(UTILITY_RESOLVER_PATH.read_text(encoding="utf-8"))
+    registry = json.loads(SOURCE_REGISTRY_PATH.read_text(encoding="utf-8"))
+    source_map = {item["id"]: item for item in registry["sources"]}
+    city = next(
+        item for item in resolver["municipalities"]
+        if item.get("ibge") == "3550308"
+    )
+    output = {}
+    for service_type, entries in city["services"].items():
+        normalized = []
+        for entry in entries:
+            source_id = entry.get("provider_source_id")
+            source = source_map.get(source_id) or {}
+            normalized.append({
+                "service_type": service_type,
+                "provider_source_id": source_id,
+                "provider_authority": source.get("authority"),
+                "role": entry.get("role"),
+                "evidence_level": entry.get("evidence_level"),
+                "technical_source_ids": entry.get("technical_source_ids") or [],
+                "missing": entry.get("missing") or [],
+                "caveat": entry.get("caveat") or entry.get("note"),
+            })
+        output[service_type] = normalized
+    return output
+
+
 def build_context(lat: float, lng: float) -> dict:
     results = {}
     errors = {}
@@ -355,6 +386,7 @@ def build_context(lat: float, lng: float) -> dict:
                 "IPHAN": results.get("heritage_buffer_iphan") or [],
             },
         },
+        "utilities": load_utility_context(),
         "query_errors": errors,
         "queried_at": utc_now(),
         "source": "Prefeitura de São Paulo / GeoSampa WFS",
@@ -464,6 +496,39 @@ def actual_values_for_section(
                 or macrozone.get("nm_perimetro_divisao_pde"),
             },
         ]
+
+    if section_id == "infrastructure_utilities":
+        labels = {
+            "electricity": "Energia elétrica",
+            "gas": "Gás canalizado",
+            "water_sewer": "Água e esgoto",
+            "telecom": "Telecom",
+            "drainage": "Drenagem",
+        }
+        values = []
+        utilities = context.get("utilities") or {}
+        for service_type in [
+            "electricity", "gas", "water_sewer", "telecom", "drainage"
+        ]:
+            for entry in utilities.get(service_type) or []:
+                provider = entry.get("provider_authority") or entry.get("provider_source_id")
+                evidence = entry.get("evidence_level")
+                values.append({
+                    "label": f"{labels[service_type]} · referência",
+                    "value": provider,
+                })
+                values.append({
+                    "label": f"{labels[service_type]} · evidência",
+                    "value": evidence,
+                })
+        values.append({
+            "label": "Limite de interpretação",
+            "value": (
+                "Prestador/território ou contexto de rede não comprovam "
+                "ligação, disponibilidade ou capacidade técnica no lote."
+            ),
+        })
+        return values
 
     if section_id == "environment_risk_heritage":
         values = []
