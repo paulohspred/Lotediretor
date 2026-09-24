@@ -1,0 +1,157 @@
+{
+  "schema_version": "0.1.0",
+  "as_of": "2026-09-24",
+  "statuses": [
+    "DISCOVERED",
+    "AUTHORITY_CONFIRMED",
+    "TERMS_REVIEW",
+    "SCHEMA_REVIEW",
+    "PRIVACY_REVIEW",
+    "APPROVED_FOR_CONNECTOR",
+    "APPROVED_QUERY_ONLY",
+    "REJECTED",
+    "BLOCKED_AUTH_REQUIRED"
+  ],
+  "required_checks": [
+    "authority",
+    "official_url",
+    "terms_or_license",
+    "coverage",
+    "schema",
+    "personal_data",
+    "update_frequency",
+    "historical_versions",
+    "stable_identifier",
+    "snapshot_policy"
+  ],
+  "candidates": [
+    {
+      "id": "cand-sc-ciga-municipality-enumeration",
+      "status": "DISCOVERED",
+      "category": "multi_municipality_gis",
+      "authority": "CIGA",
+      "url": "https://geo.ciga.sc.gov.br/",
+      "discovered_via": "official CIGA documentation",
+      "goal": "Enumerate contracted municipalities and only the layers/attributes explicitly exposed in each public external environment.",
+      "risks": [
+        "municipal configuration varies",
+        "public display does not automatically grant redistribution",
+        "internal cadastral fields may exist"
+      ],
+      "next_checks": [
+        "enumerate public tenants without authentication bypass",
+        "record municipality IBGE",
+        "inspect terms and public layer schemas"
+      ]
+    },
+    {
+      "id": "cand-pr-pinhais-itbi",
+      "status": "AUTHORITY_CONFIRMED",
+      "category": "itbi",
+      "authority": "Prefeitura de Pinhais",
+      "url": "https://geopinhais.pinhais.pr.gov.br/server/rest/services/ITBI/FeatureServer",
+      "discovered_via": "public ArcGIS REST directory",
+      "goal": "Determine whether ITBI is transaction-level, aggregated or thematic and whether it is reusable.",
+      "risks": [
+        "transaction fields may include personal data",
+        "license not yet established"
+      ],
+      "next_checks": [
+        "inspect itemInfo/metadata",
+        "inspect schema through read-only service description",
+        "privacy review",
+        "license review"
+      ]
+    },
+    {
+      "id": "cand-sp-praia-grande-geoserver-layers",
+      "status": "AUTHORITY_CONFIRMED",
+      "category": "cadastral_gis",
+      "authority": "Prefeitura de Praia Grande",
+      "url": "https://geoserver.praiagrande.sp.gov.br/PraiaGrandeProducao/wms",
+      "discovered_via": "official cadastral map portal",
+      "goal": "Enumerate public WMS/WMTS layers and identify lot/building/zoning/orthophoto resources.",
+      "risks": [
+        "portal references RFC1918/internal WFS URLs that must not be probed",
+        "layer licenses unknown"
+      ],
+      "next_checks": [
+        "GetCapabilities only on public endpoint",
+        "metadata/license review",
+        "identify equivalent public vector downloads if available"
+      ]
+    },
+    {
+      "id": "cand-mg-contagem-sensitive-fields",
+      "status": "PRIVACY_REVIEW",
+      "category": "privacy_gate",
+      "authority": "Prefeitura de Contagem",
+      "url": "https://geoprocessamento.contagem.mg.gov.br/arcgis/rest/services",
+      "discovered_via": "public ArcGIS REST",
+      "goal": "Approve property-centric geometry/urbanism fields while explicitly excluding owner/person fields.",
+      "risks": [
+        "some publicly reachable layers contain Proprietario",
+        "technical accessibility is not republication authorization"
+      ],
+      "next_checks": [
+        "field allowlist",
+        "LGPD/source terms",
+        "connector projection that drops blocked fields"
+      ]
+    },
+    {
+      "id": "cand-rs-porto-alegre-plusdados",
+      "status": "DISCOVERED",
+      "category": "experimental_public_data",
+      "authority": "Prefeitura de Porto Alegre / SMAMUS",
+      "url": "https://gis-smamus.portoalegre.rs.gov.br/smamus/%2Bdados/",
+      "discovered_via": "indexed official municipal page",
+      "goal": "Determine whether the indexed +DADOS area is an official public dataset/documentation surface suitable for production lineage.",
+      "risks": [
+        "may be experimental or internal-facing documentation",
+        "scripts/data provenance need confirmation"
+      ],
+      "next_checks": [
+        "find official navigation/reference",
+        "identify explicit terms",
+        "do not execute scripts or access non-public paths"
+      ]
+    },
+    {
+      "id": "cand-sp-maua-sigweb",
+      "status": "DISCOVERED",
+      "category": "municipal_ctm",
+      "authority": "Prefeitura de Mauá",
+      "url": "https://dom.maua.sp.gov.br/",
+      "discovered_via": "official procurement/Diário documentation",
+      "goal": "Locate the current public-facing SIGWEB/GeoServer if officially exposed and identify lots/buildings/public urban layers.",
+      "risks": [
+        "procurement specification proves capability, not public data availability",
+        "system may require authentication"
+      ],
+      "next_checks": [
+        "official portal discovery",
+        "public service URL confirmation",
+        "terms/license review"
+      ]
+    },
+    {
+      "id": "cand-pr-medianeira-sigweb",
+      "status": "DISCOVERED",
+      "category": "municipal_ctm",
+      "authority": "Prefeitura de Medianeira",
+      "url": "https://medianeira.pr.gov.br/",
+      "discovered_via": "official 2025 procurement documentation",
+      "goal": "Locate any legitimate public GIS created from recent recadastramento, orthophotos and building vectorization.",
+      "risks": [
+        "procurement spec is not proof of public endpoint",
+        "imagery/cadastral data may be restricted"
+      ],
+      "next_checks": [
+        "check municipal portal",
+        "identify public access environment only",
+        "license/privacy review"
+      ]
+    }
+  ]
+}
