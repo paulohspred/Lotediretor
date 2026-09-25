@@ -771,15 +771,16 @@
           "status": "PARTIAL",
           "source_id": "pe-recife-ortho-2013-2014",
           "supporting_source_ids": [],
-          "endpoint": "https://esigportal2.recife.pe.gov.br/arcgis/rest/services/MeioAmbiente/MA_Ortofoto2013_2014MapService/MapServer",
+          "endpoint": "https://esigportal2.recife.pe.gov.br/arcgis/rest/services/MeioAmbiente/MA_Ortomosaico2018MapService/MapServer",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "APPROVED_METADATA_ONLY_LICENSE_REVIEW",
+          "connector_status": "LIVE_2018_ORTHOMOSAIC_PENDING_DEPLOY_VALIDATION",
           "missing_fields": [
-            "reuse/cache license",
-            "newer official imagery"
+            "production map validation after deployment",
+            "reuse/cache license review",
+            "newer citywide official imagery"
           ],
-          "notes": "Official cached orthophoto 2013/2014 exists; keep render/metadata-only until reuse terms are confirmed."
+          "notes": "Repository map exposes the official Recife 2018 drone orthomosaic through the municipal ArcGIS MapServer. The interface shows the year explicitly; it is historical imagery and not presented as current."
         },
         {
           "field": "terrain",
