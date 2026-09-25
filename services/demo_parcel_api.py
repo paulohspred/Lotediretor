@@ -920,7 +920,7 @@ def analyze_mdt_for_parcel(parcel_geometry: dict, laz_path: Path) -> dict:
     quality = (
         "INTERPOLATED_SPARSE_GROUND_RETURNS"
         if p90 > 10
-        else "INTERPOLATED_FROM_LIDAR_GROUND_POINTS"
+        else "Interpolação a partir de pontos de solo do levantamento a laser"
     )
     return {
         "available": True,
@@ -1744,9 +1744,9 @@ def build_context(lat: float, lng: float, parcel_geometry: dict, parcel: dict) -
             "impact_spatial_incidence": results.get("impact_license") or [],
             "environment_spatial_incidence": results.get("environment_license") or [],
             "interpretation": (
-                "Exact SQL matches are property-linked. Polygon intersections "
-                "are spatial incidence only and must not be described as a "
-                "parcel-specific license without an official identifier link."
+                "Licenças vinculadas diretamente à inscrição cadastral são tratadas como "
+                "eventos do imóvel. Interseções apenas espaciais são apresentadas "
+                "como incidência territorial e não como licença específica do terreno."
             ),
         },
         "risk": {
@@ -1829,24 +1829,24 @@ def actual_values_for_section(
     if section_id == "executive_summary":
         values = [
             {"label": "Endereço", "value": address},
-            {"label": "Inscrição fiscal do lote (SQL)", "value": p.get("sql_reference")},
-            {"label": "Código imobiliário (CIB)", "value": p.get("cib")},
+            {"label": "Inscrição fiscal do lote", "value": p.get("sql_reference")},
+            {"label": "Código imobiliário", "value": p.get("cib")},
             {"label": "Área do terreno", "value": p.get("land_area_m2"), "unit": "m²"},
             {"label": "Área construída fiscal", "value": p.get("built_area_m2"), "unit": "m²"},
             {"label": "Uso cadastral", "value": p.get("use_description")},
             {"label": "Zona", "value": zoning.get("cd_zoneamento_perimetro")},
             {"label": "Macroárea", "value": macroarea.get("nm_macroarea")},
             {
-                "label": "PGV 2026 · terreno",
+                "label": "Valor fiscal de referência do terreno (2026)",
                 "value": (context.get("fiscal") or {}).get("pgv", {}).get("vm2t_brl_per_m2"),
                 "unit": "BRL/m²",
             },
             {
-                "label": "Pavimentos · IPTU",
+                "label": "Pavimentos cadastrados",
                 "value": ((context.get("fiscal") or {}).get("iptu") or {}).get("latest", {}).get("floors"),
             },
             {
-                "label": "Ano construção · IPTU",
+                "label": "Ano de construção cadastrado",
                 "value": ((context.get("fiscal") or {}).get("iptu") or {}).get("latest", {}).get("corrected_construction_year"),
             },
         ]
@@ -1856,36 +1856,36 @@ def actual_values_for_section(
         iptu = ((context.get("fiscal") or {}).get("iptu") or {}).get("latest") or {}
         terrain = context.get("terrain") or {}
         values = [
-            {"label": "Inscrição fiscal do lote (SQL)", "value": p.get("sql_reference")},
-            {"label": "Código imobiliário (CIB)", "value": p.get("cib")},
+            {"label": "Inscrição fiscal do lote", "value": p.get("sql_reference")},
+            {"label": "Código imobiliário", "value": p.get("cib")},
             {"label": "Situação cadastral do imóvel", "value": p.get("cib_status")},
             {"label": "Situação cartográfica do lote", "value": p.get("parcel_status")},
             {"label": "Setor", "value": p.get("fiscal_sector")},
             {"label": "Quadra", "value": p.get("fiscal_block")},
             {"label": "Lote", "value": p.get("fiscal_lot")},
             {"label": "Endereço", "value": address},
-            {"label": "Complemento GeoSampa", "value": p.get("complement")},
-            {"label": "Bairro · IPTU", "value": iptu.get("neighborhood")},
-            {"label": "CEP · IPTU", "value": iptu.get("cep")},
-            {"label": "Data do cadastramento · IPTU", "value": iptu.get("registration_date")},
-            {"label": "Área terreno · cadastro fiscal", "value": iptu.get("land_area_m2") or p.get("land_area_m2"), "unit": "m²"},
-            {"label": "Área geométrica calculada · lote", "value": terrain.get("parcel_area_geometry_m2"), "unit": "m²"},
-            {"label": "Testada para cálculo · IPTU", "value": iptu.get("frontage_m"), "unit": "m"},
-            {"label": "Frentes/esquinas · IPTU", "value": iptu.get("corner_front_count")},
-            {"label": "Fração ideal · IPTU", "value": iptu.get("ideal_fraction")},
-            {"label": "Condomínio · IPTU", "value": iptu.get("condominium")},
+            {"label": "Complemento do endereço", "value": p.get("complement")},
+            {"label": "Bairro cadastrado", "value": iptu.get("neighborhood")},
+            {"label": "CEP", "value": iptu.get("cep")},
+            {"label": "Data do cadastro fiscal", "value": iptu.get("registration_date")},
+            {"label": "Área do terreno no cadastro fiscal", "value": iptu.get("land_area_m2") or p.get("land_area_m2"), "unit": "m²"},
+            {"label": "Área calculada pela geometria do terreno", "value": terrain.get("parcel_area_geometry_m2"), "unit": "m²"},
+            {"label": "Testada cadastrada para cálculo fiscal", "value": iptu.get("frontage_m"), "unit": "m"},
+            {"label": "Número de frentes/esquinas cadastrado", "value": iptu.get("corner_front_count")},
+            {"label": "Fração ideal cadastrada", "value": iptu.get("ideal_fraction")},
+            {"label": "Identificação de condomínio", "value": iptu.get("condominium")},
         ]
         cadastral_area = iptu.get("land_area_m2") or p.get("land_area_m2")
         geometry_area = terrain.get("parcel_area_geometry_m2")
         if isinstance(cadastral_area, (int, float)) and isinstance(geometry_area, (int, float)):
             values.append({
-                "label": "Divergência área GIS x cadastro",
+                "label": "Diferença entre área geométrica e área cadastral",
                 "value": round(geometry_area - cadastral_area, 2),
                 "unit": "m²",
             })
             if cadastral_area:
                 values.append({
-                    "label": "Divergência relativa área GIS x cadastro",
+                    "label": "Diferença percentual entre área geométrica e área cadastral",
                     "value": round((geometry_area - cadastral_area) / cadastral_area * 100, 2),
                     "unit": "%",
                 })
@@ -1909,32 +1909,31 @@ def actual_values_for_section(
         ]
         return [
             {"label": "Área construída fiscal", "value": iptu.get("built_area_m2") or p.get("built_area_m2"), "unit": "m²"},
-            {"label": "Área ocupada · IPTU", "value": iptu.get("occupied_area_m2"), "unit": "m²"},
-            {"label": "Pavimentos · IPTU", "value": iptu.get("floors")},
-            {"label": "Ano construção corrigido · IPTU", "value": iptu.get("corrected_construction_year")},
-            {"label": "Uso cadastral · IPTU", "value": iptu.get("use_description") or p.get("use_description")},
-            {"label": "Padrão construtivo · IPTU", "value": iptu.get("construction_pattern")},
-            {"label": "Tipo de terreno · IPTU", "value": iptu.get("terrain_type")},
-            {"label": "Fator de obsolescência · IPTU", "value": iptu.get("obsolescence_factor")},
-            {"label": "Tipo de lote · GeoSampa", "value": p.get("parcel_type")},
-            {"label": "Situação do lote · GeoSampa", "value": p.get("parcel_status")},
-            {"label": "Footprints cartográficos no lote", "value": len(buildings)},
+            {"label": "Área ocupada cadastrada", "value": iptu.get("occupied_area_m2"), "unit": "m²"},
+            {"label": "Pavimentos cadastrados", "value": iptu.get("floors")},
+            {"label": "Ano de construção cadastrado", "value": iptu.get("corrected_construction_year")},
+            {"label": "Uso cadastral", "value": iptu.get("use_description") or p.get("use_description")},
+            {"label": "Padrão construtivo cadastrado", "value": iptu.get("construction_pattern")},
+            {"label": "Tipo de terreno cadastrado", "value": iptu.get("terrain_type")},
+            {"label": "Fator fiscal de obsolescência", "value": iptu.get("obsolescence_factor")},
+            {"label": "Tipo cadastral do lote", "value": p.get("parcel_type")},
+            {"label": "Situação cadastral do lote", "value": p.get("parcel_status")},
+            {"label": "Contornos de edificações mapeados no terreno", "value": len(buildings)},
             {
-                "label": "Maior altura cartográfica entre footprints intersectantes",
+                "label": "Maior altura estimada das edificações mapeadas",
                 "value": round(max(heights), 2) if heights else None,
                 "unit": "m",
             },
             {
-                "label": "Atualização mais recente do footprint",
+                "label": "Atualização mais recente das edificações mapeadas",
                 "value": max(updates) if updates else None,
             },
             {
                 "label": "Ressalva temporal",
                 "value": (
-                    "Edificações 2D são cartografia histórica. Footprints são "
-                    "mostrados por interseção espacial e não equivalem "
-                    "automaticamente à geometria predial atual/licenciada nem "
-                    "à área construída fiscal."
+                    "Os contornos de edificações são cartografia histórica e servem como "
+                    "contexto visual. Eles não substituem cadastro predial atualizado, "
+                    "projeto aprovado ou área construída fiscal vigente."
                 ),
             },
         ]
@@ -1965,38 +1964,38 @@ def actual_values_for_section(
         ]
         if params.get("available"):
             values.extend([
-                {"label": "CA mínimo · parâmetro-base", "value": occupation.get("ca_min")},
-                {"label": "CA básico · parâmetro-base", "value": occupation.get("ca_basic")},
-                {"label": "CA máximo · parâmetro-base", "value": occupation.get("ca_max")},
+                {"label": "Coeficiente de aproveitamento mínimo", "value": occupation.get("ca_min")},
+                {"label": "Coeficiente de aproveitamento básico", "value": occupation.get("ca_basic")},
+                {"label": "Coeficiente de aproveitamento máximo", "value": occupation.get("ca_max")},
                 {
-                    "label": "Taxa de ocupação máxima · parâmetro-base",
+                    "label": "Taxa de ocupação máxima",
                     "value": occupation.get("effective_max_occupancy_ratio"),
                     "unit": "ratio_percent",
                 },
-                {"label": "Faixa usada para TO", "value": occupation.get("occupancy_basis")},
-                {"label": "Gabarito máximo · parâmetro-base", "value": occupation.get("max_height_m"), "unit": "m"},
-                {"label": "Recuo frontal · parâmetro-base", "value": occupation.get("min_front_setback_m"), "unit": "m"},
+                {"label": "Faixa de área usada na taxa de ocupação", "value": occupation.get("occupancy_basis")},
+                {"label": "Altura máxima de referência", "value": occupation.get("max_height_m"), "unit": "m"},
+                {"label": "Recuo frontal mínimo", "value": occupation.get("min_front_setback_m"), "unit": "m"},
                 {
-                    "label": "Recuo lateral/fundos > 10 m · parâmetro-base",
+                    "label": "Recuo lateral e de fundos para edificações acima de 10 m",
                     "value": occupation.get("min_side_rear_setback_over_10m_m"),
                     "unit": "m",
                 },
                 {"label": "Frente mínima para parcelamento", "value": parceling.get("min_frontage_m"), "unit": "m"},
                 {"label": "Lote mínimo para parcelamento", "value": parceling.get("min_lot_area_m2"), "unit": "m²"},
                 {"label": "Frente fiscal atual", "value": params.get("frontage_m"), "unit": "m"},
-                {"label": "Área fiscal usada no cálculo-base", "value": params.get("land_area_m2"), "unit": "m²"},
+                {"label": "Área do terreno usada no cálculo urbanístico", "value": params.get("land_area_m2"), "unit": "m²"},
                 {
-                    "label": "Área computável mínima teórica · CA base",
+                    "label": "Área computável mínima teórica",
                     "value": theoretical.get("min_computable_area_m2"),
                     "unit": "m²",
                 },
                 {
-                    "label": "Área computável básica teórica · CA base",
+                    "label": "Área computável básica teórica",
                     "value": theoretical.get("basic_computable_area_m2"),
                     "unit": "m²",
                 },
                 {
-                    "label": "Área computável máxima teórica · CA base",
+                    "label": "Área computável máxima teórica",
                     "value": theoretical.get("max_computable_area_m2"),
                     "unit": "m²",
                 },
@@ -2006,8 +2005,8 @@ def actual_values_for_section(
                     "value": environmental.get("min_permeability_ratio"),
                     "unit": "ratio_percent",
                 },
-                {"label": "Quota Ambiental exigida", "value": environmental.get("qa_required")},
-                {"label": "Pontuação QA mínima", "value": environmental.get("min_qa_score")},
+                {"label": "Quota Ambiental exigida pela legislação", "value": environmental.get("qa_required")},
+                {"label": "Pontuação ambiental mínima", "value": environmental.get("min_qa_score")},
                 {
                     "label": "Relação bruta área construída/terreno existente",
                     "value": params.get("existing_gross_built_land_ratio"),
@@ -2169,18 +2168,18 @@ def actual_values_for_section(
         iptu = iptu_data.get("latest") or {}
         if iptu:
             values.extend([
-                {"label": "Cadastro IPTU 2026", "value": "Encontrado no bulk público IPTU_INTER"},
-                {"label": "Valor unitário terreno · IPTU", "value": iptu.get("land_unit_value_brl_m2"), "unit": "BRL/m²"},
-                {"label": "Valor unitário construção · IPTU", "value": iptu.get("construction_unit_value_brl_m2"), "unit": "BRL/m²"},
-                {"label": "Área terreno · IPTU", "value": iptu.get("land_area_m2"), "unit": "m²"},
-                {"label": "Área construída · IPTU", "value": iptu.get("built_area_m2"), "unit": "m²"},
-                {"label": "Área ocupada · IPTU", "value": iptu.get("occupied_area_m2"), "unit": "m²"},
-                {"label": "Testada · IPTU", "value": iptu.get("frontage_m"), "unit": "m"},
-                {"label": "Pavimentos · IPTU", "value": iptu.get("floors")},
-                {"label": "Ano construção corrigido · IPTU", "value": iptu.get("corrected_construction_year")},
-                {"label": "Padrão construtivo · IPTU", "value": iptu.get("construction_pattern")},
-                {"label": "Fator de obsolescência · IPTU", "value": iptu.get("obsolescence_factor")},
-                {"label": "Observação IPTU", "value": iptu_data.get("interpretation")},
+                {"label": "Cadastro fiscal de 2026", "value": "Registro localizado no cadastro fiscal público consultado."},
+                {"label": "Valor unitário fiscal do terreno", "value": iptu.get("land_unit_value_brl_m2"), "unit": "BRL/m²"},
+                {"label": "Valor unitário fiscal da construção", "value": iptu.get("construction_unit_value_brl_m2"), "unit": "BRL/m²"},
+                {"label": "Área do terreno no cadastro fiscal", "value": iptu.get("land_area_m2"), "unit": "m²"},
+                {"label": "Área construída no cadastro fiscal", "value": iptu.get("built_area_m2"), "unit": "m²"},
+                {"label": "Área ocupada cadastrada", "value": iptu.get("occupied_area_m2"), "unit": "m²"},
+                {"label": "Testada no cadastro fiscal", "value": iptu.get("frontage_m"), "unit": "m"},
+                {"label": "Pavimentos cadastrados", "value": iptu.get("floors")},
+                {"label": "Ano de construção cadastrado", "value": iptu.get("corrected_construction_year")},
+                {"label": "Padrão construtivo cadastrado", "value": iptu.get("construction_pattern")},
+                {"label": "Fator fiscal de obsolescência", "value": iptu.get("obsolescence_factor")},
+                {"label": "Observação sobre os dados fiscais", "value": iptu_data.get("interpretation")},
             ])
         else:
             values.append({"label": "Cadastro IPTU", "value": "SQL não localizado no índice fiscal materializado."})
@@ -2188,16 +2187,16 @@ def actual_values_for_section(
         if pgv.get("found"):
             values.extend([
                 {
-                    "label": "PGV 2026 · valor unitário de terreno",
+                    "label": "Valor fiscal de referência do terreno (2026)",
                     "value": pgv.get("vm2t_brl_per_m2"),
                     "unit": "BRL/m²",
                 },
                 {
-                    "label": "Chave PGV · Codlog / SQ",
+                    "label": "Chave cadastral usada no valor fiscal",
                     "value": f"{pgv.get('codlog')} / {pgv.get('sq')}",
                 },
-                {"label": "Base legal PGV", "value": pgv.get("law")},
-                {"label": "Vigência PGV", "value": pgv.get("effective_from")},
+                {"label": "Base legal do valor fiscal de referência", "value": pgv.get("law")},
+                {"label": "Vigência do valor fiscal de referência", "value": pgv.get("effective_from")},
             ])
         else:
             values.append({
@@ -2216,7 +2215,7 @@ def actual_values_for_section(
         else:
             coverage_label = "sem índice"
         values.append({
-            "label": f"DTIs/ITBI encontradas · {coverage_label}",
+            "label": f"Transações de ITBI localizadas · {coverage_label}",
             "value": itbi.get("count", 0),
         })
         if not txs:
@@ -2233,7 +2232,7 @@ def actual_values_for_section(
                 {"label": f"{prefix} · data da transação", "value": tx.get("transaction_date")},
                 {"label": f"{prefix} · natureza", "value": tx.get("transaction_nature")},
                 {"label": f"{prefix} · valor declarado", "value": tx.get("transaction_value"), "unit": "BRL"},
-                {"label": f"{prefix} · VVR", "value": tx.get("vvr"), "unit": "BRL"},
+                {"label": f"{prefix} · valor venal de referência", "value": tx.get("vvr"), "unit": "BRL"},
                 {"label": f"{prefix} · base de cálculo", "value": tx.get("tax_base"), "unit": "BRL"},
                 {"label": f"{prefix} · proporção transmitida", "value": tx.get("transmitted_pct"), "unit": "%"},
                 {"label": f"{prefix} · financiamento", "value": tx.get("financing_type")},
@@ -2246,17 +2245,17 @@ def actual_values_for_section(
             latest = txs[0]
             values.extend([
                 {"label": "Situação da inscrição fiscal no cadastro mais recente", "value": latest.get("sql_status")},
-                {"label": "Testada · snapshot IPTU/DTI", "value": latest.get("frontage_m"), "unit": "m"},
-                {"label": "Fração ideal · snapshot IPTU/DTI", "value": latest.get("ideal_fraction")},
-                {"label": "Área terreno · snapshot IPTU/DTI", "value": latest.get("land_area_m2"), "unit": "m²"},
-                {"label": "Área construída · snapshot IPTU/DTI", "value": latest.get("built_area_m2"), "unit": "m²"},
-                {"label": "Uso IPTU · snapshot DTI", "value": latest.get("use_description")},
-                {"label": "Padrão IPTU · snapshot DTI", "value": latest.get("pattern_description")},
-                {"label": "ACC / ano construção · snapshot DTI", "value": latest.get("construction_year")},
+                {"label": "Testada registrada na transação mais recente", "value": latest.get("frontage_m"), "unit": "m"},
+                {"label": "Fração ideal registrada na transação mais recente", "value": latest.get("ideal_fraction")},
+                {"label": "Área do terreno registrada na transação mais recente", "value": latest.get("land_area_m2"), "unit": "m²"},
+                {"label": "Área construída registrada na transação mais recente", "value": latest.get("built_area_m2"), "unit": "m²"},
+                {"label": "Uso cadastral registrado na transação mais recente", "value": latest.get("use_description")},
+                {"label": "Padrão construtivo registrado na transação mais recente", "value": latest.get("pattern_description")},
+                {"label": "Ano de construção registrado na transação mais recente", "value": latest.get("construction_year")},
             ])
 
         values.extend([
-            {"label": "Interpretação ITBI", "value": itbi.get("interpretation")},
+            {"label": "Como interpretar o histórico de ITBI", "value": itbi.get("interpretation")},
             {"label": "Privacidade", "value": itbi.get("privacy")},
         ])
         return values
@@ -2327,9 +2326,15 @@ def actual_values_for_section(
                     "label": f"{labels[service_type]} · referência",
                     "value": provider,
                 })
+                evidence_labels = {
+                    "PROVIDER_TERRITORY_ONLY": "Prestador responsável pela área",
+                    "NETWORK_CONTEXT": "Há contexto público de rede na região",
+                    "SUBMUNICIPAL_REQUIRED": "A disponibilidade depende da área específica do município",
+                    "PARCEL_CONFIRMED": "Atendimento confirmado para o terreno",
+                }
                 values.append({
-                    "label": f"{labels[service_type]} · evidência",
-                    "value": evidence,
+                    "label": f"{labels[service_type]} · situação da informação",
+                    "value": evidence_labels.get(evidence, "Não confirmado para o terreno"),
                 })
         values.append({
             "label": "Limite de interpretação",
@@ -2352,13 +2357,13 @@ def actual_values_for_section(
         values = [
             {"label": "Folha cartográfica do modelo de terreno (2020)", "value": tile.get("code")},
             {"label": "Levantamento", "value": tile.get("survey")},
-            {"label": "Datum vertical", "value": terrain.get("vertical_datum")},
+            {"label": "Referência vertical das cotas", "value": terrain.get("vertical_datum")},
             {"label": "Cota mínima derivada", "value": terrain.get("min_elevation_m"), "unit": "m"},
             {"label": "Cota máxima derivada", "value": terrain.get("max_elevation_m"), "unit": "m"},
             {"label": "Cota média derivada", "value": terrain.get("mean_elevation_m"), "unit": "m"},
             {"label": "Amplitude altimétrica derivada", "value": terrain.get("amplitude_m"), "unit": "m"},
-            {"label": "Qualidade da interpolação", "value": terrain.get("quality")},
-            {"label": "Distância P90 ao retorno de solo", "value": terrain.get("nearest_ground_point_p90_m"), "unit": "m"},
+            {"label": "Qualidade do cálculo altimétrico", "value": terrain.get("quality")},
+            {"label": "Distância de referência aos pontos de solo", "value": terrain.get("nearest_ground_point_p90_m"), "unit": "m"},
         ]
         for profile in profiles:
             name = profile.get("name")
