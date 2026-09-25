@@ -1196,14 +1196,16 @@
           "status": "PARTIAL",
           "source_id": "rj-rio-pgeo3",
           "supporting_source_ids": [],
-          "endpoint": "https://pgeo3.rio.rj.gov.br/arcgis/rest/services",
+          "endpoint": "https://pgeo3.rio.rj.gov.br/arcgis/rest/services/Imagens/Mosaico_2025/ImageServer",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "connector_status": "LIVE_2025_IMAGE_SERVICE_PENDING_DEPLOY_VALIDATION",
           "missing_fields": [
-            "dedicated imagery source/license/version inventory"
+            "production map validation after deployment",
+            "reuse/cache license review",
+            "historical imagery year selector for the 1999-2025 municipal series"
           ],
-          "notes": null
+          "notes": "Repository map now includes the official municipal Mosaico_2025 ImageServer (RGB, ~0.565 m pixel size). The Rio image-service directory also exposes historical mosaics from 1999 through 2025; a temporal selector remains pending."
         },
         {
           "field": "terrain",
