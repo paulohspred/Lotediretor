@@ -21,6 +21,14 @@ LAYERS={
  "heritage_state":("ide_bhgeo:AREA_PROTECAO_CULTURAL_IEPHA",["ID_AREA_PROTECAO_CULTURAL","DESC_TIPO_AREA_PROTECAO","NOME_AREA_PROTECAO","GEOMETRIA"]),
  "heritage_federal":("ide_bhgeo:AREA_PROTECAO_CULTURAL_IPHAN",["ID_AREA_PROTECAO_CULTURAL","DESC_TIPO_AREA_PROTECAO","NOME_AREA_PROTECAO","GEOMETRIA"]),
  "contour_1m":("ide_bhgeo:CURVA_NIVEL_SEGMENTADA_1M",["ID_CURVA_SEC_SEGMENTADA","ID_CURVA_SEC","COTA_CURVA_NIVEL","GEOMETRIA"]),
+ "env_ade":("ide_bhgeo:ADE_INTERESSE_AMBIENTAL_11181",["ID_ADE_INTERESSE_AMBIENTAL","NOME_TIPO_ADE_INTERESSE_AMB","GEOMETRIA"]),
+ "env_aeis":("ide_bhgeo:AEIS_INTERESSE_AMBIENTAL_11181",["ID_AEIS_INTERESSE_AMBIENTAL","NOME_AEIS_INTERESSE_AMBIENT","GEOMETRIA"]),
+ "env_uc":("ide_bhgeo:UNID_CONSERV_AMBIENTAL",["ID_UCA","CATEGORIA","DESC_CATEGORIA","COMPETENCIA","NOME","TIPO_USO","LEGISLACAO","GEOMETRIA"]),
+ "env_park":("ide_bhgeo:PARQUES_MUNICIPAIS",["ID_UNIDADE_FPMZB","NOME_UNIDADE_FPMZB","IND_ABERTO_PUBLICO","LEGISLACAO","BAIRRO","GEOMETRIA"]),
+ "env_corridor":("ide_bhgeo:CORREDOR_ECOLOGICO_SERRA_CURRAL",["ID_COR_ECO_ESPI_SERRA_CURRAL","CATEGORIA","DESC_CATEGORIA","UCA_ORIGEM","NOME","LEGISLACAO","GEOMETRIA"]),
+ "road_class":("ide_bhgeo:CLASSIFICACAO_VIARIA_11181",["ID_CLASSIFICACAO_VIARIA","TP_LOG","NO_LOG","CLASSIFICACAO_VIARIA","SUBDIVISAO_CLASSF_VIARIA","AFASTAMENTO_FRONTAL","TIPO_LARGURA_VIA","DESCRICAO_TIPO_LARGURA","GEOMETRIA"]),
+ "road_circulation":("ide_bhgeo:CIRCULACAO_VIARIA",["ID_TCV","TIPO_TRECHO_CIRCULACAO","TIPO_LOGRADOURO","LOGRADOURO","COD_LOGRADOURO","GEOMETRIA"]),
+ "microdrainage":("ide_bhgeo:REDE_MICRODRENAGEM",["ID_REDE_MICRODRENAGEM","MATERIAL","DIAMETRO","ALTURA","LARGURA","COMPRIMENTO","GEOMETRIA"]),
  "permit":("ide_bhgeo:PROJETO_EDIFICACAO_LICENCIADO",["ID_PROJETO_EDIFICACOES","NUMERO_PROCESSO","SITUACAO_REQUERIMENTO","TITULO_PROJETO","TIPO","SITUACAO_PROJETO","NUM_ULTIMO_ALVARA","DT_EMISSAO_ALVARA_CONSTRUCAO","DT_CONCESSAO_ULTIMO_ALVARA","DT_VALIDADE_ULTIMO_ALVARA","DATA_COMUNICADO_INICIO_OBRA","DATA_ULTIMA_BAIXA","TIPO_ULTIMA_BAIXA","ENDERECO","LOTE_PROJETO","USO_GERAL","QTD_UND_RESIDENCIAL","QTD_UND_NAO_RESIDENCIAL","AREA_CONSTRUIDA","TIPO_APROVACAO","DATA_APROVACAO","AREA_LIQUIDA","QTDE_PAVIMENTOS","LINK_SIATU_EDIFICACAO","GEOMETRIA"])
 }
 LABEL={"identity":"Identidade","land":"Terreno","building":"Edificação","IPTU":"IPTU","PGV":"PGV","ITBI":"ITBI","registry reference":"Registro imobiliário","zoning":"Zoneamento","urban parameters":"Parâmetros urbanísticos","permits":"Licenciamento","habite-se":"Habite-se","environment":"Ambiental","risk":"Risco","heritage":"Patrimônio","electricity":"Energia","gas":"Gás","water/sewer":"Água e esgoto","drainage":"Drenagem","telecom":"Telecom","transport":"Sistema viário","imagery":"Imagens","terrain":"Terreno/topografia","public works":"Obras públicas","public processes":"Processos públicos","official gazette":"Diário Oficial","historical data":"Histórico"}
@@ -181,6 +189,16 @@ def context(lat,lng,parcel):
     except Exception as e:permits=[];errors["permits"]=type(e).__name__
     try:contours=parcel_intersections("contour_1m",parcel,count=1000)
     except Exception as e:contours=[];errors["terrain_contours"]=type(e).__name__
+    environment={}
+    for key in ["env_ade","env_aeis","env_uc","env_park","env_corridor"]:
+        try:environment[key]=parcel_intersections(key,parcel,count=200)
+        except Exception as e:environment[key]=[];errors[key]=type(e).__name__
+    transport={}
+    for key in ["road_class","road_circulation"]:
+        try:transport[key]=parcel_intersections(key,parcel,count=200)
+        except Exception as e:transport[key]=[];errors[key]=type(e).__name__
+    try:microdrainage=parcel_intersections("microdrainage",parcel,count=500)
+    except Exception as e:microdrainage=[];errors["microdrainage"]=type(e).__name__
     contour_values=sorted({(x.get("properties") or {}).get("COTA_CURVA_NIVEL") for x in contours if isinstance((x.get("properties") or {}).get("COTA_CURVA_NIVEL"),(int,float))})
     profiles=_contour_profiles(parcel.get("geometry") or {},contours) if contour_values else []
     terrain={
@@ -198,7 +216,11 @@ def context(lat,lng,parcel):
     z=(zoning[0].get("properties") if zoning else {}) or {}
     return {"planning":{"zoning":{"properties":{"cd_zoneamento_perimetro":z.get("SIGLA_TIPO_ZONEAMENTO"),"tx_zoneamento_perimetro":z.get("DESC_TIPO_ZONEAMENTO"),"source_layer":"ZONEAMENTO_11181"}},"special_regimes":{}},
     "approved_parcel":approved,"buildings":buildings,"terrain":terrain,
-    "risk":{"geological":risk_slide,"hydrological":risk_flood},"heritage":{"assets":[],"buffers":heritage},"utilities":municipality_utilities.load("3106200"),
+    "risk":{"geological":risk_slide,"hydrological":risk_flood},
+    "environment":environment,
+    "transport":transport,
+    "drainage_assets":microdrainage,
+    "heritage":{"assets":[],"buffers":heritage},"utilities":municipality_utilities.load("3106200"),
     "licensing":{"housing_permits_exact_sql":permits,"impact_spatial_incidence":[],"environment_spatial_incidence":[]},
     "fiscal":{"pgv":{"found":False},"iptu":{"found":False,"latest":{}},"itbi":{"available":False,"count":0,"registry_references":[],"transactions":[]}},
     "query_errors":errors,"queried_at":now(),"source":"Prefeitura de Belo Horizonte / IDE-BHGEO"}
@@ -254,6 +276,22 @@ def vals(s,p,c):
         ]
     if s=="environment_risk_heritage":
         out=[]
+        env=c.get("environment") or {}
+        for item in env.get("env_ade") or []:
+            r=item.get("properties") or {};out.append({"label":"Área de interesse ambiental","value":r.get("NOME_TIPO_ADE_INTERESSE_AMB") or "Incidência identificada"})
+        for item in env.get("env_aeis") or []:
+            r=item.get("properties") or {};out.append({"label":"Área especial de interesse ambiental","value":r.get("NOME_AEIS_INTERESSE_AMBIENT") or "Incidência identificada"})
+        for item in env.get("env_uc") or []:
+            r=item.get("properties") or {}
+            out.extend([
+                {"label":"Unidade de conservação","value":r.get("NOME") or r.get("DESC_CATEGORIA")},
+                {"label":"Categoria da unidade de conservação","value":r.get("CATEGORIA") or r.get("DESC_CATEGORIA")},
+                {"label":"Legislação ambiental","value":r.get("LEGISLACAO")}
+            ])
+        for item in env.get("env_park") or []:
+            r=item.get("properties") or {};out.append({"label":"Parque municipal","value":r.get("NOME_UNIDADE_FPMZB")})
+        for item in env.get("env_corridor") or []:
+            r=item.get("properties") or {};out.append({"label":"Corredor ecológico","value":r.get("NOME") or r.get("DESC_CATEGORIA")})
         for item in (c.get("risk") or {}).get("hydrological") or []:
             r=item.get("properties") or {};out.append({"label":"Risco de inundação","value":r.get("RISCO_GEOLOGICO")})
         for item in (c.get("risk") or {}).get("geological") or []:
@@ -269,7 +307,33 @@ def vals(s,p,c):
         return out or [{"label":"Risco/patrimônio","value":"Sem incidência nas camadas consultadas."}]
     if s=="planning_buildability":return [{"label":"Zoneamento Lei 11.181","value":z.get("cd_zoneamento_perimetro")},{"label":"Descrição do zoneamento","value":z.get("tx_zoneamento_perimetro")},{"label":"Fonte do zoneamento","value":"Mapa oficial de zoneamento da Prefeitura de Belo Horizonte"}]
     if s=="infrastructure_utilities":
-        return municipality_utilities.report_values(c.get("utilities") or {})
+        out=municipality_utilities.report_values(c.get("utilities") or {})
+        for item in c.get("drainage_assets") or []:
+            r=item.get("properties") or {}
+            out.extend([
+                {"label":"Microdrenagem mapeada no terreno","value":"Trecho de rede cartográfica intersecta o lote"},
+                {"label":"Material da microdrenagem","value":r.get("MATERIAL")},
+                {"label":"Diâmetro informado","value":r.get("DIAMETRO")}
+            ])
+        return out
+    if s=="public_change_context":
+        out=[]
+        for item in (c.get("transport") or {}).get("road_class") or []:
+            r=item.get("properties") or {}
+            out.extend([
+                {"label":"Classificação viária","value":r.get("CLASSIFICACAO_VIARIA")},
+                {"label":"Subdivisão viária","value":r.get("SUBDIVISAO_CLASSF_VIARIA")},
+                {"label":"Logradouro classificado","value":" ".join(str(x) for x in [r.get("TP_LOG"),r.get("NO_LOG")] if x)},
+                {"label":"Afastamento frontal informado","value":r.get("AFASTAMENTO_FRONTAL")},
+                {"label":"Largura viária","value":r.get("DESCRICAO_TIPO_LARGURA") or r.get("TIPO_LARGURA_VIA")}
+            ])
+        for item in (c.get("transport") or {}).get("road_circulation") or []:
+            r=item.get("properties") or {}
+            out.extend([
+                {"label":"Trecho de circulação viária","value":" ".join(str(x) for x in [r.get("TIPO_LOGRADOURO"),r.get("LOGRADOURO")] if x)},
+                {"label":"Tipo de circulação","value":r.get("TIPO_TRECHO_CIRCULACAO")}
+            ])
+        return out
     return []
 
 def report(parcel,ctx):
