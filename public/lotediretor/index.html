@@ -18,6 +18,10 @@ header{height:56px;background:var(--nav);color:#fff;border-bottom:4px solid var(
 .sidebar{padding:0;background:#f7f8f8;border-right:1px solid #c8d1d6;overflow:auto}.sidebar h2{font-size:12px;text-transform:uppercase;letter-spacing:.055em;color:#536873;margin:0;padding:11px 14px;background:#e9eef0;border-top:1px solid #fff;border-bottom:1px solid #ccd5da}
 .control{padding:12px 14px 0;margin:0}.control label{display:block;font-size:10px;font-weight:800;color:#5d707b;margin-bottom:5px;text-transform:uppercase;letter-spacing:.04em}.control select,.control input{width:100%;height:35px;background:#fff;color:#273942;border:1px solid #b9c6cd;border-radius:3px;padding:0 9px;outline:none}.control select:focus,.control input:focus{border-color:#648ea7}
 .searchline{display:grid;grid-template-columns:1fr auto;gap:0}.searchline input{border-radius:3px 0 0 3px}.searchbtn{border:1px solid #9eafb8;border-left:0;background:#eef2f4;color:#29485b;border-radius:0 3px 3px 0;padding:0 12px;font-weight:700}.searchbtn:disabled{opacity:.5}.search-status{font-size:10px;color:#72828b;line-height:1.4;margin-top:6px;min-height:14px}
+.search-results-list{display:none;margin-top:6px;border:1px solid #ccd6da;background:#fff;border-radius:3px;max-height:190px;overflow:auto}
+.search-results-list.open{display:block}
+.search-result-btn{display:block;width:100%;border:0;border-bottom:1px solid #e5eaed;background:#fff;text-align:left;padding:8px 9px;cursor:pointer;color:#304650}
+.search-result-btn:last-child{border-bottom:0}.search-result-btn:hover{background:#f1f5f7}.search-result-btn b{display:block;font-size:10px}.search-result-btn small{display:block;font-size:9px;color:#73848d;margin-top:2px}
 .city-summary{margin:12px 14px;border:1px solid #cfd8dc;background:#fff;border-radius:3px;padding:10px}.city-title{display:flex;justify-content:space-between;gap:8px}.city-title h3{font-size:14px;margin:0}.city-title span{font-size:9px;color:#7b8a92}.bar{height:5px;display:flex;margin:9px 0;background:#e6ebed}.bar i{height:100%}.bar .r{background:#4d997d}.bar .p{background:#5790b8}.bar .q{background:#d4a246}.bar .v{background:#8066a2}.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:3px}.metric{text-align:center;border-left:1px solid #e1e6e8}.metric:first-child{border-left:0}.metric b{display:block;font-size:13px}.metric small{font-size:7px;color:#7b8991}
 .parcel-box{margin:10px 14px 14px;border:1px solid #cfd8dc;background:#fff;border-radius:3px}.parcel-head{padding:8px 9px;border-bottom:1px solid #e0e5e8;display:flex;justify-content:space-between}.parcel-head b{font-size:11px}.parcel-state{font-size:8px;color:#778993;text-transform:uppercase}.parcel-body{padding:9px}.parcel-hint{font-size:11px;color:#657780;line-height:1.4}.parcel-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:7px}.parcel-datum{border-top:1px solid #e8ecee;padding-top:5px}.parcel-datum small{display:block;color:#7b8a92;font-size:8px;text-transform:uppercase}.parcel-datum strong{display:block;font-size:10px;margin-top:2px}.parcel-source{font-size:8px;color:#85949b;margin-top:8px;line-height:1.4}
 .status-list{display:block;padding:5px 0 9px}.status-row{display:flex;align-items:center;justify-content:space-between;padding:6px 14px;border-bottom:1px solid #e2e7e9;background:#fff}.status-row span{font-size:11px;color:#536772}.status-row b{font-size:9px}.green{color:var(--green)}.blue{color:var(--blue)}.amber{color:var(--amber)}
@@ -97,6 +101,7 @@ header{height:56px;background:var(--nav);color:#fff;border-bottom:4px solid var(
         <button class="searchbtn" id="lotSearch" type="button">Buscar</button>
       </div>
       <div class="search-status" id="searchStatus">Digite uma rua/endereço ou a identificação cadastral do lote.</div>
+      <div class="search-results-list" id="searchResults" aria-live="polite"></div>
     </div>
 
     <div class="parcel-box" id="parcelBox">
@@ -159,6 +164,7 @@ const select=document.getElementById("citySelect");
 const lotInput=document.getElementById("lotInput");
 const lotSearch=document.getElementById("lotSearch");
 const searchStatus=document.getElementById("searchStatus");
+const searchResults=document.getElementById("searchResults");
 cities.forEach((c,i)=>{const o=document.createElement("option");o.value=i;o.textContent=`${c.name} · ${c.uf}`;select.appendChild(o)});
 
 const map=L.map("map",{zoomControl:true,attributionControl:true,maxZoom:22}).setView([-23.5505,-46.6333],16);
@@ -181,6 +187,17 @@ function ensure3d(){
   map3d.addControl(new maplibregl.NavigationControl({visualizePitch:true}),"top-right");
   map3d.on("load",()=>{
     map3dReady=true;
+    if(!map3d.getSource("lotediretor-dem")){
+      map3d.addSource("lotediretor-dem",{
+        type:"raster-dem",
+        tiles:["https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png"],
+        tileSize:256,
+        maxzoom:15,
+        encoding:"terrarium",
+        attribution:"Elevação global · AWS Open Data Terrain Tiles"
+      });
+      map3d.setTerrain({source:"lotediretor-dem",exaggeration:1});
+    }
     const style=map3d.getStyle();
     const existing3d=(style.layers||[]).find(l=>l["source-layer"]==="building"&&l.type==="fill-extrusion");
     const base=(style.layers||[]).find(l=>l["source-layer"]==="building"&&l.source);
@@ -518,17 +535,23 @@ function parcelGeometryMetrics(feature){
   const polys=g.type==="Polygon"?[g.coordinates]:g.type==="MultiPolygon"?(g.coordinates||[]):[];
   const rings=polys.map(p=>p&&p[0]).filter(r=>Array.isArray(r)&&r.length>2);
   let perimeter=0,latSum=0,lngSum=0,count=0;
+  const segments=[];
   rings.forEach(ring=>{
     for(let i=0;i<ring.length;i++){
       const p=ring[i];
       if(Array.isArray(p)&&p.length>=2){lngSum+=Number(p[0]);latSum+=Number(p[1]);count++}
       if(i>0){
         const x=ring[i-1],y=ring[i];
-        if(x&&y)perimeter+=map.distance([x[1],x[0]],[y[1],y[0]]);
+        if(x&&y){
+          const d=map.distance([x[1],x[0]],[y[1],y[0]]);
+          perimeter+=d;
+          if(d>=1)segments.push(d);
+        }
       }
     }
   });
-  return {perimeter_m:perimeter||null,center:count?{lat:latSum/count,lng:lngSum/count}:null};
+  const sides=segments.sort((a,b)=>b-a).slice(0,6);
+  return {perimeter_m:perimeter||null,center:count?{lat:latSum/count,lng:lngSum/count}:null,side_lengths_m:sides};
 }
 function setParcelMessage(state,message){
   document.getElementById("parcelState").textContent=state;
@@ -883,7 +906,13 @@ function renderReport(report,p,context,feature){
   const heritage=(context&&context.heritage)||{};
   const iptu=(fiscal.iptu&&fiscal.iptu.latest)||{};
   const itbi=fiscal.itbi||{};
-  const terrain=(context&&context.terrain)||{};
+  const terrainRaw=(context&&context.terrain)||{};
+  const terrain={
+    ...terrainRaw,
+    min_elevation_m:terrainRaw.min_elevation_m??terrainRaw.min_sampled_elevation_m,
+    max_elevation_m:terrainRaw.max_elevation_m??terrainRaw.max_sampled_elevation_m,
+    amplitude_m:terrainRaw.amplitude_m??terrainRaw.sampled_relief_m
+  };
   const registry=(context&&context.registry)||{};
   const planningParams=planning.parameters||{};
   const occupation=planningParams.occupation||{};
@@ -897,10 +926,15 @@ function renderReport(report,p,context,feature){
     ' &nbsp;|&nbsp; Quadra '+escapeHtml(text(p.fiscal_block))+
     ' &nbsp;|&nbsp; Lote '+escapeHtml(text(p.fiscal_lot))+'</div>';
 
+  const zoningCode=zoning.cd_zoneamento_perimetro||zoning.sigla||zoning.codigo||zoning.zone_code;
+  const zoningName=zoning.tx_zoneamento_perimetro||zoning.nome||zoning.descricao||zoning.name;
+  const macroareaCode=macroarea.sg_macroarea||macroarea.sigla||macroarea.codigo;
+  const macrozoneCode=macrozone.sg_macro_divisao_pde||macrozone.sigla||macrozone.codigo;
+  const macrozoneName=macrozone.tx_macro_divisao_pde||macrozone.nm_perimetro_divisao_pde||macrozone.nome||macrozone.descricao;
   const zones=[];
-  if(zoning.cd_zoneamento_perimetro)zones.push(zoning.cd_zoneamento_perimetro);
-  if(macroarea.sg_macroarea)zones.push(macroarea.sg_macroarea);
-  if(macrozone.sg_macro_divisao_pde)zones.push(macrozone.sg_macro_divisao_pde);
+  if(zoningCode)zones.push(zoningCode);
+  if(macroareaCode)zones.push(macroareaCode);
+  if(macrozoneCode)zones.push(macrozoneCode);
 
   const intersections=[];
   if((risk.geological||[]).length)intersections.push("Risco geológico");
@@ -916,7 +950,7 @@ function renderReport(report,p,context,feature){
     ["Testada",formatReportValue({value:iptu.frontage_m??p.frontage_m,unit:"m"})],
     ["Pavimentos",text(iptu.floors??p.floors)],
     ["Ano constr.",text(iptu.corrected_construction_year??p.construction_year)],
-    ["Zona",text(zoning.cd_zoneamento_perimetro)],
+    ["Zona",text(zoningCode)],
     ["CA máx. base",text(occupation.ca_max??zoning.ca_max)],
     ["Valor fiscal do terreno",formatReportValue({value:pgv.vm2t_brl_per_m2,unit:"BRL/m²"})],
     ["Transações encontradas",String(itbi.count||0)],
@@ -933,7 +967,8 @@ function renderReport(report,p,context,feature){
       (intersections.length?intersections.map(v=>'<li>• '+escapeHtml(v)+'</li>').join(""):'<li>Nenhuma incidência nas camadas consultadas.</li>')+
     '</ul></div>'+
     '<div><h6>Detalhes do zoneamento</h6><ul>'+
-      (zoning.tx_zoneamento_perimetro?'<li>'+escapeHtml(zoning.tx_zoneamento_perimetro)+'</li>':"")+
+      (zoningName?'<li>'+escapeHtml(zoningName)+'</li>':"")+
+      (macrozoneName?'<li>Macrozona: '+escapeHtml(macrozoneName)+'</li>':"")+
       (zoning.cd_numero_legislacao_zoneamento?'<li>Lei '+escapeHtml(zoning.cd_numero_legislacao_zoneamento)+'/'+escapeHtml(zoning.an_legislacao_zoneamento)+'</li>':"")+
       (pgv.found?'<li>PGV 2026: '+escapeHtml(formatReportValue({value:pgv.vm2t_brl_per_m2,unit:"BRL/m²"}))+'</li>':"")+
     '</ul></div></div>';
@@ -1067,6 +1102,7 @@ function renderParcel(payload){
       '<div class="parcel-datum"><small>Área construída</small><strong>'+escapeHtml(area(p.built_area_m2))+'</strong></div>'+
       (geometryMetrics.perimeter_m!=null?'<div class="parcel-datum"><small>Perímetro aproximado</small><strong>'+escapeHtml(formatReportValue({value:geometryMetrics.perimeter_m,unit:"m"}))+'</strong></div>':"")+
       (geometryMetrics.center?'<div class="parcel-datum"><small>Centro do terreno</small><strong>'+escapeHtml(geometryMetrics.center.lat.toFixed(6)+", "+geometryMetrics.center.lng.toFixed(6))+'</strong></div>':"")+
+      (geometryMetrics.side_lengths_m.length?'<div class="parcel-datum" style="grid-column:1/-1"><small>Principais lados do perímetro</small><strong>'+escapeHtml(geometryMetrics.side_lengths_m.map(v=>new Intl.NumberFormat("pt-BR",{maximumFractionDigits:1}).format(v)+" m").join(" · "))+'</strong></div>':"")+
       (p.frontage_m!=null?'<div class="parcel-datum"><small>Testada</small><strong>'+escapeHtml(formatReportValue({value:p.frontage_m,unit:"m"}))+'</strong></div>':"")+
       (p.floors!=null?'<div class="parcel-datum"><small>Pavimentos</small><strong>'+escapeHtml(text(p.floors))+'</strong></div>':"")+
       '<div class="parcel-datum" style="grid-column:1/-1"><small>Uso cadastral</small><strong>'+escapeHtml(text(p.use_description))+'</strong></div>'+
@@ -1101,6 +1137,34 @@ async function inspectParcel(latlng){
     setParcelMessage("indisponível","A consulta cadastral não respondeu agora. Tente novamente.");
   }
 }
+function clearSearchResults(){
+  searchResults.classList.remove("open");
+  searchResults.innerHTML="";
+}
+function showAddressResults(places,city){
+  clearSearchResults();
+  if(!places.length)return;
+  searchResults.innerHTML=places.slice(0,5).map((place,i)=>{
+    const a=place.address||{};
+    const primary=[a.road||a.pedestrian||a.neighbourhood||a.suburb,a.house_number].filter(Boolean).join(", ")||place.display_name;
+    const secondary=[a.suburb||a.neighbourhood,a.city||a.town||a.municipality].filter(Boolean).join(" · ");
+    return '<button class="search-result-btn" type="button" data-place-index="'+i+'"><b>'+escapeHtml(primary)+'</b><small>'+escapeHtml(secondary||place.display_name)+'</small></button>';
+  }).join("");
+  searchResults.classList.add("open");
+  searchResults.querySelectorAll("[data-place-index]").forEach(btn=>{
+    btn.addEventListener("click",async()=>{
+      const place=places[Number(btn.dataset.placeIndex)];
+      clearSearchResults();
+      if(!place)return;
+      const lat=Number(place.lat),lng=Number(place.lon),hasNumber=!!((place.address||{}).house_number);
+      searchStatus.textContent=place.display_name||("Local localizado em "+city.name);
+      map.flyTo([lat,lng],hasNumber?20:18,{duration:.7});
+      if(map3d)map3d.flyTo({center:[lng,lat],zoom:hasNumber?20:18,pitch:58,duration:700});
+      if(hasNumber)await inspectParcel(L.latLng(lat,lng));
+      else setParcelMessage("selecione o terreno","Rua localizada. Clique dentro do terreno desejado.");
+    });
+  });
+}
 async function geocodeAddress(query,city){
   const params=new URLSearchParams({
     q:query+", "+city.name+" - "+city.uf+", Brasil",
@@ -1111,7 +1175,15 @@ async function geocodeAddress(query,city){
   });
   if(!response.ok)throw new Error("geocode_failed");
   const rows=await response.json();
-  return Array.isArray(rows)?rows:[];
+  if(!Array.isArray(rows))return [];
+  const target=city.name.toLowerCase();
+  const uf=city.uf.toLowerCase();
+  return rows.filter(x=>{
+    const a=x.address||{};
+    const cityText=[a.city,a.town,a.municipality,a.city_district].filter(Boolean).join(" ").toLowerCase();
+    const stateText=[a.state,a["ISO3166-2-lvl4"]].filter(Boolean).join(" ").toLowerCase();
+    return (!cityText||cityText.includes(target))&&(!stateText||stateText.includes(uf)||stateText.includes("br-"+uf));
+  });
 }
 function looksLikeAddress(q){
   return /[A-Za-zÀ-ÿ]/.test(q)&&q.trim().length>=4;
@@ -1119,6 +1191,7 @@ function looksLikeAddress(q){
 async function searchParcel(){
   const city=cities[Number(select.value)];
   const q=lotInput.value.trim();
+  clearSearchResults();
   const endpoint=city.ibge==="3550308"?"/api/parcel/v1/sp/search":city.ibge==="2611606"?"/api/parcel/v1/recife/search":city.ibge==="3304557"?"/api/parcel/v1/rio/search":city.ibge==="3106200"?"/api/parcel/v1/bh/search":city.ibge==="2507507"?"/api/parcel/v1/jp/search":null;
   if(!endpoint){
     searchStatus.textContent="Busca cadastral ainda não ligada neste município.";
@@ -1134,12 +1207,18 @@ async function searchParcel(){
     if(looksLikeAddress(q)){
       const places=await geocodeAddress(q,city);
       if(places.length){
+        if(places.length>1){
+          searchStatus.textContent="Encontrei mais de um endereço. Escolha o resultado correto.";
+          showAddressResults(places,city);
+          return;
+        }
         const place=places[0],lat=Number(place.lat),lng=Number(place.lon);
         const hasNumber=!!((place.address||{}).house_number);
         searchStatus.textContent=hasNumber
           ?(place.display_name||("Endereço localizado em "+city.name))
           :"Rua localizada. Clique no terreno desejado para abrir a ficha.";
         map.flyTo([lat,lng],hasNumber?20:18,{duration:.7});
+        if(map3d)map3d.flyTo({center:[lng,lat],zoom:hasNumber?20:18,pitch:58,duration:700});
         if(hasNumber)await inspectParcel(L.latLng(lat,lng));
         return;
       }
@@ -1173,6 +1252,7 @@ map.on("zoomend",()=>{
 });
 map.on("click",e=>inspectParcel(e.latlng));
 select.addEventListener("change",e=>{
+  clearSearchResults();
   clearSelectedParcel();
   closeReport();
   const idx=Number(e.target.value);
