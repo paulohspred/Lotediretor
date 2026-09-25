@@ -167,6 +167,15 @@ const recifeZoningOverlay=arcgisDynamicLayer(
   6,"Zoneamento PD2020 · Prefeitura do Recife · ESIG",.28
 );
 
+const rioParcelOverlay=arcgisDynamicLayer(
+  "https://pgeo3.rio.rj.gov.br/arcgis/rest/services/CadParcel/IMOVEIS_TERRITORIAIS/MapServer/export",
+  0,"Imóveis territoriais · Prefeitura do Rio",.58
+);
+const rioZoningOverlay=arcgisDynamicLayer(
+  "https://pgeo3.rio.rj.gov.br/arcgis/rest/services/Urbanismo/LBB_Zoneamento_urbano_vigente/MapServer/export",
+  0,"Zoneamento vigente · Prefeitura do Rio",.30
+);
+
 const spParcelWms=L.tileLayer.wms("https://wms.geosampa.prefeitura.sp.gov.br/geoserver/geoportal/wms",{
   layers:"lote_cidadao",
   format:"image/png",
@@ -249,14 +258,17 @@ L.control.layers(null,{
   "Declividade · GeoSampa":spSlopeWms,
   "Índice das ortofotos 2020":spOrthoIndex2020Wms,
   "Recife · lotes ESIG":recifeParcelOverlay,
-  "Recife · zoneamento PD2020":recifeZoningOverlay
+  "Recife · zoneamento PD2020":recifeZoningOverlay,
+  "Rio · imóveis territoriais":rioParcelOverlay,
+  "Rio · zoneamento vigente":rioZoningOverlay
 },{collapsed:true,position:"topright"}).addTo(map);
 
 const cityLayerMap={
   "3550308":{parcel:spParcelWms,zoning:spZoningWms,heritage:spHeritageWms,geoRisk:spGeoRiskWms,hydroRisk:spHydroRiskWms,hillshade:spHillshadeWms,slope:spSlopeWms,ortho:spOrthoIndex2020Wms},
-  "2611606":{parcel:recifeParcelOverlay,zoning:recifeZoningOverlay}
+  "2611606":{parcel:recifeParcelOverlay,zoning:recifeZoningOverlay},
+  "3304557":{parcel:rioParcelOverlay,zoning:rioZoningOverlay}
 };
-const allThematicLayers=[spParcelWms,spZoningWms,spHeritageWms,spGeoRiskWms,spHydroRiskWms,spHillshadeWms,spSlopeWms,spOrthoIndex2020Wms,recifeParcelOverlay,recifeZoningOverlay];
+const allThematicLayers=[spParcelWms,spZoningWms,spHeritageWms,spGeoRiskWms,spHydroRiskWms,spHillshadeWms,spSlopeWms,spOrthoIndex2020Wms,recifeParcelOverlay,recifeZoningOverlay,rioParcelOverlay,rioZoningOverlay];
 function activeCityLayers(){const city=cities[Number(select.value)];return cityLayerMap[city.ibge]||{}}
 function syncCityLayers(){
   allThematicLayers.forEach(layer=>{if(map.hasLayer(layer))map.removeLayer(layer)});
@@ -283,7 +295,7 @@ cities.forEach((c,i)=>{
     radius:9,weight:3,color:"#071019",fillColor:"#3bd790",fillOpacity:1,bubblingMouseEvents:false
   }).addTo(map);
   marker.bindPopup(`<div class="popup-title">${c.name} · ${c.uf}</div><div class="popup-meta">IBGE ${c.ibge}<br>${c.r} READY · ${c.p} PARTIAL · ${c.q} QUERY</div>`);
-  marker.on("click",()=>{select.value=i;clearSelectedParcel();applyCity(i,true);const active=["3550308","2611606"].includes(c.ibge);setParcelMessage(active?"clique no mapa":"em integração",active?"Clique no interior de um terreno para consultar a parcela oficial.":`Clique cadastral ainda não ligado em ${c.name}; o conector espacial desta cidade será o próximo estágio.`)});
+  marker.on("click",()=>{select.value=i;clearSelectedParcel();applyCity(i,true);const active=["3550308","2611606","3304557"].includes(c.ibge);setParcelMessage(active?"clique no mapa":"em integração",active?"Clique no interior de um terreno para consultar a parcela oficial.":`Clique cadastral ainda não ligado em ${c.name}; o conector espacial desta cidade será o próximo estágio.`)});
   markers.push(marker);
 });
 
@@ -434,12 +446,13 @@ function renderReport(report,p,context){
   const iptu=(fiscal.iptu&&fiscal.iptu.latest)||{};
   const itbi=fiscal.itbi||{};
   const terrain=(context&&context.terrain)||{};
+  const registry=(context&&context.registry)||{};
   const planningParams=planning.parameters||{};
   const occupation=planningParams.occupation||{};
 
-  document.getElementById("reportTitle").textContent=[p.street,p.number].filter(Boolean).join(", ")||("Lote "+text(p.sql_reference));
+  document.getElementById("reportTitle").textContent=[p.street,p.number].filter(Boolean).join(", ")||([p.fiscal_block,p.fiscal_lot].filter(Boolean).length?("Quadra "+text(p.fiscal_block)+" · Lote "+text(p.fiscal_lot)):("Lote "+text(p.sql_reference)));
   const activeCity=cities[Number(select.value)]||cities[0];
-  const primaryIdLabel=activeCity.ibge==="2611606"?"DSQFL":"SQL";
+  const primaryIdLabel=activeCity.ibge==="2611606"?"DSQFL":activeCity.ibge==="3304557"?"Inscrição / referência":"SQL";
   document.getElementById("reportSubtitle").innerHTML=
     '<div class="zola-lot-label">LOTE FISCAL <span style="color:#aaa">|</span> '+primaryIdLabel+' '+escapeHtml(text(p.sql_reference))+'</div>'+
     '<div class="zola-lot-meta">'+escapeHtml(activeCity.name)+' · '+escapeHtml(activeCity.uf)+' &nbsp;|&nbsp; Setor '+escapeHtml(text(p.fiscal_sector))+
@@ -469,7 +482,7 @@ function renderReport(report,p,context){
     ["CA máx. base",text(occupation.ca_max??zoning.ca_max)],
     ["PGV terreno",formatReportValue({value:pgv.vm2t_brl_per_m2,unit:"BRL/m²"})],
     ["ITBI/DTI",String(itbi.count||0)],
-    ["Matrículas",String((itbi.registry_references||[]).length)],
+    ["Matrículas",String(((registry.references||[]).length)||((itbi.registry_references||[]).length))],
     ["Cota mín.",formatReportValue({value:terrain.min_elevation_m,unit:"m"})],
     ["Cota máx.",formatReportValue({value:terrain.max_elevation_m,unit:"m"})],
     ["Desnível",formatReportValue({value:terrain.amplitude_m,unit:"m"})]
@@ -562,18 +575,20 @@ function renderParcel(payload){
   }
   selectedParcelLayer.bringToFront();
   document.getElementById("parcelState").textContent="lote oficial";
-  const idLabel=activeCity.ibge==="2611606"?"DSQFL":"SQL";
-  const secondLabel=activeCity.ibge==="2611606"?"SeqImóvel":"CIB";
-  const secondValue=activeCity.ibge==="2611606"?p.seqimovel:p.cib;
+  const idLabel=activeCity.ibge==="2611606"?"DSQFL":activeCity.ibge==="3304557"?"Inscrição / referência":"SQL";
+  const secondLabel=activeCity.ibge==="2611606"?"SeqImóvel":activeCity.ibge==="3304557"?"Matrícula / RGI":"CIB";
+  const secondValue=activeCity.ibge==="2611606"?p.seqimovel:activeCity.ibge==="3304557"?([p.matricula,p.rgi].filter(Boolean).join(" / ")):p.cib;
   const locValue=activeCity.ibge==="2611606"
     ?[p.district,p.fiscal_sector,p.fiscal_block,p.face,p.fiscal_lot].map(v=>text(v)).join(" / ")
-    :[p.fiscal_sector,p.fiscal_block,p.fiscal_lot].map(v=>text(v)).join(" / ");
+    :activeCity.ibge==="3304557"
+      ?[p.fiscal_block,p.fiscal_lot].map(v=>text(v)).join(" / ")
+      :[p.fiscal_sector,p.fiscal_block,p.fiscal_lot].map(v=>text(v)).join(" / ");
   document.getElementById("parcelBody").innerHTML=
     '<div class="parcel-hint"><strong>'+escapeHtml(p.street||"Endereço não informado")+'</strong></div>'+
     '<div class="parcel-grid">'+
       '<div class="parcel-datum"><small>'+idLabel+'</small><strong>'+escapeHtml(text(p.sql_reference))+'</strong></div>'+
       '<div class="parcel-datum"><small>'+secondLabel+'</small><strong>'+escapeHtml(text(secondValue))+'</strong></div>'+
-      '<div class="parcel-datum"><small>'+(activeCity.ibge==="2611606"?"Distrito / setor / quadra / face / lote":"Setor / quadra / lote")+'</small><strong>'+escapeHtml(locValue)+'</strong></div>'+
+      '<div class="parcel-datum"><small>'+(activeCity.ibge==="2611606"?"Distrito / setor / quadra / face / lote":activeCity.ibge==="3304557"?"Quadra / lote":"Setor / quadra / lote")+'</small><strong>'+escapeHtml(locValue)+'</strong></div>'+
       '<div class="parcel-datum"><small>Situação</small><strong>'+escapeHtml(text(p.cib_status||p.parcel_status))+'</strong></div>'+
       '<div class="parcel-datum"><small>Área do terreno</small><strong>'+escapeHtml(area(p.land_area_m2))+'</strong></div>'+
       '<div class="parcel-datum"><small>Área construída</small><strong>'+escapeHtml(area(p.built_area_m2))+'</strong></div>'+
@@ -586,7 +601,7 @@ function renderParcel(payload){
 }
 async function inspectParcel(latlng){
   const city=cities[Number(select.value)];
-  const endpoint=city.ibge==="3550308"?"/api/parcel/v1/sp/parcel":city.ibge==="2611606"?"/api/parcel/v1/recife/parcel":null;
+  const endpoint=city.ibge==="3550308"?"/api/parcel/v1/sp/parcel":city.ibge==="2611606"?"/api/parcel/v1/recife/parcel":city.ibge==="3304557"?"/api/parcel/v1/rio/parcel":null;
   if(!endpoint){
     clearSelectedParcel();
     setParcelMessage("em integração",`O clique cadastral ainda não está ligado em ${city.name}.`);
@@ -614,13 +629,13 @@ async function inspectParcel(latlng){
 async function searchParcel(){
   const city=cities[Number(select.value)];
   const q=lotInput.value.trim();
-  const endpoint=city.ibge==="3550308"?"/api/parcel/v1/sp/search":city.ibge==="2611606"?"/api/parcel/v1/recife/search":null;
+  const endpoint=city.ibge==="3550308"?"/api/parcel/v1/sp/search":city.ibge==="2611606"?"/api/parcel/v1/recife/search":city.ibge==="3304557"?"/api/parcel/v1/rio/search":null;
   if(!endpoint){
     searchStatus.textContent="Busca cadastral ainda não ligada neste município.";
     return;
   }
   if(!q){
-    searchStatus.textContent=city.ibge==="2611606"?"Informe DSQFL ou SeqImóvel.":"Informe um SQL com 11 dígitos ou um CIB.";
+    searchStatus.textContent=city.ibge==="2611606"?"Informe DSQFL ou SeqImóvel.":city.ibge==="3304557"?"Informe inscrição imobiliária, matrícula ou RGI.":"Informe um SQL com 11 dígitos ou um CIB.";
     lotInput.focus();return;
   }
   lotSearch.disabled=true;
@@ -630,7 +645,7 @@ async function searchParcel(){
     const payload=await response.json();
     if(!response.ok){
       if(response.status===400){
-        searchStatus.textContent=city.ibge==="2611606"?"Formato não reconhecido. Use DSQFL ou SeqImóvel.":"Formato não reconhecido. Use SQL ou CIB.";
+        searchStatus.textContent=city.ibge==="2611606"?"Formato não reconhecido. Use DSQFL ou SeqImóvel.":city.ibge==="3304557"?"Formato não reconhecido. Use inscrição, matrícula ou RGI.":"Formato não reconhecido. Use SQL ou CIB.";
         return;
       }
       throw new Error(payload.error||"search_failed");
@@ -655,13 +670,13 @@ select.addEventListener("change",e=>{
   const idx=Number(e.target.value);
   applyCity(idx,true);
   const city=cities[idx];
-  const active=["3550308","2611606"].includes(city.ibge);
+  const active=["3550308","2611606","3304557"].includes(city.ibge);
   lotInput.disabled=!active;
   lotSearch.disabled=!active;
   if(active){
-    lotInput.placeholder=city.ibge==="2611606"?"DSQFL ou SeqImóvel":"Ex.: 00205900496 ou SFPRPQ1W";
+    lotInput.placeholder=city.ibge==="2611606"?"DSQFL ou SeqImóvel":city.ibge==="3304557"?"Inscrição, matrícula ou RGI":"Ex.: 00205900496 ou SFPRPQ1W";
     searchStatus.textContent=`Busca oficial disponível para ${city.name}.`;
-    setParcelMessage("clique no mapa",city.ibge==="2611606"?"Clique no lote ou busque por DSQFL/SeqImóvel.":"Clique no lote ou busque por SQL/CIB.");
+    setParcelMessage("clique no mapa",city.ibge==="2611606"?"Clique no lote ou busque por DSQFL/SeqImóvel.":city.ibge==="3304557"?"Clique no lote ou busque por inscrição/matrícula/RGI.":"Clique no lote ou busque por SQL/CIB.");
   }else{
     lotInput.value="";
     lotInput.placeholder="Busca cadastral em integração";
