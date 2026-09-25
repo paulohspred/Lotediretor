@@ -10,6 +10,14 @@ import municipality_utilities
 ROOT=Path("/srv/lotediretor/app")
 PARCEL="https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Planejamento/BASES_BAIRRO_FACEQUADRA_LOGRADOURO_LOTE/FeatureServer/3"
 ZBASE="https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Planejamento/BASES_ZONEAMENTO_G_PD2020/FeatureServer"
+BASIN="https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Hosted/PAINEL_MACRODRENAGEM_2026/FeatureServer/1"
+NONAED="https://esigportal2.recife.pe.gov.br/arcgis/rest/services/MeioAmbiente/MA_FaixaNonAedificandi2026/MapServer/0"
+MARGINAL="https://esigportal2.recife.pe.gov.br/arcgis/rest/services/MeioAmbiente/MA_FaixasDeProtecao_SSA1_2020_2026/MapServer/0"
+SSA1="https://esigportal2.recife.pe.gov.br/arcgis/rest/services/MeioAmbiente/MA_FaixasDeProtecao_SSA1_2020_2026/MapServer/2"
+BF=["fid","nome","area_em_ha","codigo"]
+NF=["objectid","subbacia","bacia","codsub","decreto"]
+MF=["objectid","nome","area_ha","bacia","codigo"]
+SF=["objectid_1","dsq","cdsadmcodi","csetcecodi","cquasecodi"]
 BOUNDS=(-35.10,-8.20,-34.80,-7.88)
 PF=["OBJECTID","SITUACAOIMOVEL","DISTRITO","SETOR","QUADRA","FACE","LOTE","ENDNUMERO","V0","AREATOTALCONSTRUIDA","QTDPAVIMENTOS","TIPOEMPREENDIMENTO","AREALOTE","TESTADAPRINCIPAL","SEQIMOVEL","DSQFL","QTDUNHAB","ANCONSTR","QTDMULTIPLAS","NMEDIFICACAO","NMENDCOMP","TLOTESULAT","NMTIPOEMPRENDIMENTO","EFTUTZDESC"]
 ZLAYERS={
@@ -70,6 +78,13 @@ def context(lat,lng,parcel):
     for k,(i,fields) in ZLAYERS.items():
         try:layers[k]=query(f"{ZBASE}/{i}",fields,lat=lat,lng=lng,geometry=False)
         except Exception as e:layers[k]=[];errors[k]=type(e).__name__
+    envctx={"basin":[],"non_aedificandi":[],"marginal":[],"ssa1":[]}
+    for key,url,fields in [
+        ("basin",BASIN,BF),("non_aedificandi",NONAED,NF),
+        ("marginal",MARGINAL,MF),("ssa1",SSA1,SF)
+    ]:
+        try:envctx[key]=query(url,fields,lat=lat,lng=lng,geometry=False,count=20)
+        except Exception as e:envctx[key]=[];errors[key]=type(e).__name__
     z=((layers.get("zoning") or [{}])[0].get("properties") or {});p=parcel["properties"]
     ix=recife_index.resolve(parcel)
     iptu_record=ix.get("iptu")
@@ -83,7 +98,7 @@ def context(lat,lng,parcel):
     tx=recife_index.transactions(ix.get("itbi") or [])
     permits=recife_index.permits(ix.get("licensing") or [])
     return {"planning":{"zoning":{"properties":{"cd_zoneamento_perimetro":z.get("ZONA"),"tx_zoneamento_perimetro":z.get("ZONA2") or z.get("ZONA"),"macrozone":z.get("MACROZONA"),"ca_min":z.get("VLCOEFMIN"),"ca_basic":z.get("VLCOEFBAS"),"ca_max":z.get("VLCOEFMAX"),"considerations":z.get("NMCONSIDERAC")}},"special_regimes":{k:v for k,v in layers.items() if k!="zoning" and v}},
-    "buildings":[],"terrain":{"available":False,"reason":"pending_recife_terrain"},"risk":{"geological":[],"hydrological":[]},
+    "buildings":[],"terrain":{"available":False,"reason":"pending_recife_terrain"},"environment":envctx,"risk":{"geological":[],"hydrological":[]},
     "heritage":{"assets":layers.get("iep") or [],"buffers":{"ZEPH":layers.get("zeph") or [],"IPAV":layers.get("ipav") or [],"UCN":layers.get("ucn") or []}},
     "utilities":municipality_utilities.load("2611606"),"licensing":{"housing_permits_exact_sql":permits,"impact_spatial_incidence":[],"environment_spatial_incidence":[],"match_method":"EXACT_DSQFL"},
     "fiscal":{"pgv":{"found":False},"iptu":{"found":bool(iptu_record),"latest":iptu_latest,"source_record":iptu_record},"itbi":{"available":True,"count":len(tx),"coverage_years":[2026] if (ix.get("coverage") or {}).get("itbi_2026") else [],"registry_references":[],"transactions":tx,"match_method":"OFFICIAL_POINT_INSIDE_PARCEL"}},
@@ -146,6 +161,31 @@ def vals(s,p,c):
         return municipality_utilities.report_values(c.get("utilities") or {})
     if s=="environment_risk_heritage":
         out=[]
+        env=c.get("environment") or {}
+        for item in env.get("basin") or []:
+            r=item.get("properties") or {}
+            out.extend([
+                {"label":"Bacia hidrográfica · macrodrenagem","value":r.get("nome")},
+                {"label":"Código da bacia","value":r.get("codigo")},
+                {"label":"Área da bacia","value":r.get("area_em_ha"),"unit":"ha"}
+            ])
+        for item in env.get("non_aedificandi") or []:
+            r=item.get("properties") or {}
+            out.extend([
+                {"label":"Faixa non aedificandi","value":"Incidência identificada"},
+                {"label":"Bacia · faixa non aedificandi","value":r.get("bacia")},
+                {"label":"Sub-bacia","value":r.get("subbacia")},
+                {"label":"Decreto","value":r.get("decreto")}
+            ])
+        for item in env.get("marginal") or []:
+            r=item.get("properties") or {}
+            out.extend([
+                {"label":"Faixa marginal de proteção","value":"Incidência identificada"},
+                {"label":"Bacia · faixa marginal","value":r.get("bacia")},
+                {"label":"Sub-bacia · faixa marginal","value":r.get("nome")}
+            ])
+        if env.get("ssa1"):
+            out.append({"label":"Setor de Sustentabilidade Ambiental 1","value":"Incidência identificada"})
         for k,l in [("iep","IEP"),("zeph","ZEPH"),("ipav","IPAV"),("ucn","UCN")]:
             for x in sp.get(k) or []:
                 r=x.get("properties") or {};out.append({"label":f"Incidência {l}","value":r.get("NMDESCR") or r.get("NMNOME") or r.get("NOME_IPAV") or r.get("CDZONA_NOME") or l})
