@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://unpkg.com">
 <link rel="preconnect" href="https://tile.openstreetmap.org">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+<link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5/dist/maplibre-gl.css">
 <style>
 :root{color-scheme:light;--nav:#29485b;--nav2:#355c72;--ink:#273942;--muted:#6f7f88;--line:#d7dfe3;--soft:#f3f5f6;--white:#fff;--accent:#a8562f;--green:#2f7d61;--blue:#3d78a3;--amber:#a97018;--violet:#705395;font-family:Arial,Helvetica,sans-serif}
 *{box-sizing:border-box}html,body{margin:0;height:100%;overflow:hidden;background:#e3e9ec;color:var(--ink)}body{font-size:14px}button,input,select{font:inherit}
@@ -21,7 +22,12 @@ header{height:56px;background:var(--nav);color:#fff;border-bottom:4px solid var(
 .parcel-box{margin:10px 14px 14px;border:1px solid #cfd8dc;background:#fff;border-radius:3px}.parcel-head{padding:8px 9px;border-bottom:1px solid #e0e5e8;display:flex;justify-content:space-between}.parcel-head b{font-size:11px}.parcel-state{font-size:8px;color:#778993;text-transform:uppercase}.parcel-body{padding:9px}.parcel-hint{font-size:11px;color:#657780;line-height:1.4}.parcel-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:7px}.parcel-datum{border-top:1px solid #e8ecee;padding-top:5px}.parcel-datum small{display:block;color:#7b8a92;font-size:8px;text-transform:uppercase}.parcel-datum strong{display:block;font-size:10px;margin-top:2px}.parcel-source{font-size:8px;color:#85949b;margin-top:8px;line-height:1.4}
 .status-list{display:block;padding:5px 0 9px}.status-row{display:flex;align-items:center;justify-content:space-between;padding:6px 14px;border-bottom:1px solid #e2e7e9;background:#fff}.status-row span{font-size:11px;color:#536772}.status-row b{font-size:9px}.green{color:var(--green)}.blue{color:var(--blue)}.amber{color:var(--amber)}
 .layer-list{background:#fff}.layer-toggle{display:flex;gap:8px;align-items:flex-start;padding:7px 14px;border-bottom:1px solid #e4e9eb;font-size:11px;color:#394d58}.layer-toggle input{margin:1px 0 0}.layer-toggle small{display:block;color:#819099;margin-top:2px;font-size:9px}
-.mapwrap{position:relative;min-width:0;height:100%;overflow:hidden}.maptop{position:absolute;z-index:500;left:12px;top:12px;display:flex;gap:6px;pointer-events:none}.mapbadge{background:rgba(255,255,255,.94);border:1px solid #ccd6da;border-radius:2px;padding:6px 8px;font-size:9px;color:#596c76;box-shadow:0 1px 4px rgba(0,0,0,.12)}#map{height:100%;min-height:0;background:#dce4e7;cursor:crosshair}.leaflet-dragging #map{cursor:grabbing}.leaflet-control-attribution{font-size:9px}.leaflet-popup-content-wrapper,.leaflet-popup-tip{background:#fff;color:#2d414b}.popup-title{font-weight:700;font-size:13px}.popup-meta{font-size:10px;color:#6c7c84}
+.mapwrap{position:relative;min-width:0;height:100%;overflow:hidden}.maptop{position:absolute;z-index:700;left:12px;top:12px;display:flex;gap:6px;align-items:center}.mapbadge{background:rgba(255,255,255,.94);border:1px solid #ccd6da;border-radius:2px;padding:6px 8px;font-size:9px;color:#596c76;box-shadow:0 1px 4px rgba(0,0,0,.12);pointer-events:none}
+.view-toggle{border:1px solid #aebcc3;background:#fff;color:#29485b;height:28px;padding:0 9px;border-radius:2px;font-size:10px;font-weight:800;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.12)}
+.view-toggle.active{background:#29485b;color:#fff}
+#map,#map3d{position:absolute;inset:0;height:100%;min-height:0;background:#dce4e7}
+#map{cursor:crosshair;z-index:1}.leaflet-dragging #map{cursor:grabbing}
+#map3d{display:none;z-index:2}.mapwrap.view-3d #map{display:none}.mapwrap.view-3d #map3d{display:block}.leaflet-control-attribution{font-size:9px}.leaflet-popup-content-wrapper,.leaflet-popup-tip{background:#fff;color:#2d414b}.popup-title{font-weight:700;font-size:13px}.popup-meta{font-size:10px;color:#6c7c84}
 .report-panel{position:absolute;z-index:800;top:0;right:0;bottom:0;width:41.66667%;background:#fff;border-left:0;box-shadow:-4px 0 0 rgba(0,0,0,.10);transform:translateX(101%);transition:transform .16s ease;display:flex;flex-direction:column}.report-panel.open{transform:translateX(0)}
 .report-top{padding:16px 20px 12px;border-bottom:1px solid #ddd;background:#fff;position:relative}.report-topline{display:flex;align-items:center;justify-content:space-between;gap:10px}.report-kicker{font-size:10px;font-weight:800;color:#697b84;text-transform:uppercase;letter-spacing:.05em}.report-actions{display:flex;gap:5px;position:absolute;right:8px;top:7px}.report-btn{border:0;background:#fff;color:#64747c;border-radius:0;padding:4px 7px;font-size:11px;cursor:pointer}.report-close-edge{position:absolute;z-index:3;left:-32px;top:0;width:32px;height:34px;border:0;background:#fff;color:#777;box-shadow:-4px 4px 0 rgba(0,0,0,.10);font-size:26px;line-height:30px;cursor:pointer}.report-title{font-size:24px;line-height:1.12;margin:5px 0 4px;font-weight:500;color:#263942}.report-subtitle{font-size:11px;color:#697b85;line-height:1.4}.report-scroll{overflow:auto;padding:0 20px 25px}.zola-lot-label{font-size:10px;font-weight:700;color:#65767f;text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px}.zola-lot-meta{font-size:11px;color:#6f7e85;margin:0 0 10px}.zola-zone-list{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0 11px;padding:0;list-style:none}.zola-zone-list li{margin:0}.zola-zone-pill{display:inline-block;background:#fff;border:1px solid #b9c5cb;border-radius:3px;padding:4px 8px;color:#31556b;font-size:11px;font-weight:700}.instant-dossier{margin:12px 0 15px}.instant-block{border:1px solid #d5dde1;margin-bottom:9px;background:#fff}.instant-block h4{margin:0;padding:8px 10px;background:#edf2f4;border-bottom:1px solid #d5dde1;font-size:11px;color:#334c58;text-transform:uppercase;letter-spacing:.035em}.instant-grid{display:grid;grid-template-columns:1fr 1fr}.instant-row{display:grid;grid-template-columns:46% 54%;min-height:32px;border-bottom:1px solid #edf0f2}.instant-row:nth-child(odd){border-right:1px solid #edf0f2}.instant-row span{padding:7px 8px;font-size:9px;color:#6a7c85;font-weight:700}.instant-row b{padding:7px 8px;font-size:10px;color:#243d49;font-weight:500;word-break:break-word}.instant-note{padding:7px 9px;background:#fafbfb;color:#75858d;font-size:9px;line-height:1.4;border-top:1px solid #edf0f2}.instant-highlight{color:#244f67!important;font-weight:800!important}@media(max-width:1100px){.instant-grid{grid-template-columns:1fr}.instant-row:nth-child(odd){border-right:0}}
 .zola-keyfacts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:#d9e0e3;border:1px solid #d9e0e3;margin:10px 0 12px}.zola-keyfact{background:#fff;padding:7px 8px;min-width:0}.zola-keyfact small{display:block;font-size:8px;color:#7a8990;text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px}.zola-keyfact b{display:block;font-size:12px;color:#2d4653;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.zola-section-nav{position:sticky;top:0;z-index:4;display:flex;gap:4px;overflow-x:auto;background:#fff;border-bottom:1px solid #d5dde1;margin:0 -20px 8px;padding:7px 20px}.zola-section-nav button{flex:0 0 auto;border:1px solid #c7d1d6;background:#f7f9fa;color:#405a68;border-radius:2px;padding:5px 7px;font-size:9px;cursor:pointer}.zola-section-nav button:hover{background:#edf2f4}.zola-intersections{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:10px 0 12px;border-top:1px solid #e4e8ea;border-bottom:1px solid #e4e8ea}.zola-intersections h6{font-size:10px;margin:0 0 5px;color:#526771}.zola-intersections ul{list-style:none;margin:0;padding:0}.zola-intersections li{font-size:10px;color:#657780;padding:2px 0}.zola-report-section{scroll-margin-top:42px}.zola-section-title{font-size:13px;font-weight:700;color:#314852;margin:17px 0 6px;padding-bottom:5px;border-bottom:1px solid #cfd7db}.terrain-profiles{display:grid;grid-template-columns:1fr;gap:10px;margin:8px 0 12px}.terrain-line-label{background:#fff!important;border:1px solid #536873!important;box-shadow:none!important;color:#2b3f49!important;font-size:9px!important;font-weight:800!important;padding:1px 4px!important}
@@ -123,8 +129,13 @@ header{height:56px;background:var(--nav);color:#fff;border-bottom:4px solid var(
   </aside>
 
   <div class="mapwrap">
-    <div class="maptop"><span class="mapbadge">Mapa base © OpenStreetMap · camadas oficiais municipais</span></div>
+    <div class="maptop">
+      <button class="view-toggle active" id="view2d" type="button">2D</button>
+      <button class="view-toggle" id="view3d" type="button">3D</button>
+      <span class="mapbadge" id="mapBadge">Mapa base © OpenStreetMap · camadas oficiais municipais</span>
+    </div>
     <div id="map"></div>
+    <div id="map3d" aria-label="Mapa 3D urbano"></div>
     <aside class="report-panel" id="reportPanel" aria-label="Ficha do lote">
       <button class="report-close-edge" id="closeReport" type="button" aria-label="Fechar">×</button>
       <div class="report-top">
@@ -141,6 +152,7 @@ header{height:56px;background:var(--nav);color:#fff;border-bottom:4px solid var(
 </main>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+<script src="https://unpkg.com/maplibre-gl@5/dist/maplibre-gl.js"></script>
 <script>
 const cities=[
   {name:"São Paulo",uf:"SP",ibge:"3550308",lat:-23.5505,lng:-46.6333,z:16},
@@ -157,6 +169,93 @@ const searchStatus=document.getElementById("searchStatus");
 cities.forEach((c,i)=>{const o=document.createElement("option");o.value=i;o.textContent=`${c.name} · ${c.uf}`;select.appendChild(o)});
 
 const map=L.map("map",{zoomControl:true,attributionControl:true,maxZoom:22}).setView([-23.5505,-46.6333],16);
+let map3d=null;
+let map3dReady=false;
+let lastSelectedFeature=null;
+function ensure3d(){
+  if(map3d)return map3d;
+  const center=map.getCenter();
+  map3d=new maplibregl.Map({
+    container:"map3d",
+    style:"https://tiles.openfreemap.org/styles/liberty",
+    center:[center.lng,center.lat],
+    zoom:Math.max(15,map.getZoom()),
+    pitch:58,
+    bearing:-18,
+    maxZoom:22,
+    attributionControl:true
+  });
+  map3d.addControl(new maplibregl.NavigationControl({visualizePitch:true}),"top-right");
+  map3d.on("load",()=>{
+    map3dReady=true;
+    const style=map3d.getStyle();
+    const base=(style.layers||[]).find(l=>l["source-layer"]==="building"&&l.source);
+    if(base&&!map3d.getLayer("lotediretor-buildings-3d")){
+      const firstSymbol=(style.layers||[]).find(l=>l.type==="symbol");
+      map3d.addLayer({
+        id:"lotediretor-buildings-3d",
+        type:"fill-extrusion",
+        source:base.source,
+        "source-layer":"building",
+        minzoom:15,
+        paint:{
+          "fill-extrusion-color":"#c7cfd3",
+          "fill-extrusion-height":["coalesce",["get","render_height"],["get","height"],3],
+          "fill-extrusion-base":["coalesce",["get","render_min_height"],["get","min_height"],0],
+          "fill-extrusion-opacity":0.72
+        }
+      },firstSymbol&&firstSymbol.id);
+    }
+    if(!map3d.getSource("selected-parcel")){
+      map3d.addSource("selected-parcel",{type:"geojson",data:{type:"FeatureCollection",features:[]}});
+      map3d.addLayer({
+        id:"selected-parcel-fill",
+        type:"fill-extrusion",
+        source:"selected-parcel",
+        paint:{
+          "fill-extrusion-color":"#2d6f9f",
+          "fill-extrusion-height":4,
+          "fill-extrusion-base":0,
+          "fill-extrusion-opacity":0.48
+        }
+      });
+      map3d.addLayer({
+        id:"selected-parcel-line",
+        type:"line",
+        source:"selected-parcel",
+        paint:{"line-color":"#123f66","line-width":4}
+      });
+    }
+    sync3dSelection();
+  });
+  map3d.on("click",e=>inspectParcel(L.latLng(e.lngLat.lat,e.lngLat.lng)));
+  return map3d;
+}
+function sync3dSelection(){
+  if(!map3dReady||!map3d||!map3d.getSource("selected-parcel"))return;
+  const data=lastSelectedFeature?{type:"FeatureCollection",features:[lastSelectedFeature]}:{type:"FeatureCollection",features:[]};
+  map3d.getSource("selected-parcel").setData(data);
+}
+function setMapViewMode(mode){
+  const wrap=document.querySelector(".mapwrap");
+  const is3d=mode==="3d";
+  wrap.classList.toggle("view-3d",is3d);
+  document.getElementById("view2d").classList.toggle("active",!is3d);
+  document.getElementById("view3d").classList.toggle("active",is3d);
+  document.getElementById("mapBadge").textContent=is3d?"Visão 3D urbana · OpenStreetMap/OpenMapTiles":"Mapa base © OpenStreetMap · camadas oficiais municipais";
+  if(is3d){
+    const m=ensure3d(),center=map.getCenter();
+    m.jumpTo({center:[center.lng,center.lat],zoom:Math.max(15,map.getZoom()),pitch:58});
+    setTimeout(()=>m.resize(),30);
+  }else{
+    if(map3d){
+      const center=map3d.getCenter();
+      map.setView([center.lat,center.lng],Math.min(22,map3d.getZoom()),{animate:false});
+    }
+    setTimeout(()=>map.invalidateSize(),30);
+  }
+}
+
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{
   maxZoom:22,maxNativeZoom:19,
   attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
@@ -323,6 +422,9 @@ document.querySelectorAll("[data-zlayer]").forEach(input=>{
     if(input.checked){layer.addTo(map)}else if(map.hasLayer(layer)){map.removeLayer(layer)}
   });
 });
+document.getElementById("view2d").addEventListener("click",()=>setMapViewMode("2d"));
+document.getElementById("view3d").addEventListener("click",()=>setMapViewMode("3d"));
+
 const markers=[];
 let selectedParcelLayer=null;
 let selectedBuildingLayer=null;
@@ -340,7 +442,10 @@ cities.forEach((c,i)=>{
 function applyCity(idx,fly=true){
   const c=cities[idx];
   syncCityLayers();
-  if(fly){map.flyTo([c.lat,c.lng],c.z,{duration:.8});markers[idx].openPopup()}
+  if(fly){
+    map.flyTo([c.lat,c.lng],c.z,{duration:.8});markers[idx].openPopup();
+    if(map3d)map3d.flyTo({center:[c.lng,c.lat],zoom:Math.max(15,c.z),pitch:58,duration:800});
+  }
 }
 function text(v,fallback="—"){return v===null||v===undefined||v===""?fallback:String(v)}
 function area(v){return v===null||v===undefined?"—":new Intl.NumberFormat("pt-BR").format(v)+" m²"}
@@ -358,6 +463,7 @@ function setParcelMessage(state,message){
   document.getElementById("parcelBody").innerHTML='<div class="parcel-hint">'+escapeHtml(message)+'</div>';
 }
 function clearSelectedParcel(){
+  lastSelectedFeature=null;sync3dSelection();
   if(selectedParcelLayer){map.removeLayer(selectedParcelLayer);selectedParcelLayer=null}
   if(selectedBuildingLayer){map.removeLayer(selectedBuildingLayer);selectedBuildingLayer=null}
   if(selectedTerrainProfileLayer){map.removeLayer(selectedTerrainProfileLayer);selectedTerrainProfileLayer=null}
@@ -838,6 +944,7 @@ function renderTerrainLinesOnMap(context){
 }
 function renderParcel(payload){
   const p=payload.feature.properties;
+  lastSelectedFeature=payload.feature;sync3dSelection();
   const activeCity=cities[Number(select.value)]||cities[0];
   clearSelectedParcel();
   selectedParcelLayer=L.geoJSON(payload.feature,{
