@@ -31,7 +31,7 @@ header{height:56px;background:var(--nav);color:#fff;border-bottom:4px solid var(
 .sources-detail{margin-top:10px;background:#f8f9f9;border:1px solid #e0e5e8}.sources-detail>summary{padding:7px 8px!important;font-size:9px!important;color:#667983}.field-state{padding:7px 8px;border-top:1px solid #e4e9eb;background:#fafbfb}.field-line{display:flex;justify-content:space-between;gap:8px}.field-name{font-size:10px;color:#4f6571;font-weight:700}.status-chip{font-size:7px;border-radius:9px;padding:2px 4px;border:1px solid #b9c5cb}.status-ready{color:var(--green)}.status-partial{color:var(--blue)}.status-query_only{color:var(--amber)}.status-private_on_demand{color:var(--violet)}.field-source,.field-missing{font-size:8px;color:#7a8991;margin-top:3px;line-height:1.35}
 @media(min-width:1600px){.report-panel{width:33.33333%}}@media(max-width:960px){.workbench{grid-template-columns:245px 1fr}.report-panel{width:56%}.headstat{display:none}}
 @media(max-width:680px){html,body{overflow:auto}.workbench{grid-template-columns:1fr;height:auto}.sidebar{max-height:43vh}.mapwrap{height:57vh}.report-panel{position:fixed;top:56px;width:94%;z-index:1300}.phase{display:none}}
-.print-cover{display:none}.print-evidence-note{display:none}
+.print-cover{display:none}.print-lot-map{display:none}.print-evidence-note{display:none}
 @media print{
   @page{size:A4;margin:14mm 13mm 16mm}
   html,body{height:auto!important;overflow:visible!important;background:#fff!important;color:#1f2e35!important;font-size:10pt}
@@ -47,6 +47,13 @@ header{height:56px;background:var(--nav);color:#fff;border-bottom:4px solid var(
   .print-cover .pc-kicker{font-size:8pt;letter-spacing:.08em;text-transform:uppercase;color:#687a84;margin-top:2mm}
   .print-cover .pc-title{font-size:18pt;margin-top:9mm;line-height:1.2}
   .print-cover .pc-meta{font-size:9pt;color:#566b76;margin-top:3mm;line-height:1.55}
+  .print-lot-map{display:block!important;margin:0 0 7mm;border:1px solid #b7c3c9;padding:4mm;break-inside:avoid}
+  .print-lot-map h3{font-size:10pt;margin:0 0 2mm;color:#314852}
+  .print-lot-map svg{display:block;width:100%;height:72mm;background:#f7f9fa;border:1px solid #d7dfe3}
+  .print-lot-map .plm-boundary{fill:rgba(41,79,114,.16);stroke:#294f72;stroke-width:2;stroke-dasharray:7 5;vector-effect:non-scaling-stroke}
+  .print-lot-map .plm-cut{fill:none;stroke:#536873;stroke-width:1.5;vector-effect:non-scaling-stroke}
+  .print-lot-map .plm-label{font-size:10px;fill:#304650;font-weight:700}
+  .print-lot-map .plm-note{font-size:7.5pt;color:#667984;margin-top:2mm}
   .zola-keyfacts,.instant-block,.zola-intersections,.report-values,.terrain-profile-card,.itbi-event,.zola-registry-summary{break-inside:avoid}
   .instant-block{margin-bottom:4mm!important}
   .instant-block h4,.zola-section-title{background:#f0f3f4!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
@@ -613,6 +620,42 @@ function renderTerrainProfiles(terrain){
   return charts?'<div class="terrain-profiles">'+charts+'</div>':"";
 }
 
+function renderPrintLotMap(feature,context){
+  const geometry=(feature&&feature.geometry)||{};
+  const polys=geometry.type==="Polygon"?[geometry.coordinates]:geometry.type==="MultiPolygon"?(geometry.coordinates||[]):[];
+  const rings=polys.flatMap(poly=>Array.isArray(poly)?poly:[]).filter(r=>Array.isArray(r)&&r.length>=3);
+  const parcelPts=rings.flat();
+  const profiles=((context&&context.terrain&&context.terrain.profiles)||[]).filter(p=>Array.isArray(p.line_coordinates_wgs84)&&p.line_coordinates_wgs84.length>=2);
+  const cutPts=profiles.flatMap(p=>p.line_coordinates_wgs84);
+  const pts=parcelPts.concat(cutPts);
+  if(!pts.length)return "";
+  const xs=pts.map(p=>Number(p[0])).filter(Number.isFinite),ys=pts.map(p=>Number(p[1])).filter(Number.isFinite);
+  if(!xs.length||!ys.length)return "";
+  let minX=Math.min(...xs),maxX=Math.max(...xs),minY=Math.min(...ys),maxY=Math.max(...ys);
+  const dx=Math.max(maxX-minX,1e-7),dy=Math.max(maxY-minY,1e-7),pad=.10;
+  minX-=dx*pad;maxX+=dx*pad;minY-=dy*pad;maxY+=dy*pad;
+  const w=720,h=420;
+  const project=pt=>{
+    const x=((Number(pt[0])-minX)/(maxX-minX))*w;
+    const y=h-((Number(pt[1])-minY)/(maxY-minY))*h;
+    return [x,y];
+  };
+  const path=rings.map(r=>r.map((pt,i)=>{
+    const q=project(pt);return (i?"L":"M")+q[0].toFixed(2)+" "+q[1].toFixed(2);
+  }).join(" ")+" Z").join(" ");
+  const cuts=profiles.map(p=>{
+    const xy=p.line_coordinates_wgs84.map(project);
+    const points=xy.map(q=>q[0].toFixed(2)+","+q[1].toFixed(2)).join(" ");
+    const mid=xy[Math.floor(xy.length/2)]||xy[0];
+    return '<polyline class="plm-cut" points="'+points+'"/><text class="plm-label" x="'+mid[0].toFixed(2)+'" y="'+(mid[1]-6).toFixed(2)+'">'+escapeHtml(p.name||"Corte")+'</text>';
+  }).join("");
+  return '<div class="print-lot-map"><h3>Demarcação cadastral e cortes</h3>'+
+    '<svg viewBox="0 0 '+w+' '+h+'" role="img" aria-label="Demarcação vetorial do lote">'+
+      '<path class="plm-boundary" d="'+path+'"/>'+cuts+
+      '<g transform="translate(680 24)"><path d="M0 25 L10 0 L20 25 Z" fill="#304650"/><text class="plm-label" x="10" y="40" text-anchor="middle">N</text></g>'+
+    '</svg><div class="plm-note">Demarcação derivada da geometria cadastral oficial retornada pela fonte municipal. Representação sem escala cartográfica; linhas A–A/B–B aparecem quando o resolver de terreno fornece coordenadas dos cortes.</div></div>';
+}
+
 function renderPrintCover(p){
   const activeCity=cities[Number(select.value)]||cities[0];
   const id=p.sql_reference||p.cartographic_code||p.ctm_number||p.matricula||"—";
@@ -628,7 +671,7 @@ function renderPrintCover(p){
       'Gerado em '+escapeHtml(generated)+
     '</div></div>';
 }
-function renderReport(report,p,context){
+function renderReport(report,p,context,feature){
   const panel=document.getElementById("reportPanel");
   const planning=(context&&context.planning)||{};
   const zoning=(planning.zoning&&planning.zoning.properties)||{};
@@ -730,7 +773,7 @@ function renderReport(report,p,context){
   }).join("");
 
   document.getElementById("reportContent").innerHTML=
-    renderPrintCover(p)+navHtml+keyFactsHtml+renderImmediateDossier(context,p,report)+zoneHtml+intersectionHtml+
+    renderPrintCover(p)+renderPrintLotMap(feature,context)+navHtml+keyFactsHtml+renderImmediateDossier(context,p,report)+zoneHtml+intersectionHtml+
     '<div class="report-legend">Os dados abaixo são os valores já resolvidos para este lote. Informações ainda não materializadas ficam dentro de “Fontes, estado e pendências”.</div>'+
     html+
     '<div class="print-evidence-note">Este relatório compila fontes públicas e análises derivadas indicadas em cada seção. Referências registrais históricas, parâmetros urbanísticos e análises de terreno não substituem certidão registral atualizada, parecer jurídico, projeto aprovado ou levantamento topográfico de campo.</div>';
@@ -826,7 +869,7 @@ function renderParcel(payload){
       '<div class="parcel-datum" style="grid-column:1/-1"><small>Uso cadastral</small><strong>'+escapeHtml(text(p.use_description))+'</strong></div>'+
     '</div>'+
     '<div class="parcel-source">Fonte: '+escapeHtml(payload.source.authority||"fonte oficial")+' · '+escapeHtml(payload.source.layer||"")+' · consulta '+escapeHtml(payload.source.queried_at||"")+'</div>';
-  renderReport(payload.report,p,payload.context);
+  renderReport(payload.report,p,payload.context,payload.feature);
 }
 async function inspectParcel(latlng){
   const city=cities[Number(select.value)];
