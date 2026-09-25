@@ -165,7 +165,22 @@ def main() -> int:
         print("\nSMOKE FAILED:", len(errors), "error(s)")
         return 1
 
-    print("\nSMOKE PASSED: first-wave parcel workflow is healthy")
+    # Cross-city context contracts added after the initial first-wave gate.
+sp_payload=get_json("/v1/sp/parcel?lat=-23.611284118235293&lng=-46.72245915764705", timeout=180)
+require(isinstance((sp_payload.get("context") or {}).get("transport"),dict),"SP transport context missing")
+rio_payload=get_json("/v1/rio/parcel?lat=-22.9558162586&lng=-43.1835534124", timeout=180)
+require(isinstance((rio_payload.get("context") or {}).get("transport"),dict),"Rio transport context missing")
+require(isinstance((rio_payload.get("context") or {}).get("environment"),dict),"Rio environment context missing")
+bh_payload=get_json("/v1/bh/parcel?lat=-19.82495629&lng=-43.9987863521", timeout=180)
+require(isinstance((bh_payload.get("context") or {}).get("transport"),dict),"BH transport context missing")
+require(isinstance((bh_payload.get("context") or {}).get("environment"),dict),"BH environment context missing")
+require(isinstance(bh_payload.get("context",{}).get("drainage_assets"),list),"BH drainage context missing")
+jp_payload=get_json("/v1/jp/parcel?lat=-7.0585194646808365&lng=-34.847229023894556", timeout=180)
+require(isinstance((jp_payload.get("context") or {}).get("environment"),dict),"JP environment context missing")
+require(isinstance((jp_payload.get("context") or {}).get("risk"),dict),"JP risk context missing")
+print("OK   cross-city context contracts")
+
+print("\nSMOKE PASSED: first-wave parcel workflow is healthy")
     return 0
 
 if __name__ == "__main__":
