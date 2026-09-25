@@ -1829,8 +1829,8 @@ def actual_values_for_section(
     if section_id == "executive_summary":
         values = [
             {"label": "Endereço", "value": address},
-            {"label": "SQL", "value": p.get("sql_reference")},
-            {"label": "CIB", "value": p.get("cib")},
+            {"label": "Inscrição fiscal do lote (SQL)", "value": p.get("sql_reference")},
+            {"label": "Código imobiliário (CIB)", "value": p.get("cib")},
             {"label": "Área do terreno", "value": p.get("land_area_m2"), "unit": "m²"},
             {"label": "Área construída fiscal", "value": p.get("built_area_m2"), "unit": "m²"},
             {"label": "Uso cadastral", "value": p.get("use_description")},
@@ -1856,9 +1856,9 @@ def actual_values_for_section(
         iptu = ((context.get("fiscal") or {}).get("iptu") or {}).get("latest") or {}
         terrain = context.get("terrain") or {}
         values = [
-            {"label": "SQL", "value": p.get("sql_reference")},
-            {"label": "CIB", "value": p.get("cib")},
-            {"label": "Situação CIB", "value": p.get("cib_status")},
+            {"label": "Inscrição fiscal do lote (SQL)", "value": p.get("sql_reference")},
+            {"label": "Código imobiliário (CIB)", "value": p.get("cib")},
+            {"label": "Situação cadastral do imóvel", "value": p.get("cib_status")},
             {"label": "Situação cartográfica do lote", "value": p.get("parcel_status")},
             {"label": "Setor", "value": p.get("fiscal_sector")},
             {"label": "Quadra", "value": p.get("fiscal_block")},
@@ -2245,7 +2245,7 @@ def actual_values_for_section(
         if txs:
             latest = txs[0]
             values.extend([
-                {"label": "Situação do SQL · snapshot IPTU/DTI mais recente", "value": latest.get("sql_status")},
+                {"label": "Situação da inscrição fiscal no cadastro mais recente", "value": latest.get("sql_status")},
                 {"label": "Testada · snapshot IPTU/DTI", "value": latest.get("frontage_m"), "unit": "m"},
                 {"label": "Fração ideal · snapshot IPTU/DTI", "value": latest.get("ideal_fraction")},
                 {"label": "Área terreno · snapshot IPTU/DTI", "value": latest.get("land_area_m2"), "unit": "m²"},
@@ -2298,7 +2298,7 @@ def actual_values_for_section(
             ])
         if not exact:
             values.append({
-                "label": "Alvará HIS/HMP por SQL",
+                "label": "Alvará de habitação social vinculado ao lote",
                 "value": "Nenhum registro exato encontrado na camada pública consultada.",
             })
         values.append({
@@ -2344,13 +2344,13 @@ def actual_values_for_section(
         terrain = context.get("terrain") or {}
         if not terrain.get("available"):
             return [{
-                "label": "MDT/LiDAR 2020",
+                "label": "Modelo de terreno por levantamento a laser (2020)",
                 "value": "Análise altimétrica não disponível para este lote nesta consulta.",
             }]
         tile = terrain.get("tile") or {}
         profiles = terrain.get("profiles") or []
         values = [
-            {"label": "Folha MDT 2020", "value": tile.get("code")},
+            {"label": "Folha cartográfica do modelo de terreno (2020)", "value": tile.get("code")},
             {"label": "Levantamento", "value": tile.get("survey")},
             {"label": "Datum vertical", "value": terrain.get("vertical_datum")},
             {"label": "Cota mínima derivada", "value": terrain.get("min_elevation_m"), "unit": "m"},
