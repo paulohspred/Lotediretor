@@ -114,11 +114,11 @@ def context(lat,lng,parcel):
 
 def vals(s,p,c):
     q=p["properties"];z=((c["planning"].get("zoning") or {}).get("properties") or {});sp=c["planning"].get("special_regimes") or {}
-    if s=="executive_summary":return [{"label":"Endereço","value":q.get("street")},{"label":"Inscrição fiscal do imóvel (DSQFL)","value":q.get("dsqfl")},{"label":"Sequência cadastral do imóvel","value":q.get("seqimovel")},{"label":"Situação","value":q.get("parcel_status")},{"label":"Área do lote","value":q.get("land_area_m2"),"unit":"m²"},{"label":"Área construída","value":q.get("built_area_m2"),"unit":"m²"},{"label":"Zona","value":z.get("cd_zoneamento_perimetro")},{"label":"CA máximo","value":z.get("ca_max")}]
+    if s=="executive_summary":return [{"label":"Endereço","value":q.get("street")},{"label":"Inscrição fiscal do imóvel (DSQFL)","value":q.get("dsqfl")},{"label":"Sequência cadastral do imóvel","value":q.get("seqimovel")},{"label":"Situação","value":q.get("parcel_status")},{"label":"Área do lote","value":q.get("land_area_m2"),"unit":"m²"},{"label":"Área construída","value":q.get("built_area_m2"),"unit":"m²"},{"label":"Zona","value":z.get("cd_zoneamento_perimetro")},{"label":"Coeficiente de aproveitamento máximo","value":z.get("ca_max")}]
     if s=="identity_location":return [{"label":"Inscrição fiscal do imóvel (DSQFL)","value":q.get("dsqfl")},{"label":"Sequência cadastral do imóvel","value":q.get("seqimovel")},{"label":"Situação cadastral","value":q.get("parcel_status")},{"label":"Distrito","value":q.get("district")},{"label":"Setor","value":q.get("fiscal_sector")},{"label":"Quadra","value":q.get("fiscal_block")},{"label":"Face","value":q.get("face")},{"label":"Lote","value":q.get("fiscal_lot")},{"label":"Endereço","value":q.get("street")},{"label":"Área","value":q.get("land_area_m2"),"unit":"m²"},{"label":"Testada","value":q.get("frontage_m"),"unit":"m"}]
     if s=="building_existing":return [{"label":"Área construída","value":q.get("built_area_m2"),"unit":"m²"},{"label":"Pavimentos","value":q.get("floors")},{"label":"Ano construção","value":q.get("construction_year")},{"label":"Unidades","value":q.get("units")},{"label":"Blocos","value":q.get("blocks")},{"label":"Uso","value":q.get("use_description")}]
     if s=="planning_buildability":
-        out=[{"label":"Macrozona","value":z.get("macrozone")},{"label":"Zona","value":z.get("cd_zoneamento_perimetro")},{"label":"Descrição","value":z.get("tx_zoneamento_perimetro")},{"label":"CA mínimo","value":z.get("ca_min")},{"label":"CA básico","value":z.get("ca_basic")},{"label":"CA máximo","value":z.get("ca_max")},{"label":"Considerações","value":z.get("considerations")}]
+        out=[{"label":"Macrozona","value":z.get("macrozone")},{"label":"Zona","value":z.get("cd_zoneamento_perimetro")},{"label":"Descrição","value":z.get("tx_zoneamento_perimetro")},{"label":"Coeficiente de aproveitamento mínimo","value":z.get("ca_min")},{"label":"Coeficiente de aproveitamento básico","value":z.get("ca_basic")},{"label":"CA máximo","value":z.get("ca_max")},{"label":"Considerações","value":z.get("considerations")}]
         for k,l in [("zec","ZEC"),("zeis","ZEIS"),("aru","ARU")]:
             for x in sp.get(k) or []:
                 r=x.get("properties") or {};out.append({"label":f"Incidência {l}","value":r.get("NMNOME") or r.get("ZEC") or r.get("ZONA_NOME") or l})
@@ -134,7 +134,7 @@ def vals(s,p,c):
             {"label":"Regime IPTU","value":iptu.get("iptu_tax_regime")},
             {"label":"Área lote","value":iptu.get("land_area_m2") or q.get("land_area_m2"),"unit":"m²"},
             {"label":"Área construída","value":iptu.get("built_area_m2") or q.get("built_area_m2"),"unit":"m²"},
-            {"label":"ITBI 2026 · transações dentro do lote","value":itbi.get("count",0)}
+            {"label":"Transações de ITBI localizadas em 2026","value":itbi.get("count",0)}
         ]
         for i,tx in enumerate((itbi.get("transactions") or [])[:8],1):
             out.extend([
