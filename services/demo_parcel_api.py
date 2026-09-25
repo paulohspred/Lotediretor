@@ -33,6 +33,7 @@ from shapely.ops import transform as shapely_transform
 import recife_property
 import rio_property
 import bh_property
+import postgis_store
 
 HOST = "127.0.0.1"
 PORT = 8765
@@ -2480,6 +2481,20 @@ def build_report(parcel: dict, context: dict) -> dict:
     }
 
 
+def persist_best_effort(payload: dict, municipality_ibge: str) -> dict:
+    try:
+        return {
+            "status": "persisted",
+            **postgis_store.persist_payload(payload, municipality_ibge),
+        }
+    except Exception as exc:
+        print(
+            f"PostGIS persistence error {municipality_ibge}: {exc!r}",
+            flush=True,
+        )
+        return {"status": "failed"}
+
+
 class Handler(BaseHTTPRequestHandler):
     server_version = "LoteDiretorParcelAPI/0.1"
 
@@ -2538,6 +2553,7 @@ class Handler(BaseHTTPRequestHandler):
                         "error": "parcel_not_found",
                         "source": "BHGEO LOTE_CTM",
                     })
+                payload["persistence"] = persist_best_effort(payload, "3106200")
                 return self.send_json(200, payload)
             except ValueError as exc:
                 return self.send_json(400, {"error": str(exc)})
@@ -2580,6 +2596,7 @@ class Handler(BaseHTTPRequestHandler):
                         "error": "parcel_not_found",
                         "source": "PCRJ CadParcel",
                     })
+                payload["persistence"] = persist_best_effort(payload, "3304557")
                 return self.send_json(200, payload)
             except ValueError as exc:
                 return self.send_json(400, {"error": str(exc)})
@@ -2622,6 +2639,7 @@ class Handler(BaseHTTPRequestHandler):
                         "error": "parcel_not_found",
                         "source": "Recife ESIG lotes",
                     })
+                payload["persistence"] = persist_best_effort(payload, "2611606")
                 return self.send_json(200, payload)
             except ValueError as exc:
                 return self.send_json(400, {"error": str(exc)})
@@ -2677,7 +2695,7 @@ class Handler(BaseHTTPRequestHandler):
                 })
             parcel = public_feature(selected)
             context = build_context(lat, lng, parcel["geometry"], parcel)
-            return self.send_json(200, {
+            payload = {
                 "found": True,
                 "clicked": {"lat": lat, "lng": lng},
                 "feature": parcel,
@@ -2691,7 +2709,9 @@ class Handler(BaseHTTPRequestHandler):
                     "method": "WFS 2.0 bbox candidate query + server-side point-in-polygon",
                 },
                 "report": build_report(parcel, context),
-            })
+            }
+            payload["persistence"] = persist_best_effort(payload, "3550308")
+            return self.send_json(200, payload)
         except Exception as exc:
             print(f"upstream error: {exc!r}", flush=True)
             return self.send_json(502, {"error": "upstream_unavailable"})
