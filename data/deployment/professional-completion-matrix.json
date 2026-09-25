@@ -499,16 +499,19 @@
         {
           "field": "building",
           "status": "READY",
-          "source_id": "pe-recife-iptu",
-          "supporting_source_ids": [],
-          "endpoint": "https://dados.recife.pe.gov.br/dataset/imposto-predial-e-territorial-urbano-iptu",
-          "access_class": "OPEN_REUSABLE",
-          "license": "ODbL",
-          "connector_status": "LIVE_PROPERTY_RESOLVER",
-          "missing_fields": [
-            "footprint geometry linkage"
+          "source_id": "pe-recife-esig-buildings-3d",
+          "supporting_source_ids": [
+            "pe-recife-iptu"
           ],
-          "notes": null
+          "endpoint": "https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Planejamento/BASES_BAIRRO_FACEQUADRA_LOGRADOURO_LOTE/FeatureServer/7",
+          "access_class": "PUBLIC_QUERY_ONLY",
+          "license": "ODbL",
+          "connector_status": "LIVE_3D_BUILDING_PROPERTY_RESOLVER",
+          "missing_fields": [
+            "licensed-vs-cartographic building reconciliation",
+            "current cadastral/legal confirmation for executive decisions"
+          ],
+          "notes": "Exact DSQFL resolver returns official building geometry and MDT/MDE/MDS cartographic elevation attributes. These values are context and do not replace approved plans or field survey."
         },
         {
           "field": "IPTU",
@@ -779,16 +782,21 @@
         {
           "field": "terrain",
           "status": "PARTIAL",
-          "source_id": "pe-apac-arcgis",
-          "supporting_source_ids": [],
-          "endpoint": "https://geoportal.apac.pe.gov.br/server/rest/services",
+          "source_id": "pe-recife-esig-mdt-declividade-2_5m",
+          "supporting_source_ids": [
+            "pe-apac-arcgis",
+            "pe-recife-esig-buildings-3d"
+          ],
+          "endpoint": "https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Hosted/RGB_MDT_2_5MTS_DECLIVIDADE_tif/MapServer",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "connector_status": "LIVE_VISUAL_SLOPE_CONTEXT_NUMERIC_TERRAIN_PENDING",
           "missing_fields": [
-            "high-resolution terrain source/licence"
+            "numeric parcel elevation samples from an official terrain endpoint",
+            "parcel A-A/B-B elevation profiles",
+            "reuse/license confirmation for raster caching"
           ],
-          "notes": null
+          "notes": "The municipal 2.5 m MDT-derived slope service is live as visual context. Its identify operation did not expose reliable numeric elevation values, so no elevations are inferred from raster colors. Building MDT/MDE values remain building-specific context."
         },
         {
           "field": "public works",
