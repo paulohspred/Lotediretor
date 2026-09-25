@@ -14,6 +14,8 @@ BASIN="https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Hosted/PAINEL_M
 NONAED="https://esigportal2.recife.pe.gov.br/arcgis/rest/services/MeioAmbiente/MA_FaixaNonAedificandi2026/MapServer/0"
 MARGINAL="https://esigportal2.recife.pe.gov.br/arcgis/rest/services/MeioAmbiente/MA_FaixasDeProtecao_SSA1_2020_2026/MapServer/0"
 SSA1="https://esigportal2.recife.pe.gov.br/arcgis/rest/services/MeioAmbiente/MA_FaixasDeProtecao_SSA1_2020_2026/MapServer/2"
+BUILDING="https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Planejamento/BASES_BAIRRO_FACEQUADRA_LOGRADOURO_LOTE/FeatureServer/7"
+BUILDING_F=["OBJECTID","DSQFL","CEDIFNUM","NMENDER","NUMERO","MDE","MDT","MDS","ELEVATION","LENGTH3D","Z_MIN","Z_MAX","Z_MEAN","VERTEX_CNT"]
 SMUP_BASE="https://esigportal2.recife.pe.gov.br/arcgis/rest/services/MeioAmbiente/MA_UnidadesProtegidasSMUP/MapServer"
 BF=["fid","nome","area_em_ha","codigo"]
 NF=["objectid","subbacia","bacia","codsub","decreto"]
@@ -104,8 +106,14 @@ def context(lat,lng,parcel):
     }
     tx=recife_index.transactions(ix.get("itbi") or [])
     permits=recife_index.permits(ix.get("licensing") or [])
+    buildings=[]
+    if p.get("dsqfl"):
+        try:
+            buildings=query(BUILDING,BUILDING_F,where="DSQFL='"+str(p.get("dsqfl")).replace("'","")+"'",count=100)
+        except Exception as e:
+            buildings=[];errors["buildings"]=type(e).__name__
     return {"planning":{"zoning":{"properties":{"cd_zoneamento_perimetro":z.get("ZONA"),"tx_zoneamento_perimetro":z.get("ZONA2") or z.get("ZONA"),"macrozone":z.get("MACROZONA"),"ca_min":z.get("VLCOEFMIN"),"ca_basic":z.get("VLCOEFBAS"),"ca_max":z.get("VLCOEFMAX"),"considerations":z.get("NMCONSIDERAC")}},"special_regimes":{k:v for k,v in layers.items() if k!="zoning" and v}},
-    "buildings":[],"terrain":{"available":False,"reason":"pending_recife_terrain"},"environment":envctx,"risk":{"geological":[],"hydrological":[]},
+    "buildings":buildings,"terrain":{"available":False,"reason":"numeric_mdt_not_exposed_by_current_public_raster_service"},"environment":envctx,"risk":{"geological":[],"hydrological":[]},
     "heritage":{"assets":layers.get("iep") or [],"buffers":{"ZEPH":layers.get("zeph") or [],"IPAV":layers.get("ipav") or [],"UCN":layers.get("ucn") or []}},
     "utilities":municipality_utilities.load("2611606"),"licensing":{"housing_permits_exact_sql":permits,"impact_spatial_incidence":[],"environment_spatial_incidence":[],"match_method":"EXACT_DSQFL"},
     "fiscal":{"pgv":{"found":False},"iptu":{"found":bool(iptu_record),"latest":iptu_latest,"source_record":iptu_record},"itbi":{"available":True,"count":len(tx),"coverage_years":[2026] if (ix.get("coverage") or {}).get("itbi_2026") else [],"registry_references":[],"transactions":tx,"match_method":"OFFICIAL_POINT_INSIDE_PARCEL"}},
@@ -116,7 +124,21 @@ def vals(s,p,c):
     q=p["properties"];z=((c["planning"].get("zoning") or {}).get("properties") or {});sp=c["planning"].get("special_regimes") or {}
     if s=="executive_summary":return [{"label":"Endereço","value":q.get("street")},{"label":"Inscrição fiscal do imóvel (DSQFL)","value":q.get("dsqfl")},{"label":"Sequência cadastral do imóvel","value":q.get("seqimovel")},{"label":"Situação","value":q.get("parcel_status")},{"label":"Área do lote","value":q.get("land_area_m2"),"unit":"m²"},{"label":"Área construída","value":q.get("built_area_m2"),"unit":"m²"},{"label":"Zona","value":z.get("cd_zoneamento_perimetro")},{"label":"Coeficiente de aproveitamento máximo","value":z.get("ca_max")}]
     if s=="identity_location":return [{"label":"Inscrição fiscal do imóvel (DSQFL)","value":q.get("dsqfl")},{"label":"Sequência cadastral do imóvel","value":q.get("seqimovel")},{"label":"Situação cadastral","value":q.get("parcel_status")},{"label":"Distrito","value":q.get("district")},{"label":"Setor","value":q.get("fiscal_sector")},{"label":"Quadra","value":q.get("fiscal_block")},{"label":"Face","value":q.get("face")},{"label":"Lote","value":q.get("fiscal_lot")},{"label":"Endereço","value":q.get("street")},{"label":"Área","value":q.get("land_area_m2"),"unit":"m²"},{"label":"Testada","value":q.get("frontage_m"),"unit":"m"}]
-    if s=="building_existing":return [{"label":"Área construída","value":q.get("built_area_m2"),"unit":"m²"},{"label":"Pavimentos","value":q.get("floors")},{"label":"Ano construção","value":q.get("construction_year")},{"label":"Unidades","value":q.get("units")},{"label":"Blocos","value":q.get("blocks")},{"label":"Uso","value":q.get("use_description")}]
+    if s=="building_existing":
+        out=[{"label":"Área construída cadastral","value":q.get("built_area_m2"),"unit":"m²"},{"label":"Pavimentos cadastrados","value":q.get("floors")},{"label":"Ano de construção cadastrado","value":q.get("construction_year")},{"label":"Unidades","value":q.get("units")},{"label":"Blocos","value":q.get("blocks")},{"label":"Uso cadastral","value":q.get("use_description")}]
+        buildings=c.get("buildings") or []
+        out.append({"label":"Edificações 3D oficiais vinculadas ao lote","value":len(buildings)})
+        for i,item in enumerate(buildings[:8],1):
+            r=item.get("properties") or {}
+            mdt=r.get("MDT");mde=r.get("MDE")
+            height=(mde-mdt) if isinstance(mde,(int,float)) and isinstance(mdt,(int,float)) else None
+            out.extend([
+                {"label":f"Edificação {i} · cota do terreno (MDT)","value":mdt,"unit":"m"},
+                {"label":f"Edificação {i} · cota superior (MDE)","value":mde,"unit":"m"},
+                {"label":f"Edificação {i} · altura estimada","value":round(height,2) if height is not None else None,"unit":"m"},
+            ])
+        if buildings:out.append({"label":"Ressalva","value":"As cotas MDT/MDE e a geometria 3D são cartografia municipal; não substituem levantamento topográfico, projeto aprovado ou cadastro predial atualizado."})
+        return out
     if s=="planning_buildability":
         out=[{"label":"Macrozona","value":z.get("macrozone")},{"label":"Zona","value":z.get("cd_zoneamento_perimetro")},{"label":"Descrição","value":z.get("tx_zoneamento_perimetro")},{"label":"Coeficiente de aproveitamento mínimo","value":z.get("ca_min")},{"label":"Coeficiente de aproveitamento básico","value":z.get("ca_basic")},{"label":"CA máximo","value":z.get("ca_max")},{"label":"Considerações","value":z.get("considerations")}]
         for k,l in [("zec","ZEC"),("zeis","ZEIS"),("aru","ARU")]:
