@@ -143,11 +143,11 @@ header{height:56px;background:var(--nav);color:#fff;border-bottom:4px solid var(
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 <script>
 const cities=[
-  {name:"São Paulo",uf:"SP",ibge:"3550308",lat:-23.5505,lng:-46.6333,z:16,r:12,p:10,q:3,v:1},
-  {name:"Recife",uf:"PE",ibge:"2611606",lat:-8.0476,lng:-34.8770,z:12,r:12,p:12,q:1,v:1},
-  {name:"Rio de Janeiro",uf:"RJ",ibge:"3304557",lat:-22.9068,lng:-43.1729,z:11,r:9,p:14,q:3,v:0},
-  {name:"Belo Horizonte",uf:"MG",ibge:"3106200",lat:-19.9167,lng:-43.9345,z:12,r:8,p:15,q:2,v:1},
-  {name:"João Pessoa",uf:"PB",ibge:"2507507",lat:-7.1195,lng:-34.8450,z:12,r:7,p:10,q:8,v:1}
+  {name:"São Paulo",uf:"SP",ibge:"3550308",lat:-23.5505,lng:-46.6333,z:16},
+  {name:"Recife",uf:"PE",ibge:"2611606",lat:-8.0476,lng:-34.8770,z:12},
+  {name:"Rio de Janeiro",uf:"RJ",ibge:"3304557",lat:-22.9068,lng:-43.1729,z:11},
+  {name:"Belo Horizonte",uf:"MG",ibge:"3106200",lat:-19.9167,lng:-43.9345,z:12},
+  {name:"João Pessoa",uf:"PB",ibge:"2507507",lat:-7.1195,lng:-34.8450,z:12}
 ];
 
 const select=document.getElementById("citySelect");
@@ -216,7 +216,7 @@ const spParcelWms=L.tileLayer.wms("https://wms.geosampa.prefeitura.sp.gov.br/geo
   transparent:true,
   version:"1.1.1",
   opacity:.62,
-  attribution:"Prefeitura de São Paulo · GeoSampa"
+  attribution:"Prefeitura de São Paulo"
 }).setZIndex(420);
 
 const spZoningWms=L.tileLayer.wms("https://wms.geosampa.prefeitura.sp.gov.br/geoserver/geoportal/wms",{
@@ -225,7 +225,7 @@ const spZoningWms=L.tileLayer.wms("https://wms.geosampa.prefeitura.sp.gov.br/geo
   transparent:true,
   version:"1.1.1",
   opacity:.30,
-  attribution:"Zoneamento vigente · Prefeitura de São Paulo · GeoSampa"
+  attribution:"Zoneamento vigente · Prefeitura de São Paulo"
 }).setZIndex(380);
 
 const spGeoRiskWms=L.tileLayer.wms("https://wms.geosampa.prefeitura.sp.gov.br/geoserver/geoportal/wms",{
@@ -234,7 +234,7 @@ const spGeoRiskWms=L.tileLayer.wms("https://wms.geosampa.prefeitura.sp.gov.br/ge
   transparent:true,
   version:"1.1.1",
   opacity:.48,
-  attribution:"Risco geológico · Prefeitura de São Paulo · GeoSampa"
+  attribution:"Risco geológico · Prefeitura de São Paulo"
 }).setZIndex(360);
 
 const spHydroRiskWms=L.tileLayer.wms("https://wms.geosampa.prefeitura.sp.gov.br/geoserver/geoportal/wms",{
@@ -243,7 +243,7 @@ const spHydroRiskWms=L.tileLayer.wms("https://wms.geosampa.prefeitura.sp.gov.br/
   transparent:true,
   version:"1.1.1",
   opacity:.48,
-  attribution:"Risco hidrológico · Prefeitura de São Paulo · GeoSampa"
+  attribution:"Risco hidrológico · Prefeitura de São Paulo"
 }).setZIndex(361);
 
 const spHeritageWms=L.tileLayer.wms("https://wms.geosampa.prefeitura.sp.gov.br/geoserver/geoportal/wms",{
@@ -252,7 +252,7 @@ const spHeritageWms=L.tileLayer.wms("https://wms.geosampa.prefeitura.sp.gov.br/g
   transparent:true,
   version:"1.1.1",
   opacity:.46,
-  attribution:"Patrimônio cultural · Prefeitura de São Paulo · GeoSampa"
+  attribution:"Patrimônio cultural · Prefeitura de São Paulo"
 }).setZIndex(370);
 
 const spHillshadeWms=L.tileLayer.wms("https://wms.geosampa.prefeitura.sp.gov.br/geoserver/geoportal/wms",{
@@ -261,7 +261,7 @@ const spHillshadeWms=L.tileLayer.wms("https://wms.geosampa.prefeitura.sp.gov.br/
   transparent:true,
   version:"1.1.1",
   opacity:.52,
-  attribution:"Hillshade MDC 2004 · Prefeitura de São Paulo · GeoSampa"
+  attribution:"Modelo de relevo 2004 · Prefeitura de São Paulo"
 }).setZIndex(340);
 
 const spSlopeWms=L.tileLayer.wms("https://wms.geosampa.prefeitura.sp.gov.br/geoserver/geoportal/wms",{
@@ -270,7 +270,7 @@ const spSlopeWms=L.tileLayer.wms("https://wms.geosampa.prefeitura.sp.gov.br/geos
   transparent:true,
   version:"1.1.1",
   opacity:.48,
-  attribution:"Declividade · Prefeitura de São Paulo · GeoSampa"
+  attribution:"Declividade · Prefeitura de São Paulo"
 }).setZIndex(341);
 
 const spOrthoIndex2020Wms=L.tileLayer.wms("https://wms.geosampa.prefeitura.sp.gov.br/geoserver/geoportal/wms",{
@@ -279,17 +279,17 @@ const spOrthoIndex2020Wms=L.tileLayer.wms("https://wms.geosampa.prefeitura.sp.go
   transparent:true,
   version:"1.1.1",
   opacity:.55,
-  attribution:"Índice de ortofotos 2020 · Prefeitura de São Paulo · GeoSampa"
+  attribution:"Ortofotos 2020 · Prefeitura de São Paulo"
 }).setZIndex(342);
 
 L.control.layers(null,{
-  "Lotes fiscais · GeoSampa":spParcelWms,
+  "Lotes fiscais · Prefeitura de São Paulo":spParcelWms,
   "Zoneamento vigente · Lei 18.177/2024":spZoningWms,
   "Risco geológico":spGeoRiskWms,
   "Risco hidrológico":spHydroRiskWms,
   "Patrimônio · tombamento/envoltória":spHeritageWms,
   "Hillshade histórico · MDC 2004":spHillshadeWms,
-  "Declividade · GeoSampa":spSlopeWms,
+  "Declividade · Prefeitura de São Paulo":spSlopeWms,
   "Índice das ortofotos 2020":spOrthoIndex2020Wms,
   "Recife · lotes ESIG":recifeParcelOverlay,
   "Recife · zoneamento PD2020":recifeZoningOverlay,
@@ -338,7 +338,7 @@ cities.forEach((c,i)=>{
 });
 
 function applyCity(idx,fly=true){
-  const c=cities[idx],total=c.r+c.p+c.q+c.v;
+  const c=cities[idx];
   syncCityLayers();
   if(fly){map.flyTo([c.lat,c.lng],c.z,{duration:.8});markers[idx].openPopup()}
 }
