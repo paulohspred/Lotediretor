@@ -2,6 +2,8 @@
 from __future__ import annotations
 import json,re,urllib.parse,urllib.request
 from concurrent.futures import ThreadPoolExecutor
+from math import atan2, cos, radians, sin, sqrt, degrees
+from shapely.geometry import shape, LineString
 from datetime import datetime,timezone
 from pathlib import Path
 import municipality_utilities
@@ -85,6 +87,60 @@ def mdt_value(lat,lng):
     try:return float(str(raw).replace(",","."))
     except (TypeError,ValueError):return None
 
+def _haversine_m(a,b):
+    lat1,lon1,lat2,lon2=map(radians,[a[1],a[0],b[1],b[0]])
+    dlat=lat2-lat1;dlon=lon2-lon1
+    h=sin(dlat/2)**2+cos(lat1)*cos(lat2)*sin(dlon/2)**2
+    return 6371008.8*2*atan2(sqrt(h),sqrt(max(0,1-h)))
+
+def _bearing_deg(a,b):
+    lat1,lat2=radians(a[1]),radians(b[1]);dlon=radians(b[0]-a[0])
+    y=sin(dlon)*cos(lat2);x=cos(lat1)*sin(lat2)-sin(lat1)*cos(lat2)*cos(dlon)
+    return (degrees(atan2(y,x))+360)%360
+
+def _profile_lines(geometry):
+    poly=shape(geometry)
+    if poly.is_empty:return []
+    if poly.geom_type=="MultiPolygon":poly=max(poly.geoms,key=lambda p:p.area)
+    rect=poly.minimum_rotated_rectangle
+    pts=list(rect.exterior.coords)[:-1]
+    edges=[(pts[i],pts[(i+1)%4],_haversine_m(pts[i],pts[(i+1)%4])) for i in range(4)]
+    a0,a1,_=max(edges,key=lambda x:x[2])
+    dx,dy=a1[0]-a0[0],a1[1]-a0[1]
+    mag=max((dx*dx+dy*dy)**.5,1e-12);ux,uy=dx/mag,dy/mag
+    cx,cy=poly.centroid.x,poly.centroid.y
+    span=max(max(p[0] for p in pts)-min(p[0] for p in pts),max(p[1] for p in pts)-min(p[1] for p in pts))*4+0.002
+    lines=[]
+    for name,(vx,vy) in [("A-A",(ux,uy)),("B-B",(-uy,ux))]:
+        line=LineString([(cx-vx*span,cy-vy*span),(cx+vx*span,cy+vy*span)])
+        inter=poly.intersection(line)
+        segs=[]
+        if inter.geom_type=="LineString":segs=[inter]
+        elif inter.geom_type=="MultiLineString":segs=list(inter.geoms)
+        if not segs:continue
+        seg=max(segs,key=lambda s:s.length)
+        coords=list(seg.coords)
+        if len(coords)>=2:lines.append((name,coords[0],coords[-1]))
+    return lines
+
+def _terrain_profile(name,a,b,n=11):
+    coords=[(a[0]+(b[0]-a[0])*i/(n-1),a[1]+(b[1]-a[1])*i/(n-1)) for i in range(n)]
+    with ThreadPoolExecutor(max_workers=min(6,n)) as ex:
+        vals=list(ex.map(lambda p:mdt_value(p[1],p[0]),coords))
+    length=_haversine_m(a,b)
+    samples=[]
+    for i,(p,z) in enumerate(zip(coords,vals)):
+        if isinstance(z,(int,float)):
+            samples.append({"distance_m":length*i/(n-1),"elevation_m":z,"lat":p[1],"lng":p[0]})
+    if len(samples)<2:return None
+    dz=samples[-1]["elevation_m"]-samples[0]["elevation_m"]
+    return {
+        "name":name,"length_m":round(length,2),"bearing_deg":round(_bearing_deg(a,b),1),
+        "delta_elevation_m":round(dz,3),"average_slope_pct":round((dz/length*100) if length else 0,2),
+        "nearest_ground_point_p90_m":None,"samples":samples,
+        "line_coordinates_wgs84":[[a[0],a[1]],[b[0],b[1]]]
+    }
+
 def terrain_context(parcel,lat,lng):
     g=parcel.get("geometry") or {};coords=g.get("coordinates") or [];rings=[]
     if g.get("type")=="Polygon" and coords:rings=[coords[0]]
@@ -102,15 +158,23 @@ def terrain_context(parcel,lat,lng):
         values=list(ex.map(lambda p:mdt_value(p[0],p[1]),unique))
     samples=[{"lat":p[0],"lng":p[1],"elevation_m":v} for p,v in zip(unique,values) if isinstance(v,(int,float))]
     if not samples:return {"available":False,"reason":"mdt_identify_no_sample"}
+    profiles=[]
+    try:
+        with ThreadPoolExecutor(max_workers=2) as ex:
+            jobs=[ex.submit(_terrain_profile,name,a,b) for name,a,b in _profile_lines(g)]
+            profiles=[p for p in (j.result() for j in jobs) if p]
+    except Exception:
+        profiles=[]
     elevations=[x["elevation_m"] for x in samples]
+    for profile in profiles:elevations.extend(x["elevation_m"] for x in profile.get("samples",[]))
     return {
-        "available":True,"sample_method":"clicked point + parcel boundary samples",
+        "available":True,"sample_method":"parcel samples + A-A/B-B profiles",
         "sample_count":len(samples),"clicked_elevation_m":samples[0]["elevation_m"] if samples and samples[0]["lat"]==lat and samples[0]["lng"]==lng else None,
         "min_sampled_elevation_m":min(elevations),"max_sampled_elevation_m":max(elevations),
         "sampled_relief_m":max(elevations)-min(elevations),
         "min_elevation_m":min(elevations),"max_elevation_m":max(elevations),
-        "amplitude_m":max(elevations)-min(elevations),"quality":"Amostragem do modelo oficial de terreno de 5 m",
-        "samples":samples,
+        "amplitude_m":max(elevations)-min(elevations),"quality":"Perfis de triagem no modelo oficial de terreno de 5 m",
+        "profiles":profiles,"samples":samples,
         "source":{"authority":"Instituto Pereira Passos / Prefeitura do Rio","dataset":"Modelo Digital de Terreno LiDAR 2019","resolution_m":5,"license":"CC BY 4.0","method":"ArcGIS MapServer identify"}
     }
 
