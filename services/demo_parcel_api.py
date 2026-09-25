@@ -32,6 +32,7 @@ from shapely.ops import transform as shapely_transform
 
 import recife_property
 import rio_property
+import bh_property
 
 HOST = "127.0.0.1"
 PORT = 8765
@@ -2501,6 +2502,48 @@ class Handler(BaseHTTPRequestHandler):
             return self.send_json(200, {"ok": True, "service": "parcel-click"})
 
         params = urllib.parse.parse_qs(parsed.query)
+
+        if parsed.path == "/v1/bh/search":
+            query_text = params.get("q", [""])[0]
+            try:
+                matches = bh_property.search(query_text)
+            except ValueError as exc:
+                return self.send_json(400, {"error": str(exc)})
+            except Exception as exc:
+                print(f"BH search upstream error: {exc!r}", flush=True)
+                return self.send_json(502, {"error": "upstream_unavailable"})
+            return self.send_json(200, {
+                "query": query_text,
+                "count": len(matches),
+                "matches": matches,
+                "source": {
+                    "id": "mg-bh-bhgeo-lote-ctm",
+                    "authority": "Prefeitura de Belo Horizonte / BHGEO",
+                    "layer": "ide_bhgeo:LOTE_CTM",
+                },
+            })
+
+        if parsed.path == "/v1/bh/parcel":
+            try:
+                lat = float(params.get("lat", [""])[0])
+                lng = float(params.get("lng", [""])[0])
+            except ValueError:
+                return self.send_json(400, {"error": "invalid_coordinates"})
+            if not (math.isfinite(lat) and math.isfinite(lng)):
+                return self.send_json(400, {"error": "invalid_coordinates"})
+            try:
+                payload = bh_property.response_for_point(lat, lng)
+                if payload is None:
+                    return self.send_json(404, {
+                        "error": "parcel_not_found",
+                        "source": "BHGEO LOTE_CTM",
+                    })
+                return self.send_json(200, payload)
+            except ValueError as exc:
+                return self.send_json(400, {"error": str(exc)})
+            except Exception as exc:
+                print(f"BH parcel upstream error: {exc!r}", flush=True)
+                return self.send_json(502, {"error": "upstream_unavailable"})
 
         if parsed.path == "/v1/rio/search":
             query_text = params.get("q", [""])[0]
