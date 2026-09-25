@@ -31,6 +31,10 @@ IDENTIFIER_NAMESPACES = {
         ("BH_LOTE_CTM", "ctm_number"),
         ("BH_LOTE_REF", "sql_reference"),
     ],
+    "2507507": [
+        ("JP_CODIGO_CARTOGRAFICO", "cartographic_code"),
+        ("JP_LOTE_REF", "sql_reference"),
+    ],
 }
 
 
