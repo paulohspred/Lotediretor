@@ -1,6 +1,6 @@
 {
   "schema_version": "0.1.0",
-  "as_of": "2026-09-24",
+  "as_of": "2026-09-25",
   "source_id": "br-obrasgov-api",
   "base_url": "https://api-publica.obrasgov.gestao.gov.br/obras",
   "authentication": "NONE",
@@ -156,5 +156,13 @@
       "paginated": false,
       "filters": []
     }
+  },
+  "geometry_contract": {
+    "checked_at": "2026-09-25",
+    "openapi_url": "https://api-publica.obrasgov.gestao.gov.br/obras/openapi.json",
+    "list_endpoint": "/geometria",
+    "detail_endpoint_exposed": false,
+    "geometry_payload_exposed": false,
+    "note": "Current OpenAPI exposes GeometriaResponse with project/geometry IDs, municipality and geometry origin only. It does not expose coordinates or GeoJSON, so parcel-distance matching must remain disabled unless an official spatial payload becomes available."
   }
 }
