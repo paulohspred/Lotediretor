@@ -8,6 +8,12 @@ import municipality_utilities
 ROOT=Path("/srv/lotediretor/app")
 PARCEL="https://pgeo3.rio.rj.gov.br/arcgis/rest/services/CadParcel/IMOVEIS_TERRITORIAIS/FeatureServer/0"
 ZBASE="https://pgeo3.rio.rj.gov.br/arcgis/rest/services/Urbanismo/LBB_Zoneamento_urbano_vigente/FeatureServer"
+EDIF="https://pgeo3.rio.rj.gov.br/arcgis/rest/services/CadLog/Edificacoes_2019/FeatureServer/0"
+RISK="https://pgeo3.rio.rj.gov.br/arcgis/rest/services/Estudos/ISMFI_Indice_de_Suscetibilidade_do_Meio_Fisico_a_Inundacoes/MapServer/0"
+APAC="https://pgeo3.rio.rj.gov.br/arcgis/rest/services/Urbanismo/LBB_APAC/FeatureServer/0"
+EF=["objectid","altura","base","clnp","cod_edifica","cod_lote","cod_projecao","cod_unico","flag_produto","tipo","topo","Shape__Area","Shape__Length"]
+RF=["objectid","id","cd_geocodi","tipo","cd_geocodb","nm_bairro","cd_geocods","nm_subdist","cd_geocodd","nm_distrit","cd_geocodm","nm_municip","nm_micro","nm_meso","area__m2_","dens","areakm","fid_1","cd_geoco_1","ind_dec","ind_imp","ind_cota","ind_prox","ismfi_v45"]
+AF=["objectid","codigo","legislacao","tipo","nome","subareas","endereco","orgao","obs","Shape__Area","Shape__Length"]
 BOUNDS=(-43.82,-23.10,-43.05,-22.72)
 PF=["objectid","num_projeto","paa","tipo_parcelamento","rgi","observacao","inscricao_imobiliaria","matricula","origem","tipo_do_lote","classificacao","quadra","lote","categoria","lote_vinculado","data_doacao","area_descrita","data_verificacao","justificativa","publicacao"]
 ZF=["objectid","legislacao","zona","subzona","sigla","ap","cab","obs_cab","cam","obs_cam","to_","obs_to","lote_min","obs_lote_min","testada_min","obs_testada_min","gab_afast","obs_gab_afast","gab_n_afast","obs_gab_n_afast","afast_fron","obs_afast_fron","ics","obs_ics","obs_riu","obs"]
@@ -34,6 +40,33 @@ def query(url,fields,lat=None,lng=None,where=None,geometry=True,count=20):
         if set(p)-a: raise RuntimeError("unexpected_fields")
         out.append({"type":"Feature","id":f.get("id"),"geometry":f.get("geometry"),"properties":p})
     return out
+
+def query_polygon(url,fields,geometry,count=200):
+    coords=(geometry or {}).get("coordinates") or []
+    kind=(geometry or {}).get("type")
+    rings=[]
+    if kind=="Polygon":
+        rings=coords
+    elif kind=="MultiPolygon":
+        for poly in coords:
+            rings.extend(poly)
+    if not rings:
+        return []
+    arc={"rings":rings,"spatialReference":{"wkid":4326}}
+    q={
+        "f":"geojson","outSR":"4326","returnGeometry":"true",
+        "outFields":",".join(fields),"resultRecordCount":str(count),
+        "geometry":json.dumps(arc,separators=(",",":")),
+        "geometryType":"esriGeometryPolygon","inSR":"4326",
+        "spatialRel":"esriSpatialRelIntersects"
+    }
+    d=get(url+"/query?"+urllib.parse.urlencode(q));a=set(fields);out=[]
+    for f in d.get("features") or []:
+        p=f.get("properties") or {}
+        if set(p)-a: raise RuntimeError("unexpected_fields")
+        out.append({"type":"Feature","id":f.get("id"),"geometry":f.get("geometry"),"properties":p})
+    return out
+
 
 def date(v):
     if not isinstance(v,(int,float)): return None
@@ -66,9 +99,15 @@ def context(lat,lng,parcel):
     except Exception as e:m={};errors["macrozone"]=type(e).__name__
     p=parcel["properties"]; refs=[]
     if p.get("matricula"):refs.append({"registry_office":None,"registry_number":p.get("matricula"),"source":"PCRJ CadParcel","verification_date":p.get("verification_date")})
+    try:buildings=query_polygon(EDIF,EF,parcel.get("geometry") or {},count=300)
+    except Exception as e:buildings=[];errors["buildings"]=type(e).__name__
+    try:risk=query(RISK,RF,lat=lat,lng=lng,geometry=False,count=10)
+    except Exception as e:risk=[];errors["flood_susceptibility"]=type(e).__name__
+    try:apac=query(APAC,AF,lat=lat,lng=lng,geometry=False,count=20)
+    except Exception as e:apac=[];errors["apac"]=type(e).__name__
     return {"planning":{"zoning":{"properties":{"cd_zoneamento_perimetro":z.get("sigla") or z.get("zona"),"tx_zoneamento_perimetro":" ".join(x for x in [z.get("zona"),z.get("subzona")] if x),"macrozone":m.get("macrozona"),"legislation":z.get("legislacao"),"ap":z.get("ap"),"ca_basic":z.get("cab"),"ca_max":z.get("cam"),"occupancy":z.get("to_"),"min_lot_area_m2":z.get("lote_min"),"min_frontage_m":z.get("testada_min"),"max_height_setback":z.get("gab_afast"),"max_height_no_setback":z.get("gab_n_afast"),"front_setback":z.get("afast_fron"),"ics":z.get("ics"),"observations":z.get("obs")}},"special_regimes":{}},
     "registry":{"available":bool(refs),"references":refs,"interpretation":"Matrícula/RGI são referências públicas da camada cadastral territorial da PCRJ; não substituem certidão atualizada."},
-    "buildings":[],"terrain":{"available":False,"reason":"pending_rio_terrain"},"risk":{"geological":[],"hydrological":[]},"heritage":{"assets":[],"buffers":{}},"utilities":municipality_utilities.load("3304557"),"licensing":{"housing_permits_exact_sql":[],"impact_spatial_incidence":[],"environment_spatial_incidence":[]},
+    "buildings":buildings,"terrain":{"available":False,"reason":"pending_rio_terrain"},"risk":{"geological":[],"hydrological":risk},"heritage":{"assets":apac,"buffers":{}},"utilities":municipality_utilities.load("3304557"),"licensing":{"housing_permits_exact_sql":[],"impact_spatial_incidence":[],"environment_spatial_incidence":[]},
     "fiscal":{"pgv":{"found":False},"iptu":{"found":False,"latest":{}},"itbi":{"available":False,"count":0,"registry_references":[],"transactions":[]}},
     "query_errors":errors,"queried_at":now(),"source":"Prefeitura da Cidade do Rio de Janeiro / Data.Rio"}
 
@@ -76,6 +115,16 @@ def vals(s,p,c):
     q=p["properties"];z=(c["planning"]["zoning"] or {}).get("properties") or {};reg=c.get("registry") or {}
     if s=="executive_summary":return [{"label":"Inscrição imobiliária","value":q.get("inscricao_imobiliaria")},{"label":"RGI","value":q.get("rgi")},{"label":"Matrícula cadastral","value":q.get("matricula")},{"label":"Quadra","value":q.get("fiscal_block")},{"label":"Lote","value":q.get("fiscal_lot")},{"label":"Zona","value":z.get("cd_zoneamento_perimetro")},{"label":"CA básico","value":z.get("ca_basic")},{"label":"CA máximo","value":z.get("ca_max")}]
     if s=="identity_location":return [{"label":"Inscrição imobiliária","value":q.get("inscricao_imobiliaria")},{"label":"RGI","value":q.get("rgi")},{"label":"Projeto","value":q.get("project_number")},{"label":"PAA","value":q.get("paa")},{"label":"Tipo parcelamento","value":q.get("parceling_type")},{"label":"Origem","value":q.get("origin")},{"label":"Tipo do lote","value":q.get("parcel_type")},{"label":"Classificação","value":q.get("classification")},{"label":"Quadra","value":q.get("fiscal_block")},{"label":"Lote","value":q.get("fiscal_lot")},{"label":"Área descrita","value":q.get("land_area_m2"),"unit":"m²"},{"label":"Data verificação","value":q.get("verification_date")},{"label":"Publicação","value":q.get("publication_date")}]
+    if s=="building_existing":
+        buildings=c.get("buildings") or []
+        heights=[(x.get("properties") or {}).get("altura") for x in buildings if isinstance((x.get("properties") or {}).get("altura"),(int,float))]
+        types=sorted({str((x.get("properties") or {}).get("tipo")) for x in buildings if (x.get("properties") or {}).get("tipo")})
+        return [
+            {"label":"Edificações cartográficas 2019 intersectantes","value":len(buildings)},
+            {"label":"Maior altura cartográfica","value":max(heights) if heights else None,"unit":"m"},
+            {"label":"Tipos cartográficos","value":", ".join(types[:8]) if types else None},
+            {"label":"Ressalva","value":"Edificações 2019 são contexto cartográfico e não substituem cadastro/licenciamento atual."}
+        ]
     if s=="planning_buildability":return [{"label":"Macrozona","value":z.get("macrozone")},{"label":"Zona/subzona","value":z.get("tx_zoneamento_perimetro")},{"label":"Sigla","value":z.get("cd_zoneamento_perimetro")},{"label":"Legislação","value":z.get("legislation")},{"label":"AP","value":z.get("ap")},{"label":"CAB","value":z.get("ca_basic")},{"label":"CAM","value":z.get("ca_max")},{"label":"Taxa de ocupação","value":z.get("occupancy")},{"label":"Lote mínimo","value":z.get("min_lot_area_m2"),"unit":"m²"},{"label":"Testada mínima","value":z.get("min_frontage_m"),"unit":"m"},{"label":"Gabarito com afastamento","value":z.get("max_height_setback")},{"label":"Gabarito sem afastamento","value":z.get("max_height_no_setback")},{"label":"Afastamento frontal","value":z.get("front_setback")},{"label":"ICS","value":z.get("ics")}]
     if s=="registry_due_diligence":
         out=[]
