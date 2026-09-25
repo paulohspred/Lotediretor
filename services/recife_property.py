@@ -114,8 +114,8 @@ def context(lat,lng,parcel):
 
 def vals(s,p,c):
     q=p["properties"];z=((c["planning"].get("zoning") or {}).get("properties") or {});sp=c["planning"].get("special_regimes") or {}
-    if s=="executive_summary":return [{"label":"Endereço","value":q.get("street")},{"label":"DSQFL","value":q.get("dsqfl")},{"label":"SeqImóvel","value":q.get("seqimovel")},{"label":"Situação","value":q.get("parcel_status")},{"label":"Área do lote","value":q.get("land_area_m2"),"unit":"m²"},{"label":"Área construída","value":q.get("built_area_m2"),"unit":"m²"},{"label":"Zona","value":z.get("cd_zoneamento_perimetro")},{"label":"CA máximo","value":z.get("ca_max")}]
-    if s=="identity_location":return [{"label":"DSQFL","value":q.get("dsqfl")},{"label":"SeqImóvel","value":q.get("seqimovel")},{"label":"Situação cadastral","value":q.get("parcel_status")},{"label":"Distrito","value":q.get("district")},{"label":"Setor","value":q.get("fiscal_sector")},{"label":"Quadra","value":q.get("fiscal_block")},{"label":"Face","value":q.get("face")},{"label":"Lote","value":q.get("fiscal_lot")},{"label":"Endereço","value":q.get("street")},{"label":"Área","value":q.get("land_area_m2"),"unit":"m²"},{"label":"Testada","value":q.get("frontage_m"),"unit":"m"}]
+    if s=="executive_summary":return [{"label":"Endereço","value":q.get("street")},{"label":"Inscrição fiscal do imóvel (DSQFL)","value":q.get("dsqfl")},{"label":"Sequência cadastral do imóvel","value":q.get("seqimovel")},{"label":"Situação","value":q.get("parcel_status")},{"label":"Área do lote","value":q.get("land_area_m2"),"unit":"m²"},{"label":"Área construída","value":q.get("built_area_m2"),"unit":"m²"},{"label":"Zona","value":z.get("cd_zoneamento_perimetro")},{"label":"CA máximo","value":z.get("ca_max")}]
+    if s=="identity_location":return [{"label":"Inscrição fiscal do imóvel (DSQFL)","value":q.get("dsqfl")},{"label":"Sequência cadastral do imóvel","value":q.get("seqimovel")},{"label":"Situação cadastral","value":q.get("parcel_status")},{"label":"Distrito","value":q.get("district")},{"label":"Setor","value":q.get("fiscal_sector")},{"label":"Quadra","value":q.get("fiscal_block")},{"label":"Face","value":q.get("face")},{"label":"Lote","value":q.get("fiscal_lot")},{"label":"Endereço","value":q.get("street")},{"label":"Área","value":q.get("land_area_m2"),"unit":"m²"},{"label":"Testada","value":q.get("frontage_m"),"unit":"m"}]
     if s=="building_existing":return [{"label":"Área construída","value":q.get("built_area_m2"),"unit":"m²"},{"label":"Pavimentos","value":q.get("floors")},{"label":"Ano construção","value":q.get("construction_year")},{"label":"Unidades","value":q.get("units")},{"label":"Blocos","value":q.get("blocks")},{"label":"Uso","value":q.get("use_description")}]
     if s=="planning_buildability":
         out=[{"label":"Macrozona","value":z.get("macrozone")},{"label":"Zona","value":z.get("cd_zoneamento_perimetro")},{"label":"Descrição","value":z.get("tx_zoneamento_perimetro")},{"label":"CA mínimo","value":z.get("ca_min")},{"label":"CA básico","value":z.get("ca_basic")},{"label":"CA máximo","value":z.get("ca_max")},{"label":"Considerações","value":z.get("considerations")}]
@@ -162,7 +162,7 @@ def vals(s,p,c):
                 {"label":"Área total construída licenciada","value":recife_index.num(r.get("areatotalconstruida")),"unit":"m²"},
                 {"label":"Uso","value":r.get("uso_imovel")}
             ])
-        if not out:out.append({"label":"Licenciamento por DSQFL","value":"Nenhum evento exato localizado no índice público materializado."})
+        if not out:out.append({"label":"Licenciamento vinculado à inscrição fiscal","value":"Nenhum evento exato localizado no índice público materializado."})
         return out
     if s=="infrastructure_utilities":
         return municipality_utilities.report_values(c.get("utilities") or {})
@@ -194,20 +194,20 @@ def vals(s,p,c):
         if env.get("ssa1"):
             out.append({"label":"Setor de Sustentabilidade Ambiental 1","value":"Incidência identificada"})
         for item in env.get("smup_sectors") or []:
-            r=item.get("properties") or {};out.append({"label":"SMUP · setor de UCN","value":r.get("zonas") or "Incidência identificada"})
+            r=item.get("properties") or {};out.append({"label":"Setor de unidade de conservação (SMUP)","value":r.get("zonas") or "Incidência identificada"})
         for item in env.get("smup_trees") or []:
             r=item.get("properties") or {};tree=r.get("nmpopul") or r.get("cdnmcient") or "Árvore tombada"
-            out.append({"label":"SMUP · árvore tombada","value":tree})
-            if r.get("cdnum") not in (None,""):out.append({"label":"SMUP · árvore tombada · número","value":r.get("cdnum")})
+            out.append({"label":"Árvore protegida pelo sistema municipal","value":tree})
+            if r.get("cdnum") not in (None,""):out.append({"label":"Número de identificação da árvore protegida","value":r.get("cdnum")})
         for item in env.get("smup_ipav") or []:
-            r=item.get("properties") or {};out.append({"label":"SMUP · IPAV","value":r.get("nome_ipav") or "Incidência identificada"})
-            if r.get("instrumento_criacao"):out.append({"label":"SMUP · IPAV · instrumento de criação","value":r.get("instrumento_criacao")})
-            if r.get("instrumento_regulamentacao"):out.append({"label":"SMUP · IPAV · instrumento de regulamentação","value":r.get("instrumento_regulamentacao")})
+            r=item.get("properties") or {};out.append({"label":"Imóvel de proteção de área verde (IPAV)","value":r.get("nome_ipav") or "Incidência identificada"})
+            if r.get("instrumento_criacao"):out.append({"label":"IPAV · norma de criação","value":r.get("instrumento_criacao")})
+            if r.get("instrumento_regulamentacao"):out.append({"label":"IPAV · norma de regulamentação","value":r.get("instrumento_regulamentacao")})
         for item in env.get("smup_ucn") or []:
-            r=item.get("properties") or {};out.append({"label":"SMUP · Unidade de Conservação da Natureza","value":r.get("cdzona_nome") or r.get("cdid") or "Incidência identificada"})
-            if r.get("cdzona_tipo"):out.append({"label":"SMUP · UCN · tipo","value":r.get("cdzona_tipo")})
-            if r.get("categoria"):out.append({"label":"SMUP · UCN · categoria","value":r.get("categoria")})
-            if r.get("decreto"):out.append({"label":"SMUP · UCN · decreto","value":r.get("decreto")})
+            r=item.get("properties") or {};out.append({"label":"Unidade de conservação da natureza","value":r.get("cdzona_nome") or r.get("cdid") or "Incidência identificada"})
+            if r.get("cdzona_tipo"):out.append({"label":"Unidade de conservação · tipo","value":r.get("cdzona_tipo")})
+            if r.get("categoria"):out.append({"label":"Unidade de conservação · categoria","value":r.get("categoria")})
+            if r.get("decreto"):out.append({"label":"Unidade de conservação · decreto","value":r.get("decreto")})
         for k,l in [("iep","IEP"),("zeph","ZEPH"),("ipav","IPAV"),("ucn","UCN")]:
             for x in sp.get(k) or []:
                 r=x.get("properties") or {};out.append({"label":f"Incidência {l}","value":r.get("NMDESCR") or r.get("NMNOME") or r.get("NOME_IPAV") or r.get("CDZONA_NOME") or l})
