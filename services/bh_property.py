@@ -131,13 +131,18 @@ def _contour_profiles(parcel_geometry,contours):
             z=(item.get("properties") or {}).get("COTA_CURVA_NIVEL")
             if not isinstance(z,(int,float)) or not item.get("geometry"):continue
             inter=line.intersection(shape(item["geometry"]))
+            if inter.is_empty:continue
             points=[]
             if inter.geom_type=="Point":points=[inter]
-            elif inter.geom_type=="MultiPoint":points=list(inter.geoms)
+            elif inter.geom_type=="MultiPoint":points=[p for p in inter.geoms if not p.is_empty]
             elif inter.geom_type in ("LineString","MultiLineString"):
-                g=inter if inter.geom_type=="LineString" else max(inter.geoms,key=lambda x:x.length)
-                points=[g.interpolate(.5,normalized=True)]
+                segs=[inter] if inter.geom_type=="LineString" else [g for g in inter.geoms if not g.is_empty]
+                if segs:
+                    g=max(segs,key=lambda x:x.length)
+                    pt=g.interpolate(.5,normalized=True)
+                    if not pt.is_empty:points=[pt]
             for pt in points:
+                if pt.is_empty:continue
                 frac=line.project(pt)/max(line.length,1e-12)
                 hits.append({"distance_m":round(length*frac,2),"elevation_m":float(z),"lat":pt.y,"lng":pt.x})
         hits=sorted(hits,key=lambda x:x["distance_m"])
