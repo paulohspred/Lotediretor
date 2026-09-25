@@ -1,6 +1,6 @@
 {
   "schema_version": "0.2.0",
-  "as_of": "2026-09-24",
+  "as_of": "2026-09-25",
   "target_level": "L3",
   "row_contract": [
     "field",
@@ -1194,7 +1194,7 @@
         },
         {
           "field": "terrain",
-          "status": "PARTIAL",
+          "status": "READY",
           "source_id": "rj-rio-mdt-lidar-2019",
           "supporting_source_ids": [
             "rj-rio-flood-susceptibility",
@@ -1203,12 +1203,11 @@
           "endpoint": "https://pgeo3.rio.rj.gov.br/arcgis/rest/services/Cartografia/Modelo_Digital_de_Terreno__Lidar_2019__escala_1_10_000_/MapServer",
           "access_class": "OPEN_REUSABLE",
           "license": "CC BY 4.0",
-          "connector_status": "LIVE_PARTIAL_PROPERTY_RESOLVER",
+          "connector_status": "LIVE_MDT_PROFILE_PROPERTY_RESOLVER",
           "missing_fields": [
-            "parcel-clipped elevation profile",
-            "A-A/B-B profile lines and map rendering"
+            "field-survey confirmation for executive design decisions"
           ],
-          "notes": "MDT LiDAR 2019 (5 m) is sampled at the clicked point and parcel boundary. Values are screening-grade topographic context, not executive survey."
+          "notes": "Official Rio LiDAR 2019 MDT is sampled at the parcel and now produces parcel-clipped A-A/B-B screening profiles with map lines. Resolution is 5 m; outputs remain screening context and do not replace field survey."
         },
         {
           "field": "public works",
@@ -1621,11 +1620,12 @@
           "endpoint": "https://prefeitura.pbh.gov.br/bhgeo/acesso-aos-dados",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "LIVE_CONTOUR_PROPERTY_RESOLVER",
+          "connector_status": "LIVE_CONTOUR_PROFILE_PROPERTY_RESOLVER",
           "missing_fields": [
-            "high-resolution DTM/LiDAR source and license"
+            "direct reproducible raster resource URL for PBH Mapa Altimétrico 2015",
+            "continuous 1 m MDT sampling once raster resource access is reproducible"
           ],
-          "notes": null
+          "notes": "Official 1 m contour intersections are live and now generate discrete A-A/B-B profiles when at least two contour crossings support a profile. PBH also publishes Mapa Altimétrico 2015 and Declividade 2015 under CC BY, but CKAN currently points to an intermediary BHGeo download page rather than a reproducible raster URL."
         },
         {
           "field": "public works",
@@ -1734,7 +1734,7 @@
         },
         {
           "field": "building",
-          "status": "QUERY_ONLY",
+          "status": "PARTIAL",
           "source_id": "pb-joao-pessoa-ficha-cadastral-imovel",
           "supporting_source_ids": [
             "pb-joao-pessoa-filipeia",
@@ -1743,13 +1743,11 @@
           "endpoint": "https://receita.joaopessoa.pb.gov.br/dsf_jpa_portal/inicial.do?acronym=COMPROVANTEINSCRICAOESITUACAOMUNICIPAL&evento=montaMenu",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "APPROVED_SERVICE_METADATA_ONLY",
+          "connector_status": "LIVE_WFS_PARCEL_INTERSECTION",
           "missing_fields": [
-            "verified building-field schema",
-            "bulk reusable building footprint/cadastre",
-            "safe field allowlist"
+            "current/licensed-vs-cartographic building reconciliation"
           ],
-          "notes": "The official service exposes a property cadastral-card workflow and the municipality confirms recent recadastramento, but a reusable bulk building dataset is not yet confirmed."
+          "notes": "Live parcel intersection implemented against Filipeia WFS with a closed public-field allowlist; no bulk mirroring."
         },
         {
           "field": "IPTU",
@@ -1880,11 +1878,11 @@
           "endpoint": "https://filipeia.joaopessoa.pb.gov.br/",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "connector_status": "LIVE_WFS_PARCEL_INTERSECTION",
           "missing_fields": [
-            "environmental overlay completeness"
+            "environmental overlay completeness beyond UC and ZEIS"
           ],
-          "notes": null
+          "notes": "Live parcel intersection implemented against Filipeia WFS with a closed public-field allowlist; no bulk mirroring."
         },
         {
           "field": "risk",
@@ -1894,11 +1892,11 @@
           "endpoint": "https://filipeia.joaopessoa.pb.gov.br/",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "connector_status": "LIVE_WFS_PARCEL_INTERSECTION",
           "missing_fields": [
-            "formal flood/landslide authoritative datasets"
+            "formal interpretation/coverage metadata for susceptibility classes"
           ],
-          "notes": null
+          "notes": "Live parcel intersection implemented against Filipeia WFS with a closed public-field allowlist; no bulk mirroring."
         },
         {
           "field": "heritage",
@@ -2159,4 +2157,4 @@
     "Campo Grande/MS",
     "Vitória/ES"
   ]
-}
+}\n
