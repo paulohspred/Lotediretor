@@ -112,7 +112,7 @@ def context(lat,lng,parcel):
     contour_values=sorted({(x.get("properties") or {}).get("COTA_CURVA_NIVEL") for x in contours if isinstance((x.get("properties") or {}).get("COTA_CURVA_NIVEL"),(int,float))})
     terrain={
         "available":bool(contour_values),
-        "method":"BHGEO curvas de nível segmentadas de 1 m intersectando o polígono do lote",
+        "method":"Curvas de nível oficiais de 1 m que cruzam o terreno",
         "quality":"OFFICIAL_CONTOUR_INTERSECTION",
         "contour_count":len(contours),
         "min_elevation_m":min(contour_values) if contour_values else None,
@@ -145,7 +145,7 @@ def vals(s,p,c):
             {"label":"Edificações cartográficas vinculadas ao terreno","value":len(buildings)},
             {"label":"Soma de áreas de footprint","value":round(sum(areas),2) if areas else None,"unit":"m²"},
             {"label":"Maior altura estimada das edificações","value":round(max(heights),2) if heights else None,"unit":"m"},
-            {"label":"Ressalva","value":"Alturas/footprints BHGEO são contexto cartográfico e não substituem cadastro/licenciamento vigente."}
+            {"label":"Ressalva","value":"Alturas e contornos de edificações são contexto cartográfico e não substituem cadastro ou licenciamento vigente."}
         ]
     if s=="licensing_history":
         out=[]
@@ -193,7 +193,7 @@ def vals(s,p,c):
                     {"label":"Tipo de proteção","value":r.get("DESC_TIPO_AREA_PROTECAO")}
                 ])
         return out or [{"label":"Risco/patrimônio","value":"Sem incidência nas camadas consultadas."}]
-    if s=="planning_buildability":return [{"label":"Zoneamento Lei 11.181","value":z.get("cd_zoneamento_perimetro")},{"label":"Descrição do zoneamento","value":z.get("tx_zoneamento_perimetro")},{"label":"Camada","value":z.get("source_layer")}]
+    if s=="planning_buildability":return [{"label":"Zoneamento Lei 11.181","value":z.get("cd_zoneamento_perimetro")},{"label":"Descrição do zoneamento","value":z.get("tx_zoneamento_perimetro")},{"label":"Fonte do zoneamento","value":"Mapa oficial de zoneamento da Prefeitura de Belo Horizonte"}]
     if s=="infrastructure_utilities":
         return municipality_utilities.report_values(c.get("utilities") or {})
     return []
