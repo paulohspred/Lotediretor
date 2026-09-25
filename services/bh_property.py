@@ -205,9 +205,9 @@ def context(lat,lng,parcel):
 
 def vals(s,p,c):
     q=p["properties"];z=(c["planning"]["zoning"] or {}).get("properties") or {};approved=c.get("approved_parcel") or []
-    if s=="executive_summary":return [{"label":"Identificação do lote (CTM)","value":q.get("ctm_number")},{"label":"Área do lote","value":q.get("land_area_m2"),"unit":"m²"},{"label":"Zoneamento","value":z.get("cd_zoneamento_perimetro")},{"label":"Descrição","value":z.get("tx_zoneamento_perimetro")}]
+    if s=="executive_summary":return [{"label":"Identificação cadastral do lote","value":q.get("ctm_number")},{"label":"Área do lote","value":q.get("land_area_m2"),"unit":"m²"},{"label":"Zoneamento","value":z.get("cd_zoneamento_perimetro")},{"label":"Descrição","value":z.get("tx_zoneamento_perimetro")}]
     if s=="identity_location":
-        out=[{"label":"Identificação do lote (CTM)","value":q.get("ctm_number")},{"label":"Identificador cadastral do lote","value":q.get("municipal_parcel_feature_id")},{"label":"Identificador cadastral da quadra","value":q.get("ctm_block_id")},{"label":"Área cadastral do terreno","value":q.get("land_area_m2"),"unit":"m²"}]
+        out=[{"label":"Identificação cadastral do lote","value":q.get("ctm_number")},{"label":"Identificador cadastral do lote","value":q.get("municipal_parcel_feature_id")},{"label":"Identificador cadastral da quadra","value":q.get("ctm_block_id")},{"label":"Área cadastral do terreno","value":q.get("land_area_m2"),"unit":"m²"}]
         for x in approved[:5]:
             r=x.get("properties") or {};out.extend([{"label":"Zona fiscal · lote aprovado","value":r.get("ZONA_FISCAL")},{"label":"Quarteirão · lote aprovado","value":r.get("QUARTEIRAO")},{"label":"Lote aprovado","value":r.get("LOTE")},{"label":"Planta CP","value":r.get("PLANTA_CP")}])
         return out
