@@ -113,7 +113,7 @@ header{height:56px;background:var(--nav);color:#fff;border-bottom:4px solid var(
     <div class="layer-list">
       <label class="layer-toggle"><input type="checkbox" data-zlayer="parcel" checked><span>Lotes fiscais<small>Cadastro oficial da Prefeitura de São Paulo</small></span></label>
       <label class="layer-toggle"><input type="checkbox" data-zlayer="zoning" checked><span>Zoneamento vigente<small>Lei 18.177/2024</small></span></label>
-      <label class="layer-toggle"><input type="checkbox" data-zlayer="heritage"><span>Patrimônio cultural<small>Tombamento / envoltórias</small></span></label>
+      <label class="layer-toggle"><input type="checkbox" data-zlayer="heritage"><span>Patrimônio cultural<small>Tombamento / envoltórias</small></span></label>\n      <label class="layer-toggle"><input type="checkbox" data-zlayer="environment"><span>Áreas ambientais<small>Unidades de conservação e áreas especiais</small></span></label>
       <label class="layer-toggle"><input type="checkbox" data-zlayer="geoRisk"><span>Risco geológico<small>Triagem espacial</small></span></label>
       <label class="layer-toggle"><input type="checkbox" data-zlayer="hydroRisk"><span>Risco hidrológico<small>Triagem espacial</small></span></label>
       <label class="layer-toggle"><input type="checkbox" data-zlayer="hillshade"><span>Hillshade MDC 2004<small>Contexto histórico</small></span></label>
@@ -402,6 +402,14 @@ const jpZoningWms=L.tileLayer.wms("https://filipeia.joaopessoa.pb.gov.br/geoserv
   layers:"digeoc:zoneamento2024",format:"image/png",transparent:true,version:"1.1.1",
   opacity:.30,attribution:"Zoneamento 2024 · Prefeitura de João Pessoa"
 }).setZIndex(380);
+const jpEnvironmentWms=L.tileLayer.wms("https://filipeia.joaopessoa.pb.gov.br/geoserver/wms",{
+  layers:"digeoc:UC,digeoc:ZEIS",format:"image/png",transparent:true,version:"1.1.1",
+  opacity:.36,attribution:"Áreas ambientais e especiais · Prefeitura de João Pessoa"
+}).setZIndex(365);
+const jpSusceptibilityWms=L.tileLayer.wms("https://filipeia.joaopessoa.pb.gov.br/geoserver/wms",{
+  layers:"digeoc:Suscetibilidade",format:"image/png",transparent:true,version:"1.1.1",
+  opacity:.42,attribution:"Suscetibilidade · Prefeitura de João Pessoa"
+}).setZIndex(366);
 const jpHeritageWms=L.tileLayer.wms("https://filipeia.joaopessoa.pb.gov.br/geoserver/wms",{
   layers:"digeoc:Tombamento_IPHAN,digeoc:TOMBAMENTO_IPHAEP,digeoc:centrohistorico",
   format:"image/png",transparent:true,version:"1.1.1",
@@ -431,7 +439,7 @@ const cityLayerMap={
   "2611606":{parcel:recifeParcelOverlay,zoning:recifeZoningOverlay},
   "3304557":{parcel:rioParcelOverlay,zoning:rioZoningOverlay},
   "3106200":{parcel:bhParcelWms,zoning:bhZoningWms},
-  "2507507":{parcel:jpParcelWms,zoning:jpZoningWms,heritage:jpHeritageWms,buildings:jpBuildingsWms,terrain:jpTerrainWms,gas:jpGasWms,ortho:jpOrthoWms}
+  "2507507":{parcel:jpParcelWms,zoning:jpZoningWms,heritage:jpHeritageWms,environment:jpEnvironmentWms,hydroRisk:jpSusceptibilityWms,buildings:jpBuildingsWms,terrain:jpTerrainWms,gas:jpGasWms,ortho:jpOrthoWms}
 };
 const layerLabelsByCity={
   "3550308":{
@@ -459,14 +467,14 @@ const layerLabelsByCity={
   "2507507":{
     parcel:["Lotes cadastrais","Cadastro territorial da Prefeitura de João Pessoa"],
     zoning:["Zoneamento 2024","Plano Diretor e legislação municipal"],
-    heritage:["Patrimônio cultural","IPHAN, IPHAEP e Centro Histórico"],
+    heritage:["Patrimônio cultural","IPHAN, IPHAEP e Centro Histórico"],\n    environment:["Áreas ambientais e especiais","Unidades de conservação e ZEIS"],\n    hydroRisk:["Suscetibilidade a inundação","Camada oficial de suscetibilidade"],
     buildings:["Edificações","Construções mapeadas pelo município"],
     terrain:["Curvas de nível","Topografia oficial de 2022"],
     gas:["Rede de gás","Rede publicada no portal municipal"],
     ortho:["Ortofoto 2021","Aerofotogrametria municipal"]
   }
 };
-const allThematicLayers=[spParcelWms,spZoningWms,spHeritageWms,spGeoRiskWms,spHydroRiskWms,spHillshadeWms,spSlopeWms,spOrthoIndex2020Wms,recifeParcelOverlay,recifeZoningOverlay,rioParcelOverlay,rioZoningOverlay,bhParcelWms,bhZoningWms,jpParcelWms,jpZoningWms,jpHeritageWms,jpBuildingsWms,jpTerrainWms,jpGasWms,jpOrthoWms];
+const allThematicLayers=[spParcelWms,spZoningWms,spHeritageWms,spGeoRiskWms,spHydroRiskWms,spHillshadeWms,spSlopeWms,spOrthoIndex2020Wms,recifeParcelOverlay,recifeZoningOverlay,rioParcelOverlay,rioZoningOverlay,bhParcelWms,bhZoningWms,jpParcelWms,jpZoningWms,jpHeritageWms,jpEnvironmentWms,jpSusceptibilityWms,jpBuildingsWms,jpTerrainWms,jpGasWms,jpOrthoWms];
 function activeCityLayers(){const city=cities[Number(select.value)];return cityLayerMap[city.ibge]||{}}
 function syncCityLayers(){
   allThematicLayers.forEach(layer=>{if(map.hasLayer(layer))map.removeLayer(layer)});
