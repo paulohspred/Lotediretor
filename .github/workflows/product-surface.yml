@@ -1,0 +1,55 @@
+name: Product Surface
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Validate JSON contracts
+        run: |
+          python - <<'PY'
+          import json
+          json.load(open("data/deployment/professional-completion-matrix.json", encoding="utf-8"))
+          json.load(open("data/source-registry/bootstrap.json", encoding="utf-8"))
+          json.load(open("data/property-dossier/report-spec.json", encoding="utf-8"))
+          print("JSON contracts OK")
+          PY
+
+      - name: Compile Python services
+        run: |
+          python -m py_compile             services/demo_parcel_api.py             services/recife_property.py             services/rio_property.py             services/bh_property.py             services/joao_pessoa_property.py             services/municipality_utilities.py             tools/regression/smoke_first_wave.py             tools/regression/audit_frontend.py
+
+      - name: Check frontend JavaScript
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          s=Path("public/lotediretor/index.html").read_text(encoding="utf-8")
+          start=s.index("<script>")+len("<script>")
+          end=s.rindex("</script>")
+          Path("/tmp/lotediretor-ui.js").write_text(s[start:end], encoding="utf-8")
+          PY
+          node --check /tmp/lotediretor-ui.js
+
+      - name: Audit user-facing surface
+        run: python tools/regression/audit_frontend.py
