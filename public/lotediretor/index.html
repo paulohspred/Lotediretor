@@ -73,6 +73,8 @@ header{height:56px;background:var(--nav);color:#fff;border-bottom:4px solid var(
   .print-lot-map svg{display:block;width:100%;height:72mm;background:#f7f9fa;border:1px solid #d7dfe3}
   .print-lot-map .plm-boundary{fill:rgba(41,79,114,.16);stroke:#294f72;stroke-width:2;stroke-dasharray:7 5;vector-effect:non-scaling-stroke}
   .print-lot-map .plm-cut{fill:none;stroke:#536873;stroke-width:1.5;vector-effect:non-scaling-stroke}
+  .print-lot-map .plm-building{fill:rgba(197,138,57,.28);stroke:#9b6727;stroke-width:1.2;vector-effect:non-scaling-stroke}
+  .print-lot-map .plm-dimension{font-size:9px;fill:#29485b;font-weight:700}
   .print-lot-map .plm-label{font-size:10px;fill:#304650;font-weight:700}
   .print-lot-map .plm-note{font-size:7.5pt;color:#667984;margin-top:2mm}
   .zola-keyfacts,.instant-block,.zola-intersections,.report-values,.terrain-profile-card,.itbi-event,.zola-registry-summary{break-inside:avoid}
@@ -990,7 +992,15 @@ function renderPrintLotMap(feature,context){
   const parcelPts=rings.flat();
   const profiles=((context&&context.terrain&&context.terrain.profiles)||[]).filter(p=>Array.isArray(p.line_coordinates_wgs84)&&p.line_coordinates_wgs84.length>=2);
   const cutPts=profiles.flatMap(p=>p.line_coordinates_wgs84);
-  const pts=parcelPts.concat(cutPts);
+  const buildingFeatures=((context&&context.buildings)||[]).filter(x=>x&&x.geometry);
+  const buildingRings=[];
+  buildingFeatures.forEach(item=>{
+    const g=item.geometry||{};
+    const ps=g.type==="Polygon"?[g.coordinates]:g.type==="MultiPolygon"?(g.coordinates||[]):[];
+    ps.forEach(poly=>(poly||[]).forEach(ring=>{if(Array.isArray(ring)&&ring.length>=3)buildingRings.push(ring)}));
+  });
+  const buildingPts=buildingRings.flat();
+  const pts=parcelPts.concat(cutPts,buildingPts);
   if(!pts.length)return "";
   const xs=pts.map(p=>Number(p[0])).filter(Number.isFinite),ys=pts.map(p=>Number(p[1])).filter(Number.isFinite);
   if(!xs.length||!ys.length)return "";
@@ -1003,20 +1013,37 @@ function renderPrintLotMap(feature,context){
     const y=h-((Number(pt[1])-minY)/(maxY-minY))*h;
     return [x,y];
   };
-  const path=rings.map(r=>r.map((pt,i)=>{
+  const ringPath=r=>r.map((pt,i)=>{
     const q=project(pt);return (i?"L":"M")+q[0].toFixed(2)+" "+q[1].toFixed(2);
-  }).join(" ")+" Z").join(" ");
+  }).join(" ")+" Z";
+  const path=rings.map(ringPath).join(" ");
+  const buildingPaths=buildingRings.map(r=>'<path class="plm-building" d="'+ringPath(r)+'"/>').join("");
   const cuts=profiles.map(p=>{
     const xy=p.line_coordinates_wgs84.map(project);
     const points=xy.map(q=>q[0].toFixed(2)+","+q[1].toFixed(2)).join(" ");
     const mid=xy[Math.floor(xy.length/2)]||xy[0];
     return '<polyline class="plm-cut" points="'+points+'"/><text class="plm-label" x="'+mid[0].toFixed(2)+'" y="'+(mid[1]-6).toFixed(2)+'">'+escapeHtml(p.name||"Corte")+'</text>';
   }).join("");
-  return '<div class="print-lot-map"><h3>Demarcação cadastral e cortes</h3>'+
+  const dimensions=[];
+  rings.forEach(ring=>{
+    for(let i=1;i<ring.length;i++){
+      const a=ring[i-1],b=ring[i];
+      if(!a||!b)continue;
+      const d=map.distance([a[1],a[0]],[b[1],b[0]]);
+      if(d<2)continue;
+      dimensions.push({a,b,d});
+    }
+  });
+  const dimensionLabels=dimensions.sort((a,b)=>b.d-a.d).slice(0,8).map(seg=>{
+    const mid=project([(seg.a[0]+seg.b[0])/2,(seg.a[1]+seg.b[1])/2]);
+    const label=new Intl.NumberFormat("pt-BR",{maximumFractionDigits:1}).format(seg.d)+" m";
+    return '<text class="plm-dimension" x="'+mid[0].toFixed(2)+'" y="'+(mid[1]-4).toFixed(2)+'" text-anchor="middle">'+escapeHtml(label)+'</text>';
+  }).join("");
+  return '<div class="print-lot-map"><h3>Demarcação cadastral, edificações e cortes</h3>'+
     '<svg viewBox="0 0 '+w+' '+h+'" role="img" aria-label="Demarcação vetorial do lote">'+
-      '<path class="plm-boundary" d="'+path+'"/>'+cuts+
+      '<path class="plm-boundary" d="'+path+'"/>'+buildingPaths+cuts+dimensionLabels+
       '<g transform="translate(680 24)"><path d="M0 25 L10 0 L20 25 Z" fill="#304650"/><text class="plm-label" x="10" y="40" text-anchor="middle">N</text></g>'+
-    '</svg><div class="plm-note">Demarcação derivada da geometria cadastral oficial retornada pela fonte municipal. Representação sem escala cartográfica; linhas A–A/B–B aparecem quando o resolver de terreno fornece coordenadas dos cortes.</div></div>';
+    '</svg><div class="plm-note">Limite do terreno derivado da geometria cadastral oficial. Edificações aparecem quando a fonte municipal retorna geometria vinculada/intersectante. Medidas dos lados são aproximações geométricas; cortes A–A/B–B aparecem quando há suporte topográfico. Representação sem escala cartográfica.</div></div>';
 }
 
 function renderPrintCover(p){
