@@ -31,6 +31,22 @@ def primary_identity(ibge, props):
         if not value:
             raise ValueError("Recife dossier has no DSQFL")
         return "RECIFE_DSQFL", str(value)
+    if ibge == "3304557":
+        value = (
+            props.get("inscricao_imobiliaria")
+            or props.get("rgi")
+            or props.get("municipal_parcel_feature_id")
+        )
+        if not value:
+            raise ValueError("Rio dossier has no property identifier")
+        namespace = (
+            "PCRJ_INSCRICAO_IMOBILIARIA"
+            if props.get("inscricao_imobiliaria")
+            else "PCRJ_RGI"
+            if props.get("rgi")
+            else "PCRJ_CADPARCEL_OBJECTID"
+        )
+        return namespace, str(value)
     raise ValueError(f"unsupported municipality {ibge}")
 
 
@@ -146,6 +162,13 @@ def main():
                 identifiers.append(("CIB", str(props["cib"])))
             if args.ibge == "2611606" and props.get("seqimovel"):
                 identifiers.append(("RECIFE_SEQIMOVEL", str(props["seqimovel"])))
+            if args.ibge == "3304557":
+                if props.get("matricula"):
+                    identifiers.append(("PCRJ_MATRICULA_REFERENCE", str(props["matricula"])))
+                if props.get("rgi"):
+                    identifiers.append(("PCRJ_RGI", str(props["rgi"])))
+                if props.get("inscricao_imobiliaria"):
+                    identifiers.append(("PCRJ_INSCRICAO_IMOBILIARIA", str(props["inscricao_imobiliaria"])))
             for ns, val in identifiers:
                 cur.execute(
                     """INSERT INTO ld_core.subject_identifier
