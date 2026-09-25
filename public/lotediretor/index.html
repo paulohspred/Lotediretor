@@ -1189,24 +1189,13 @@ function showAddressResults(places,city){
   });
 }
 async function geocodeAddress(query,city){
-  const params=new URLSearchParams({
-    q:query+", "+city.name+" - "+city.uf+", Brasil",
-    format:"jsonv2",limit:"5",countrycodes:"br",addressdetails:"1"
-  });
-  const response=await fetch("https://nominatim.openstreetmap.org/search?"+params.toString(),{
-    headers:{"Accept":"application/json","Accept-Language":"pt-BR"}
+  const params=new URLSearchParams({q:query,city:city.name,uf:city.uf});
+  const response=await fetch("/api/parcel/v1/geocode?"+params.toString(),{
+    headers:{"Accept":"application/json"}
   });
   if(!response.ok)throw new Error("geocode_failed");
-  const rows=await response.json();
-  if(!Array.isArray(rows))return [];
-  const target=city.name.toLowerCase();
-  const uf=city.uf.toLowerCase();
-  return rows.filter(x=>{
-    const a=x.address||{};
-    const cityText=[a.city,a.town,a.municipality,a.city_district].filter(Boolean).join(" ").toLowerCase();
-    const stateText=[a.state,a["ISO3166-2-lvl4"]].filter(Boolean).join(" ").toLowerCase();
-    return (!cityText||cityText.includes(target))&&(!stateText||stateText.includes(uf)||stateText.includes("br-"+uf));
-  });
+  const payload=await response.json();
+  return Array.isArray(payload.results)?payload.results:[];
 }
 function looksLikeAddress(q){
   return /[A-Za-zÀ-ÿ]/.test(q)&&q.trim().length>=4;
