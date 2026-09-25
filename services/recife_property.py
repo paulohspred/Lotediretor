@@ -14,10 +14,15 @@ BASIN="https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Hosted/PAINEL_M
 NONAED="https://esigportal2.recife.pe.gov.br/arcgis/rest/services/MeioAmbiente/MA_FaixaNonAedificandi2026/MapServer/0"
 MARGINAL="https://esigportal2.recife.pe.gov.br/arcgis/rest/services/MeioAmbiente/MA_FaixasDeProtecao_SSA1_2020_2026/MapServer/0"
 SSA1="https://esigportal2.recife.pe.gov.br/arcgis/rest/services/MeioAmbiente/MA_FaixasDeProtecao_SSA1_2020_2026/MapServer/2"
+SMUP_BASE="https://esigportal2.recife.pe.gov.br/arcgis/rest/services/MeioAmbiente/MA_UnidadesProtegidasSMUP/MapServer"
 BF=["fid","nome","area_em_ha","codigo"]
 NF=["objectid","subbacia","bacia","codsub","decreto"]
 MF=["objectid","nome","area_ha","bacia","codigo"]
 SF=["objectid_1","dsq","cdsadmcodi","csetcecodi","cquasecodi"]
+SMUP_SETORES_F=["objectid","zonas"]
+SMUP_ARVORES_F=["objectid","nmpopul","cdnum","cdfam","cdnmcient","nmender"]
+SMUP_IPAV_F=["objectid_1","nome_ipav","instrumento_criacao","instrumento_regulamentacao"]
+SMUP_UCN_F=["objectid","cdid","cdzona_nome","cdzona_tipo","qtareahc","decreto","categoria"]
 BOUNDS=(-35.10,-8.20,-34.80,-7.88)
 PF=["OBJECTID","SITUACAOIMOVEL","DISTRITO","SETOR","QUADRA","FACE","LOTE","ENDNUMERO","V0","AREATOTALCONSTRUIDA","QTDPAVIMENTOS","TIPOEMPREENDIMENTO","AREALOTE","TESTADAPRINCIPAL","SEQIMOVEL","DSQFL","QTDUNHAB","ANCONSTR","QTDMULTIPLAS","NMEDIFICACAO","NMENDCOMP","TLOTESULAT","NMTIPOEMPRENDIMENTO","EFTUTZDESC"]
 ZLAYERS={
@@ -78,10 +83,12 @@ def context(lat,lng,parcel):
     for k,(i,fields) in ZLAYERS.items():
         try:layers[k]=query(f"{ZBASE}/{i}",fields,lat=lat,lng=lng,geometry=False)
         except Exception as e:layers[k]=[];errors[k]=type(e).__name__
-    envctx={"basin":[],"non_aedificandi":[],"marginal":[],"ssa1":[]}
+    envctx={"basin":[],"non_aedificandi":[],"marginal":[],"ssa1":[],"smup_sectors":[],"smup_trees":[],"smup_ipav":[],"smup_ucn":[]}
     for key,url,fields in [
         ("basin",BASIN,BF),("non_aedificandi",NONAED,NF),
-        ("marginal",MARGINAL,MF),("ssa1",SSA1,SF)
+        ("marginal",MARGINAL,MF),("ssa1",SSA1,SF),
+        ("smup_sectors",f"{SMUP_BASE}/0",SMUP_SETORES_F),("smup_trees",f"{SMUP_BASE}/1",SMUP_ARVORES_F),
+        ("smup_ipav",f"{SMUP_BASE}/2",SMUP_IPAV_F),("smup_ucn",f"{SMUP_BASE}/3",SMUP_UCN_F)
     ]:
         try:envctx[key]=query(url,fields,lat=lat,lng=lng,geometry=False,count=20)
         except Exception as e:envctx[key]=[];errors[key]=type(e).__name__
@@ -186,6 +193,21 @@ def vals(s,p,c):
             ])
         if env.get("ssa1"):
             out.append({"label":"Setor de Sustentabilidade Ambiental 1","value":"Incidência identificada"})
+        for item in env.get("smup_sectors") or []:
+            r=item.get("properties") or {};out.append({"label":"SMUP · setor de UCN","value":r.get("zonas") or "Incidência identificada"})
+        for item in env.get("smup_trees") or []:
+            r=item.get("properties") or {};tree=r.get("nmpopul") or r.get("cdnmcient") or "Árvore tombada"
+            out.append({"label":"SMUP · árvore tombada","value":tree})
+            if r.get("cdnum") not in (None,""):out.append({"label":"SMUP · árvore tombada · número","value":r.get("cdnum")})
+        for item in env.get("smup_ipav") or []:
+            r=item.get("properties") or {};out.append({"label":"SMUP · IPAV","value":r.get("nome_ipav") or "Incidência identificada"})
+            if r.get("instrumento_criacao"):out.append({"label":"SMUP · IPAV · instrumento de criação","value":r.get("instrumento_criacao")})
+            if r.get("instrumento_regulamentacao"):out.append({"label":"SMUP · IPAV · instrumento de regulamentação","value":r.get("instrumento_regulamentacao")})
+        for item in env.get("smup_ucn") or []:
+            r=item.get("properties") or {};out.append({"label":"SMUP · Unidade de Conservação da Natureza","value":r.get("cdzona_nome") or r.get("cdid") or "Incidência identificada"})
+            if r.get("cdzona_tipo"):out.append({"label":"SMUP · UCN · tipo","value":r.get("cdzona_tipo")})
+            if r.get("categoria"):out.append({"label":"SMUP · UCN · categoria","value":r.get("categoria")})
+            if r.get("decreto"):out.append({"label":"SMUP · UCN · decreto","value":r.get("decreto")})
         for k,l in [("iep","IEP"),("zeph","ZEPH"),("ipav","IPAV"),("ucn","UCN")]:
             for x in sp.get(k) or []:
                 r=x.get("properties") or {};out.append({"label":f"Incidência {l}","value":r.get("NMDESCR") or r.get("NMNOME") or r.get("NOME_IPAV") or r.get("CDZONA_NOME") or l})
