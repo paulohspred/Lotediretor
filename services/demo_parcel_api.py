@@ -2401,7 +2401,7 @@ def actual_values_for_section(
                     "value": ref.get("transaction_date"),
                 },
                 {
-                    "label": f"Referência registral pública #{idx} · ocorrências DTI",
+                    "label": f"Referência registral pública #{idx} · ocorrências no histórico de transações",
                     "value": ref.get("occurrence_count"),
                 },
             ])
