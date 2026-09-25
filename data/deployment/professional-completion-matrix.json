@@ -350,11 +350,12 @@
           "endpoint": "https://wfs.geosampa.prefeitura.sp.gov.br/geoserver/geoportal/wfs",
           "access_class": "OPEN_REUSABLE",
           "license": null,
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "connector_status": "LIVE_WFS_ADJACENT_ROAD_CONTEXT",
           "missing_fields": [
-            "municipal/federal right-of-way normalization"
+            "official legal right-of-way/alignment width resolver",
+            "federal/state road-domain reconciliation where applicable"
           ],
-          "notes": null
+          "notes": "Parcel-adjacent road context is live from GeoSampa zoneamento_classificacao_viaria and segmento_logradouro. The dossier reports urban road classification, nearby named segments, distance to the parcel and carriageway-count context. These fields are not treated as legal total street width or definitive right-of-way."
         },
         {
           "field": "imagery",
