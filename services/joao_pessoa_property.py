@@ -265,19 +265,6 @@ def vals(section_id: str, parcel: dict, ctx: dict) -> list[dict]:
             {"label":"Método","value":t.get("method")},
             {"label":"Limite topográfico","value":t.get("caveat")}
         ]
-    if section_id == "infrastructure_utilities":
-        return [
-            {"label": "Energia · prestador", "value": "Energisa Paraíba"},
-            {"label": "Água e esgoto · prestador", "value": "CAGEPA"},
-            {"label": "Drenagem · autoridade", "value": "Prefeitura de João Pessoa / SEINFRA"},
-            {
-                "label": "Limite de interpretação",
-                "value": (
-                    "Prestador/território não comprovam ligação, disponibilidade "
-                    "ou capacidade técnica no lote."
-                ),
-            },
-        ]
     if section_id == "licensing_history":
         return [
             {
@@ -288,8 +275,8 @@ def vals(section_id: str, parcel: dict, ctx: dict) -> list[dict]:
                 ),
             }
         ]
-    if section_id=="infrastructure_utilities":
-        return municipality_utilities.report_values(c.get("utilities") or {})
+    if section_id == "infrastructure_utilities":
+        return municipality_utilities.report_values(ctx.get("utilities") or {})
     return []
 
 
