@@ -143,8 +143,8 @@ def context(lat,lng,parcel):
 
 def vals(s,p,c):
     q=p["properties"];z=((c["planning"].get("zoning") or {}).get("properties") or {});sp=c["planning"].get("special_regimes") or {}
-    if s=="executive_summary":return [{"label":"Endereço","value":q.get("street")},{"label":"Inscrição fiscal do imóvel (DSQFL)","value":q.get("dsqfl")},{"label":"Sequência cadastral do imóvel","value":q.get("seqimovel")},{"label":"Situação","value":q.get("parcel_status")},{"label":"Área do lote","value":q.get("land_area_m2"),"unit":"m²"},{"label":"Área construída","value":q.get("built_area_m2"),"unit":"m²"},{"label":"Zona","value":z.get("cd_zoneamento_perimetro")},{"label":"Coeficiente de aproveitamento máximo","value":z.get("ca_max")}]
-    if s=="identity_location":return [{"label":"Inscrição fiscal do imóvel (DSQFL)","value":q.get("dsqfl")},{"label":"Sequência cadastral do imóvel","value":q.get("seqimovel")},{"label":"Situação cadastral","value":q.get("parcel_status")},{"label":"Distrito","value":q.get("district")},{"label":"Setor","value":q.get("fiscal_sector")},{"label":"Quadra","value":q.get("fiscal_block")},{"label":"Face","value":q.get("face")},{"label":"Lote","value":q.get("fiscal_lot")},{"label":"Endereço","value":q.get("street")},{"label":"Área","value":q.get("land_area_m2"),"unit":"m²"},{"label":"Testada","value":q.get("frontage_m"),"unit":"m"}]
+    if s=="executive_summary":return [{"label":"Endereço","value":q.get("street")},{"label":"Inscrição fiscal do imóvel","value":q.get("dsqfl")},{"label":"Sequência cadastral do imóvel","value":q.get("seqimovel")},{"label":"Situação","value":q.get("parcel_status")},{"label":"Área do lote","value":q.get("land_area_m2"),"unit":"m²"},{"label":"Área construída","value":q.get("built_area_m2"),"unit":"m²"},{"label":"Zona","value":z.get("cd_zoneamento_perimetro")},{"label":"Coeficiente de aproveitamento máximo","value":z.get("ca_max")}]
+    if s=="identity_location":return [{"label":"Inscrição fiscal do imóvel","value":q.get("dsqfl")},{"label":"Sequência cadastral do imóvel","value":q.get("seqimovel")},{"label":"Situação cadastral","value":q.get("parcel_status")},{"label":"Distrito","value":q.get("district")},{"label":"Setor","value":q.get("fiscal_sector")},{"label":"Quadra","value":q.get("fiscal_block")},{"label":"Face","value":q.get("face")},{"label":"Lote","value":q.get("fiscal_lot")},{"label":"Endereço","value":q.get("street")},{"label":"Área","value":q.get("land_area_m2"),"unit":"m²"},{"label":"Testada","value":q.get("frontage_m"),"unit":"m"}]
     if s=="building_existing":
         out=[{"label":"Área construída cadastral","value":q.get("built_area_m2"),"unit":"m²"},{"label":"Pavimentos cadastrados","value":q.get("floors")},{"label":"Ano de construção cadastrado","value":q.get("construction_year")},{"label":"Unidades","value":q.get("units")},{"label":"Blocos","value":q.get("blocks")},{"label":"Uso cadastral","value":q.get("use_description")}]
         buildings=c.get("buildings") or []
@@ -154,8 +154,8 @@ def vals(s,p,c):
             mdt=r.get("MDT");mde=r.get("MDE")
             height=(mde-mdt) if isinstance(mde,(int,float)) and isinstance(mdt,(int,float)) else None
             out.extend([
-                {"label":f"Edificação {i} · cota do terreno (MDT)","value":mdt,"unit":"m"},
-                {"label":f"Edificação {i} · cota superior (MDE)","value":mde,"unit":"m"},
+                {"label":f"Edificação {i} · cota do terreno","value":mdt,"unit":"m"},
+                {"label":f"Edificação {i} · cota superior","value":mde,"unit":"m"},
                 {"label":f"Edificação {i} · altura estimada","value":round(height,2) if height is not None else None,"unit":"m"},
             ])
         if buildings:out.append({"label":"Ressalva","value":"As cotas MDT/MDE e a geometria 3D são cartografia municipal; não substituem levantamento topográfico, projeto aprovado ou cadastro predial atualizado."})
