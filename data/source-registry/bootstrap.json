@@ -4960,6 +4960,29 @@
       "access_class": "PUBLIC_QUERY_ONLY",
       "verification_status": "VERIFIED_PUBLIC_LEGAL_INFORMATION",
       "notes": "IPHAEP identifica João Pessoa como centro histórico tombado pelo Decreto 9.484/1982. Orientação oficial informa que imóveis em Área de Preservação têm grau de classificação/preservação e intervenções dependem de aprovação técnica; para João Pessoa cita Decreto Estadual 25.138/2004. Geometria municipal complementar está no Filipeia."
+    },
+    {
+      "id": "pe-recife-esig-buildings-3d",
+      "authority": "Prefeitura do Recife / ESIG",
+      "scope": "Recife/PE",
+      "source_type": "municipal_geospatial_service",
+      "endpoint": "https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Planejamento/BASES_BAIRRO_FACEQUADRA_LOGRADOURO_LOTE/FeatureServer/7",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "license": null,
+      "temporal_coverage": "current service",
+      "notes": "Official parcel-linked 3D building layer. LoteDiretor queries by exact DSQFL with a closed field allowlist and exposes geometry plus MDT/MDE/MDS elevation attributes as cartographic context."
+    },
+    {
+      "id": "pe-recife-esig-mdt-declividade-2_5m",
+      "authority": "Prefeitura do Recife / ESIG",
+      "scope": "Recife/PE",
+      "source_type": "municipal_raster_map_service",
+      "endpoint": "https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Hosted/RGB_MDT_2_5MTS_DECLIVIDADE_tif/MapServer",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "license": null,
+      "temporal_coverage": null,
+      "notes": "Official cached 2.5 m MDT-derived slope visualization is available as map tiles. ArcGIS identify did not return numeric raster values in validation, so LoteDiretor uses it only as visual slope context and does not infer parcel elevations from colors."
     }
-  ]
+  ],
+  "as_of": "2026-09-25"
 }
