@@ -3,6 +3,8 @@ from __future__ import annotations
 
 import json
 import re
+import urllib.parse
+import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -13,6 +15,12 @@ from psycopg2.extras import RealDictCursor
 ROOT = Path("/srv/lotediretor/app")
 DB_DSN = "dbname=lotediretor user=sentinelx host=/var/run/postgresql"
 BOUNDS = (-34.98, -7.25, -34.78, -7.04)
+FILIPEIA_WMS = "https://filipeia.joaopessoa.pb.gov.br/geoserver/wms"
+PLANNING_LAYERS = {
+    "zoning": "digeoc:zoneamento2024",
+    "macrozone": "digeoc:zoneamento_pmjp_macrozoneamento_CAM",
+}
+PLANNING_FIELDS = {"sigla", "nome", "tipo"}
 LABEL = {
     "identity": "Identidade",
     "land": "Terreno",
@@ -180,14 +188,56 @@ def terrain_for_parcel(parcel: dict) -> dict:
     }
 
 
-def context(parcel: dict) -> dict:
+
+def planning_at_point(lat: float, lng: float) -> tuple[dict, dict]:
+    out = {}
+    errors = {}
+    for key, layer in PLANNING_LAYERS.items():
+        span = 0.002
+        params = {
+            "service": "WMS",
+            "version": "1.1.1",
+            "request": "GetFeatureInfo",
+            "layers": layer,
+            "query_layers": layer,
+            "styles": "",
+            "srs": "EPSG:4326",
+            "bbox": f"{lng-span},{lat-span},{lng+span},{lat+span}",
+            "width": "256",
+            "height": "256",
+            "x": "128",
+            "y": "128",
+            "info_format": "application/json",
+            "feature_count": "5",
+        }
+        try:
+            req = urllib.request.Request(
+                FILIPEIA_WMS + "?" + urllib.parse.urlencode(params),
+                headers={
+                    "User-Agent": "LoteDiretor/0.1 (+https://lotediretor.com)",
+                    "Accept": "application/json",
+                },
+            )
+            with urllib.request.urlopen(req, timeout=15) as response:
+                data = json.loads(response.read(2000000))
+            features = data.get("features") or []
+            props = (features[0].get("properties") or {}) if features else {}
+            out[key] = {k: props.get(k) for k in PLANNING_FIELDS if props.get(k) is not None}
+        except Exception as exc:
+            out[key] = {}
+            errors[key] = type(exc).__name__
+    return out, errors
+
+def context(parcel: dict, lat: float, lng: float) -> dict:
+    planning, planning_errors = planning_at_point(lat, lng)
     return {
         "planning": {
-            "zoning": {"properties": {}},
+            "zoning": {"properties": planning.get("zoning") or {}},
+            "macrozone": {"properties": planning.get("macrozone") or {}},
             "special_regimes": {},
             "note": (
-                "Plano Diretor 2024 e mapas oficiais estão registrados no Filipeia, "
-                "mas o zoneamento vetorial por lote ainda não foi materializado."
+                "Zoneamento e macrozoneamento 2024 consultados pontualmente no GeoServer "
+                "oficial do Filipeia; a base não é espelhada."
             ),
         },
         "buildings": [],
@@ -214,7 +264,7 @@ def context(parcel: dict) -> dict:
                 "transactions": [],
             },
         },
-        "query_errors": {},
+        "query_errors": {f"planning_{k}": v for k, v in planning_errors.items()},
         "queried_at": now(),
         "source": "Filipeia / SEPLAN / PMJP",
     }
@@ -243,14 +293,16 @@ def vals(section_id: str, parcel: dict, ctx: dict) -> list[dict]:
             {"label": "Área geométrica calculada", "value": p.get("land_area_m2"), "unit": "m²"},
         ]
     if section_id == "planning_buildability":
+        zoning=((ctx.get("planning") or {}).get("zoning") or {}).get("properties") or {}
+        macro=((ctx.get("planning") or {}).get("macrozone") or {}).get("properties") or {}
         return [
-            {
-                "label": "Plano Diretor / zoneamento",
-                "value": (
-                    "Mapas oficiais 2024 disponíveis no Filipeia; vínculo vetorial "
-                    "por lote permanece em materialização."
-                ),
-            }
+            {"label":"Zoneamento 2024","value":zoning.get("sigla")},
+            {"label":"Descrição do zoneamento","value":zoning.get("nome")},
+            {"label":"Tipo de zoneamento","value":zoning.get("tipo")},
+            {"label":"Macrozona 2024","value":macro.get("sigla")},
+            {"label":"Descrição da macrozona","value":macro.get("nome")},
+            {"label":"Tipo de macrozona","value":macro.get("tipo")},
+            {"label":"Método","value":"Consulta pontual WMS GetFeatureInfo no GeoServer oficial Filipeia; sem espelhamento da camada."}
         ]
     if section_id == "terrain_visual":
         t=ctx.get("terrain") or {}
@@ -330,7 +382,7 @@ def response_for_point(lat: float, lng: float) -> dict | None:
     parcel = point(lat, lng)
     if not parcel:
         return None
-    ctx = context(parcel)
+    ctx = context(parcel, lat, lng)
     return {
         "found": True,
         "clicked": {"lat": lat, "lng": lng},
