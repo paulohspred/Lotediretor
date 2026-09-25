@@ -101,7 +101,7 @@ header{height:56px;background:var(--nav);color:#fff;border-bottom:4px solid var(
 
     <div class="parcel-box" id="parcelBox">
       <div class="parcel-head"><b>Lote selecionado</b><span class="parcel-state" id="parcelState">clique no mapa</span></div>
-      <div class="parcel-body" id="parcelBody"><div class="parcel-hint">Clique dentro de um lote ou localize por SQL/CIB. A ficha abre à direita, como no fluxo do ZoLa.</div></div>
+      <div class="parcel-body" id="parcelBody"><div class="parcel-hint">Clique dentro de um terreno ou busque pelo endereço ou identificação cadastral. A ficha completa abre à direita.</div></div>
     </div>
 
     <h2>Camadas do mapa</h2>
@@ -113,19 +113,12 @@ header{height:56px;background:var(--nav);color:#fff;border-bottom:4px solid var(
       <label class="layer-toggle"><input type="checkbox" data-zlayer="hydroRisk"><span>Risco hidrológico<small>Triagem espacial</small></span></label>
       <label class="layer-toggle"><input type="checkbox" data-zlayer="hillshade"><span>Hillshade MDC 2004<small>Contexto histórico</small></span></label>
       <label class="layer-toggle"><input type="checkbox" data-zlayer="slope"><span>Declividade<small>Modelo oficial de terreno</small></span></label>
-      <label class="layer-toggle"><input type="checkbox" data-zlayer="ortho"><span>Índice de ortofotos 2020<small>Índice de folhas</small></span></label>
+      <label class="layer-toggle"><input type="checkbox" data-zlayer="ortho"><span>Imagem aérea / ortofoto<small>Quando disponível na fonte municipal</small></span></label>
+      <label class="layer-toggle"><input type="checkbox" data-zlayer="buildings"><span>Edificações<small>Implantação das construções mapeadas</small></span></label>
+      <label class="layer-toggle"><input type="checkbox" data-zlayer="terrain"><span>Topografia<small>Curvas, relevo ou modelo de terreno</small></span></label>
+      <label class="layer-toggle"><input type="checkbox" data-zlayer="gas"><span>Rede de gás<small>Contexto de infraestrutura quando publicado</small></span></label>
     </div>
 
-    <h2>Cobertura do dossiê</h2>
-    <div class="status-list">
-      <div class="status-row"><span>Cadastro / lote</span><b class="green">ATIVO</b></div>
-      <div class="status-row"><span>Zoneamento / PDE</span><b class="green">ATIVO</b></div>
-      <div class="status-row"><span>PGV 2026</span><b class="green">ATIVO</b></div>
-      <div class="status-row"><span>Patrimônio / risco</span><b class="green">ATIVO</b></div>
-      <div class="status-row"><span>IPTU / ITBI</span><b class="green">ATIVO</b></div>
-      <div class="status-row"><span>Matrícula histórica via ITBI</span><b class="green">QUANDO HOUVER DTI</b></div>
-      <div class="status-row"><span>Certidão registral atual</span><b class="amber">SOB DEMANDA</b></div>
-    </div>
   </aside>
 
   <div class="mapwrap">
@@ -143,7 +136,7 @@ header{height:56px;background:var(--nav);color:#fff;border-bottom:4px solid var(
           <div class="report-actions"><button class="report-btn" id="printReport" type="button">Imprimir / PDF</button></div>
         </div>
         <div class="report-title" id="reportTitle">Selecione um lote</div>
-        <div class="report-subtitle" id="reportSubtitle">Clique no mapa ou busque por SQL/CIB.</div>
+        <div class="report-subtitle" id="reportSubtitle">Clique no mapa ou busque por endereço ou identificação cadastral.</div>
       </div>
       <div class="report-scroll" id="reportContent"></div>
     </aside>
@@ -381,6 +374,37 @@ const spOrthoIndex2020Wms=L.tileLayer.wms("https://wms.geosampa.prefeitura.sp.go
   attribution:"Ortofotos 2020 · Prefeitura de São Paulo"
 }).setZIndex(342);
 
+
+const jpParcelWms=L.tileLayer.wms("https://filipeia.joaopessoa.pb.gov.br/geoserver/wms",{
+  layers:"digeoc:Lotes_Gerais",format:"image/png",transparent:true,version:"1.1.1",
+  opacity:.64,attribution:"Prefeitura de João Pessoa · Filipeia"
+}).setZIndex(420);
+const jpZoningWms=L.tileLayer.wms("https://filipeia.joaopessoa.pb.gov.br/geoserver/wms",{
+  layers:"digeoc:zoneamento2024",format:"image/png",transparent:true,version:"1.1.1",
+  opacity:.30,attribution:"Zoneamento 2024 · Prefeitura de João Pessoa"
+}).setZIndex(380);
+const jpHeritageWms=L.tileLayer.wms("https://filipeia.joaopessoa.pb.gov.br/geoserver/wms",{
+  layers:"digeoc:Tombamento_IPHAN,digeoc:TOMBAMENTO_IPHAEP,digeoc:centrohistorico",
+  format:"image/png",transparent:true,version:"1.1.1",
+  opacity:.46,attribution:"Patrimônio cultural · Prefeitura de João Pessoa"
+}).setZIndex(370);
+const jpBuildingsWms=L.tileLayer.wms("https://filipeia.joaopessoa.pb.gov.br/geoserver/wms",{
+  layers:"digeoc:EDIFICACOES",format:"image/png",transparent:true,version:"1.1.1",
+  opacity:.52,attribution:"Edificações · Prefeitura de João Pessoa"
+}).setZIndex(410);
+const jpTerrainWms=L.tileLayer.wms("https://filipeia.joaopessoa.pb.gov.br/geoserver/wms",{
+  layers:"digeoc:Curvas_Joao_Pessoa_2022",format:"image/png",transparent:true,version:"1.1.1",
+  opacity:.60,attribution:"Curvas de nível 2022 · Prefeitura de João Pessoa"
+}).setZIndex(350);
+const jpGasWms=L.tileLayer.wms("https://filipeia.joaopessoa.pb.gov.br/geoserver/wms",{
+  layers:"digeoc:PBGAS",format:"image/png",transparent:true,version:"1.1.1",
+  opacity:.70,attribution:"Rede PBGÁS · Filipeia"
+}).setZIndex(360);
+const jpOrthoWms=L.tileLayer.wms("https://filipeia.joaopessoa.pb.gov.br/geoserver/wms",{
+  layers:"digeoc:2021_20cm",format:"image/png",transparent:false,version:"1.1.1",
+  opacity:.90,attribution:"Aerofotogrametria 2021 · Prefeitura de João Pessoa"
+}).setZIndex(120);
+
 L.control.layers(null,{
   "Lotes fiscais · Prefeitura de São Paulo":spParcelWms,
   "Zoneamento vigente · Lei 18.177/2024":spZoningWms,
@@ -395,16 +419,24 @@ L.control.layers(null,{
   "Rio · imóveis territoriais":rioParcelOverlay,
   "Rio · zoneamento vigente":rioZoningOverlay,
   "BH · lotes CTM":bhParcelWms,
-  "BH · zoneamento Lei 11.181":bhZoningWms
+  "BH · zoneamento Lei 11.181":bhZoningWms,
+  "João Pessoa · lotes":jpParcelWms,
+  "João Pessoa · zoneamento 2024":jpZoningWms,
+  "João Pessoa · patrimônio":jpHeritageWms,
+  "João Pessoa · edificações":jpBuildingsWms,
+  "João Pessoa · curvas de nível 2022":jpTerrainWms,
+  "João Pessoa · rede PBGÁS":jpGasWms,
+  "João Pessoa · ortofoto 2021":jpOrthoWms
 },{collapsed:true,position:"topright"}).addTo(map);
 
 const cityLayerMap={
   "3550308":{parcel:spParcelWms,zoning:spZoningWms,heritage:spHeritageWms,geoRisk:spGeoRiskWms,hydroRisk:spHydroRiskWms,hillshade:spHillshadeWms,slope:spSlopeWms,ortho:spOrthoIndex2020Wms},
   "2611606":{parcel:recifeParcelOverlay,zoning:recifeZoningOverlay},
   "3304557":{parcel:rioParcelOverlay,zoning:rioZoningOverlay},
-  "3106200":{parcel:bhParcelWms,zoning:bhZoningWms}
+  "3106200":{parcel:bhParcelWms,zoning:bhZoningWms},
+  "2507507":{parcel:jpParcelWms,zoning:jpZoningWms,heritage:jpHeritageWms,buildings:jpBuildingsWms,terrain:jpTerrainWms,gas:jpGasWms,ortho:jpOrthoWms}
 };
-const allThematicLayers=[spParcelWms,spZoningWms,spHeritageWms,spGeoRiskWms,spHydroRiskWms,spHillshadeWms,spSlopeWms,spOrthoIndex2020Wms,recifeParcelOverlay,recifeZoningOverlay,rioParcelOverlay,rioZoningOverlay,bhParcelWms,bhZoningWms];
+const allThematicLayers=[spParcelWms,spZoningWms,spHeritageWms,spGeoRiskWms,spHydroRiskWms,spHillshadeWms,spSlopeWms,spOrthoIndex2020Wms,recifeParcelOverlay,recifeZoningOverlay,rioParcelOverlay,rioZoningOverlay,bhParcelWms,bhZoningWms,jpParcelWms,jpZoningWms,jpHeritageWms,jpBuildingsWms,jpTerrainWms,jpGasWms,jpOrthoWms];
 function activeCityLayers(){const city=cities[Number(select.value)];return cityLayerMap[city.ibge]||{}}
 function syncCityLayers(){
   allThematicLayers.forEach(layer=>{if(map.hasLayer(layer))map.removeLayer(layer)});
@@ -437,7 +469,7 @@ cities.forEach((c,i)=>{
     radius:9,weight:3,color:"#071019",fillColor:"#3bd790",fillOpacity:1,bubblingMouseEvents:false
   }).addTo(map);
   marker.bindPopup(`<div class="popup-title">${c.name} · ${c.uf}</div><div class="popup-meta">Clique no mapa para selecionar um terreno.</div>`);
-  marker.on("click",()=>{select.value=i;clearSelectedParcel();applyCity(i,true);const active=["3550308","2611606","3304557","3106200"].includes(c.ibge);setParcelMessage(active?"clique no mapa":"em integração",active?"Clique no interior de um terreno para consultar a parcela oficial.":`Clique cadastral ainda não ligado em ${c.name}; o conector espacial desta cidade será o próximo estágio.`)});
+  marker.on("click",()=>{select.value=i;clearSelectedParcel();applyCity(i,true);const active=["3550308","2611606","3304557","3106200","2507507"].includes(c.ibge);setParcelMessage(active?"clique no mapa":"em integração",active?"Clique no interior de um terreno para consultar a parcela oficial.":`Clique cadastral ainda não ligado em ${c.name}; o conector espacial desta cidade será o próximo estágio.`)});
   markers.push(marker);
 });
 
@@ -493,6 +525,32 @@ function friendlySource(sourceId){
   if(s.startsWith("br-"))return "Fonte pública federal";
   return "Fonte pública oficial";
 }
+function friendlyLabel(label){
+  const raw=String(label||"").trim();
+  const exact={
+    "SQL":"Inscrição fiscal do lote",
+    "CIB":"Código imobiliário",
+    "Situação CIB":"Situação cadastral do imóvel",
+    "PGV":"Valor de referência fiscal",
+    "VVR":"Valor venal de referência",
+    "DTI":"Declaração de transação imobiliária",
+    "MDT":"Modelo digital do terreno",
+    "MDE":"Modelo digital de elevação",
+    "CTM":"Cadastro territorial municipal",
+    "DSQFL":"Inscrição fiscal do imóvel"
+  };
+  if(exact[raw])return exact[raw];
+  return raw
+    .replace(/^SQL \/ inscrição$/,"Inscrição fiscal do lote (SQL)")
+    .replace(/^Situação do SQL/,"Situação da inscrição fiscal")
+    .replace(/\bCIB\b/g,"código imobiliário (CIB)")
+    .replace(/\bPGV\b/g,"valor de referência fiscal (PGV)")
+    .replace(/\bDTI(s)?\b/g,"declaração(ões) de transação imobiliária")
+    .replace(/\bITBI\b/g,"ITBI")
+    .replace(/\bVVR\b/g,"valor venal de referência (VVR)")
+    .replace(/\bMDT\b/g,"modelo digital do terreno")
+    .replace(/\bMDE\b/g,"modelo digital de elevação");
+}
 function formatReportValue(item){
   if(item.value===null||item.value===undefined||item.value==="")return "—";
   if(item.unit==="m²" && typeof item.value==="number")return area(item.value);
@@ -537,7 +595,7 @@ function genericDossierBlock(title,items,limit){
   const visible=(items||[]).slice(0,limit||16);
   if(!visible.length)return "";
   return '<div class="instant-block"><h4>'+escapeHtml(title)+'</h4><div class="instant-grid">'+
-    visible.map(item=>dossierRow(item.label,item.value,item.unit,false)).join("")+
+    visible.map(item=>dossierRow(friendlyLabel(item.label),item.value,item.unit,false)).join("")+
     '</div></div>';
 }
 function renderImmediateDossier(context,p,report){
@@ -582,9 +640,9 @@ function renderImmediateDossier(context,p,report){
   const effectiveHeight=special.max_height_m??occ.max_height_m;
 
   const cadastro=[
-    dossierRow("SQL / inscrição",p.sql_reference),
-    dossierRow("CIB",p.cib),
-    dossierRow("Situação CIB",p.cib_status),
+    dossierRow("Inscrição fiscal do lote (SQL)",p.sql_reference),
+    dossierRow("Código imobiliário (CIB)",p.cib),
+    dossierRow("Situação cadastral do imóvel",p.cib_status),
     dossierRow("Situação do lote",p.parcel_status),
     dossierRow("Área do terreno",iptu.land_area_m2??p.land_area_m2,"m²",true),
     dossierRow("Área construída",iptu.built_area_m2??p.built_area_m2,"m²"),
@@ -599,16 +657,16 @@ function renderImmediateDossier(context,p,report){
   ].join("");
 
   const fiscalRows=[
-    dossierRow("PGV terreno 2026",pgv.vm2t_brl_per_m2,"BRL/m²",true),
+    dossierRow("Valor de referência do terreno (PGV 2026)",pgv.vm2t_brl_per_m2,"BRL/m²",true),
     dossierRow("Valor unitário terreno IPTU",iptu.land_unit_value_brl_m2,"BRL/m²"),
     dossierRow("Valor unitário construção",iptu.construction_unit_value_brl_m2,"BRL/m²"),
-    dossierRow("DTIs / ITBI localizados",itbi.count||0,null,true),
+    dossierRow("Transações de ITBI encontradas",itbi.count||0,null,true),
     dossierRow("Última transação",latestTx.transaction_date),
     dossierRow("Natureza",latestTx.transaction_nature),
     dossierRow("Valor declarado",latestTx.transaction_value,"BRL"),
-    dossierRow("VVR",latestTx.vvr,"BRL"),
+    dossierRow("Valor venal de referência (VVR)",latestTx.vvr,"BRL"),
     dossierRow("Base ITBI",latestTx.tax_base,"BRL"),
-    dossierRow("Situação SQL na DTI",latestTx.sql_status),
+    dossierRow("Situação da inscrição fiscal na transação",latestTx.sql_status),
     dossierRow("Cartório mais recente",latestTx.registry_office),
     dossierRow("Matrícula mais recente",latestTx.registry_number,null,true)
   ].join("");
@@ -631,7 +689,7 @@ function renderImmediateDossier(context,p,report){
   ].join("");
 
   const terrainRows=[
-    dossierRow("Área geométrica GIS",terrain.parcel_area_geometry_m2,"m²"),
+    dossierRow("Área calculada pela geometria do terreno",terrain.parcel_area_geometry_m2,"m²"),
     dossierRow("Cota mínima",terrain.min_elevation_m,"m",true),
     dossierRow("Cota máxima",terrain.max_elevation_m,"m",true),
     dossierRow("Desnível total",terrain.amplitude_m,"m",true),
@@ -642,7 +700,7 @@ function renderImmediateDossier(context,p,report){
     dossierRow("Corte B–B · desnível",bb.delta_elevation_m,"m"),
     dossierRow("Corte B–B · inclinação média",bb.average_slope_pct,"%"),
     dossierRow("Qualidade do terreno",terrain.quality),
-    dossierRow("Datum vertical",terrain.vertical_datum)
+    dossierRow("Referência vertical das cotas",terrain.vertical_datum)
   ].join("");
 
   return '<div class="instant-dossier">'+
@@ -867,14 +925,13 @@ function renderReport(report,p,context,feature){
   ).join("")+'</div>';
   const html=sections.map(section=>{
     const values=(section.actual_values||[]).map(item=>
-      '<div class="report-value"><small>'+escapeHtml(item.label)+'</small><b>'+escapeHtml(formatReportValue(item))+'</b></div>'
+      '<div class="report-value"><small>'+escapeHtml(friendlyLabel(item.label))+'</small><b>'+escapeHtml(formatReportValue(item))+'</b></div>'
     ).join("");
     const fields=(section.fields||[]).map(field=>{
       const missing=field.missing_fields||[];
       return '<div class="field-state">'+
-        '<div class="field-line"><span class="field-name">'+escapeHtml(field.label)+'</span><span class="status-chip '+statusClass(field.status)+'">'+escapeHtml(friendlyStatus(field.status))+'</span></div>'+
-        '<div class="field-source">Fonte: '+escapeHtml(friendlySource(field.source_id))+'</div>'+
-        (missing.length?'<div class="field-missing">Ainda falta: '+escapeHtml(missing.join(" · "))+'</div>':"")+
+        '<div class="field-line"><span class="field-name">'+escapeHtml(friendlyLabel(field.label))+'</span></div>'+
+        '<div class="field-source">Origem: '+escapeHtml(friendlySource(field.source_id))+'</div>'+
       '</div>';
     }).join("");
     if(!values && !fields)return "";
@@ -883,13 +940,13 @@ function renderReport(report,p,context,feature){
     return '<section class="zola-report-section" id="report-section-'+escapeHtml(section.id)+'"><h3 class="zola-section-title">'+escapeHtml(section.title)+'</h3>'+
       terrainCharts+transactionTimeline+
       (values?'<div class="report-values">'+values+'</div>':"")+
-      (fields?'<details class="sources-detail"><summary>Fontes, estado e pendências</summary>'+fields+'</details>':"")+
+      (fields?'<details class="sources-detail"><summary>Origem dos dados</summary>'+fields+'</details>':"")+
       '</section>';
   }).join("");
 
   document.getElementById("reportContent").innerHTML=
     renderPrintCover(p)+renderPrintLotMap(feature,context)+navHtml+keyFactsHtml+renderImmediateDossier(context,p,report)+zoneHtml+intersectionHtml+
-    '<div class="report-legend">Os dados abaixo são os valores já resolvidos para este lote. Informações ainda não materializadas ficam dentro de “Fontes, estado e pendências”.</div>'+
+    '<div class="report-legend">Os dados abaixo foram organizados por tema para facilitar a análise do terreno. A origem pública de cada grupo pode ser consultada em “Origem dos dados”.</div>'+
     html+
     '<div class="print-evidence-note">Este relatório compila fontes públicas e análises derivadas indicadas em cada seção. Referências registrais históricas, parâmetros urbanísticos e análises de terreno não substituem certidão registral atualizada, parecer jurídico, projeto aprovado ou levantamento topográfico de campo.</div>';
   document.querySelectorAll("[data-report-target]").forEach(button=>{
