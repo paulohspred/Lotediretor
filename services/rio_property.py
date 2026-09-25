@@ -3,7 +3,7 @@ from __future__ import annotations
 import json,re,urllib.parse,urllib.request
 from concurrent.futures import ThreadPoolExecutor
 from math import atan2, cos, radians, sin, sqrt, degrees
-from shapely.geometry import shape, LineString
+from shapely.geometry import shape, LineString, mapping
 from datetime import datetime,timezone
 from pathlib import Path
 import municipality_utilities
@@ -15,9 +15,11 @@ EDIF="https://pgeo3.rio.rj.gov.br/arcgis/rest/services/CadLog/Edificacoes_2019/F
 RISK="https://pgeo3.rio.rj.gov.br/arcgis/rest/services/Estudos/ISMFI_Indice_de_Suscetibilidade_do_Meio_Fisico_a_Inundacoes/MapServer/0"
 APAC="https://pgeo3.rio.rj.gov.br/arcgis/rest/services/Urbanismo/LBB_APAC/FeatureServer/0"
 MDT="https://pgeo3.rio.rj.gov.br/arcgis/rest/services/Cartografia/Modelo_Digital_de_Terreno__Lidar_2019__escala_1_10_000_/MapServer"
+ROAD="https://pgeo3.rio.rj.gov.br/arcgis/rest/services/CadLog/Trechos_Logradouros/FeatureServer/0"
 EF=["objectid","altura","base","clnp","cod_edifica","cod_lote","cod_projecao","cod_unico","flag_produto","tipo","topo","Shape__Area","Shape__Length"]
 RF=["objectid","id","cd_geocodi","tipo","cd_geocodb","nm_bairro","cd_geocods","nm_subdist","cd_geocodd","nm_distrit","cd_geocodm","nm_municip","nm_micro","nm_meso","area__m2_","dens","areakm","fid_1","cd_geoco_1","ind_dec","ind_imp","ind_cota","ind_prox","ismfi_v45"]
 AF=["objectid","codigo","legislacao","tipo","nome","subareas","endereco","orgao","obs","Shape__Area","Shape__Length"]
+ROADF=["cod_trecho","cl","np_ini_par","np_fin_par","np_ini_imp","np_fin_imp","cod_tipo_logra","tipo_logra_abr","tipo_logra_ext","cod_nobreza","nobreza","preposicao","nome_parcial","completo","nome_mapa","cod_bairro","bairro","hierarquia","oneway","velocidade_regulamentada","tipo_trecho","objectid","last_edited_date"]
 BOUNDS=(-43.82,-23.10,-43.05,-22.72)
 PF=["objectid","num_projeto","paa","tipo_parcelamento","rgi","observacao","inscricao_imobiliaria","matricula","origem","tipo_do_lote","classificacao","quadra","lote","categoria","lote_vinculado","data_doacao","area_descrita","data_verificacao","justificativa","publicacao"]
 ZF=["objectid","legislacao","zona","subzona","sigla","ap","cab","obs_cab","cam","obs_cam","to_","obs_to","lote_min","obs_lote_min","testada_min","obs_testada_min","gab_afast","obs_gab_afast","gab_n_afast","obs_gab_n_afast","afast_fron","obs_afast_fron","ics","obs_ics","obs_riu","obs"]
@@ -215,11 +217,16 @@ def context(lat,lng,parcel):
     except Exception as e:risk=[];errors["flood_susceptibility"]=type(e).__name__
     try:apac=query(APAC,AF,lat=lat,lng=lng,geometry=False,count=20)
     except Exception as e:apac=[];errors["apac"]=type(e).__name__
+    try:
+        road_geom=mapping(shape(parcel.get("geometry") or {}).buffer(0.00018))
+        roads=query_polygon(ROAD,ROADF,road_geom,count=100)
+    except Exception as e:
+        roads=[];errors["transport"]=type(e).__name__
     try:terrain=terrain_context(parcel,lat,lng)
     except Exception as e:terrain={"available":False,"reason":"mdt_unavailable"};errors["terrain"]=type(e).__name__
     return {"planning":{"zoning":{"properties":{"cd_zoneamento_perimetro":z.get("sigla") or z.get("zona"),"tx_zoneamento_perimetro":" ".join(x for x in [z.get("zona"),z.get("subzona")] if x),"macrozone":m.get("macrozona"),"legislation":z.get("legislacao"),"ap":z.get("ap"),"ca_basic":z.get("cab"),"ca_max":z.get("cam"),"occupancy":z.get("to_"),"min_lot_area_m2":z.get("lote_min"),"min_frontage_m":z.get("testada_min"),"max_height_setback":z.get("gab_afast"),"max_height_no_setback":z.get("gab_n_afast"),"front_setback":z.get("afast_fron"),"ics":z.get("ics"),"observations":z.get("obs")}},"special_regimes":{}},
     "registry":{"available":bool(refs),"references":refs,"interpretation":"Matrícula/RGI são referências públicas da camada cadastral territorial da PCRJ; não substituem certidão atualizada."},
-    "buildings":buildings,"terrain":terrain,"risk":{"geological":[],"hydrological":risk},"heritage":{"assets":apac,"buffers":{}},"utilities":municipality_utilities.load("3304557"),"licensing":{"housing_permits_exact_sql":[],"impact_spatial_incidence":[],"environment_spatial_incidence":[]},
+    "buildings":buildings,"terrain":terrain,"transport":{"roads":roads},"risk":{"geological":[],"hydrological":risk},"heritage":{"assets":apac,"buffers":{}},"utilities":municipality_utilities.load("3304557"),"licensing":{"housing_permits_exact_sql":[],"impact_spatial_incidence":[],"environment_spatial_incidence":[]},
     "fiscal":{"pgv":{"found":False},"iptu":{"found":False,"latest":{}},"itbi":{"available":False,"count":0,"registry_references":[],"transactions":[]}},
     "query_errors":errors,"queried_at":now(),"source":"Prefeitura da Cidade do Rio de Janeiro / Data.Rio"}
 
@@ -266,6 +273,25 @@ def vals(s,p,c):
         return out
     if s=="infrastructure_utilities":
         return municipality_utilities.report_values(c.get("utilities") or {})
+    if s=="public_change_context":
+        out=[]
+        seen=set()
+        for item in (c.get("transport") or {}).get("roads") or []:
+            r=item.get("properties") or {}
+            key=(r.get("cod_trecho"),r.get("completo"))
+            if key in seen:continue
+            seen.add(key)
+            out.extend([
+                {"label":"Via próxima ao terreno","value":r.get("completo") or r.get("nome_mapa")},
+                {"label":"Hierarquia viária","value":r.get("hierarquia")},
+                {"label":"Bairro do trecho","value":r.get("bairro")},
+                {"label":"Sentido de circulação publicado","value":r.get("oneway")},
+                {"label":"Velocidade regulamentada publicada","value":r.get("velocidade_regulamentada"),"unit":"km/h"},
+            ])
+            if len(seen)>=4:break
+        if out:
+            out.append({"label":"Limite da leitura viária","value":"Trechos são consultados em uma faixa aproximada ao redor do terreno. Hierarquia, sentido e velocidade são contexto cadastral/viário e não substituem levantamento de alinhamento, faixa de domínio ou confirmação de campo."})
+        return out
     if s=="terrain_visual":
         t=c.get("terrain") or {}
         if not t.get("available"):
