@@ -18,6 +18,14 @@ SERVICE_LABELS = {
     "public_lighting": "Iluminação pública",
 }
 
+EVIDENCE_LABELS = {
+    "PROVIDER_TERRITORY_ONLY": "Prestador responsável pela área",
+    "NETWORK_CONTEXT": "Há contexto público de rede na região",
+    "SUBMUNICIPAL_REQUIRED": "A disponibilidade depende da área específica do município",
+    "PARCEL_CONFIRMED": "Atendimento confirmado para o terreno",
+    "UNKNOWN": "Não confirmado para o terreno",
+}
+
 
 @lru_cache(maxsize=1)
 def _data():
@@ -74,8 +82,11 @@ def report_values(utilities: dict) -> list[dict]:
                 [
                     {"label": f"{label} · referência", "value": provider},
                     {
-                        "label": f"{label} · evidência",
-                        "value": entry.get("evidence_level"),
+                        "label": f"{label} · situação da informação",
+                        "value": EVIDENCE_LABELS.get(
+                            entry.get("evidence_level"),
+                            "Não confirmado para o terreno",
+                        ),
                     },
                 ]
             )
