@@ -20,6 +20,7 @@ BOUNDS = (-34.98, -7.25, -34.78, -7.04)
 FILIPEIA_WMS = "https://filipeia.joaopessoa.pb.gov.br/geoserver/wms"
 FILIPEIA_WFS = "https://filipeia.joaopessoa.pb.gov.br/geoserver/wfs"
 SPATIAL_LAYERS = {
+    "coastal_restriction": ("digeoc:faixas", ["OBJECTID","Faixas","SHAPE_Area"]),
     "buildings": ("digeoc:EDIFICACOES", ["OBJECTID_1","N_PAVIM","BAIRRO","EDIFICACAO","AREA","Shape_Area"]),
     "conservation": ("digeoc:UC", ["NOME","DECRETO"]),
     "susceptibility": ("digeoc:Suscetibilidade", ["OBJECTID","classe","tipo","Shape_Area"]),
@@ -33,6 +34,56 @@ PLANNING_LAYERS = {
     "macrozone": "digeoc:zoneamento_pmjp_macrozoneamento_CAM",
 }
 PLANNING_FIELDS = {"sigla", "nome", "tipo"}
+# LC 169/2024 substituted Annex V of LC 166/2024.
+# Values below are occupancy parameters only; IA maximum comes from the
+# Plano Diretor/instruments and is not inferred here. Art. 62 (coastal height)
+# was held unconstitutional by TJPB on 2026-01-21, while the remaining LUOS
+# stayed in force. Coastal height is therefore always flagged for specific review.
+OCCUPANCY_169 = {
+    "ZH1": {"to_max_pct":50,"tap_min_pct":10,"front_m":5.0,"height_rule":"Restrições das notas aplicáveis do Anexo IV da LC 169/2024","side_rule":"Até 3º pav.: 1,50 m; 4º pav.: 3,00 m; acima: 3,00 + [(N-4) × 0,30] m","rear_rule":"Até 4º pav.: 3,00 m; acima: 3,00 + [(N-4) × 0,30] m"},
+    "ZH2": {"to_max_pct":55,"tap_min_pct":5,"front_m":5.0,"height_rule":"Restrições das notas aplicáveis do Anexo IV da LC 169/2024","side_rule":"Até 3º pav.: 1,50 m; 4º pav.: 3,00 m; acima: 3,00 + [(N-4) × 0,30] m","rear_rule":"Até 2º pav.: 2,00 m; 3º e 4º: 3,00 m; acima: 3,00 + [(N-4) × 0,30] m"},
+    "ZH3": {"to_max_pct":50,"tap_min_pct":5,"front_m":5.0,"height_rule":"Faixa costeira: altura exige verificação específica; art. 62 não é usado como limite vigente","side_rule":"Até 3º pav.: 1,50 m; 4º pav.: 3,00 m; acima: 3,00 + [(N-4) × 0,30] m","rear_rule":"Até 4º pav.: 3,00 m; acima: 3,00 + [(N-4) × 0,30] m"},
+    "ZH4": {"to_max_pct":50,"tap_min_pct":15,"front_m":5.0,"height_rule":"Faixa costeira/patrimônio: verificar restrições específicas","side_rule":"Até 3º pav.: 2,00 m; 4º pav.: 4,00 m; acima: 4,00 + [(N-4) × 0,30] m","rear_rule":"Até 4º pav.: 3,00 m; acima: 4,00 + [(N-4) × 0,30] m"},
+    "ZH5": {"to_max_pct":50,"tap_min_pct":15,"front_m":5.0,"height_rule":"Faixa costeira: altura exige verificação específica","side_rule":"Até 2º pav.: 1,50 m; 3º e 4º: 3,00 m; acima: 3,00 + [(N-4) × 0,30] m","rear_rule":"Até 4º pav.: 3,00 m; acima: 3,00 + [(N-4) × 0,30] m"},
+    "ZCS1": {"to_max_pct":80,"tap_min_pct":5,"front_m":0.0,"side_rule":"0,00 m","rear_rule":"2,00 m","conditional_note":"Para uso H, LC 169/2024 prevê faixas específicas de TO/TAP; confirmar conforme uso."},
+    "ZCS2": {"to_max_pct":70,"tap_min_pct":5,"front_m":5.0,"side_rule":"Até 4º pav.: 0,00 m; acima: 3,00 + [(N-4) × 0,30] m","rear_rule":"Até 4º pav.: 2,00 m; acima: 3,00 + [(N-4) × 0,30] m","conditional_note":"Para uso H, LC 169/2024 prevê faixas específicas de TO/TAP/recuo frontal; confirmar conforme uso."},
+    "ZCS3": {"to_max_pct":65,"tap_min_pct":5,"front_m":5.0,"height_rule":"Faixa costeira/patrimônio: verificar restrições específicas","side_rule":"Até 2º pav.: 0,00 m; 3º e 4º: 2,00 m; acima: 3,00 + [(N-4) × 0,30] m","rear_rule":"Até 4º pav.: 3,00 m; acima: 3,00 + [(N-4) × 0,30] m"},
+    "ZCS4": {"to_max_pct":65,"tap_min_pct":5,"front_m":5.0,"side_rule":"Até 2º pav.: 0,00 m; 3º e 4º: 2,00 m; acima: 3,00 + [(N-4) × 0,30] m","rear_rule":"Até 2º pav.: 2,00 m; 3º e 4º: 3,00 m; acima: 3,00 + [(N-4) × 0,30] m"},
+    "ZCS5": {"to_max_pct":50,"tap_min_pct":25,"front_m":10.0,"side_rule":"5,00 m","rear_rule":"5,00 m","height_rule":"Faixa costeira: altura exige verificação específica"},
+    "ZCS6": {"to_max_pct":30,"tap_min_pct":30,"front_m":10.0,"side_rule":"8,00 m","rear_rule":"8,00 m","height_rule":"Faixa costeira: altura exige verificação específica"},
+    "ZCS7": {"to_max_pct":65,"tap_min_pct":10,"front_m":8.0,"side_rule":"4,00 m","rear_rule":"4,00 m"},
+    "ZEPA1": {"special_rule":"Parâmetros conforme planos de manejo específicos, quando couber."},
+    "ZEPA2": {"to_max_pct":40,"tap_min_pct":40,"front_m":10.0,"side_rule":"Até 3º pav.: 1,50 m; 4º pav.: 3,00 m; acima: 3,00 + [(N-4) × 0,30] m","rear_rule":"Até 2º pav.: 2,00 m; 3º e 4º: 3,00 m; acima: 3,00 + [(N-4) × 0,30] m","height_rule":"Altura sujeita às restrições costeiras e patrimoniais aplicáveis; art. 62 não é usado como limite vigente","environmental_license":True},
+    "ZEPA3": {"to_max_pct":40,"tap_min_pct":40,"front_m":10.0,"side_rule":"Até 2º pav.: 1,50 m; 3º e 4º: 3,00 m","rear_rule":"Até o 4º pav.: 3,00 m","height_rule":"4 pavimentos no quadro, sujeito às restrições costeiras/patrimoniais aplicáveis","environmental_license":True},
+    "ZI1": {"to_max_pct":50,"tap_min_pct":10,"front_m":6.0,"side_rule":"3,00 m","rear_rule":"3,00 m"},
+    "ZI2": {"to_max_pct":50,"tap_min_pct":10,"front_m":6.0,"side_rule":"3,00 m","rear_rule":"3,00 m"},
+    "ZBD": {"to_max_pct":10,"tap_min_pct":80,"front_m":10.0,"side_rule":"10,00 m","rear_rule":"10,00 m","height_rule":"2 pavimentos"},
+    "SEAV": {"to_max_pct":40,"tap_min_pct":15,"front_m":5.0,"side_rule":"Até 3º pav.: 1,50 m; 4º pav.: 3,00 m; acima: 3,00 + [(N-4) × 0,30] m","rear_rule":"Até 2º pav.: 2,00 m; 3º e 4º: 3,00 m; acima: 3,00 + [(N-4) × 0,30] m"},
+}
+
+def normalized_zone_code(value: str | None) -> str | None:
+    if not value:
+        return None
+    return re.sub(r"[^A-Z0-9]", "", str(value).upper())
+
+def occupancy_parameters(zone_code: str | None, coastal_restrictions: list[dict]) -> dict:
+    key=normalized_zone_code(zone_code)
+    data=dict(OCCUPANCY_169.get(key) or {})
+    if not data:
+        return {"available":False,"zone_code":key}
+    data.update({
+        "available":True,
+        "zone_code":key,
+        "ia_basic":1.0,
+        "legal_basis":"LC 166/2024 (art. 53) c/c LC 169/2024 (Anexo IV substitutivo do Anexo V da LC 166/2024)",
+        "legal_status_checked_at":"2026-09-25",
+        "legal_status_note":"TJPB manteve a LUOS em vigor em 21/01/2026, com inconstitucionalidade do art. 62. O sistema não usa o art. 62 para calcular altura na orla.",
+        "coastal_restriction_intersections":len(coastal_restrictions or []),
+    })
+    if coastal_restrictions:
+        data["coastal_restriction_note"]="O terreno intersecta faixa de restrição costeira publicada; gabarito/altura exige conferência específica da regra atualmente aplicável."
+    return data
+
 LABEL = {
     "identity": "Identidade",
     "land": "Terreno",
@@ -309,11 +360,17 @@ def context(parcel: dict, lat: float, lng: float) -> dict:
     heritage_buffers = {
         "Centro Histórico": spatial.get("historic_center") or [],
     }
+    occupancy = occupancy_parameters(
+        (planning.get("zoning") or {}).get("sigla"),
+        spatial.get("coastal_restriction") or [],
+    )
     return {
         "planning": {
             "zoning": {"properties": planning.get("zoning") or {}},
             "macrozone": {"properties": planning.get("macrozone") or {}},
             "special_regimes": {},
+            "parameters": occupancy,
+            "coastal_restrictions": spatial.get("coastal_restriction") or [],
             "note": (
                 "Zoneamento e macrozoneamento 2024 consultados por interseção WFS no "
                 "GeoServer oficial do Filipeia; a base não é espelhada."
@@ -439,15 +496,30 @@ def vals(section_id: str, parcel: dict, ctx: dict) -> list[dict]:
     if section_id == "planning_buildability":
         zoning=((ctx.get("planning") or {}).get("zoning") or {}).get("properties") or {}
         macro=((ctx.get("planning") or {}).get("macrozone") or {}).get("properties") or {}
-        return [
+        params=(ctx.get("planning") or {}).get("parameters") or {}
+        out=[
             {"label":"Zoneamento 2024","value":zoning.get("sigla")},
             {"label":"Descrição do zoneamento","value":zoning.get("nome")},
             {"label":"Tipo de zoneamento","value":zoning.get("tipo")},
             {"label":"Macrozona 2024","value":macro.get("sigla")},
             {"label":"Descrição da macrozona","value":macro.get("nome")},
             {"label":"Tipo de macrozona","value":macro.get("tipo")},
-            {"label":"Método","value":"Consulta espacial ao mapa oficial de zoneamento da Prefeitura de João Pessoa."}
+            {"label":"Índice de aproveitamento básico","value":params.get("ia_basic")},
+            {"label":"Taxa de ocupação máxima","value":params.get("to_max_pct"),"unit":"%"},
+            {"label":"Taxa de área permeável mínima","value":params.get("tap_min_pct"),"unit":"%"},
+            {"label":"Recuo frontal mínimo","value":params.get("front_m"),"unit":"m"},
+            {"label":"Regra de recuo lateral","value":params.get("side_rule")},
+            {"label":"Regra de recuo de fundos","value":params.get("rear_rule")},
+            {"label":"Regra de altura","value":params.get("height_rule")},
+            {"label":"Licenciamento ambiental exigido pela zona","value":params.get("environmental_license")},
+            {"label":"Faixa de restrição costeira intersectante","value":params.get("coastal_restriction_intersections")},
+            {"label":"Condicionante costeira","value":params.get("coastal_restriction_note")},
+            {"label":"Observação específica do quadro","value":params.get("conditional_note")},
+            {"label":"Base legal dos parâmetros","value":params.get("legal_basis")},
+            {"label":"Situação normativa considerada","value":params.get("legal_status_note")},
+            {"label":"Método","value":"Zoneamento por interseção espacial e parâmetros de ocupação estruturados do quadro substitutivo publicado pela LC 169/2024."}
         ]
+        return out
     if section_id == "terrain_visual":
         t=ctx.get("terrain") or {}
         if not t.get("available"):
