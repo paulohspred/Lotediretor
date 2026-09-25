@@ -1195,18 +1195,20 @@
         {
           "field": "terrain",
           "status": "PARTIAL",
-          "source_id": "rj-rio-flood-susceptibility",
+          "source_id": "rj-rio-mdt-lidar-2019",
           "supporting_source_ids": [
+            "rj-rio-flood-susceptibility",
             "br-sgb-geosgb"
           ],
-          "endpoint": "https://pgeo3.rio.rj.gov.br/arcgis/rest/services/Estudos/ISMFI_Indice_de_Suscetibilidade_do_Meio_Fisico_a_Inundacoes/MapServer",
-          "access_class": "PUBLIC_QUERY_ONLY",
-          "license": null,
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "endpoint": "https://pgeo3.rio.rj.gov.br/arcgis/rest/services/Cartografia/Modelo_Digital_de_Terreno__Lidar_2019__escala_1_10_000_/MapServer",
+          "access_class": "OPEN_REUSABLE",
+          "license": "CC BY 4.0",
+          "connector_status": "LIVE_PARTIAL_PROPERTY_RESOLVER",
           "missing_fields": [
-            "high-resolution DTM/LiDAR official source"
+            "parcel-clipped elevation profile",
+            "A-A/B-B profile lines and map rendering"
           ],
-          "notes": null
+          "notes": "MDT LiDAR 2019 (5 m) is sampled at the clicked point and parcel boundary. Values are screening-grade topographic context, not executive survey."
         },
         {
           "field": "public works",
