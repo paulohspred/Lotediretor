@@ -4982,6 +4982,39 @@
       "license": null,
       "temporal_coverage": null,
       "notes": "Official cached 2.5 m MDT-derived slope visualization is available as map tiles. ArcGIS identify did not return numeric raster values in validation, so LoteDiretor uses it only as visual slope context and does not infer parcel elevations from colors."
+    },
+    {
+      "id": "pb-joao-pessoa-luos-166-169",
+      "authority": "Prefeitura de João Pessoa / Plano Diretor",
+      "scope": "João Pessoa/PB",
+      "source_type": "municipal_legislation",
+      "endpoint": "https://planodiretor.joaopessoa.pb.gov.br/legislacaovigente/",
+      "access_class": "OPEN_REUSABLE",
+      "license": null,
+      "temporal_coverage": "2024-current",
+      "notes": "Current municipal legislation index. LoteDiretor structures occupancy parameters from LC 169/2024's substitute Annex IV for LC 166/2024 and keeps the coastal-height exception explicit."
+    },
+    {
+      "id": "pb-joao-pessoa-plano-diretor-164",
+      "authority": "Prefeitura de João Pessoa / Plano Diretor",
+      "scope": "João Pessoa/PB",
+      "source_type": "municipal_legislation",
+      "endpoint": "https://planodiretor.joaopessoa.pb.gov.br/legislacaovigente/",
+      "access_class": "OPEN_REUSABLE",
+      "license": null,
+      "temporal_coverage": "2024-current",
+      "notes": "Plano Diretor source for macrozone basic/max floor-area indices, including art. 50 values."
+    },
+    {
+      "id": "pb-tjpb-luos-adi-2026",
+      "authority": "Tribunal de Justiça da Paraíba",
+      "scope": "João Pessoa/PB",
+      "source_type": "judicial_status_reference",
+      "endpoint": "https://www.tjpb.jus.br/w/decis%C3%A3o-do-tjpb-mant%C3%A9m-proibi%C3%A7%C3%A3o-da-constru%C3%A7%C3%A3o-de-espig%C3%B5es-na-orla",
+      "access_class": "OPEN_REUSABLE",
+      "license": null,
+      "temporal_coverage": "2026-01-21",
+      "notes": "Public TJPB status reference: LUOS maintained except article 62. Used only to prevent presenting article 62 coastal-height values as current."
     }
   ],
   "as_of": "2026-09-25"
