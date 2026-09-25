@@ -404,6 +404,10 @@ const rioTerrainOverlay=arcgisDynamicLayer(
   "https://pgeo3.rio.rj.gov.br/arcgis/rest/services/Cartografia/Modelo_Digital_de_Terreno__Lidar_2019__escala_1_10_000_/MapServer/export",
   0,"Modelo digital de terreno LiDAR 2019 · Prefeitura do Rio",.50
 );
+const rioRoadsOverlay=arcgisDynamicLayer(
+  "https://pgeo3.rio.rj.gov.br/arcgis/rest/services/CadLog/Trechos_Logradouros/MapServer/export",
+  0,"Trechos de logradouro · Prefeitura do Rio",.62
+);
 
 const bhParcelWms=L.tileLayer.wms("https://bhmap.pbh.gov.br/v2/api/idebhgeo/wms",{
   layers:"ide_bhgeo:LOTE_CTM",format:"image/png",transparent:true,version:"1.1.1",
@@ -567,7 +571,7 @@ const jpOrthoWms=L.tileLayer.wms("https://filipeia.joaopessoa.pb.gov.br/geoserve
 const cityLayerMap={
   "3550308":{parcel:spParcelWms,zoning:spZoningWms,heritage:spHeritageWms,geoRisk:spGeoRiskWms,hydroRisk:spHydroRiskWms,hillshade:spHillshadeWms,slope:spSlopeWms,ortho:spOrthoIndex2020Wms,roads:spRoadsWms},
   "2611606":{parcel:recifeParcelOverlay,zoning:recifeZoningOverlay,buildings:recifeBuildingOverlay,slope:recifeSlopeTiles,roads:recifeRoadOverlay},
-  "3304557":{parcel:rioParcelOverlay,zoning:rioZoningOverlay,buildings:rioBuildingsOverlay,hydroRisk:rioHydroRiskOverlay,heritage:rioHeritageOverlay,terrain:rioTerrainOverlay},
+  "3304557":{parcel:rioParcelOverlay,zoning:rioZoningOverlay,buildings:rioBuildingsOverlay,hydroRisk:rioHydroRiskOverlay,heritage:rioHeritageOverlay,terrain:rioTerrainOverlay,roads:rioRoadsOverlay},
   "3106200":{parcel:bhParcelWms,zoning:bhZoningWms,environment:bhEnvironmentWms,roads:bhRoadsWms,drainage:bhDrainageWms,buildings:bhBuildingsWms,terrain:bhTerrainWms},
   "2507507":{parcel:jpParcelWms,zoning:jpZoningWms,heritage:jpHeritageWms,environment:jpEnvironmentWms,hydroRisk:jpSusceptibilityWms,coastal:jpCoastalWms,roads:jpRoadHierarchyWms,buildings:jpBuildingsWms,terrain:jpTerrainWms,gas:jpGasWms,ortho:jpOrthoWms}
 };
@@ -596,7 +600,8 @@ const layerLabelsByCity={
     buildings:["Edificações","Cartografia municipal de 2019"],
     hydroRisk:["Suscetibilidade a inundação","Índice municipal de suscetibilidade do meio físico"],
     heritage:["Proteção cultural","Áreas de Proteção do Ambiente Cultural"],
-    terrain:["Modelo digital do terreno","Levantamento LiDAR municipal de 2019"]
+    terrain:["Modelo digital do terreno","Levantamento LiDAR municipal de 2019"],
+    roads:["Trechos de logradouro","Hierarquia e cadastro viário municipal"]
   },
   "3106200":{
     parcel:["Lotes cadastrais","Cadastro territorial da Prefeitura de Belo Horizonte"],
@@ -621,7 +626,7 @@ const layerLabelsByCity={
     ortho:["Ortofoto 2021","Aerofotogrametria municipal"]
   }
 };
-const allThematicLayers=[spParcelWms,spZoningWms,spHeritageWms,spGeoRiskWms,spHydroRiskWms,spHillshadeWms,spSlopeWms,spOrthoIndex2020Wms,spRoadsWms,recifeParcelOverlay,recifeZoningOverlay,recifeBuildingOverlay,recifeSlopeTiles,recifeRoadOverlay,rioParcelOverlay,rioZoningOverlay,rioBuildingsOverlay,rioHydroRiskOverlay,rioHeritageOverlay,rioTerrainOverlay,bhParcelWms,bhZoningWms,bhEnvironmentWms,bhRoadsWms,bhDrainageWms,bhBuildingsWms,bhTerrainWms,jpParcelWms,jpZoningWms,jpHeritageWms,jpEnvironmentWms,jpSusceptibilityWms,jpCoastalWms,jpRoadHierarchyWms,jpBuildingsWms,jpTerrainWms,jpGasWms,jpOrthoWms];
+const allThematicLayers=[spParcelWms,spZoningWms,spHeritageWms,spGeoRiskWms,spHydroRiskWms,spHillshadeWms,spSlopeWms,spOrthoIndex2020Wms,spRoadsWms,recifeParcelOverlay,recifeZoningOverlay,recifeBuildingOverlay,recifeSlopeTiles,recifeRoadOverlay,rioParcelOverlay,rioZoningOverlay,rioBuildingsOverlay,rioHydroRiskOverlay,rioHeritageOverlay,rioTerrainOverlay,rioRoadsOverlay,bhParcelWms,bhZoningWms,bhEnvironmentWms,bhRoadsWms,bhDrainageWms,bhBuildingsWms,bhTerrainWms,jpParcelWms,jpZoningWms,jpHeritageWms,jpEnvironmentWms,jpSusceptibilityWms,jpCoastalWms,jpRoadHierarchyWms,jpBuildingsWms,jpTerrainWms,jpGasWms,jpOrthoWms];
 function activeCityLayers(){const city=cities[Number(select.value)];return cityLayerMap[city.ibge]||{}}
 function syncCityLayers(){
   allThematicLayers.forEach(layer=>{if(map.hasLayer(layer))map.removeLayer(layer)});
