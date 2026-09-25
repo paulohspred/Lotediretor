@@ -5,17 +5,29 @@ import json
 import re
 import urllib.parse
 import urllib.request
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timezone
 from pathlib import Path
 
 import psycopg2
 import municipality_utilities
 from psycopg2.extras import RealDictCursor
+from shapely.geometry import shape
 
 ROOT = Path("/srv/lotediretor/app")
 DB_DSN = "dbname=lotediretor user=sentinelx host=/var/run/postgresql"
 BOUNDS = (-34.98, -7.25, -34.78, -7.04)
 FILIPEIA_WMS = "https://filipeia.joaopessoa.pb.gov.br/geoserver/wms"
+FILIPEIA_WFS = "https://filipeia.joaopessoa.pb.gov.br/geoserver/wfs"
+SPATIAL_LAYERS = {
+    "buildings": ("digeoc:EDIFICACOES", ["OBJECTID_1","N_PAVIM","BAIRRO","EDIFICACAO","AREA","Shape_Area"]),
+    "conservation": ("digeoc:UC", ["NOME","DECRETO"]),
+    "susceptibility": ("digeoc:Suscetibilidade", ["OBJECTID","classe","tipo","Shape_Area"]),
+    "heritage_iphan": ("digeoc:Tombamento_IPHAN", ["OBJECTID","codcart","nome","protecao_e","data_publi"]),
+    "heritage_iphaep": ("digeoc:TOMBAMENTO_IPHAEP", ["Id","CODCART","NOME","PROTECAO_E","DATAPUBLIC"]),
+    "historic_center": ("digeoc:centrohistorico", ["OBJECTID","ENTITY","LAYER","Area","Hectares"]),
+    "zeis": ("digeoc:ZEIS", ["OBJECTID","nome","lei","processo"]),
+}
 PLANNING_LAYERS = {
     "zoning": "digeoc:zoneamento2024",
     "macrozone": "digeoc:zoneamento_pmjp_macrozoneamento_CAM",
@@ -189,6 +201,50 @@ def terrain_for_parcel(parcel: dict) -> dict:
 
 
 
+def spatial_layer_for_parcel(key: str, parcel: dict, count: int = 250) -> list[dict]:
+    layer, fields = SPATIAL_LAYERS[key]
+    parcel_geom = shape(parcel.get("geometry") or {})
+    if parcel_geom.is_empty:
+        return []
+    minx, miny, maxx, maxy = parcel_geom.bounds
+    params = {
+        "service": "WFS",
+        "version": "2.0.0",
+        "request": "GetFeature",
+        "typeNames": layer,
+        "srsName": "EPSG:4326",
+        "count": str(count),
+        "bbox": f"{minx},{miny},{maxx},{maxy},EPSG:4326",
+        "propertyName": ",".join(["the_geom"] + fields),
+        "outputFormat": "application/json",
+    }
+    req = urllib.request.Request(
+        FILIPEIA_WFS + "?" + urllib.parse.urlencode(params),
+        headers={
+            "User-Agent": "LoteDiretor/0.1 (+https://lotediretor.com)",
+            "Accept": "application/json",
+        },
+    )
+    with urllib.request.urlopen(req, timeout=20) as response:
+        data = json.loads(response.read(5000000))
+    allowed = set(fields)
+    out = []
+    for feature in data.get("features") or []:
+        props = feature.get("properties") or {}
+        clean = {k: props.get(k) for k in fields if props.get(k) is not None}
+        if set(clean) - allowed:
+            raise RuntimeError("jp_unexpected_fields")
+        geom = feature.get("geometry")
+        if geom and shape(geom).intersects(parcel_geom):
+            out.append({
+                "type": "Feature",
+                "id": feature.get("id"),
+                "geometry": geom,
+                "properties": clean,
+            })
+    return out
+
+
 def planning_at_point(lat: float, lng: float) -> tuple[dict, dict]:
     out = {}
     errors = {}
@@ -230,6 +286,24 @@ def planning_at_point(lat: float, lng: float) -> tuple[dict, dict]:
 
 def context(parcel: dict, lat: float, lng: float) -> dict:
     planning, planning_errors = planning_at_point(lat, lng)
+    spatial = {}
+    spatial_errors = {}
+    with ThreadPoolExecutor(max_workers=len(SPATIAL_LAYERS)) as pool:
+        jobs = {
+            pool.submit(spatial_layer_for_parcel, key, parcel): key
+            for key in SPATIAL_LAYERS
+        }
+        for future in as_completed(jobs):
+            key = jobs[future]
+            try:
+                spatial[key] = future.result()
+            except Exception as exc:
+                spatial[key] = []
+                spatial_errors[key] = type(exc).__name__
+    heritage_assets = (spatial.get("heritage_iphan") or []) + (spatial.get("heritage_iphaep") or [])
+    heritage_buffers = {
+        "Centro Histórico": spatial.get("historic_center") or [],
+    }
     return {
         "planning": {
             "zoning": {"properties": planning.get("zoning") or {}},
@@ -240,10 +314,17 @@ def context(parcel: dict, lat: float, lng: float) -> dict:
                 "oficial do Filipeia; a base não é espelhada."
             ),
         },
-        "buildings": [],
+        "buildings": spatial.get("buildings") or [],
         "terrain": terrain_for_parcel(parcel),
-        "risk": {"geological": [], "hydrological": []},
-        "heritage": {"assets": [], "buffers": {}},
+        "environment": {
+            "conservation_units": spatial.get("conservation") or [],
+            "zeis": spatial.get("zeis") or [],
+        },
+        "risk": {
+            "geological": spatial.get("susceptibility") or [],
+            "hydrological": [],
+        },
+        "heritage": {"assets": heritage_assets, "buffers": heritage_buffers},
         "utilities": municipality_utilities.load("2507507"),
         "licensing": {
             "housing_permits_exact_sql": [],
@@ -264,7 +345,10 @@ def context(parcel: dict, lat: float, lng: float) -> dict:
                 "transactions": [],
             },
         },
-        "query_errors": {f"planning_{k}": v for k, v in planning_errors.items()},
+        "query_errors": {
+            **{f"planning_{k}": v for k, v in planning_errors.items()},
+            **{f"spatial_{k}": v for k, v in spatial_errors.items()},
+        },
         "queried_at": now(),
         "source": "Prefeitura de João Pessoa / SEPLAN",
     }
@@ -292,6 +376,53 @@ def vals(section_id: str, parcel: dict, ctx: dict) -> list[dict]:
             {"label": "Tipo do imóvel", "value": p.get("parcel_type")},
             {"label": "Área geométrica calculada", "value": p.get("land_area_m2"), "unit": "m²"},
         ]
+    if section_id == "building_existing":
+        buildings=ctx.get("buildings") or []
+        areas=[]
+        floors=[]
+        types=[]
+        for item in buildings:
+            p0=item.get("properties") or {}
+            try:
+                if p0.get("Shape_Area") is not None:areas.append(float(p0.get("Shape_Area")))
+                elif p0.get("AREA") is not None:areas.append(float(str(p0.get("AREA")).replace(",", ".")))
+            except (TypeError,ValueError):
+                pass
+            if p0.get("N_PAVIM"):floors.append(str(p0.get("N_PAVIM")))
+            if p0.get("EDIFICACAO"):types.append(str(p0.get("EDIFICACAO")))
+        return [
+            {"label":"Edificações mapeadas que intersectam o terreno","value":len(buildings)},
+            {"label":"Área cartográfica somada das edificações","value":round(sum(areas),2) if areas else None,"unit":"m²"},
+            {"label":"Pavimentos informados na cartografia","value":", ".join(sorted(set(floors))) if floors else None},
+            {"label":"Tipos de edificação informados","value":", ".join(sorted(set(types))) if types else None},
+            {"label":"Ressalva","value":"As edificações são contexto cartográfico municipal e não substituem cadastro fiscal, projeto aprovado ou levantamento atual."},
+        ]
+    if section_id == "environment_risk_heritage":
+        out=[]
+        for item in (ctx.get("environment") or {}).get("conservation_units") or []:
+            p0=item.get("properties") or {}
+            out.extend([
+                {"label":"Unidade de conservação","value":p0.get("NOME")},
+                {"label":"Norma da unidade de conservação","value":p0.get("DECRETO")},
+            ])
+        for item in (ctx.get("environment") or {}).get("zeis") or []:
+            p0=item.get("properties") or {}
+            out.extend([
+                {"label":"ZEIS que intersecta o terreno","value":p0.get("nome")},
+                {"label":"Base legal da ZEIS","value":p0.get("lei")},
+            ])
+        for item in (ctx.get("risk") or {}).get("geological") or []:
+            p0=item.get("properties") or {}
+            out.append({"label":"Suscetibilidade territorial","value":" · ".join(str(x) for x in [p0.get("tipo"),p0.get("classe")] if x)})
+        for item in (ctx.get("heritage") or {}).get("assets") or []:
+            p0=item.get("properties") or {}
+            out.extend([
+                {"label":"Bem protegido","value":p0.get("nome") or p0.get("NOME")},
+                {"label":"Proteção cultural","value":p0.get("protecao_e") or p0.get("PROTECAO_E")},
+            ])
+        for item in ((ctx.get("heritage") or {}).get("buffers") or {}).get("Centro Histórico") or []:
+            out.append({"label":"Centro Histórico","value":"Terreno intersecta a poligonal publicada."})
+        return out or [{"label":"Incidências ambientais, de suscetibilidade e patrimônio","value":"Nenhuma incidência nas camadas oficiais consultadas para este terreno."}]
     if section_id == "planning_buildability":
         zoning=((ctx.get("planning") or {}).get("zoning") or {}).get("properties") or {}
         macro=((ctx.get("planning") or {}).get("macrozone") or {}).get("properties") or {}
