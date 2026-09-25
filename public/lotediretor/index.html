@@ -405,29 +405,7 @@ const jpOrthoWms=L.tileLayer.wms("https://filipeia.joaopessoa.pb.gov.br/geoserve
   opacity:.90,attribution:"Aerofotogrametria 2021 · Prefeitura de João Pessoa"
 }).setZIndex(120);
 
-L.control.layers(null,{
-  "Lotes fiscais · Prefeitura de São Paulo":spParcelWms,
-  "Zoneamento vigente · Lei 18.177/2024":spZoningWms,
-  "Risco geológico":spGeoRiskWms,
-  "Risco hidrológico":spHydroRiskWms,
-  "Patrimônio · tombamento/envoltória":spHeritageWms,
-  "Hillshade histórico · MDC 2004":spHillshadeWms,
-  "Declividade · Prefeitura de São Paulo":spSlopeWms,
-  "Índice das ortofotos 2020":spOrthoIndex2020Wms,
-  "Recife · lotes":recifeParcelOverlay,
-  "Recife · zoneamento PD2020":recifeZoningOverlay,
-  "Rio · imóveis territoriais":rioParcelOverlay,
-  "Rio · zoneamento vigente":rioZoningOverlay,
-  "Belo Horizonte · lotes":bhParcelWms,
-  "Belo Horizonte · zoneamento":bhZoningWms,
-  "João Pessoa · lotes":jpParcelWms,
-  "João Pessoa · zoneamento 2024":jpZoningWms,
-  "João Pessoa · patrimônio":jpHeritageWms,
-  "João Pessoa · edificações":jpBuildingsWms,
-  "João Pessoa · curvas de nível 2022":jpTerrainWms,
-  "João Pessoa · rede de gás":jpGasWms,
-  "João Pessoa · ortofoto 2021":jpOrthoWms
-},{collapsed:true,position:"topright"}).addTo(map);
+
 
 const cityLayerMap={
   "3550308":{parcel:spParcelWms,zoning:spZoningWms,heritage:spHeritageWms,geoRisk:spGeoRiskWms,hydroRisk:spHydroRiskWms,hillshade:spHillshadeWms,slope:spSlopeWms,ortho:spOrthoIndex2020Wms},
@@ -436,16 +414,56 @@ const cityLayerMap={
   "3106200":{parcel:bhParcelWms,zoning:bhZoningWms},
   "2507507":{parcel:jpParcelWms,zoning:jpZoningWms,heritage:jpHeritageWms,buildings:jpBuildingsWms,terrain:jpTerrainWms,gas:jpGasWms,ortho:jpOrthoWms}
 };
+const layerLabelsByCity={
+  "3550308":{
+    parcel:["Lotes fiscais","Cadastro oficial da Prefeitura de São Paulo"],
+    zoning:["Zoneamento vigente","Lei municipal vigente"],
+    heritage:["Patrimônio cultural","Tombamentos e áreas de proteção"],
+    geoRisk:["Risco geológico","Áreas oficiais de triagem"],
+    hydroRisk:["Risco hidrológico","Áreas oficiais de triagem"],
+    hillshade:["Relevo sombreado","Modelo municipal de terreno"],
+    slope:["Declividade","Modelo oficial de terreno"],
+    ortho:["Ortofotos","Cobertura aérea municipal"]
+  },
+  "2611606":{
+    parcel:["Lotes cadastrais","Cadastro territorial da Prefeitura do Recife"],
+    zoning:["Zoneamento","Plano Diretor e legislação municipal"]
+  },
+  "3304557":{
+    parcel:["Imóveis territoriais","Cadastro territorial da Prefeitura do Rio"],
+    zoning:["Zoneamento","Legislação urbanística municipal"]
+  },
+  "3106200":{
+    parcel:["Lotes cadastrais","Cadastro territorial da Prefeitura de Belo Horizonte"],
+    zoning:["Zoneamento","Lei municipal de uso e ocupação"]
+  },
+  "2507507":{
+    parcel:["Lotes cadastrais","Cadastro territorial da Prefeitura de João Pessoa"],
+    zoning:["Zoneamento 2024","Plano Diretor e legislação municipal"],
+    heritage:["Patrimônio cultural","IPHAN, IPHAEP e Centro Histórico"],
+    buildings:["Edificações","Construções mapeadas pelo município"],
+    terrain:["Curvas de nível","Topografia oficial de 2022"],
+    gas:["Rede de gás","Rede publicada no portal municipal"],
+    ortho:["Ortofoto 2021","Aerofotogrametria municipal"]
+  }
+};
 const allThematicLayers=[spParcelWms,spZoningWms,spHeritageWms,spGeoRiskWms,spHydroRiskWms,spHillshadeWms,spSlopeWms,spOrthoIndex2020Wms,recifeParcelOverlay,recifeZoningOverlay,rioParcelOverlay,rioZoningOverlay,bhParcelWms,bhZoningWms,jpParcelWms,jpZoningWms,jpHeritageWms,jpBuildingsWms,jpTerrainWms,jpGasWms,jpOrthoWms];
 function activeCityLayers(){const city=cities[Number(select.value)];return cityLayerMap[city.ibge]||{}}
 function syncCityLayers(){
   allThematicLayers.forEach(layer=>{if(map.hasLayer(layer))map.removeLayer(layer)});
   const layers=activeCityLayers();
+  const city=cities[Number(select.value)];
+  const labels=layerLabelsByCity[city.ibge]||{};
   document.querySelectorAll("[data-zlayer]").forEach(input=>{
     const layer=layers[input.dataset.zlayer];
     input.disabled=!layer;
     const row=input.closest(".layer-toggle");
-    if(row)row.style.display=layer?"flex":"none";
+    if(row){
+      row.style.display=layer?"flex":"none";
+      const span=row.querySelector("span");
+      const copy=labels[input.dataset.zlayer];
+      if(span&&copy)span.innerHTML=escapeHtml(copy[0])+"<small>"+escapeHtml(copy[1])+"</small>";
+    }
     if(layer&&input.checked)layer.addTo(map);
   });
 }
@@ -476,6 +494,7 @@ cities.forEach((c,i)=>{
 function applyCity(idx,fly=true){
   const c=cities[idx];
   syncCityLayers();
+  document.getElementById("mapBadge").textContent="Mapa de "+c.name+" · camadas oficiais municipais";
   if(fly){
     map.flyTo([c.lat,c.lng],c.z,{duration:.8});markers[idx].openPopup();
     if(map3d)map3d.flyTo({center:[c.lng,c.lat],zoom:Math.max(15,c.z),pitch:58,duration:800});
@@ -539,7 +558,7 @@ function friendlyLabel(label){
     "Situação CIB":"Situação cadastral do imóvel",
     "PGV":"Valor de referência fiscal",
     "VVR":"Valor venal de referência",
-    "DTI":"Declaração de transação imobiliária",
+    "DTI":"Transação imobiliária declarada",
     "MDT":"Modelo digital do terreno",
     "MDE":"Modelo digital de elevação",
     "CTM":"Cadastro territorial municipal",
@@ -547,13 +566,13 @@ function friendlyLabel(label){
   };
   if(exact[raw])return exact[raw];
   return raw
-    .replace(/^SQL \/ inscrição$/,"Inscrição fiscal do lote (SQL)")
+    .replace(/^SQL \/ inscrição$/,"Inscrição fiscal do lote")
     .replace(/^Situação do SQL/,"Situação da inscrição fiscal")
-    .replace(/\bCIB\b/g,"código imobiliário (CIB)")
-    .replace(/\bPGV\b/g,"valor de referência fiscal (PGV)")
+    .replace(/\bCIB\b/g,"código imobiliário")
+    .replace(/\bPGV\b/g,"valor de referência fiscal")
     .replace(/\bDTI(s)?\b/g,"declaração(ões) de transação imobiliária")
     .replace(/\bITBI\b/g,"ITBI")
-    .replace(/\bVVR\b/g,"valor venal de referência (VVR)")
+    .replace(/\bVVR\b/g,"valor venal de referência")
     .replace(/\bMDT\b/g,"modelo digital do terreno")
     .replace(/\bMDE\b/g,"modelo digital de elevação");
 }
@@ -646,8 +665,8 @@ function renderImmediateDossier(context,p,report){
   const effectiveHeight=special.max_height_m??occ.max_height_m;
 
   const cadastro=[
-    dossierRow("Inscrição fiscal do lote (SQL)",p.sql_reference),
-    dossierRow("Código imobiliário (CIB)",p.cib),
+    dossierRow("Inscrição fiscal do lote",p.sql_reference),
+    dossierRow("Código imobiliário",p.cib),
     dossierRow("Situação cadastral do imóvel",p.cib_status),
     dossierRow("Situação do lote",p.parcel_status),
     dossierRow("Área do terreno",iptu.land_area_m2??p.land_area_m2,"m²",true),
@@ -663,14 +682,14 @@ function renderImmediateDossier(context,p,report){
   ].join("");
 
   const fiscalRows=[
-    dossierRow("Valor de referência do terreno (PGV 2026)",pgv.vm2t_brl_per_m2,"BRL/m²",true),
+    dossierRow("Valor fiscal de referência do terreno (2026)",pgv.vm2t_brl_per_m2,"BRL/m²",true),
     dossierRow("Valor unitário terreno IPTU",iptu.land_unit_value_brl_m2,"BRL/m²"),
     dossierRow("Valor unitário construção",iptu.construction_unit_value_brl_m2,"BRL/m²"),
     dossierRow("Transações de ITBI encontradas",itbi.count||0,null,true),
     dossierRow("Última transação",latestTx.transaction_date),
     dossierRow("Natureza",latestTx.transaction_nature),
     dossierRow("Valor declarado",latestTx.transaction_value,"BRL"),
-    dossierRow("Valor venal de referência (VVR)",latestTx.vvr,"BRL"),
+    dossierRow("Valor venal de referência",latestTx.vvr,"BRL"),
     dossierRow("Base ITBI",latestTx.tax_base,"BRL"),
     dossierRow("Situação da inscrição fiscal na transação",latestTx.sql_status),
     dossierRow("Cartório mais recente",latestTx.registry_office),
@@ -740,7 +759,7 @@ function renderItbiTimeline(itbi){
     const date=tx.transaction_date||("arquivo "+tx.source_year);
     const registry=[tx.registry_office,tx.registry_number?("matrícula "+tx.registry_number):null].filter(Boolean).join(" · ");
     return '<div class="itbi-event">'+
-      '<div class="itbi-event-head"><b>'+escapeHtml(date)+'</b><span>DTI '+escapeHtml(String(i+1))+'</span></div>'+
+      '<div class="itbi-event-head"><b>'+escapeHtml(date)+'</b><span>Transação '+escapeHtml(String(i+1))+'</span></div>'+
       '<div class="itbi-event-nature">'+escapeHtml(tx.transaction_nature||"Natureza não informada")+'</div>'+
       '<div class="itbi-event-grid">'+
         '<div>Valor declarado<strong>'+escapeHtml(formatReportValue({value:tx.transaction_value,unit:"BRL"}))+'</strong></div>'+
@@ -1144,6 +1163,11 @@ async function searchParcel(){
 lotSearch.addEventListener("click",searchParcel);
 lotInput.addEventListener("keydown",e=>{
   if(e.key==="Enter"){e.preventDefault();searchParcel()}
+});
+map.on("zoomend",()=>{
+  if(selectedParcelLayer)selectedParcelLayer.bringToFront();
+  if(selectedBuildingLayer)selectedBuildingLayer.bringToFront();
+  if(selectedTerrainProfileLayer)selectedTerrainProfileLayer.bringToFront();
 });
 map.on("click",e=>inspectParcel(e.latlng));
 select.addEventListener("change",e=>{
