@@ -668,10 +668,14 @@ def fetch_buildings_for_parcel(parcel_geometry: dict) -> list[dict]:
 
 def fetch_context_layer_for_parcel(config: dict, parcel_geometry: dict, count: int = 200) -> list[dict]:
     min_lng, min_lat, max_lng, max_lat = geometry_bbox(parcel_geometry)
-    pad = 0.00012
+    pad = 0.00025
     bbox = (
         f"{min_lng-pad},{min_lat-pad},{max_lng+pad},{max_lat+pad},EPSG:4326"
     )
+    metric_transform = Transformer.from_crs(
+        "EPSG:4326", "EPSG:31983", always_xy=True
+    ).transform
+    parcel_metric = shapely_transform(metric_transform, shape(parcel_geometry))
     query = {
         "service": "WFS",
         "version": "2.0.0",
@@ -710,7 +714,16 @@ def fetch_context_layer_for_parcel(config: dict, parcel_geometry: dict, count: i
     out = []
     for feature in payload.get("features") or []:
         geometry = feature.get("geometry") or {}
-        if not geometry_intersects(parcel_geometry, geometry):
+        if not geometry:
+            continue
+        try:
+            feature_metric = shapely_transform(
+                metric_transform, shape(geometry)
+            )
+            distance_m = float(parcel_metric.distance(feature_metric))
+        except Exception:
+            continue
+        if distance_m > 20.0:
             continue
         props = feature.get("properties") or {}
         unexpected = set(props) - allowed
@@ -722,6 +735,7 @@ def fetch_context_layer_for_parcel(config: dict, parcel_geometry: dict, count: i
         out.append({
             "id": feature.get("id"),
             "geometry": geometry,
+            "distance_to_parcel_m": round(distance_m, 2),
             "properties": props,
         })
     return out
@@ -2498,8 +2512,13 @@ def actual_values_for_section(
             seen.add(key)
             values.extend([
                 {
-                    "label": "Via que confronta/intersecta o terreno",
+                    "label": "Via adjacente ao terreno",
                     "value": props.get("tx_logradouro_valido"),
+                },
+                {
+                    "label": "Distância do eixo viário ao terreno",
+                    "value": item.get("distance_to_parcel_m"),
+                    "unit": "m",
                 },
                 {
                     "label": "Classificação viária urbanística",
@@ -2523,8 +2542,13 @@ def actual_values_for_section(
             seen_segments.add(key)
             values.extend([
                 {
-                    "label": "Logradouro cadastrado",
+                    "label": "Logradouro próximo ao terreno",
                     "value": props.get("nm_logradouro"),
+                },
+                {
+                    "label": "Distância do segmento ao terreno",
+                    "value": item.get("distance_to_parcel_m"),
+                    "unit": "m",
                 },
                 {
                     "label": "Código do logradouro",
@@ -2540,8 +2564,9 @@ def actual_values_for_section(
             values.append({
                 "label": "Limite da leitura viária",
                 "value": (
-                    "A largura do leito carroçável e a classificação do eixo são "
-                    "dados cartográficos/urbanísticos publicados. Não equivalem "
+                    "A consulta considera eixos/segmentos até 20 m do terreno. A largura "
+                    "do leito carroçável e a classificação do eixo são dados "
+                    "cartográficos/urbanísticos publicados. Não equivalem "
                     "automaticamente à largura legal total do logradouro, alinhamento "
                     "definitivo ou faixa de domínio."
                 ),
