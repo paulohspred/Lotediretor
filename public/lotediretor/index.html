@@ -837,7 +837,10 @@ function renderTerrainProfiles(terrain){
         '<text class="terrain-profile-label" x="'+padL+'" y="'+(h-5)+'">0m</text>'+
         '<text class="terrain-profile-label" text-anchor="end" x="'+(w-padR)+'" y="'+(h-5)+'">'+dmax.toFixed(1)+'m</text>'+
       '</svg>'+
-      '<div class="terrain-quality">Rumo '+escapeHtml(String(profile.bearing_deg))+'° · P90 ao retorno de solo '+escapeHtml(String(profile.nearest_ground_point_p90_m))+' m</div>'+
+      '<div class="terrain-quality">Rumo '+escapeHtml(String(profile.bearing_deg))+'°'+
+        (profile.nearest_ground_point_p90_m!=null?' · distância P90 ao ponto de solo '+escapeHtml(String(profile.nearest_ground_point_p90_m))+' m':'')+
+        (profile.profile_method?' · '+escapeHtml(profile.profile_method):'')+
+      '</div>'+
     '</div>';
   }).join("");
   return charts?'<div class="terrain-profiles">'+charts+'</div>':"";
