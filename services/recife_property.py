@@ -16,6 +16,10 @@ MARGINAL="https://esigportal2.recife.pe.gov.br/arcgis/rest/services/MeioAmbiente
 SSA1="https://esigportal2.recife.pe.gov.br/arcgis/rest/services/MeioAmbiente/MA_FaixasDeProtecao_SSA1_2020_2026/MapServer/2"
 BUILDING="https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Planejamento/BASES_BAIRRO_FACEQUADRA_LOGRADOURO_LOTE/FeatureServer/7"
 BUILDING_F=["OBJECTID","DSQFL","CEDIFNUM","NMENDER","NUMERO","MDE","MDT","MDS","ELEVATION","LENGTH3D","Z_MIN","Z_MAX","Z_MEAN","VERTEX_CNT"]
+ROAD="https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Cttu_An%C3%A1lise_Vias_Recife/MapServer/17"
+ROAD_F=["FID","CLOGRACODI","NLOGRACONC","NLGPAVOFIC","NLGPAVRESU","INDPAV","CT","NMPERIMETR","NMTPVIA","Metragem"]
+ROAD_ATLAS="https://esigportal2.recife.pe.gov.br/arcgis/rest/services/ATLAS/Serv_Mapas_ATLAS_2015/MapServer/34"
+ROAD_ATLAS_F=["OBJECTID_1","CLOGRACODI","NLOGRACONC","NLGPAVOFIC","NLGPAVRESU","INDPAV","CATEGORIA_FUNCIONAL"]
 SMUP_BASE="https://esigportal2.recife.pe.gov.br/arcgis/rest/services/MeioAmbiente/MA_UnidadesProtegidasSMUP/MapServer"
 BF=["fid","nome","area_em_ha","codigo"]
 NF=["objectid","subbacia","bacia","codsub","decreto"]
@@ -58,6 +62,20 @@ def query(url,fields,lat=None,lng=None,where=None,geometry=True,count=20):
         p=f.get("properties") or {}
         if set(p)-allowed: raise RuntimeError("unexpected_fields")
         out.append({"type":"Feature","id":f.get("id"),"geometry":f.get("geometry"),"properties":p})
+    return out
+
+def query_near(url,fields,lat,lng,distance_m=60,count=20):
+    q={
+        "f":"geojson","outSR":"4326","returnGeometry":"true","outFields":",".join(fields),
+        "resultRecordCount":str(count),"where":"1=1","geometry":f"{lng},{lat}",
+        "geometryType":"esriGeometryPoint","inSR":"4326","spatialRel":"esriSpatialRelIntersects",
+        "distance":str(distance_m),"units":"esriSRUnit_Meter"
+    }
+    data=get(url+"/query?"+urllib.parse.urlencode(q));allowed=set(fields);out=[]
+    for feature in data.get("features") or []:
+        props=feature.get("properties") or {}
+        if set(props)-allowed:raise RuntimeError("unexpected_fields")
+        out.append({"type":"Feature","id":feature.get("id"),"geometry":feature.get("geometry"),"properties":props})
     return out
 
 def public(f):
@@ -112,10 +130,15 @@ def context(lat,lng,parcel):
             buildings=query(BUILDING,BUILDING_F,where="DSQFL='"+str(p.get("dsqfl")).replace("'","")+"'",count=100)
         except Exception as e:
             buildings=[];errors["buildings"]=type(e).__name__
+    transport={"street_segments":[],"functional_class":[]}
+    try:transport["street_segments"]=query_near(ROAD,ROAD_F,lat,lng,60,20)
+    except Exception as e:errors["transport_streets"]=type(e).__name__
+    try:transport["functional_class"]=query_near(ROAD_ATLAS,ROAD_ATLAS_F,lat,lng,60,20)
+    except Exception as e:errors["transport_functional_class"]=type(e).__name__
     return {"planning":{"zoning":{"properties":{"cd_zoneamento_perimetro":z.get("ZONA"),"tx_zoneamento_perimetro":z.get("ZONA2") or z.get("ZONA"),"macrozone":z.get("MACROZONA"),"ca_min":z.get("VLCOEFMIN"),"ca_basic":z.get("VLCOEFBAS"),"ca_max":z.get("VLCOEFMAX"),"considerations":z.get("NMCONSIDERAC")}},"special_regimes":{k:v for k,v in layers.items() if k!="zoning" and v}},
     "buildings":buildings,"terrain":{"available":False,"reason":"numeric_mdt_not_exposed_by_current_public_raster_service"},"environment":envctx,"risk":{"geological":[],"hydrological":[]},
     "heritage":{"assets":layers.get("iep") or [],"buffers":{"ZEPH":layers.get("zeph") or [],"IPAV":layers.get("ipav") or [],"UCN":layers.get("ucn") or []}},
-    "utilities":municipality_utilities.load("2611606"),"licensing":{"housing_permits_exact_sql":permits,"impact_spatial_incidence":[],"environment_spatial_incidence":[],"match_method":"EXACT_DSQFL"},
+    "utilities":municipality_utilities.load("2611606"),"transport":transport,"licensing":{"housing_permits_exact_sql":permits,"impact_spatial_incidence":[],"environment_spatial_incidence":[],"match_method":"EXACT_DSQFL"},
     "fiscal":{"pgv":{"found":False},"iptu":{"found":bool(iptu_record),"latest":iptu_latest,"source_record":iptu_record},"itbi":{"available":True,"count":len(tx),"coverage_years":[2026] if (ix.get("coverage") or {}).get("itbi_2026") else [],"registry_references":[],"transactions":tx,"match_method":"OFFICIAL_POINT_INSIDE_PARCEL"}},
     "data_index_coverage":ix.get("coverage") or {},
     "query_errors":errors,"queried_at":now(),"source":"Prefeitura do Recife / ESIG + Dados Abertos ODbL"}
@@ -187,7 +210,27 @@ def vals(s,p,c):
         if not out:out.append({"label":"Licenciamento vinculado à inscrição fiscal","value":"Nenhum evento exato localizado no índice público materializado."})
         return out
     if s=="infrastructure_utilities":
-        return municipality_utilities.report_values(c.get("utilities") or {})
+        out=municipality_utilities.report_values(c.get("utilities") or {})
+        transport=c.get("transport") or {}
+        seen=set()
+        for item in transport.get("street_segments") or []:
+            r=item.get("properties") or {}
+            key=(r.get("CLOGRACODI"),r.get("NLGPAVOFIC"))
+            if key in seen:continue
+            seen.add(key)
+            out.extend([
+                {"label":"Via próxima","value":r.get("NLGPAVOFIC") or r.get("NLOGRACONC")},
+                {"label":"Situação de pavimentação","value":r.get("INDPAV")},
+                {"label":"Tipo de via","value":r.get("NMTPVIA")},
+                {"label":"Corredor de transporte","value":r.get("CT")},
+            ])
+        for item in transport.get("functional_class") or []:
+            r=item.get("properties") or {}
+            out.extend([
+                {"label":"Categoria funcional da via próxima","value":r.get("CATEGORIA_FUNCIONAL")},
+                {"label":"Via de referência da categoria","value":r.get("NLGPAVOFIC") or r.get("NLOGRACONC")},
+            ])
+        return out
     if s=="environment_risk_heritage":
         out=[]
         env=c.get("environment") or {}
