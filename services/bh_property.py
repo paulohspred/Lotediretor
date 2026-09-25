@@ -4,7 +4,8 @@ import json,re,urllib.parse,urllib.request
 from datetime import datetime,timezone
 from pathlib import Path
 import municipality_utilities
-from shapely.geometry import Point,shape
+from shapely.geometry import Point,shape,LineString
+from math import atan2,cos,degrees,radians,sin,sqrt
 
 ROOT=Path("/srv/lotediretor/app")
 WFS="https://bhmap.pbh.gov.br/v2/api/idebhgeo/wfs"
@@ -88,6 +89,72 @@ def parcel_intersections(key,parcel,count=1000):
         if item["geometry"] and shape(item["geometry"]).intersects(geom):out.append(item)
     return out
 
+def _distance_m(a,b):
+    lat1,lon1,lat2,lon2=map(radians,[a[1],a[0],b[1],b[0]])
+    dlat=lat2-lat1;dlon=lon2-lon1
+    h=sin(dlat/2)**2+cos(lat1)*cos(lat2)*sin(dlon/2)**2
+    return 6371008.8*2*atan2(sqrt(h),sqrt(max(0,1-h)))
+
+def _bearing(a,b):
+    lat1,lat2=radians(a[1]),radians(b[1]);dlon=radians(b[0]-a[0])
+    y=sin(dlon)*cos(lat2);x=cos(lat1)*sin(lat2)-sin(lat1)*cos(lat2)*cos(dlon)
+    return (degrees(atan2(y,x))+360)%360
+
+def _profile_segments(parcel_geometry):
+    poly=shape(parcel_geometry)
+    if poly.is_empty:return []
+    if poly.geom_type=="MultiPolygon":poly=max(poly.geoms,key=lambda p:p.area)
+    rect=poly.minimum_rotated_rectangle
+    pts=list(rect.exterior.coords)[:-1]
+    edges=[(pts[i],pts[(i+1)%4],_distance_m(pts[i],pts[(i+1)%4])) for i in range(4)]
+    a0,a1,_=max(edges,key=lambda x:x[2])
+    dx,dy=a1[0]-a0[0],a1[1]-a0[1]
+    mag=max((dx*dx+dy*dy)**.5,1e-12);ux,uy=dx/mag,dy/mag
+    cx,cy=poly.centroid.x,poly.centroid.y
+    span=max(max(p[0] for p in pts)-min(p[0] for p in pts),max(p[1] for p in pts)-min(p[1] for p in pts))*4+0.002
+    out=[]
+    for name,(vx,vy) in [("A-A",(ux,uy)),("B-B",(-uy,ux))]:
+        line=LineString([(cx-vx*span,cy-vy*span),(cx+vx*span,cy+vy*span)])
+        inter=poly.intersection(line)
+        segs=[inter] if inter.geom_type=="LineString" else list(inter.geoms) if inter.geom_type=="MultiLineString" else []
+        if not segs:continue
+        seg=max(segs,key=lambda s:s.length)
+        xy=list(seg.coords)
+        if len(xy)>=2:out.append((name,seg,xy[0],xy[-1]))
+    return out
+
+def _contour_profiles(parcel_geometry,contours):
+    profiles=[]
+    for name,line,a,b in _profile_segments(parcel_geometry):
+        length=_distance_m(a,b);hits=[]
+        for item in contours:
+            z=(item.get("properties") or {}).get("COTA_CURVA_NIVEL")
+            if not isinstance(z,(int,float)) or not item.get("geometry"):continue
+            inter=line.intersection(shape(item["geometry"]))
+            points=[]
+            if inter.geom_type=="Point":points=[inter]
+            elif inter.geom_type=="MultiPoint":points=list(inter.geoms)
+            elif inter.geom_type in ("LineString","MultiLineString"):
+                g=inter if inter.geom_type=="LineString" else max(inter.geoms,key=lambda x:x.length)
+                points=[g.interpolate(.5,normalized=True)]
+            for pt in points:
+                frac=line.project(pt)/max(line.length,1e-12)
+                hits.append({"distance_m":round(length*frac,2),"elevation_m":float(z),"lat":pt.y,"lng":pt.x})
+        hits=sorted(hits,key=lambda x:x["distance_m"])
+        dedup=[]
+        for h in hits:
+            if not dedup or abs(h["distance_m"]-dedup[-1]["distance_m"])>.15 or h["elevation_m"]!=dedup[-1]["elevation_m"]:
+                dedup.append(h)
+        if len(dedup)>=2:
+            dz=dedup[-1]["elevation_m"]-dedup[0]["elevation_m"]
+            profiles.append({
+                "name":name,"length_m":round(length,2),"bearing_deg":round(_bearing(a,b),1),
+                "delta_elevation_m":round(dz,2),"average_slope_pct":round((dz/length*100) if length else 0,2),
+                "samples":dedup,"line_coordinates_wgs84":[[a[0],a[1]],[b[0],b[1]]],
+                "profile_method":"Interseções do corte com curvas oficiais de nível de 1 m"
+            })
+    return profiles
+
 def context(lat,lng,parcel):
     errors={}
     try:approved=spatial("approved",lat,lng)
@@ -110,16 +177,18 @@ def context(lat,lng,parcel):
     try:contours=parcel_intersections("contour_1m",parcel,count=1000)
     except Exception as e:contours=[];errors["terrain_contours"]=type(e).__name__
     contour_values=sorted({(x.get("properties") or {}).get("COTA_CURVA_NIVEL") for x in contours if isinstance((x.get("properties") or {}).get("COTA_CURVA_NIVEL"),(int,float))})
+    profiles=_contour_profiles(parcel.get("geometry") or {},contours) if contour_values else []
     terrain={
         "available":bool(contour_values),
         "method":"Curvas de nível oficiais de 1 m que cruzam o terreno",
-        "quality":"OFFICIAL_CONTOUR_INTERSECTION",
+        "quality":"Perfil discreto baseado em curvas oficiais de nível de 1 m",
         "contour_count":len(contours),
         "min_elevation_m":min(contour_values) if contour_values else None,
         "max_elevation_m":max(contour_values) if contour_values else None,
         "amplitude_m":(max(contour_values)-min(contour_values)) if contour_values else None,
         "contour_elevations_m":contour_values,
-        "caveat":"Faixa altimétrica baseada somente nas curvas oficiais que cruzam o lote; não substitui MDT contínuo nem levantamento topográfico de campo."
+        "profiles":profiles,
+        "caveat":"Faixa e cortes altimétricos baseados nas curvas oficiais que cruzam o lote; não há interpolação apresentada como levantamento contínuo. Não substitui MDT contínuo nem levantamento topográfico de campo."
     }
     z=(zoning[0].get("properties") if zoning else {}) or {}
     return {"planning":{"zoning":{"properties":{"cd_zoneamento_perimetro":z.get("SIGLA_TIPO_ZONEAMENTO"),"tx_zoneamento_perimetro":z.get("DESC_TIPO_ZONEAMENTO"),"source_layer":"ZONEAMENTO_11181"}},"special_regimes":{}},
