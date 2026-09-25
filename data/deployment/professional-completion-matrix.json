@@ -396,13 +396,13 @@
           "endpoint": "https://api-publica.obrasgov.gestao.gov.br/obras",
           "access_class": "OPEN_REUSABLE",
           "license": null,
-          "connector_status": "PUBLIC_EVENT_CONNECTORS_CONFIGURED",
+          "connector_status": "PUBLIC_EVENT_CONNECTORS_CONFIGURED_GEOMETRY_BLOCKED_UPSTREAM",
           "missing_fields": [
             "city-bounded materialization schedule",
-            "project geometry to parcel-distance normalizer",
-            "PNCP procurement-to-project relationship when upstream does not provide a direct key"
+            "official spatial geometry/coordinates from current ObrasGov public contract",
+            "project geometry to parcel-distance normalizer"
           ],
-          "notes": "ObrasGov current API and PNCP public consultation clients are now implemented with bounded GET-only ingestion. Parcel relevance still requires geometry/official identifier evidence."
+          "notes": "ObrasGov /geometria is queryable, but the OpenAPI checked on 2026-09-25 exposes only project/geometry IDs, municipality and geometry origin; no coordinates/GeoJSON or detail route is present. Do not label a project as nearby until an official spatial payload is available."
         },
         {
           "field": "public processes",
@@ -800,13 +800,13 @@
           "endpoint": "https://api-publica.obrasgov.gestao.gov.br/obras",
           "access_class": "OPEN_REUSABLE",
           "license": null,
-          "connector_status": "PUBLIC_EVENT_CONNECTORS_CONFIGURED",
+          "connector_status": "PUBLIC_EVENT_CONNECTORS_CONFIGURED_GEOMETRY_BLOCKED_UPSTREAM",
           "missing_fields": [
             "city-bounded materialization schedule",
-            "project geometry to parcel-distance normalizer",
-            "PNCP procurement-to-project relationship when upstream does not provide a direct key"
+            "official spatial geometry/coordinates from current ObrasGov public contract",
+            "project geometry to parcel-distance normalizer"
           ],
-          "notes": "ObrasGov current API and PNCP public consultation clients are now implemented with bounded GET-only ingestion. Parcel relevance still requires geometry/official identifier evidence."
+          "notes": "ObrasGov /geometria is queryable, but the OpenAPI checked on 2026-09-25 exposes only project/geometry IDs, municipality and geometry origin; no coordinates/GeoJSON or detail route is present. Do not label a project as nearby until an official spatial payload is available."
         },
         {
           "field": "public processes",
@@ -1220,13 +1220,13 @@
           "endpoint": "https://api-publica.obrasgov.gestao.gov.br/obras",
           "access_class": "OPEN_REUSABLE",
           "license": null,
-          "connector_status": "PUBLIC_EVENT_CONNECTORS_CONFIGURED",
+          "connector_status": "PUBLIC_EVENT_CONNECTORS_CONFIGURED_GEOMETRY_BLOCKED_UPSTREAM",
           "missing_fields": [
             "city-bounded materialization schedule",
-            "project geometry to parcel-distance normalizer",
-            "PNCP procurement-to-project relationship when upstream does not provide a direct key"
+            "official spatial geometry/coordinates from current ObrasGov public contract",
+            "project geometry to parcel-distance normalizer"
           ],
-          "notes": "ObrasGov current API and PNCP public consultation clients are now implemented with bounded GET-only ingestion. Parcel relevance still requires geometry/official identifier evidence."
+          "notes": "ObrasGov /geometria is queryable, but the OpenAPI checked on 2026-09-25 exposes only project/geometry IDs, municipality and geometry origin; no coordinates/GeoJSON or detail route is present. Do not label a project as nearby until an official spatial payload is available."
         },
         {
           "field": "public processes",
@@ -1637,13 +1637,13 @@
           "endpoint": "https://api-publica.obrasgov.gestao.gov.br/obras",
           "access_class": "OPEN_REUSABLE",
           "license": null,
-          "connector_status": "PUBLIC_EVENT_CONNECTORS_CONFIGURED",
+          "connector_status": "PUBLIC_EVENT_CONNECTORS_CONFIGURED_GEOMETRY_BLOCKED_UPSTREAM",
           "missing_fields": [
             "city-bounded materialization schedule",
-            "project geometry to parcel-distance normalizer",
-            "PNCP procurement-to-project relationship when upstream does not provide a direct key"
+            "official spatial geometry/coordinates from current ObrasGov public contract",
+            "project geometry to parcel-distance normalizer"
           ],
-          "notes": "ObrasGov current API and PNCP public consultation clients are now implemented with bounded GET-only ingestion. Parcel relevance still requires geometry/official identifier evidence."
+          "notes": "ObrasGov /geometria is queryable, but the OpenAPI checked on 2026-09-25 exposes only project/geometry IDs, municipality and geometry origin; no coordinates/GeoJSON or detail route is present. Do not label a project as nearby until an official spatial payload is available."
         },
         {
           "field": "public processes",
@@ -2054,13 +2054,13 @@
           "endpoint": "https://api-publica.obrasgov.gestao.gov.br/obras",
           "access_class": "OPEN_REUSABLE",
           "license": null,
-          "connector_status": "PUBLIC_EVENT_CONNECTORS_CONFIGURED",
+          "connector_status": "PUBLIC_EVENT_CONNECTORS_CONFIGURED_GEOMETRY_BLOCKED_UPSTREAM",
           "missing_fields": [
             "city-bounded materialization schedule",
-            "project geometry to parcel-distance normalizer",
-            "PNCP procurement-to-project relationship when upstream does not provide a direct key"
+            "official spatial geometry/coordinates from current ObrasGov public contract",
+            "project geometry to parcel-distance normalizer"
           ],
-          "notes": "ObrasGov current API and PNCP public consultation clients are now implemented with bounded GET-only ingestion. Parcel relevance still requires geometry/official identifier evidence."
+          "notes": "ObrasGov /geometria is queryable, but the OpenAPI checked on 2026-09-25 exposes only project/geometry IDs, municipality and geometry origin; no coordinates/GeoJSON or detail route is present. Do not label a project as nearby until an official spatial payload is available."
         },
         {
           "field": "public processes",
