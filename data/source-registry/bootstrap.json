@@ -2916,6 +2916,25 @@
       "notes": "Índice de suscetibilidade física a inundações para suporte ao planejamento urbano, considerando impermeabilização, declividade, cota e proximidade de cursos d'água."
     },
     {
+      "id": "rj-rio-mdt-lidar-2019",
+      "authority": "Prefeitura do Rio de Janeiro / Instituto Pereira Passos",
+      "scope": "municipality",
+      "municipality_ibge": "3304557",
+      "domain": [
+        "terrain",
+        "elevation",
+        "lidar",
+        "topography"
+      ],
+      "source_type": "ArcGIS_MapServer",
+      "base_url": "https://pgeo3.rio.rj.gov.br/arcgis/rest/services/Cartografia/Modelo_Digital_de_Terreno__Lidar_2019__escala_1_10_000_/MapServer",
+      "license": "CC BY 4.0",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED",
+      "temporal_coverage": "2019",
+      "notes": "Modelo Digital de Terreno derivado de levantamento LiDAR 2019, reamostrado para 5 m, escala 1:10.000. Integrado por identify pontual e amostras sobre o lote; não substitui levantamento planialtimétrico executivo."
+    },
+    {
       "id": "rj-rio-geopal",
       "authority": "Prefeitura do Rio de Janeiro / SMPU",
       "scope": "municipality",
