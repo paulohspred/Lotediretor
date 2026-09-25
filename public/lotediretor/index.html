@@ -468,6 +468,10 @@ const bhDrainageWms=L.tileLayer.wms("https://bhmap.pbh.gov.br/v2/api/idebhgeo/wm
   layers:"ide_bhgeo:REDE_MICRODRENAGEM",format:"image/png",transparent:true,version:"1.1.1",
   opacity:.62,attribution:"Microdrenagem · Prefeitura de Belo Horizonte"
 }).setZIndex(354);
+const bhOrtho2015Wms=L.tileLayer.wms("https://bhmap.pbh.gov.br/v2/api/idebhgeo/wms",{
+  layers:"ide_bhgeo:ORTOFOTO_2015",format:"image/jpeg",transparent:false,version:"1.1.1",
+  opacity:.92,attribution:"Ortofoto 2015 · Prefeitura de Belo Horizonte"
+}).setZIndex(120);
 
 const spParcelWms=L.tileLayer.wms("https://wms.geosampa.prefeitura.sp.gov.br/geoserver/geoportal/wms",{
   layers:"lote_cidadao",
@@ -602,7 +606,7 @@ const cityLayerMap={
   "3550308":{parcel:spParcelWms,zoning:spZoningWms,heritage:spHeritageWms,geoRisk:spGeoRiskWms,hydroRisk:spHydroRiskWms,hillshade:spHillshadeWms,slope:spSlopeWms,ortho:spOrthoIndex2020Wms,roads:spRoadsWms},
   "2611606":{parcel:recifeParcelOverlay,zoning:recifeZoningOverlay,buildings:recifeBuildingOverlay,slope:recifeSlopeTiles,roads:recifeRoadOverlay},
   "3304557":{parcel:rioParcelOverlay,zoning:rioZoningOverlay,buildings:rioBuildingsOverlay,hydroRisk:rioHydroRiskOverlay,heritage:rioHeritageOverlay,environment:rioEnvironmentOverlay,coastal:rioProtectionOverlay,terrain:rioTerrainOverlay,roads:rioRoadsOverlay,ortho:rioOrtho2025},
-  "3106200":{parcel:bhParcelWms,zoning:bhZoningWms,environment:bhEnvironmentWms,roads:bhRoadsWms,drainage:bhDrainageWms,buildings:bhBuildingsWms,terrain:bhTerrainWms},
+  "3106200":{parcel:bhParcelWms,zoning:bhZoningWms,environment:bhEnvironmentWms,roads:bhRoadsWms,drainage:bhDrainageWms,buildings:bhBuildingsWms,terrain:bhTerrainWms,ortho:bhOrtho2015Wms},
   "2507507":{parcel:jpParcelWms,zoning:jpZoningWms,heritage:jpHeritageWms,environment:jpEnvironmentWms,hydroRisk:jpSusceptibilityWms,coastal:jpCoastalWms,roads:jpRoadHierarchyWms,buildings:jpBuildingsWms,terrain:jpTerrainWms,gas:jpGasWms,ortho:jpOrthoWms}
 };
 const layerLabelsByCity={
@@ -643,7 +647,8 @@ const layerLabelsByCity={
     roads:["Classificação viária","Hierarquia e parâmetros oficiais das vias"],
     drainage:["Microdrenagem","Rede cartográfica municipal"],
     buildings:["Edificações","Cartografia oficial de edificações"],
-    terrain:["Curvas de nível","Curvas oficiais com equidistância de 1 m"]
+    terrain:["Curvas de nível","Curvas oficiais com equidistância de 1 m"],
+    ortho:["Ortofoto 2015","Imagem aérea oficial na escala 1:2.000"]
   },
   "2507507":{
     parcel:["Lotes cadastrais","Cadastro territorial da Prefeitura de João Pessoa"],
@@ -659,7 +664,7 @@ const layerLabelsByCity={
     ortho:["Ortofoto 2021","Aerofotogrametria municipal"]
   }
 };
-const allThematicLayers=[spParcelWms,spZoningWms,spHeritageWms,spGeoRiskWms,spHydroRiskWms,spHillshadeWms,spSlopeWms,spOrthoIndex2020Wms,spRoadsWms,recifeParcelOverlay,recifeZoningOverlay,recifeBuildingOverlay,recifeSlopeTiles,recifeRoadOverlay,rioParcelOverlay,rioZoningOverlay,rioBuildingsOverlay,rioHydroRiskOverlay,rioHeritageOverlay,rioEnvironmentOverlay,rioProtectionOverlay,rioTerrainOverlay,rioRoadsOverlay,rioOrtho2025,bhParcelWms,bhZoningWms,bhEnvironmentWms,bhRoadsWms,bhDrainageWms,bhBuildingsWms,bhTerrainWms,jpParcelWms,jpZoningWms,jpHeritageWms,jpEnvironmentWms,jpSusceptibilityWms,jpCoastalWms,jpRoadHierarchyWms,jpBuildingsWms,jpTerrainWms,jpGasWms,jpOrthoWms];
+const allThematicLayers=[spParcelWms,spZoningWms,spHeritageWms,spGeoRiskWms,spHydroRiskWms,spHillshadeWms,spSlopeWms,spOrthoIndex2020Wms,spRoadsWms,recifeParcelOverlay,recifeZoningOverlay,recifeBuildingOverlay,recifeSlopeTiles,recifeRoadOverlay,rioParcelOverlay,rioZoningOverlay,rioBuildingsOverlay,rioHydroRiskOverlay,rioHeritageOverlay,rioEnvironmentOverlay,rioProtectionOverlay,rioTerrainOverlay,rioRoadsOverlay,rioOrtho2025,bhParcelWms,bhZoningWms,bhEnvironmentWms,bhRoadsWms,bhDrainageWms,bhBuildingsWms,bhTerrainWms,bhOrtho2015Wms,jpParcelWms,jpZoningWms,jpHeritageWms,jpEnvironmentWms,jpSusceptibilityWms,jpCoastalWms,jpRoadHierarchyWms,jpBuildingsWms,jpTerrainWms,jpGasWms,jpOrthoWms];
 function activeCityLayers(){const city=cities[Number(select.value)];return cityLayerMap[city.ibge]||{}}
 function syncCityLayers(){
   allThematicLayers.forEach(layer=>{if(map.hasLayer(layer))map.removeLayer(layer)});
