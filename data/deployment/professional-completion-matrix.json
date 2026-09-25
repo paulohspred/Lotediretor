@@ -474,7 +474,7 @@
           "endpoint": "https://dados.recife.pe.gov.br/dataset/imposto-predial-e-territorial-urbano-iptu",
           "access_class": "OPEN_REUSABLE",
           "license": "ODbL",
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "connector_status": "LIVE_PROPERTY_RESOLVER",
           "missing_fields": [
             "property identifier reconciliation"
           ],
@@ -490,7 +490,7 @@
           "endpoint": "https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Financas",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "connector_status": "LIVE_PROPERTY_RESOLVER",
           "missing_fields": [
             "parcel geometry/fiscal area reconciliation"
           ],
@@ -504,7 +504,7 @@
           "endpoint": "https://dados.recife.pe.gov.br/dataset/imposto-predial-e-territorial-urbano-iptu",
           "access_class": "OPEN_REUSABLE",
           "license": "ODbL",
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "connector_status": "LIVE_PROPERTY_RESOLVER",
           "missing_fields": [
             "footprint geometry linkage"
           ],
@@ -518,7 +518,7 @@
           "endpoint": "https://dados.recife.pe.gov.br/dataset/imposto-predial-e-territorial-urbano-iptu",
           "access_class": "OPEN_REUSABLE",
           "license": "ODbL",
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "connector_status": "LIVE_INDEXED_PROPERTY_RESOLVER",
           "missing_fields": [],
           "notes": null
         },
@@ -544,7 +544,7 @@
           "endpoint": "https://dados.recife.pe.gov.br/dataset/imposto-sobre-transmissao-de-bens-imoveis-itbi",
           "access_class": "OPEN_REUSABLE",
           "license": "ODbL",
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "connector_status": "LIVE_INDEXED_PROPERTY_RESOLVER",
           "missing_fields": [],
           "notes": null
         },
@@ -570,7 +570,7 @@
           "endpoint": "https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Planejamento/BASES_ZONEAMENTO_G_PD2020/FeatureServer",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "connector_status": "LIVE_PROPERTY_RESOLVER",
           "missing_fields": [
             "license per service"
           ],
@@ -586,7 +586,7 @@
           "endpoint": "https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Planejamento/BASES_ZONEAMENTO_G_PD2020/FeatureServer",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "connector_status": "LIVE_PARTIAL_PROPERTY_RESOLVER",
           "missing_fields": [
             "full parameter/legal-rule parser"
           ],
@@ -600,7 +600,7 @@
           "endpoint": "https://dados.recife.pe.gov.br/dataset/licenciamento-urbanistico",
           "access_class": "OPEN_REUSABLE",
           "license": "ODbL",
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "connector_status": "LIVE_INDEXED_PROPERTY_RESOLVER",
           "missing_fields": [
             "property join"
           ],
@@ -628,7 +628,7 @@
           "endpoint": "https://esigportal2.recife.pe.gov.br/arcgis/rest/services/MeioAmbiente",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "connector_status": "LIVE_PARTIAL_PROPERTY_RESOLVER",
           "missing_fields": [
             "license per service"
           ],
@@ -644,7 +644,7 @@
           "endpoint": "https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Hosted/PAINEL_MACRODRENAGEM_2026/FeatureServer",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "connector_status": "LIVE_PARTIAL_PROPERTY_RESOLVER",
           "missing_fields": [
             "landslide/geotechnical coverage"
           ],
@@ -662,7 +662,7 @@
           "endpoint": "https://dados.recife.pe.gov.br/dataset/imoveis-especiais-de-preservacao-ieps",
           "access_class": "OPEN_REUSABLE",
           "license": "ODbL",
-          "connector_status": "HERITAGE_THREE_LEVEL_RESOLVER_CONFIGURED",
+          "connector_status": "LIVE_PROPERTY_RESOLVER",
           "missing_fields": [
             "ZEPH ArcGIS reuse license",
             "state Fundarpe geometry normalized by asset/process"
@@ -679,7 +679,7 @@
           "endpoint": "https://www.neoenergia.com/web/pernambuco",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "UTILITY_RESOLVER_CONFIGURED",
+          "connector_status": "UTILITY_CONTEXT_LIVE",
           "missing_fields": [
             "BDGD distributor package/version resolver",
             "parcel-specific connection/load confirmation"
@@ -694,7 +694,7 @@
           "endpoint": "https://copergas.com.br/",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "QUERY_WORKFLOW_ONLY",
+          "connector_status": "UTILITY_CONTEXT_LIVE",
           "missing_fields": [
             "machine-readable licensed network"
           ],
@@ -710,7 +710,7 @@
           "endpoint": "https://servicos.compesa.com.br/giscomp/",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "UTILITY_RESOLVER_CONFIGURED",
+          "connector_status": "UTILITY_CONTEXT_LIVE",
           "missing_fields": [
             "approved public network-layer license",
             "frontage availability evidence"
@@ -725,7 +725,7 @@
           "endpoint": "https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Hosted/PAINEL_MACRODRENAGEM_2026/FeatureServer",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "connector_status": "UTILITY_CONTEXT_LIVE",
           "missing_fields": [
             "asset-level completeness"
           ],
@@ -739,7 +739,7 @@
           "endpoint": "https://www.gov.br/anatel/pt-br/dados/dados-abertos",
           "access_class": "OPEN_REUSABLE",
           "license": null,
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "connector_status": "UTILITY_CONTEXT_LIVE",
           "missing_fields": [
             "lot-level availability evidence"
           ],
@@ -872,7 +872,7 @@
           "endpoint": "https://pgeo3.rio.rj.gov.br/arcgis/rest/services/CadParcel/IMOVEIS_TERRITORIAIS/FeatureServer",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "connector_status": "LIVE_PROPERTY_RESOLVER",
           "missing_fields": [
             "property reconciliation across fiscal/registry refs"
           ],
@@ -886,7 +886,7 @@
           "endpoint": "https://pgeo3.rio.rj.gov.br/arcgis/rest/services/CadParcel/IMOVEIS_TERRITORIAIS/FeatureServer",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "connector_status": "LIVE_PROPERTY_RESOLVER",
           "missing_fields": [
             "area reconciliation"
           ],
@@ -900,7 +900,7 @@
           "endpoint": "https://pgeo3.rio.rj.gov.br/arcgis/rest/services/CadLog/Edificacoes_2019/FeatureServer/0",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "connector_status": "LIVE_PROPERTY_RESOLVER",
           "missing_fields": [
             "license per item",
             "refresh/currentness"
@@ -953,7 +953,7 @@
           "endpoint": "https://pgeo3.rio.rj.gov.br/arcgis/rest/services/CadParcel/IMOVEIS_TERRITORIAIS/FeatureServer",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "connector_status": "LIVE_PUBLIC_CADASTRAL_REFERENCE",
           "missing_fields": [
             "coverage/completeness of matricula reference",
             "no ownership indexing"
@@ -971,7 +971,7 @@
           "endpoint": "https://pgeo3.rio.rj.gov.br/arcgis/rest/services/Urbanismo/IU_Usos_e_atividades/MapServer",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "APPROVED_CONNECTOR_CONFIGURED",
+          "connector_status": "LIVE_PROPERTY_RESOLVER",
           "missing_fields": [
             "complete zone/overlay geometry inventory",
             "resource license review",
@@ -990,7 +990,7 @@
           "endpoint": "https://pgeo3.rio.rj.gov.br/arcgis/rest/services/Urbanismo/IU_Usos_e_atividades/MapServer",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "APPROVED_CONNECTOR_CONFIGURED",
+          "connector_status": "LIVE_PARTIAL_PROPERTY_RESOLVER",
           "missing_fields": [
             "full building-intensity parameter set",
             "legal-rule temporal joins",
@@ -1056,7 +1056,7 @@
           "endpoint": "https://pgeo3.rio.rj.gov.br/arcgis/rest/services/Estudos/ISMFI_Indice_de_Suscetibilidade_do_Meio_Fisico_a_Inundacoes/MapServer",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "connector_status": "LIVE_PROPERTY_RESOLVER",
           "missing_fields": [
             "landslide/geotechnical complements"
           ],
@@ -1074,7 +1074,7 @@
           "endpoint": "https://pgeo3.rio.rj.gov.br/arcgis/rest/services/Urbanismo/LBB_APAC/FeatureServer",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "HERITAGE_THREE_LEVEL_RESOLVER_CONFIGURED",
+          "connector_status": "LIVE_PROPERTY_RESOLVER",
           "missing_fields": [
             "structured current INEPAC inventory",
             "explicit reuse license for municipal FeatureServices",
@@ -1092,7 +1092,7 @@
           "endpoint": "https://www.light.com.br/SitePages/page-distribuicao.aspx",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "UTILITY_RESOLVER_CONFIGURED",
+          "connector_status": "UTILITY_CONTEXT_LIVE",
           "missing_fields": [
             "BDGD distributor package/version resolver",
             "parcel-specific connection/load confirmation"
@@ -1107,7 +1107,7 @@
           "endpoint": "https://www.naturgy.com.br/o_gas_natural/",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "QUERY_WORKFLOW_ONLY",
+          "connector_status": "UTILITY_CONTEXT_LIVE",
           "missing_fields": [
             "machine-readable licensed network"
           ],
@@ -1126,7 +1126,7 @@
           "endpoint": "https://www.aguasdorio.com.br/quem-somos/",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "UTILITY_RESOLVER_SUBMUNICIPAL",
+          "connector_status": "UTILITY_CONTEXT_LIVE",
           "missing_fields": [
             "authoritative service-territory polygons",
             "frontage availability evidence"
@@ -1141,7 +1141,7 @@
           "endpoint": "https://pgeo3.rio.rj.gov.br/arcgis/rest/services/Meio_Ambiente/Hidrografia/FeatureServer",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": "CC BY 4.0 (confirmed for related sub-bacias item; verify per service item)",
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "connector_status": "UTILITY_CONTEXT_LIVE",
           "missing_fields": [
             "asset-level completeness"
           ],
@@ -1155,7 +1155,7 @@
           "endpoint": "https://www.gov.br/anatel/pt-br/dados/dados-abertos",
           "access_class": "OPEN_REUSABLE",
           "license": null,
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "connector_status": "UTILITY_CONTEXT_LIVE",
           "missing_fields": [
             "lot-level availability"
           ],
@@ -1294,7 +1294,7 @@
           "endpoint": "https://prefeitura.pbh.gov.br/bhgeo/acesso-aos-dados",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "APPROVED_CONNECTOR_CONFIGURED",
+          "connector_status": "LIVE_PROPERTY_RESOLVER",
           "missing_fields": [
             "identifier reconciliation"
           ],
@@ -1308,7 +1308,7 @@
           "endpoint": "https://prefeitura.pbh.gov.br/bhgeo/acesso-aos-dados",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "APPROVED_CONNECTOR_CONFIGURED",
+          "connector_status": "LIVE_PROPERTY_RESOLVER",
           "missing_fields": [
             "license per dataset"
           ],
@@ -1322,7 +1322,7 @@
           "endpoint": "https://prefeitura.pbh.gov.br/bhgeo/acesso-aos-dados",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "APPROVED_CONNECTOR_CONFIGURED",
+          "connector_status": "LIVE_PROPERTY_RESOLVER",
           "missing_fields": [
             "license per dataset"
           ],
@@ -1401,7 +1401,7 @@
           "endpoint": "https://prefeitura.pbh.gov.br/bhgeo/acesso-aos-dados",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "APPROVED_CONNECTOR_CONFIGURED",
+          "connector_status": "LIVE_PROPERTY_RESOLVER",
           "missing_fields": [
             "license per dataset"
           ],
@@ -1417,7 +1417,7 @@
           "endpoint": "https://prefeitura.pbh.gov.br/bhgeo/acesso-aos-dados",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "APPROVED_CONNECTOR_CONFIGURED",
+          "connector_status": "LIVE_PROPERTY_RESOLVER",
           "missing_fields": [
             "legal citation normalization"
           ],
@@ -1431,7 +1431,7 @@
           "endpoint": "https://dados.pbh.gov.br/dataset/?_organization_limit=0&res_format=PDF&tags=licenciamento",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "connector_status": "LIVE_PROPERTY_RESOLVER",
           "missing_fields": [
             "license review"
           ],
@@ -1445,7 +1445,7 @@
           "endpoint": "https://dados.pbh.gov.br/dataset/?_organization_limit=0&res_format=PDF&tags=licenciamento",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "connector_status": "LIVE_PARTIAL_PROPERTY_RESOLVER",
           "missing_fields": [
             "explicit baixa/conclusion semantics and completeness"
           ],
@@ -1477,7 +1477,7 @@
           "endpoint": "https://dados.pbh.gov.br/dataset/area-risco-geologico",
           "access_class": "OPEN_REUSABLE",
           "license": "CC BY",
-          "connector_status": "APPROVED_CONNECTOR_CONFIGURED",
+          "connector_status": "LIVE_PROPERTY_RESOLVER",
           "missing_fields": [
             "current site-specific technical inspection when required"
           ],
@@ -1494,7 +1494,7 @@
           "endpoint": "https://dados.pbh.gov.br/dataset/?_tags_limit=0&res_format=CSV&tags=cultural&tags=patrim%C3%B4nio",
           "access_class": "OPEN_REUSABLE",
           "license": "CC BY",
-          "connector_status": "HERITAGE_THREE_LEVEL_RESOLVER_CONFIGURED",
+          "connector_status": "LIVE_PROPERTY_RESOLVER",
           "missing_fields": [
             "incidence-specific protection/height guideline normalizer"
           ],
@@ -1511,7 +1511,7 @@
           "endpoint": "https://www.cemig.com.br/",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "UTILITY_RESOLVER_CONFIGURED",
+          "connector_status": "UTILITY_CONTEXT_LIVE",
           "missing_fields": [
             "BDGD distributor package/version resolver",
             "formal connection study for definitive capacity"
@@ -1526,7 +1526,7 @@
           "endpoint": "https://www.mg.gov.br/servico/acessar-o-mapa-da-rede-de-gas-natural",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "QUERY_WORKFLOW_ONLY",
+          "connector_status": "UTILITY_CONTEXT_LIVE",
           "missing_fields": [
             "machine-readable licensed network"
           ],
@@ -1542,7 +1542,7 @@
           "endpoint": "https://arsae.mg.gov.br/panoramas/belo_horizonte_copasa.pdf",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "UTILITY_RESOLVER_CONFIGURED",
+          "connector_status": "UTILITY_CONTEXT_LIVE",
           "missing_fields": [
             "approved technical network dataset",
             "frontage availability evidence"
@@ -1557,7 +1557,7 @@
           "endpoint": "https://prefeitura.pbh.gov.br/bhgeo/acesso-aos-dados",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "APPROVED_CONNECTOR_CONFIGURED",
+          "connector_status": "UTILITY_CONTEXT_LIVE",
           "missing_fields": [
             "drainage asset inventory/coverage"
           ],
@@ -1571,7 +1571,7 @@
           "endpoint": "https://www.gov.br/anatel/pt-br/dados/dados-abertos",
           "access_class": "OPEN_REUSABLE",
           "license": null,
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "connector_status": "UTILITY_CONTEXT_LIVE",
           "missing_fields": [
             "lot-level availability"
           ],
@@ -1619,7 +1619,7 @@
           "endpoint": "https://prefeitura.pbh.gov.br/bhgeo/acesso-aos-dados",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "APPROVED_CONNECTOR_CONFIGURED",
+          "connector_status": "LIVE_CONTOUR_PROPERTY_RESOLVER",
           "missing_fields": [
             "high-resolution DTM/LiDAR source and license"
           ],
@@ -1710,7 +1710,7 @@
           "endpoint": "https://filipeia.joaopessoa.pb.gov.br/",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "connector_status": "LIVE_POSTGIS_PROPERTY_RESOLVER",
           "missing_fields": [
             "fiscal identifier reconciliation"
           ],
@@ -1724,7 +1724,7 @@
           "endpoint": "https://filipeia.joaopessoa.pb.gov.br/",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "connector_status": "LIVE_POSTGIS_PROPERTY_RESOLVER",
           "missing_fields": [
             "license review"
           ],
@@ -1926,7 +1926,7 @@
           "endpoint": "https://www.energisa.com.br/regioes/paraiba",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "UTILITY_RESOLVER_CONFIGURED",
+          "connector_status": "UTILITY_CONTEXT_LIVE",
           "missing_fields": [
             "BDGD distributor package/version resolver",
             "parcel-specific connection/load confirmation"
@@ -1941,7 +1941,7 @@
           "endpoint": "https://pbgas.com.br/",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "QUERY_WORKFLOW_ONLY",
+          "connector_status": "UTILITY_CONTEXT_LIVE",
           "missing_fields": [
             "machine-readable licensed network"
           ],
@@ -1957,7 +1957,7 @@
           "endpoint": "https://www.joaopessoa.pb.gov.br/noticias/prefeito-e-governador-renovam-concessao-para-que-cagepa-opere-sistema-de-agua-e-esgoto-da-capital/",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "UTILITY_RESOLVER_CONFIGURED",
+          "connector_status": "UTILITY_CONTEXT_LIVE",
           "missing_fields": [
             "approved geospatial network dataset",
             "frontage availability evidence"
@@ -1974,7 +1974,7 @@
           "endpoint": "https://www.joaopessoa.pb.gov.br/noticias/seinfra-realiza-manutencao-na-malha-viaria-rede-de-drenagem-e-iluminacao-publica-em-38-bairros-da-capital/",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "UTILITY_RESOLVER_CONFIGURED",
+          "connector_status": "UTILITY_CONTEXT_LIVE",
           "missing_fields": [
             "approved complete georeferenced stormwater-network inventory"
           ],
@@ -1988,7 +1988,7 @@
           "endpoint": "https://www.gov.br/anatel/pt-br/dados/dados-abertos",
           "access_class": "OPEN_REUSABLE",
           "license": null,
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "connector_status": "UTILITY_CONTEXT_LIVE",
           "missing_fields": [
             "lot-level availability"
           ],
@@ -2035,7 +2035,7 @@
           "endpoint": "https://filipeia.joaopessoa.pb.gov.br/",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "connector_status": "LIVE_POSTGIS_CONTOUR_RESOLVER",
           "missing_fields": [
             "resolution/quality metadata normalization"
           ],
