@@ -798,6 +798,7 @@ def parcel_axis_line(parcel_utm, direction: np.ndarray) -> LineString:
 def analyze_mdt_for_parcel(parcel_geometry: dict, laz_path: Path) -> dict:
     parcel_wgs84 = shape(parcel_geometry)
     transformer = Transformer.from_crs(4326, 31983, always_xy=True)
+    inverse_transformer = Transformer.from_crs(31983, 4326, always_xy=True)
     parcel = shapely_transform(transformer.transform, parcel_wgs84)
 
     las = laspy.read(str(laz_path))
@@ -864,8 +865,16 @@ def analyze_mdt_for_parcel(parcel_geometry: dict, laz_path: Path) -> dict:
             math.degrees(math.atan2(direction_b[0], direction_b[1])) + 360
         ) % 180
         simplified_indexes = np.linspace(0, count - 1, 31).astype(int)
+        line_coordinates_wgs84 = [
+            [round(float(lng), 8), round(float(lat), 8)]
+            for lng, lat in (
+                inverse_transformer.transform(float(px), float(py))
+                for px, py in line.coords
+            )
+        ]
         return {
             "name": name,
+            "line_coordinates_wgs84": line_coordinates_wgs84,
             "length_m": round(float(line.length), 2),
             "bearing_deg": round(float(bearing), 1),
             "start_elevation_m": round(start_z, 3),
