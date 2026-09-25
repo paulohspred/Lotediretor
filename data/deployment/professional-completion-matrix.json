@@ -755,14 +755,15 @@
           "supporting_source_ids": [
             "br-antt-rail-network"
           ],
-          "endpoint": "https://www.gov.br/dnit/pt-br/assuntos/sistema-nacional-de-viacao",
+          "endpoint": "https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Cttu_An%C3%A1lise_Vias_Recife/MapServer/17",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "connector_status": "LIVE_ROAD_CONTEXT_RESOLVER",
           "missing_fields": [
-            "municipal road hierarchy connector"
+            "current legal hierarchy reconciliation where CTTU and Atlas classifications differ",
+            "official right-of-way/alignment widths"
           ],
-          "notes": null
+          "notes": "Nearby street segments are resolved from the CTTU service; functional category is supplemented from the official Recife Atlas road layer within a bounded spatial search."
         },
         {
           "field": "imagery",
