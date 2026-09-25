@@ -347,6 +347,12 @@ function area(v){return v===null||v===undefined?"—":new Intl.NumberFormat("pt-
 function escapeHtml(value){
   return text(value,"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[ch]));
 }
+function formatSourceDate(value){
+  if(!value)return "data não informada";
+  const d=new Date(value);
+  if(Number.isNaN(d.getTime()))return String(value);
+  return new Intl.DateTimeFormat("pt-BR",{dateStyle:"short",timeStyle:"short"}).format(d);
+}
 function setParcelMessage(state,message){
   document.getElementById("parcelState").textContent=state;
   document.getElementById("parcelBody").innerHTML='<div class="parcel-hint">'+escapeHtml(message)+'</div>';
@@ -869,7 +875,7 @@ function renderParcel(payload){
       (p.floors!=null?'<div class="parcel-datum"><small>Pavimentos</small><strong>'+escapeHtml(text(p.floors))+'</strong></div>':"")+
       '<div class="parcel-datum" style="grid-column:1/-1"><small>Uso cadastral</small><strong>'+escapeHtml(text(p.use_description))+'</strong></div>'+
     '</div>'+
-    '<div class="parcel-source">Fonte: '+escapeHtml(payload.source.authority||"fonte oficial")+' · '+escapeHtml(payload.source.layer||"")+' · consulta '+escapeHtml(payload.source.queried_at||"")+'</div>';
+    '<div class="parcel-source">Fonte oficial: '+escapeHtml(payload.source.authority||"órgão público responsável")+' · consulta em '+escapeHtml(formatSourceDate(payload.source.queried_at))+'</div>';
   renderReport(payload.report,p,payload.context,payload.feature);
 }
 async function inspectParcel(latlng){
