@@ -172,7 +172,7 @@ def terrain_for_parcel(parcel: dict) -> dict:
     vals=[float(v) for v in (row.get("elevations") or [])]
     return {
         "available":bool(row.get("contour_count")),
-        "method":"Filipeia curvas de nível 2022 intersectando o polígono cadastral do lote",
+        "method":"Curvas de nível oficiais de 2022 que cruzam o terreno",
         "quality":"OFFICIAL_CONTOUR_INTERSECTION",
         "contour_count":int(row.get("contour_count") or 0),
         "min_elevation_m":row.get("min_elevation_m"),
@@ -266,7 +266,7 @@ def context(parcel: dict, lat: float, lng: float) -> dict:
         },
         "query_errors": {f"planning_{k}": v for k, v in planning_errors.items()},
         "queried_at": now(),
-        "source": "Filipeia / SEPLAN / PMJP",
+        "source": "Prefeitura de João Pessoa / SEPLAN",
     }
 
 
@@ -302,7 +302,7 @@ def vals(section_id: str, parcel: dict, ctx: dict) -> list[dict]:
             {"label":"Macrozona 2024","value":macro.get("sigla")},
             {"label":"Descrição da macrozona","value":macro.get("nome")},
             {"label":"Tipo de macrozona","value":macro.get("tipo")},
-            {"label":"Método","value":"Consulta pontual WMS GetFeatureInfo no GeoServer oficial Filipeia; sem espelhamento da camada."}
+            {"label":"Método","value":"Consulta espacial ao mapa oficial de zoneamento da Prefeitura de João Pessoa."}
         ]
     if section_id == "terrain_visual":
         t=ctx.get("terrain") or {}
