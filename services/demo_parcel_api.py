@@ -1370,11 +1370,25 @@ def resolve_siszon_qa(parcel: dict) -> dict:
             "Accept": "text/html",
         },
     )
-    with urllib.request.urlopen(request, timeout=12) as response:
-        body = response.read(1024 * 1024 + 1)
-        if len(body) > 1024 * 1024:
-            raise RuntimeError("SISZON response exceeded safety limit")
-        charset = response.headers.get_content_charset() or "iso-8859-1"
+    try:
+        with urllib.request.urlopen(request, timeout=12) as response:
+            body = response.read(1024 * 1024 + 1)
+            if len(body) > 1024 * 1024:
+                raise RuntimeError("SISZON response exceeded safety limit")
+            charset = response.headers.get_content_charset() or "iso-8859-1"
+    except (TimeoutError, urllib.error.URLError, OSError) as exc:
+        return {
+            "available": False,
+            "sqcl": sqcl,
+            "reason": "siszon_temporarily_unavailable",
+            "source_url": url,
+            "error_type": type(exc).__name__,
+            "interpretation": (
+                "SISZON não respondeu nesta consulta. Zoneamento vigente e "
+                "parâmetros-base continuam resolvidos por GeoSampa/LPUOS; "
+                "MA/QA complementar deve ser revalidada quando o serviço voltar."
+            ),
+        }
     page = body.decode(charset, errors="replace")
     match = re.search(
         r'<table[^>]+id="ctl00_ContentPlaceHolder1_grvHistoricoZonaUso"'
