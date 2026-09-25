@@ -2547,6 +2547,71 @@ class Handler(BaseHTTPRequestHandler):
 
         params = urllib.parse.parse_qs(parsed.query)
 
+        if parsed.path == "/v1/geocode":
+            query_text = (params.get("q", [""])[0] or "").strip()
+            city = (params.get("city", [""])[0] or "").strip()
+            uf = (params.get("uf", [""])[0] or "").strip().upper()
+            if not query_text or len(query_text) > 160:
+                return self.send_json(400, {"error": "invalid_query"})
+            allowed_cities = {
+                ("São Paulo", "SP"),
+                ("Recife", "PE"),
+                ("Rio de Janeiro", "RJ"),
+                ("Belo Horizonte", "MG"),
+                ("João Pessoa", "PB"),
+            }
+            if (city, uf) not in allowed_cities:
+                return self.send_json(400, {"error": "unsupported_municipality"})
+            nq = {
+                "q": f"{query_text}, {city} - {uf}, Brasil",
+                "format": "jsonv2",
+                "limit": "5",
+                "countrycodes": "br",
+                "addressdetails": "1",
+            }
+            url = "https://nominatim.openstreetmap.org/search?" + urllib.parse.urlencode(nq)
+            try:
+                req = urllib.request.Request(
+                    url,
+                    headers={
+                        "User-Agent": "LoteDiretor/1.0 (+https://lotediretor.com)",
+                        "Accept": "application/json",
+                        "Accept-Language": "pt-BR",
+                    },
+                )
+                with urllib.request.urlopen(req, timeout=15) as response:
+                    raw = response.read(1000000)
+                rows = json.loads(raw)
+                clean = []
+                for item in rows if isinstance(rows, list) else []:
+                    address = item.get("address") or {}
+                    clean.append({
+                        "lat": item.get("lat"),
+                        "lon": item.get("lon"),
+                        "display_name": item.get("display_name"),
+                        "type": item.get("type"),
+                        "address": {
+                            k: address.get(k)
+                            for k in [
+                                "house_number", "road", "pedestrian", "neighbourhood",
+                                "suburb", "city", "town", "municipality", "city_district",
+                                "state", "ISO3166-2-lvl4", "postcode",
+                            ]
+                            if address.get(k) is not None
+                        },
+                    })
+                return self.send_json(200, {
+                    "query": query_text,
+                    "city": city,
+                    "uf": uf,
+                    "count": len(clean),
+                    "results": clean,
+                    "source": "OpenStreetMap Nominatim",
+                })
+            except Exception as exc:
+                print(f"geocode upstream error: {exc!r}", flush=True)
+                return self.send_json(502, {"error": "geocode_unavailable"})
+
         if parsed.path == "/v1/jp/search":
             query_text = params.get("q", [""])[0]
             try:
