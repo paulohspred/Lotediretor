@@ -412,6 +412,8 @@ function syncCityLayers(){
   document.querySelectorAll("[data-zlayer]").forEach(input=>{
     const layer=layers[input.dataset.zlayer];
     input.disabled=!layer;
+    const row=input.closest(".layer-toggle");
+    if(row)row.style.display=layer?"flex":"none";
     if(layer&&input.checked)layer.addTo(map);
   });
 }
@@ -1046,9 +1048,12 @@ async function searchParcel(){
       const places=await geocodeAddress(q,city);
       if(places.length){
         const place=places[0],lat=Number(place.lat),lng=Number(place.lon);
-        searchStatus.textContent=place.display_name||("Endereço localizado em "+city.name);
-        map.flyTo([lat,lng],20,{duration:.7});
-        await inspectParcel(L.latLng(lat,lng));
+        const hasNumber=!!((place.address||{}).house_number);
+        searchStatus.textContent=hasNumber
+          ?(place.display_name||("Endereço localizado em "+city.name))
+          :"Rua localizada. Clique no terreno desejado para abrir a ficha.";
+        map.flyTo([lat,lng],hasNumber?20:18,{duration:.7});
+        if(hasNumber)await inspectParcel(L.latLng(lat,lng));
         return;
       }
     }
