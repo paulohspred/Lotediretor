@@ -321,8 +321,14 @@ def context(parcel: dict, lat: float, lng: float) -> dict:
             "zeis": spatial.get("zeis") or [],
         },
         "risk": {
-            "geological": spatial.get("susceptibility") or [],
-            "hydrological": [],
+            "geological": [
+                item for item in (spatial.get("susceptibility") or [])
+                if "inund" not in " ".join(str(v) for v in (item.get("properties") or {}).values()).lower()
+            ],
+            "hydrological": [
+                item for item in (spatial.get("susceptibility") or [])
+                if "inund" in " ".join(str(v) for v in (item.get("properties") or {}).values()).lower()
+            ],
         },
         "heritage": {"assets": heritage_assets, "buffers": heritage_buffers},
         "utilities": municipality_utilities.load("2507507"),
@@ -411,9 +417,11 @@ def vals(section_id: str, parcel: dict, ctx: dict) -> list[dict]:
                 {"label":"ZEIS que intersecta o terreno","value":p0.get("nome")},
                 {"label":"Base legal da ZEIS","value":p0.get("lei")},
             ])
-        for item in (ctx.get("risk") or {}).get("geological") or []:
-            p0=item.get("properties") or {}
-            out.append({"label":"Suscetibilidade territorial","value":" · ".join(str(x) for x in [p0.get("tipo"),p0.get("classe")] if x)})
+        for risk_key, label in [("geological","Suscetibilidade geológica"),("hydrological","Suscetibilidade a inundação")]:
+            for item in (ctx.get("risk") or {}).get(risk_key) or []:
+                p0=item.get("properties") or {}
+                parts=[str(x).strip() for x in [p0.get("tipo"),p0.get("classe")] if x and str(x).strip() not in {"-","—"}]
+                out.append({"label":label,"value":" · ".join(parts) if parts else "Incidência na camada oficial"})
         for item in (ctx.get("heritage") or {}).get("assets") or []:
             p0=item.get("properties") or {}
             out.extend([
