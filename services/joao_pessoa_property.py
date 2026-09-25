@@ -144,6 +144,42 @@ def search(query_text: str) -> list[dict]:
     return out
 
 
+def terrain_for_parcel(parcel: dict) -> dict:
+    code=(parcel.get("properties") or {}).get("cartographic_code")
+    if not code:
+        return {"available":False,"reason":"missing_cartographic_code"}
+    sql="""
+        SELECT count(*) AS contour_count,
+               min(c.cota)::float8 AS min_elevation_m,
+               max(c.cota)::float8 AS max_elevation_m,
+               array_agg(DISTINCT c.cota ORDER BY c.cota) AS elevations
+        FROM ld_stage.jp_lotes l
+        JOIN ld_stage.jp_curvas_nivel_2022 c
+          ON ST_Intersects(ST_Force2D(l.geom), c.geom)
+        WHERE l.codi_cart=%s
+    """
+    with db() as conn,conn.cursor(cursor_factory=RealDictCursor) as cur:
+        cur.execute(sql,(code,))
+        row=dict(cur.fetchone())
+    vals=[float(v) for v in (row.get("elevations") or [])]
+    return {
+        "available":bool(row.get("contour_count")),
+        "method":"Filipeia curvas de nível 2022 intersectando o polígono cadastral do lote",
+        "quality":"OFFICIAL_CONTOUR_INTERSECTION",
+        "contour_count":int(row.get("contour_count") or 0),
+        "min_elevation_m":row.get("min_elevation_m"),
+        "max_elevation_m":row.get("max_elevation_m"),
+        "amplitude_m":(
+            round(row["max_elevation_m"]-row["min_elevation_m"],3)
+            if row.get("min_elevation_m") is not None and row.get("max_elevation_m") is not None
+            else None
+        ),
+        "contour_elevations_m":vals,
+        "source_sha256":"3b29f856cfef6b0e20a76120ecdfdedcdb43a18a538c14362b1b1439331d1fbb",
+        "caveat":"Faixa baseada nas curvas oficiais que cruzam o lote; não substitui MDT contínuo ou levantamento topográfico de campo."
+    }
+
+
 def context(parcel: dict) -> dict:
     return {
         "planning": {
@@ -155,10 +191,7 @@ def context(parcel: dict) -> dict:
             ),
         },
         "buildings": [],
-        "terrain": {
-            "available": False,
-            "reason": "curvas_nivel_filipeia_not_yet_materialized",
-        },
+        "terrain": terrain_for_parcel(parcel),
         "risk": {"geological": [], "hydrological": []},
         "heritage": {"assets": [], "buffers": {}},
         "utilities": municipality_utilities.load("2507507"),
@@ -218,6 +251,19 @@ def vals(section_id: str, parcel: dict, ctx: dict) -> list[dict]:
                     "por lote permanece em materialização."
                 ),
             }
+        ]
+    if section_id == "terrain_visual":
+        t=ctx.get("terrain") or {}
+        if not t.get("available"):
+            return [{"label":"Topografia","value":"Nenhuma curva de nível oficial intersecta o lote nesta consulta."}]
+        return [
+            {"label":"Curvas de nível 2022 intersectantes","value":t.get("contour_count")},
+            {"label":"Menor cota no lote","value":t.get("min_elevation_m"),"unit":"m"},
+            {"label":"Maior cota no lote","value":t.get("max_elevation_m"),"unit":"m"},
+            {"label":"Amplitude entre curvas","value":t.get("amplitude_m"),"unit":"m"},
+            {"label":"Cotas intersectantes","value":", ".join(str(v) for v in t.get("contour_elevations_m") or [])},
+            {"label":"Método","value":t.get("method")},
+            {"label":"Limite topográfico","value":t.get("caveat")}
         ]
     if section_id == "infrastructure_utilities":
         return [
