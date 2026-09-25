@@ -1603,11 +1603,12 @@
           "endpoint": "https://www.gov.br/dnit/pt-br/assuntos/sistema-nacional-de-viacao",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "LIVE_WFS_PROPERTY_INTERSECTION",
+          "connector_status": "LIVE_WFS_NEARBY_ROAD_CONTEXT_PENDING_DEPLOY_VALIDATION",
           "missing_fields": [
+            "production smoke validation of nearby-road buffer",
             "field/right-of-way confirmation where project decisions require surveyed alignment"
           ],
-          "notes": "Official road-classification and road-circulation layers are queried against the parcel through BHGEO WFS; the map exposes the classification layer as optional context."
+          "notes": "Repository resolver now queries official BHGEO road classification and circulation layers in a small parcel-adjacent search area, because road centerlines normally do not cross lot polygons. Production validation of this proximity update is pending while the server execution channel is unavailable."
         },
         {
           "field": "imagery",
