@@ -242,7 +242,7 @@ def vals(section_id: str, parcel: dict, ctx: dict) -> list[dict]:
                 ),
             }
         ]
-    if s=="infrastructure_utilities":
+    if section_id=="infrastructure_utilities":
         return municipality_utilities.report_values(c.get("utilities") or {})
     return []
 
