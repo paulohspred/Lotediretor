@@ -2501,7 +2501,10 @@ def actual_values_for_section(
         transport = context.get("transport") or {}
         values = []
         seen = set()
-        for item in transport.get("zoning_road_class") or []:
+        for item in sorted(
+            transport.get("zoning_road_class") or [],
+            key=lambda x: x.get("distance_to_parcel_m", 9999),
+        )[:4]:
             props = item.get("properties") or {}
             key = (
                 props.get("tx_logradouro_valido"),
@@ -2530,7 +2533,10 @@ def actual_values_for_section(
                 },
             ])
         seen_segments = set()
-        for item in transport.get("street_segment") or []:
+        for item in sorted(
+            transport.get("street_segment") or [],
+            key=lambda x: x.get("distance_to_parcel_m", 9999),
+        )[:3]:
             props = item.get("properties") or {}
             key = (
                 props.get("codlog"),
@@ -2555,17 +2561,16 @@ def actual_values_for_section(
                     "value": props.get("codlog"),
                 },
                 {
-                    "label": "Largura cartográfica do leito carroçável",
+                    "label": "Quantidade de leitos carroçáveis",
                     "value": props.get("qt_leito_carrocavel"),
-                    "unit": "m",
                 },
             ])
         if values:
             values.append({
                 "label": "Limite da leitura viária",
                 "value": (
-                    "A consulta considera eixos/segmentos até 20 m do terreno. A largura "
-                    "do leito carroçável e a classificação do eixo são dados "
+                    "A consulta considera eixos/segmentos até 20 m do terreno. A quantidade "
+                    "de leitos carroçáveis e a classificação do eixo são dados "
                     "cartográficos/urbanísticos publicados. Não equivalem "
                     "automaticamente à largura legal total do logradouro, alinhamento "
                     "definitivo ou faixa de domínio."
