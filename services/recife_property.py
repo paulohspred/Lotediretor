@@ -131,8 +131,6 @@ def context(lat,lng,parcel):
         except Exception as e:
             buildings=[];errors["buildings"]=type(e).__name__
     transport={"street_segments":[],"functional_class":[]}
-    try:transport["street_segments"]=query_near(ROAD,ROAD_F,lat,lng,60,20)
-    except Exception as e:errors["transport_streets"]=type(e).__name__
     try:transport["functional_class"]=query_near(ROAD_ATLAS,ROAD_ATLAS_F,lat,lng,60,20)
     except Exception as e:errors["transport_functional_class"]=type(e).__name__
     return {"planning":{"zoning":{"properties":{"cd_zoneamento_perimetro":z.get("ZONA"),"tx_zoneamento_perimetro":z.get("ZONA2") or z.get("ZONA"),"macrozone":z.get("MACROZONA"),"ca_min":z.get("VLCOEFMIN"),"ca_basic":z.get("VLCOEFBAS"),"ca_max":z.get("VLCOEFMAX"),"considerations":z.get("NMCONSIDERAC")}},"special_regimes":{k:v for k,v in layers.items() if k!="zoning" and v}},
