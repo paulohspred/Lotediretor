@@ -263,7 +263,7 @@ function ensure3d(){
         minzoom:15,
         paint:{
           "fill-extrusion-color":"#c58a39",
-          "fill-extrusion-height":["coalesce",["get","height_m"],3],
+          "fill-extrusion-height":["coalesce",["get","height_m"],0.5],
           "fill-extrusion-base":0,
           "fill-extrusion-opacity":0.78
         }
@@ -290,10 +290,7 @@ function officialBuildingHeight(city,props){
     return mde!=null&&mdt!=null?Math.max(0,mde-mdt):numericValue(props.MDS);
   }
   if(ibge==="3106200")return numericValue(props.ALT_EST_MAXMDE_MINMDT,props.ALT_EST_MODAMDE_MINMDT);
-  if(ibge==="2507507"){
-    const floors=numericValue(props.N_PAVIM);
-    return floors!=null?Math.max(3,floors*3):null;
-  }
+  if(ibge==="2507507")return null;
   return numericValue(props.height,props.altura,props.ALTURA);
 }
 function officialBuildings3dFeatures(){
@@ -812,6 +809,12 @@ function formatReportValue(item){
   if(item.unit==="BRL/m²" && typeof item.value==="number"){
     return new Intl.NumberFormat("pt-BR",{style:"currency",currency:"BRL",maximumFractionDigits:0}).format(item.value)+"/m²";
   }
+  if(item.unit==="km/h" && typeof item.value==="number"){
+    return new Intl.NumberFormat("pt-BR",{maximumFractionDigits:1}).format(item.value)+" km/h";
+  }
+  if(item.unit==="ha" && typeof item.value==="number"){
+    return new Intl.NumberFormat("pt-BR",{maximumFractionDigits:2}).format(item.value)+" ha";
+  }
   if(item.unit==="%" && typeof item.value==="number"){
     return new Intl.NumberFormat("pt-BR",{maximumFractionDigits:4}).format(item.value)+"%";
   }
@@ -956,7 +959,7 @@ function renderImmediateDossier(context,p,report){
 
   return '<div class="instant-dossier">'+
     '<div class="instant-block"><h4>Cadastro e situação fiscal</h4><div class="instant-grid">'+cadastro+'</div></div>'+
-    '<div class="instant-block"><h4>Fiscal · ITBI · matrícula</h4><div class="instant-grid">'+fiscalRows+'</div><div class="instant-note">'+escapeHtml(registryText)+'</div></div>'+
+    '<div class="instant-block"><h4>Fiscal · transações · matrícula</h4><div class="instant-grid">'+fiscalRows+'</div><div class="instant-note">'+escapeHtml(registryText)+'</div></div>'+
     '<div class="instant-block"><h4>Zoneamento e potencial construtivo</h4><div class="instant-grid">'+urbanRows+'</div><div class="instant-note">Parâmetros-base e regimes especiais devem ser lidos com as ressalvas legais da seção completa.</div></div>'+
     '<div class="instant-block"><h4>Terreno e cortes</h4><div class="instant-grid">'+terrainRows+'</div><div class="instant-note">'+escapeHtml(terrain.caveat||"")+'</div></div>'+
   '</div>';
@@ -968,7 +971,7 @@ function renderRegistrySummary(itbi){
   if(!refs.length){
     return '<div class="zola-registry-summary"><h4>Referência registral</h4><div class="zola-registry-row"><span>Nenhuma matrícula localizada no histórico público de transações deste lote.</span><span>Isso não significa ausência de matrícula atual.</span></div></div>';
   }
-  return '<div class="zola-registry-summary"><h4>Matrículas / cartórios encontrados no histórico ITBI</h4>'+
+  return '<div class="zola-registry-summary"><h4>Matrículas / cartórios encontrados no histórico público de transações</h4>'+
     refs.slice(0,6).map(ref=>'<div class="zola-registry-row"><div><span>Cartório</span><b>'+escapeHtml(ref.registry_office||"—")+'</b></div><div><span>Matrícula</span><b>'+escapeHtml(ref.registry_number||"—")+'</b><span>'+escapeHtml(ref.transaction_date||"")+'</span></div></div>').join("")+
     '</div>';
 }
@@ -1229,13 +1232,13 @@ function renderReport(report,p,context,feature){
       (zoningName?'<li>'+escapeHtml(zoningName)+'</li>':"")+
       (macrozoneName?'<li>Macrozona: '+escapeHtml(macrozoneName)+'</li>':"")+
       (zoning.cd_numero_legislacao_zoneamento?'<li>Lei '+escapeHtml(zoning.cd_numero_legislacao_zoneamento)+'/'+escapeHtml(zoning.an_legislacao_zoneamento)+'</li>':"")+
-      (pgv.found?'<li>PGV 2026: '+escapeHtml(formatReportValue({value:pgv.vm2t_brl_per_m2,unit:"BRL/m²"}))+'</li>':"")+
+      (pgv.found?'<li>Valor fiscal de referência 2026: '+escapeHtml(formatReportValue({value:pgv.vm2t_brl_per_m2,unit:"BRL/m²"}))+'</li>':"")+
     '</ul></div></div>';
 
   const sections=report&&Array.isArray(report.sections)?report.sections:[];
   const navLabels={
     executive_summary:"Resumo",identity_location:"Cadastro",building_existing:"Edificação",
-    planning_buildability:"Zoneamento",fiscal_market:"Fiscal / ITBI",
+    planning_buildability:"Zoneamento",fiscal_market:"Fiscal / transações",
     licensing_history:"Licenciamento",environment_risk_heritage:"Risco / patrimônio",
     infrastructure_utilities:"Infra",terrain_visual:"Terreno / cortes",
     public_change_context:"Obras",registry_due_diligence:"Registro",
