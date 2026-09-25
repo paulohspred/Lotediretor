@@ -379,6 +379,14 @@ const bhZoningWms=L.tileLayer.wms("https://bhmap.pbh.gov.br/v2/api/idebhgeo/wms"
   layers:"ide_bhgeo:ZONEAMENTO_11181",format:"image/png",transparent:true,version:"1.1.1",
   opacity:.30,attribution:"Zoneamento · Prefeitura de Belo Horizonte"
 }).setZIndex(380);
+const bhBuildingsWms=L.tileLayer.wms("https://bhmap.pbh.gov.br/v2/api/idebhgeo/wms",{
+  layers:"ide_bhgeo:EDIFICACAO",format:"image/png",transparent:true,version:"1.1.1",
+  opacity:.48,attribution:"Edificações · Prefeitura de Belo Horizonte"
+}).setZIndex(410);
+const bhTerrainWms=L.tileLayer.wms("https://bhmap.pbh.gov.br/v2/api/idebhgeo/wms",{
+  layers:"ide_bhgeo:CURVA_NIVEL_SEGMENTADA_1M",format:"image/png",transparent:true,version:"1.1.1",
+  opacity:.62,attribution:"Curvas de nível de 1 m · Prefeitura de Belo Horizonte"
+}).setZIndex(350);
 
 const spParcelWms=L.tileLayer.wms("https://wms.geosampa.prefeitura.sp.gov.br/geoserver/geoportal/wms",{
   layers:"lote_cidadao",
@@ -505,7 +513,7 @@ const cityLayerMap={
   "3550308":{parcel:spParcelWms,zoning:spZoningWms,heritage:spHeritageWms,geoRisk:spGeoRiskWms,hydroRisk:spHydroRiskWms,hillshade:spHillshadeWms,slope:spSlopeWms,ortho:spOrthoIndex2020Wms},
   "2611606":{parcel:recifeParcelOverlay,zoning:recifeZoningOverlay,buildings:recifeBuildingOverlay,slope:recifeSlopeTiles},
   "3304557":{parcel:rioParcelOverlay,zoning:rioZoningOverlay},
-  "3106200":{parcel:bhParcelWms,zoning:bhZoningWms},
+  "3106200":{parcel:bhParcelWms,zoning:bhZoningWms,buildings:bhBuildingsWms,terrain:bhTerrainWms},
   "2507507":{parcel:jpParcelWms,zoning:jpZoningWms,heritage:jpHeritageWms,environment:jpEnvironmentWms,hydroRisk:jpSusceptibilityWms,coastal:jpCoastalWms,roads:jpRoadHierarchyWms,buildings:jpBuildingsWms,terrain:jpTerrainWms,gas:jpGasWms,ortho:jpOrthoWms}
 };
 const layerLabelsByCity={
@@ -531,7 +539,9 @@ const layerLabelsByCity={
   },
   "3106200":{
     parcel:["Lotes cadastrais","Cadastro territorial da Prefeitura de Belo Horizonte"],
-    zoning:["Zoneamento","Lei municipal de uso e ocupação"]
+    zoning:["Zoneamento","Lei municipal de uso e ocupação"],
+    buildings:["Edificações","Cartografia oficial de edificações"],
+    terrain:["Curvas de nível","Curvas oficiais com equidistância de 1 m"]
   },
   "2507507":{
     parcel:["Lotes cadastrais","Cadastro territorial da Prefeitura de João Pessoa"],
@@ -547,7 +557,7 @@ const layerLabelsByCity={
     ortho:["Ortofoto 2021","Aerofotogrametria municipal"]
   }
 };
-const allThematicLayers=[spParcelWms,spZoningWms,spHeritageWms,spGeoRiskWms,spHydroRiskWms,spHillshadeWms,spSlopeWms,spOrthoIndex2020Wms,recifeParcelOverlay,recifeZoningOverlay,recifeBuildingOverlay,recifeSlopeTiles,rioParcelOverlay,rioZoningOverlay,bhParcelWms,bhZoningWms,jpParcelWms,jpZoningWms,jpHeritageWms,jpEnvironmentWms,jpSusceptibilityWms,jpCoastalWms,jpRoadHierarchyWms,jpBuildingsWms,jpTerrainWms,jpGasWms,jpOrthoWms];
+const allThematicLayers=[spParcelWms,spZoningWms,spHeritageWms,spGeoRiskWms,spHydroRiskWms,spHillshadeWms,spSlopeWms,spOrthoIndex2020Wms,recifeParcelOverlay,recifeZoningOverlay,recifeBuildingOverlay,recifeSlopeTiles,rioParcelOverlay,rioZoningOverlay,bhParcelWms,bhZoningWms,bhBuildingsWms,bhTerrainWms,jpParcelWms,jpZoningWms,jpHeritageWms,jpEnvironmentWms,jpSusceptibilityWms,jpCoastalWms,jpRoadHierarchyWms,jpBuildingsWms,jpTerrainWms,jpGasWms,jpOrthoWms];
 function activeCityLayers(){const city=cities[Number(select.value)];return cityLayerMap[city.ibge]||{}}
 function syncCityLayers(){
   allThematicLayers.forEach(layer=>{if(map.hasLayer(layer))map.removeLayer(layer)});
