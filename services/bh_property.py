@@ -3,6 +3,7 @@ from __future__ import annotations
 import json,re,urllib.parse,urllib.request
 from datetime import datetime,timezone
 from pathlib import Path
+import municipality_utilities
 from shapely.geometry import Point,shape
 
 ROOT=Path("/srv/lotediretor/app")
@@ -70,7 +71,7 @@ def context(lat,lng,parcel):
     z=(zoning[0].get("properties") if zoning else {}) or {}
     return {"planning":{"zoning":{"properties":{"cd_zoneamento_perimetro":z.get("SIGLA_TIPO_ZONEAMENTO"),"tx_zoneamento_perimetro":z.get("DESC_TIPO_ZONEAMENTO"),"source_layer":"ZONEAMENTO_11181"}},"special_regimes":{}},
     "approved_parcel":approved,"buildings":[],"terrain":{"available":False,"reason":"pending_bh_terrain"},
-    "risk":{"geological":[],"hydrological":[]},"heritage":{"assets":[],"buffers":{}},"utilities":{},
+    "risk":{"geological":[],"hydrological":[]},"heritage":{"assets":[],"buffers":{}},"utilities":municipality_utilities.load("3106200"),
     "licensing":{"housing_permits_exact_sql":[],"impact_spatial_incidence":[],"environment_spatial_incidence":[]},
     "fiscal":{"pgv":{"found":False},"iptu":{"found":False,"latest":{}},"itbi":{"available":False,"count":0,"registry_references":[],"transactions":[]}},
     "query_errors":errors,"queried_at":now(),"source":"Prefeitura de Belo Horizonte / IDE-BHGEO"}
@@ -84,6 +85,8 @@ def vals(s,p,c):
             r=x.get("properties") or {};out.extend([{"label":"Zona fiscal · lote aprovado","value":r.get("ZONA_FISCAL")},{"label":"Quarteirão · lote aprovado","value":r.get("QUARTEIRAO")},{"label":"Lote aprovado","value":r.get("LOTE")},{"label":"Planta CP","value":r.get("PLANTA_CP")}])
         return out
     if s=="planning_buildability":return [{"label":"Zoneamento Lei 11.181","value":z.get("cd_zoneamento_perimetro")},{"label":"Descrição do zoneamento","value":z.get("tx_zoneamento_perimetro")},{"label":"Camada","value":z.get("source_layer")}]
+    if s=="infrastructure_utilities":
+        return municipality_utilities.report_values(c.get("utilities") or {})
     return []
 
 def report(parcel,ctx):
