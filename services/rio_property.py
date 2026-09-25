@@ -14,11 +14,14 @@ ZBASE="https://pgeo3.rio.rj.gov.br/arcgis/rest/services/Urbanismo/LBB_Zoneamento
 EDIF="https://pgeo3.rio.rj.gov.br/arcgis/rest/services/CadLog/Edificacoes_2019/FeatureServer/0"
 RISK="https://pgeo3.rio.rj.gov.br/arcgis/rest/services/Estudos/ISMFI_Indice_de_Suscetibilidade_do_Meio_Fisico_a_Inundacoes/MapServer/0"
 APAC="https://pgeo3.rio.rj.gov.br/arcgis/rest/services/Urbanismo/LBB_APAC/FeatureServer/0"
+APP="https://pgeo3.rio.rj.gov.br/arcgis/rest/services/Urbanismo/LBB_APP/FeatureServer/0"
+APE="https://pgeo3.rio.rj.gov.br/arcgis/rest/services/Urbanismo/LBB_APE/FeatureServer/0"
 MDT="https://pgeo3.rio.rj.gov.br/arcgis/rest/services/Cartografia/Modelo_Digital_de_Terreno__Lidar_2019__escala_1_10_000_/MapServer"
 ROAD="https://pgeo3.rio.rj.gov.br/arcgis/rest/services/CadLog/Trechos_Logradouros/FeatureServer/0"
 EF=["objectid","altura","base","clnp","cod_edifica","cod_lote","cod_projecao","cod_unico","flag_produto","tipo","topo","Shape__Area","Shape__Length"]
 RF=["objectid","id","cd_geocodi","tipo","cd_geocodb","nm_bairro","cd_geocods","nm_subdist","cd_geocodd","nm_distrit","cd_geocodm","nm_municip","nm_micro","nm_meso","area__m2_","dens","areakm","fid_1","cd_geoco_1","ind_dec","ind_imp","ind_cota","ind_prox","ismfi_v45"]
 AF=["objectid","codigo","legislacao","tipo","nome","subareas","endereco","orgao","obs","Shape__Area","Shape__Length"]
+ENVF=["objectid","codigo","legislacao","tipo","nome","subareas","endereco","orgao","Shape__Area","Shape__Length"]
 ROADF=["cod_trecho","cl","np_ini_par","np_fin_par","np_ini_imp","np_fin_imp","cod_tipo_logra","tipo_logra_abr","tipo_logra_ext","cod_nobreza","nobreza","preposicao","nome_parcial","completo","nome_mapa","cod_bairro","bairro","hierarquia","oneway","velocidade_regulamentada","tipo_trecho","objectid","last_edited_date"]
 BOUNDS=(-43.82,-23.10,-43.05,-22.72)
 PF=["objectid","num_projeto","paa","tipo_parcelamento","rgi","observacao","inscricao_imobiliaria","matricula","origem","tipo_do_lote","classificacao","quadra","lote","categoria","lote_vinculado","data_doacao","area_descrita","data_verificacao","justificativa","publicacao"]
@@ -217,6 +220,10 @@ def context(lat,lng,parcel):
     except Exception as e:risk=[];errors["flood_susceptibility"]=type(e).__name__
     try:apac=query(APAC,AF,lat=lat,lng=lng,geometry=False,count=20)
     except Exception as e:apac=[];errors["apac"]=type(e).__name__
+    try:app=query(APP,ENVF,lat=lat,lng=lng,geometry=False,count=20)
+    except Exception as e:app=[];errors["app"]=type(e).__name__
+    try:ape=query(APE,ENVF,lat=lat,lng=lng,geometry=False,count=20)
+    except Exception as e:ape=[];errors["ape"]=type(e).__name__
     try:
         road_geom=mapping(shape(parcel.get("geometry") or {}).buffer(0.00018))
         roads=query_polygon(ROAD,ROADF,road_geom,count=100)
@@ -226,7 +233,7 @@ def context(lat,lng,parcel):
     except Exception as e:terrain={"available":False,"reason":"mdt_unavailable"};errors["terrain"]=type(e).__name__
     return {"planning":{"zoning":{"properties":{"cd_zoneamento_perimetro":z.get("sigla") or z.get("zona"),"tx_zoneamento_perimetro":" ".join(x for x in [z.get("zona"),z.get("subzona")] if x),"macrozone":m.get("macrozona"),"legislation":z.get("legislacao"),"ap":z.get("ap"),"ca_basic":z.get("cab"),"ca_max":z.get("cam"),"occupancy":z.get("to_"),"min_lot_area_m2":z.get("lote_min"),"min_frontage_m":z.get("testada_min"),"max_height_setback":z.get("gab_afast"),"max_height_no_setback":z.get("gab_n_afast"),"front_setback":z.get("afast_fron"),"ics":z.get("ics"),"observations":z.get("obs")}},"special_regimes":{}},
     "registry":{"available":bool(refs),"references":refs,"interpretation":"Matrícula/RGI são referências públicas da camada cadastral territorial da PCRJ; não substituem certidão atualizada."},
-    "buildings":buildings,"terrain":terrain,"transport":{"roads":roads},"risk":{"geological":[],"hydrological":risk},"heritage":{"assets":apac,"buffers":{}},"utilities":municipality_utilities.load("3304557"),"licensing":{"housing_permits_exact_sql":[],"impact_spatial_incidence":[],"environment_spatial_incidence":[]},
+    "buildings":buildings,"terrain":terrain,"transport":{"roads":roads},"environment":{"app":app,"ape":ape},"risk":{"geological":[],"hydrological":risk},"heritage":{"assets":apac,"buffers":{}},"utilities":municipality_utilities.load("3304557"),"licensing":{"housing_permits_exact_sql":[],"impact_spatial_incidence":[],"environment_spatial_incidence":[]},
     "fiscal":{"pgv":{"found":False},"iptu":{"found":False,"latest":{}},"itbi":{"available":False,"count":0,"registry_references":[],"transactions":[]}},
     "query_errors":errors,"queried_at":now(),"source":"Prefeitura da Cidade do Rio de Janeiro / Data.Rio"}
 
@@ -247,6 +254,16 @@ def vals(s,p,c):
     if s=="planning_buildability":return [{"label":"Macrozona","value":z.get("macrozone")},{"label":"Zona/subzona","value":z.get("tx_zoneamento_perimetro")},{"label":"Sigla","value":z.get("cd_zoneamento_perimetro")},{"label":"Legislação","value":z.get("legislation")},{"label":"Área de planejamento","value":z.get("ap")},{"label":"Coeficiente de aproveitamento básico","value":z.get("ca_basic")},{"label":"Coeficiente de aproveitamento máximo","value":z.get("ca_max")},{"label":"Taxa de ocupação","value":z.get("occupancy")},{"label":"Lote mínimo","value":z.get("min_lot_area_m2"),"unit":"m²"},{"label":"Testada mínima","value":z.get("min_frontage_m"),"unit":"m"},{"label":"Gabarito com afastamento","value":z.get("max_height_setback")},{"label":"Gabarito sem afastamento","value":z.get("max_height_no_setback")},{"label":"Afastamento frontal","value":z.get("front_setback")},{"label":"Índice urbanístico complementar (ICS)","value":z.get("ics")}]
     if s=="environment_risk_heritage":
         out=[]
+        env=c.get("environment") or {}
+        for key,label in [("app","Área de preservação permanente"),("ape","Área de proteção do entorno")]:
+            for item in env.get(key) or []:
+                r=item.get("properties") or {}
+                out.extend([
+                    {"label":label,"value":r.get("nome") or r.get("tipo") or "Incidência identificada"},
+                    {"label":label+" · tipo","value":r.get("tipo")},
+                    {"label":label+" · legislação","value":r.get("legislacao")},
+                    {"label":label+" · órgão","value":r.get("orgao")}
+                ])
         for item in (c.get("risk") or {}).get("hydrological") or []:
             r=item.get("properties") or {}
             out.extend([
