@@ -37,6 +37,16 @@ header{height:56px;background:var(--nav);color:#fff;border-bottom:4px solid var(
 .zola-keyfacts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:#d9e0e3;border:1px solid #d9e0e3;margin:10px 0 12px}.zola-keyfact{background:#fff;padding:7px 8px;min-width:0}.zola-keyfact small{display:block;font-size:8px;color:#7a8990;text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px}.zola-keyfact b{display:block;font-size:12px;color:#2d4653;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.zola-section-nav{position:sticky;top:0;z-index:4;display:flex;gap:4px;overflow-x:auto;background:#fff;border-bottom:1px solid #d5dde1;margin:0 -20px 8px;padding:7px 20px}.zola-section-nav button{flex:0 0 auto;border:1px solid #c7d1d6;background:#f7f9fa;color:#405a68;border-radius:2px;padding:5px 7px;font-size:9px;cursor:pointer}.zola-section-nav button:hover{background:#edf2f4}.zola-intersections{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:10px 0 12px;border-top:1px solid #e4e8ea;border-bottom:1px solid #e4e8ea}.zola-intersections h6{font-size:10px;margin:0 0 5px;color:#526771}.zola-intersections ul{list-style:none;margin:0;padding:0}.zola-intersections li{font-size:10px;color:#657780;padding:2px 0}.zola-report-section{scroll-margin-top:42px}.zola-section-title{font-size:13px;font-weight:700;color:#314852;margin:17px 0 6px;padding-bottom:5px;border-bottom:1px solid #cfd7db}.terrain-profiles{display:grid;grid-template-columns:1fr;gap:10px;margin:8px 0 12px}.terrain-line-label{background:#fff!important;border:1px solid #536873!important;box-shadow:none!important;color:#2b3f49!important;font-size:9px!important;font-weight:800!important;padding:1px 4px!important}
 .parcel-dimension-label{background:rgba(255,255,255,.94)!important;border:1px solid #9eafb8!important;border-radius:2px!important;box-shadow:none!important;color:#29485b!important;font-size:9px!important;font-weight:800!important;padding:1px 3px!important;white-space:nowrap}
 .terrain-profile-card{border:1px solid #d8e0e4;background:#fafbfb;padding:8px}.terrain-profile-head{display:flex;justify-content:space-between;gap:8px;font-size:10px;color:#536a76;margin-bottom:5px}.terrain-profile-svg{display:block;width:100%;height:112px;background:#fff;border:1px solid #e1e6e8}.terrain-profile-axis{stroke:#aebbc1;stroke-width:1}.terrain-profile-line{fill:none;stroke:#294f72;stroke-width:2}.terrain-profile-fill{fill:rgba(41,79,114,.10);stroke:none}.terrain-profile-label{font-size:8px;fill:#6c7f88}.terrain-quality{font-size:9px;color:#6e7f87;line-height:1.4;margin-top:6px}.itbi-timeline{border-left:2px solid #8aa1ad;margin:8px 0 12px 5px;padding-left:13px}.itbi-event{position:relative;border:1px solid #dde4e7;background:#fafbfb;margin:0 0 9px;padding:9px 10px}.itbi-event:before{content:"";position:absolute;left:-18px;top:12px;width:8px;height:8px;border-radius:50%;background:#294f72;border:2px solid #fff;box-shadow:0 0 0 1px #8aa1ad}.itbi-event-head{display:flex;justify-content:space-between;gap:8px;margin-bottom:5px}.itbi-event-head b{font-size:11px;color:#314a57}.itbi-event-head span{font-size:9px;color:#71838c}.itbi-event-nature{font-size:10px;color:#526974;line-height:1.35;margin-bottom:6px}.itbi-event-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px 10px}.itbi-event-grid div{font-size:9px;color:#657981}.itbi-event-grid strong{display:block;color:#2e444f;font-size:10px;font-weight:600;margin-top:1px}.itbi-empty{border:1px solid #e1e6e8;background:#fafbfb;padding:8px 9px;font-size:10px;color:#6b7e87;margin:8px 0 12px}.report-legend{margin:11px 0 3px;background:#f4f6f7;border-left:3px solid #7b98a7;padding:8px 9px;font-size:10px;line-height:1.45;color:#61737c}
+.executive-reading{margin:12px 0;border:1px solid #ccd7dc;background:#fff}
+.executive-reading h4{margin:0;padding:8px 10px;background:#eaf0f3;border-bottom:1px solid #ccd7dc;font-size:11px;color:#29485b;text-transform:uppercase;letter-spacing:.04em}
+.executive-reading-grid{display:grid;grid-template-columns:1fr 1fr}
+.executive-reading-item{padding:8px 10px;border-bottom:1px solid #edf1f2;font-size:10px;line-height:1.4;color:#435963}
+.executive-reading-item:nth-child(odd){border-right:1px solid #edf1f2}
+.executive-reading-item b{display:block;color:#263f4c;font-size:10px;margin-bottom:2px}
+.executive-reading-item.attention{border-left:3px solid #b36b1e;background:#fffaf4}
+.executive-reading-item.ok{border-left:3px solid #488060;background:#f7fbf8}
+.executive-reading-item.info{border-left:3px solid #597f9d}
+@media(max-width:900px){.executive-reading-grid{grid-template-columns:1fr}.executive-reading-item:nth-child(odd){border-right:0}}
 .report-section{border:0;border-bottom:1px solid #dce3e6;background:#fff;border-radius:0;margin:0;overflow:visible}.report-section summary{cursor:pointer;list-style:none;padding:14px 0 10px;display:flex;align-items:center;justify-content:space-between;gap:10px}.report-section summary::-webkit-details-marker{display:none}.report-section summary:before{content:"▸";color:#81919a;margin-right:6px}.report-section[open] summary:before{content:"▾"}.report-section summary strong{font-size:14px;color:#304650;flex:1}.report-section summary span{font-size:9px;color:#829199}.report-content{padding:0 0 13px;border:0}
 .report-values{display:block;border-top:1px solid #edf0f2}.report-value{display:grid;grid-template-columns:minmax(135px,42%) 1fr;border-bottom:1px solid #edf0f2;padding:0;background:#fff}.report-value small{display:block;color:#667984;font-size:10px;font-weight:700;padding:7px 5px;text-transform:none;letter-spacing:0}.report-value b{display:block;font-size:11px;font-weight:400;padding:7px 5px;color:#263d48;word-break:break-word}
 .sources-detail{margin-top:10px;background:#f8f9f9;border:1px solid #e0e5e8}.sources-detail>summary{padding:7px 8px!important;font-size:9px!important;color:#667983}.field-state{padding:7px 8px;border-top:1px solid #e4e9eb;background:#fafbfb}.field-line{display:flex;justify-content:space-between;gap:8px}.field-name{font-size:10px;color:#4f6571;font-weight:700}.status-chip{font-size:7px;border-radius:9px;padding:2px 4px;border:1px solid #b9c5cb}.status-ready{color:var(--green)}.status-partial{color:var(--blue)}.status-query_only{color:var(--amber)}.status-private_on_demand{color:var(--violet)}.field-source,.field-missing{font-size:8px;color:#7a8991;margin-top:3px;line-height:1.35}
@@ -1024,6 +1034,36 @@ function renderPrintCover(p){
       'Gerado em '+escapeHtml(generated)+
     '</div></div>';
 }
+function renderExecutiveReading(context,p,zoningCode,zoningName,terrain){
+  const items=[];
+  const risk=(context&&context.risk)||{};
+  const heritage=(context&&context.heritage)||{};
+  const fiscal=(context&&context.fiscal)||{};
+  const itbi=fiscal.itbi||{};
+  const buildings=(context&&context.buildings)||[];
+  const hydro=(risk.hydrological||[]).length;
+  const geo=(risk.geological||[]).length;
+  const heritageCount=(heritage.assets||[]).length+Object.values(heritage.buffers||{}).reduce((n,v)=>n+(Array.isArray(v)?v.length:0),0);
+  if(zoningCode||zoningName)items.push({kind:"info",title:"Zoneamento",text:[zoningCode,zoningName].filter(Boolean).join(" · ")});
+  if(hydro)items.push({kind:"attention",title:"Atenção a risco hídrico",text:"O terreno intersecta "+hydro+" ocorrência(s) na camada oficial consultada. A incidência é de triagem e deve ser validada para projeto."});
+  if(geo)items.push({kind:"attention",title:"Atenção a risco geológico",text:"O terreno intersecta "+geo+" ocorrência(s) na camada oficial consultada. A incidência não substitui investigação geotécnica."});
+  if(heritageCount)items.push({kind:"attention",title:"Patrimônio / proteção cultural",text:"Há "+heritageCount+" incidência(s) de patrimônio ou área de proteção nas camadas consultadas."});
+  if(buildings.length)items.push({kind:"info",title:"Edificações mapeadas",text:buildings.length+" geometria(s) de edificação intersectam ou estão vinculadas ao terreno nas bases cartográficas consultadas."});
+  if(terrain&&terrain.available){
+    const a=terrain.amplitude_m??terrain.sampled_relief_m;
+    const textParts=[];
+    if(terrain.min_elevation_m!=null)textParts.push("cota mínima "+formatReportValue({value:terrain.min_elevation_m,unit:"m"}));
+    if(terrain.max_elevation_m!=null)textParts.push("cota máxima "+formatReportValue({value:terrain.max_elevation_m,unit:"m"}));
+    if(a!=null)textParts.push("desnível "+formatReportValue({value:a,unit:"m"}));
+    items.push({kind:"info",title:"Topografia de triagem",text:textParts.join(" · ")||"Há dados topográficos públicos para o terreno."});
+  }
+  if(itbi.available&&Number(itbi.count||0)>0)items.push({kind:"info",title:"Histórico de transações",text:String(itbi.count)+" transação(ões) de ITBI localizada(s) na cobertura pública disponível."});
+  if(!hydro&&!geo&&!heritageCount)items.push({kind:"ok",title:"Sem incidência nas camadas críticas consultadas",text:"Não foram encontradas incidências de risco geológico, risco hídrico ou proteção cultural nas camadas atualmente consultadas. Isso não equivale a certidão negativa."});
+  items.push({kind:"info",title:"Validação documental",text:"Certidão registral atualizada, licenças, disponibilidade de infraestrutura e levantamento de campo continuam sendo verificações próprias da diligência profissional."});
+  return '<div class="executive-reading"><h4>Leitura rápida do terreno</h4><div class="executive-reading-grid">'+
+    items.map(i=>'<div class="executive-reading-item '+i.kind+'"><b>'+escapeHtml(i.title)+'</b>'+escapeHtml(i.text)+'</div>').join("")+
+    '</div></div>';
+}
 function renderReport(report,p,context,feature){
   const panel=document.getElementById("reportPanel");
   const planning=(context&&context.planning)||{};
@@ -1072,7 +1112,7 @@ function renderReport(report,p,context,feature){
   if((heritage.assets||[]).length)intersections.push("Bem tombado");
   const buffers=(heritage.buffers||{});
   Object.keys(buffers).forEach(k=>{if((buffers[k]||[]).length)intersections.push("Área envoltória "+k)});
-  if((context&&context.buildings||[]).length)intersections.push((context.buildings||[]).length+" footprint(s) de edificação");
+  if((context&&context.buildings||[]).length)intersections.push((context.buildings||[]).length+" edificação(ões) mapeada(s)");
 
   const zoneHtml=zones.length?'<ul class="zola-zone-list">'+zones.map(z=>'<li><span class="zola-zone-pill">'+escapeHtml(z)+'</span></li>').join("")+'</ul>':"";
   const keyFacts=[
@@ -1081,7 +1121,7 @@ function renderReport(report,p,context,feature){
     ["Pavimentos",text(iptu.floors??p.floors)],
     ["Ano constr.",text(iptu.corrected_construction_year??p.construction_year)],
     ["Zona",text(zoningCode)],
-    ["CA máx. base",text(occupation.ca_max??zoning.ca_max)],
+    ["Coef. aproveit. máx.",text(occupation.ca_max??zoning.ca_max)],
     ["Valor fiscal do terreno",formatReportValue({value:pgv.vm2t_brl_per_m2,unit:"BRL/m²"})],
     ["Transações encontradas",String(itbi.count||0)],
     ["Matrículas",String(((registry.references||[]).length)||((itbi.registry_references||[]).length))],
@@ -1137,7 +1177,7 @@ function renderReport(report,p,context,feature){
   }).join("");
 
   document.getElementById("reportContent").innerHTML=
-    renderPrintCover(p)+renderPrintLotMap(feature,context)+navHtml+keyFactsHtml+renderImmediateDossier(context,p,report)+zoneHtml+intersectionHtml+
+    renderPrintCover(p)+renderPrintLotMap(feature,context)+navHtml+keyFactsHtml+renderExecutiveReading(context,p,zoningCode,zoningName,terrain)+renderImmediateDossier(context,p,report)+zoneHtml+intersectionHtml+
     '<div class="report-legend">Os dados abaixo foram organizados por tema para facilitar a análise do terreno. A origem pública de cada grupo pode ser consultada em “Origem dos dados”.</div>'+
     html+
     '<div class="print-evidence-note">Este relatório compila fontes públicas e análises derivadas indicadas em cada seção. Referências registrais históricas, parâmetros urbanísticos e análises de terreno não substituem certidão registral atualizada, parecer jurídico, projeto aprovado ou levantamento topográfico de campo.</div>';
