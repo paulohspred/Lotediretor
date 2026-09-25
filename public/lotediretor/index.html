@@ -361,6 +361,10 @@ const recifeSlopeTiles=L.tileLayer(
   "https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Hosted/RGB_MDT_2_5MTS_DECLIVIDADE_tif/MapServer/tile/{z}/{y}/{x}",
   {minZoom:12,maxNativeZoom:17,maxZoom:22,opacity:.45,attribution:"Declividade · Prefeitura do Recife"}
 ).setZIndex(340);
+const recifeRoadOverlay=arcgisDynamicLayer(
+  "https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Cttu_An%C3%A1lise_Vias_Recife/MapServer/export",
+  16,"Classificação viária · CTTU / Prefeitura do Recife",.68
+);
 
 const rioParcelOverlay=arcgisDynamicLayer(
   "https://pgeo3.rio.rj.gov.br/arcgis/rest/services/CadParcel/IMOVEIS_TERRITORIAIS/MapServer/export",
@@ -511,7 +515,7 @@ const jpOrthoWms=L.tileLayer.wms("https://filipeia.joaopessoa.pb.gov.br/geoserve
 
 const cityLayerMap={
   "3550308":{parcel:spParcelWms,zoning:spZoningWms,heritage:spHeritageWms,geoRisk:spGeoRiskWms,hydroRisk:spHydroRiskWms,hillshade:spHillshadeWms,slope:spSlopeWms,ortho:spOrthoIndex2020Wms},
-  "2611606":{parcel:recifeParcelOverlay,zoning:recifeZoningOverlay,buildings:recifeBuildingOverlay,slope:recifeSlopeTiles},
+  "2611606":{parcel:recifeParcelOverlay,zoning:recifeZoningOverlay,buildings:recifeBuildingOverlay,slope:recifeSlopeTiles,roads:recifeRoadOverlay},
   "3304557":{parcel:rioParcelOverlay,zoning:rioZoningOverlay},
   "3106200":{parcel:bhParcelWms,zoning:bhZoningWms,buildings:bhBuildingsWms,terrain:bhTerrainWms},
   "2507507":{parcel:jpParcelWms,zoning:jpZoningWms,heritage:jpHeritageWms,environment:jpEnvironmentWms,hydroRisk:jpSusceptibilityWms,coastal:jpCoastalWms,roads:jpRoadHierarchyWms,buildings:jpBuildingsWms,terrain:jpTerrainWms,gas:jpGasWms,ortho:jpOrthoWms}
@@ -531,7 +535,8 @@ const layerLabelsByCity={
     parcel:["Lotes cadastrais","Cadastro territorial da Prefeitura do Recife"],
     zoning:["Zoneamento","Plano Diretor e legislação municipal"],
     buildings:["Edificações","Cartografia oficial de edificações 3D"],
-    slope:["Declividade","Modelo municipal de terreno de 2,5 m"]
+    slope:["Declividade","Modelo municipal de terreno de 2,5 m"],
+    roads:["Classificação viária","Rede viária publicada pela CTTU"]
   },
   "3304557":{
     parcel:["Imóveis territoriais","Cadastro territorial da Prefeitura do Rio"],
@@ -557,7 +562,7 @@ const layerLabelsByCity={
     ortho:["Ortofoto 2021","Aerofotogrametria municipal"]
   }
 };
-const allThematicLayers=[spParcelWms,spZoningWms,spHeritageWms,spGeoRiskWms,spHydroRiskWms,spHillshadeWms,spSlopeWms,spOrthoIndex2020Wms,recifeParcelOverlay,recifeZoningOverlay,recifeBuildingOverlay,recifeSlopeTiles,rioParcelOverlay,rioZoningOverlay,bhParcelWms,bhZoningWms,bhBuildingsWms,bhTerrainWms,jpParcelWms,jpZoningWms,jpHeritageWms,jpEnvironmentWms,jpSusceptibilityWms,jpCoastalWms,jpRoadHierarchyWms,jpBuildingsWms,jpTerrainWms,jpGasWms,jpOrthoWms];
+const allThematicLayers=[spParcelWms,spZoningWms,spHeritageWms,spGeoRiskWms,spHydroRiskWms,spHillshadeWms,spSlopeWms,spOrthoIndex2020Wms,recifeParcelOverlay,recifeZoningOverlay,recifeBuildingOverlay,recifeSlopeTiles,recifeRoadOverlay,rioParcelOverlay,rioZoningOverlay,bhParcelWms,bhZoningWms,bhBuildingsWms,bhTerrainWms,jpParcelWms,jpZoningWms,jpHeritageWms,jpEnvironmentWms,jpSusceptibilityWms,jpCoastalWms,jpRoadHierarchyWms,jpBuildingsWms,jpTerrainWms,jpGasWms,jpOrthoWms];
 function activeCityLayers(){const city=cities[Number(select.value)];return cityLayerMap[city.ibge]||{}}
 function syncCityLayers(){
   allThematicLayers.forEach(layer=>{if(map.hasLayer(layer))map.removeLayer(layer)});
