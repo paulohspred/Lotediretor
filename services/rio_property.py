@@ -285,7 +285,6 @@ def vals(s,p,c):
                 {"label":"Via próxima ao terreno","value":r.get("completo") or r.get("nome_mapa")},
                 {"label":"Hierarquia viária","value":r.get("hierarquia")},
                 {"label":"Bairro do trecho","value":r.get("bairro")},
-                {"label":"Sentido de circulação publicado","value":r.get("oneway")},
                 {"label":"Velocidade regulamentada publicada","value":r.get("velocidade_regulamentada"),"unit":"km/h"},
             ])
             if len(seen)>=4:break
