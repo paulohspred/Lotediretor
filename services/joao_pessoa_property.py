@@ -7,12 +7,13 @@ import urllib.parse
 import urllib.request
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timezone
+from math import atan2, cos, degrees, radians, sin, sqrt
 from pathlib import Path
 
 import psycopg2
 import municipality_utilities
 from psycopg2.extras import RealDictCursor
-from shapely.geometry import shape, Point
+from shapely.geometry import shape, Point, LineString
 
 ROOT = Path("/srv/lotediretor/app")
 DB_DSN = "dbname=lotediretor user=sentinelx host=/var/run/postgresql"
@@ -240,41 +241,96 @@ def search(query_text: str) -> list[dict]:
     return out
 
 
+def _geo_distance(a,b):
+    lat1,lon1,lat2,lon2=map(radians,[a[1],a[0],b[1],b[0]])
+    dlat=lat2-lat1;dlon=lon2-lon1
+    h=sin(dlat/2)**2+cos(lat1)*cos(lat2)*sin(dlon/2)**2
+    return 6371008.8*2*atan2(sqrt(h),sqrt(max(0,1-h)))
+
+
+def _geo_bearing(a,b):
+    lat1,lat2=radians(a[1]),radians(b[1]);dlon=radians(b[0]-a[0])
+    y=sin(dlon)*cos(lat2)
+    x=cos(lat1)*sin(lat2)-sin(lat1)*cos(lat2)*cos(dlon)
+    return (degrees(atan2(y,x))+360)%360
+
+
+def _jp_profile_lines(geometry):
+    poly=shape(geometry)
+    if poly.is_empty:return []
+    if poly.geom_type=="MultiPolygon":poly=max(poly.geoms,key=lambda p:p.area)
+    pts=list(poly.minimum_rotated_rectangle.exterior.coords)[:-1]
+    edges=[(pts[i],pts[(i+1)%4],_geo_distance(pts[i],pts[(i+1)%4])) for i in range(4)]
+    a0,a1,_=max(edges,key=lambda x:x[2])
+    dx,dy=a1[0]-a0[0],a1[1]-a0[1]
+    mag=max((dx*dx+dy*dy)**.5,1e-12);ux,uy=dx/mag,dy/mag
+    cx,cy=poly.centroid.x,poly.centroid.y
+    span=max(max(x for x,_ in pts)-min(x for x,_ in pts),max(y for _,y in pts)-min(y for _,y in pts))*4+.002
+    out=[]
+    for name,(vx,vy) in (("A-A",(ux,uy)),("B-B",(-uy,ux))):
+        line=LineString([(cx-vx*span,cy-vy*span),(cx+vx*span,cy+vy*span)])
+        inter=poly.intersection(line)
+        segs=[inter] if inter.geom_type=="LineString" else list(inter.geoms) if inter.geom_type=="MultiLineString" else []
+        if segs:
+            seg=max(segs,key=lambda s:s.length);xy=list(seg.coords)
+            if len(xy)>=2:out.append((name,seg,xy[0],xy[-1]))
+    return out
+
+
+def _jp_profiles(parcel_geometry,contours):
+    profiles=[]
+    for name,line,a,b in _jp_profile_lines(parcel_geometry):
+        length=_geo_distance(a,b);hits=[]
+        for item in contours:
+            inter=line.intersection(shape(item["geometry"]))
+            if inter.is_empty:continue
+            pts=[inter] if inter.geom_type=="Point" else list(inter.geoms) if inter.geom_type=="MultiPoint" else []
+            for pt in pts:
+                if pt.is_empty:continue
+                frac=line.project(pt)/max(line.length,1e-12)
+                hits.append({"distance_m":round(length*frac,2),"elevation_m":float(item["elevation_m"]),"lat":pt.y,"lng":pt.x})
+        hits.sort(key=lambda x:x["distance_m"])
+        if len(hits)>=2:
+            dz=hits[-1]["elevation_m"]-hits[0]["elevation_m"]
+            profiles.append({"name":name,"length_m":round(length,2),"bearing_deg":round(_geo_bearing(a,b),1),"delta_elevation_m":round(dz,2),"average_slope_pct":round(dz/length*100,2) if length else 0,"samples":hits,"line_coordinates_wgs84":[list(a),list(b)],"profile_method":"Interseções do corte com curvas oficiais de nível de 2022"})
+    return profiles
+
+
 def terrain_for_parcel(parcel: dict) -> dict:
     code=(parcel.get("properties") or {}).get("cartographic_code")
-    if not code:
-        return {"available":False,"reason":"missing_cartographic_code"}
-    sql="""
-        SELECT count(*) AS contour_count,
-               min(c.cota)::float8 AS min_elevation_m,
-               max(c.cota)::float8 AS max_elevation_m,
-               array_agg(DISTINCT c.cota ORDER BY c.cota) AS elevations
-        FROM ld_stage.jp_lotes l
-        JOIN ld_stage.jp_curvas_nivel_2022 c
-          ON ST_Intersects(ST_Force2D(l.geom), c.geom)
+    if not code:return {"available":False,"reason":"missing_cartographic_code"}
+    summary_sql="""
+        SELECT count(*) contour_count,min(c.cota)::float8 min_elevation_m,
+               max(c.cota)::float8 max_elevation_m,
+               array_agg(DISTINCT c.cota ORDER BY c.cota) elevations
+        FROM ld_stage.jp_lotes l JOIN ld_stage.jp_curvas_nivel_2022 c
+          ON ST_Intersects(ST_Force2D(l.geom),c.geom)
+        WHERE l.codi_cart=%s
+    """
+    detail_sql="""
+        SELECT c.cota::float8 elevation_m,ST_AsGeoJSON(ST_Force2D(c.geom),7) geojson
+        FROM ld_stage.jp_lotes l JOIN ld_stage.jp_curvas_nivel_2022 c
+          ON ST_Intersects(ST_Force2D(l.geom),c.geom)
         WHERE l.codi_cart=%s
     """
     with db() as conn,conn.cursor(cursor_factory=RealDictCursor) as cur:
-        cur.execute(sql,(code,))
-        row=dict(cur.fetchone())
+        cur.execute(summary_sql,(code,));row=dict(cur.fetchone())
+        cur.execute(detail_sql,(code,));details=[dict(x) for x in cur.fetchall()]
     vals=[float(v) for v in (row.get("elevations") or [])]
+    contours=[{"elevation_m":x["elevation_m"],"geometry":json.loads(x["geojson"])} for x in details if x.get("geojson") and x.get("elevation_m") is not None]
+    profiles=_jp_profiles(parcel.get("geometry") or {},contours) if contours else []
     return {
         "available":bool(row.get("contour_count")),
         "method":"Curvas de nível oficiais de 2022 que cruzam o terreno",
-        "quality":"OFFICIAL_CONTOUR_INTERSECTION",
+        "quality":"Perfil discreto baseado em curvas oficiais de nível de 2022",
         "contour_count":int(row.get("contour_count") or 0),
         "min_elevation_m":row.get("min_elevation_m"),
         "max_elevation_m":row.get("max_elevation_m"),
-        "amplitude_m":(
-            round(row["max_elevation_m"]-row["min_elevation_m"],3)
-            if row.get("min_elevation_m") is not None and row.get("max_elevation_m") is not None
-            else None
-        ),
-        "contour_elevations_m":vals,
+        "amplitude_m":round(row["max_elevation_m"]-row["min_elevation_m"],3) if row.get("min_elevation_m") is not None and row.get("max_elevation_m") is not None else None,
+        "contour_elevations_m":vals,"profiles":profiles,
         "source_sha256":"3b29f856cfef6b0e20a76120ecdfdedcdb43a18a538c14362b1b1439331d1fbb",
-        "caveat":"Faixa baseada nas curvas oficiais que cruzam o lote; não substitui MDT contínuo ou levantamento topográfico de campo."
+        "caveat":"Faixa e cortes altimétricos baseados nas curvas oficiais que cruzam o lote; não há interpolação apresentada como levantamento contínuo. Não substitui MDT contínuo ou levantamento topográfico de campo."
     }
-
 
 
 def spatial_layer_for_parcel(key: str, parcel: dict, count: int = 250) -> list[dict]:
