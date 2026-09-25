@@ -368,8 +368,42 @@ function dossierRow(label,value,unit,highlight){
   const rendered=formatReportValue({value:value,unit:unit});
   return '<div class="instant-row"><span>'+escapeHtml(label)+'</span><b class="'+(highlight?'instant-highlight':'')+'">'+escapeHtml(rendered)+'</b></div>';
 }
-function renderImmediateDossier(context,p){
+function dossierSectionValues(report,ids){
+  const wanted=new Set(ids);
+  const out=[];
+  ((report&&report.sections)||[]).forEach(section=>{
+    if(wanted.has(section.id)){
+      (section.actual_values||[]).forEach(item=>{
+        if(item.value!==null&&item.value!==undefined&&item.value!=="")out.push(item);
+      });
+    }
+  });
+  return out;
+}
+function genericDossierBlock(title,items,limit){
+  const visible=(items||[]).slice(0,limit||16);
+  if(!visible.length)return "";
+  return '<div class="instant-block"><h4>'+escapeHtml(title)+'</h4><div class="instant-grid">'+
+    visible.map(item=>dossierRow(item.label,item.value,item.unit,false)).join("")+
+    '</div></div>';
+}
+function renderImmediateDossier(context,p,report){
   context=context||{};
+  const activeCity=cities[Number(select.value)]||cities[0];
+  if(activeCity.ibge!=="3550308"){
+    const cadastro=dossierSectionValues(report,["executive_summary","identity_location","building_existing"]);
+    const urban=dossierSectionValues(report,["planning_buildability"]);
+    const fiscal=dossierSectionValues(report,["fiscal_market","registry_due_diligence"]);
+    const licensing=dossierSectionValues(report,["licensing_history","environment_risk_heritage"]);
+    const terrain=dossierSectionValues(report,["terrain_visual"]);
+    return '<div class="instant-dossier">'+
+      genericDossierBlock("Cadastro do lote",cadastro,18)+
+      genericDossierBlock("Zoneamento e parâmetros",urban,18)+
+      genericDossierBlock("Fiscal / transações / registro",fiscal,20)+
+      genericDossierBlock("Licenciamento / restrições",licensing,14)+
+      genericDossierBlock("Terreno / topografia",terrain,14)+
+    '</div>';
+  }
   const fiscal=context.fiscal||{};
   const iptu=(fiscal.iptu&&fiscal.iptu.latest)||{};
   const pgv=fiscal.pgv||{};
@@ -650,7 +684,7 @@ function renderReport(report,p,context){
   }).join("");
 
   document.getElementById("reportContent").innerHTML=
-    navHtml+keyFactsHtml+renderImmediateDossier(context,p)+zoneHtml+intersectionHtml+
+    navHtml+keyFactsHtml+renderImmediateDossier(context,p,report)+zoneHtml+intersectionHtml+
     '<div class="report-legend">Os dados abaixo são os valores já resolvidos para este lote. Informações ainda não materializadas ficam dentro de “Fontes, estado e pendências”.</div>'+
     html;
   document.querySelectorAll("[data-report-target]").forEach(button=>{
