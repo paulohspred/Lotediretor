@@ -601,7 +601,7 @@ function renderReport(report,p,context){
 
   document.getElementById("reportTitle").textContent=[p.street,p.number].filter(Boolean).join(", ")||([p.fiscal_block,p.fiscal_lot].filter(Boolean).length?("Quadra "+text(p.fiscal_block)+" · Lote "+text(p.fiscal_lot)):("Lote "+text(p.sql_reference)));
   const activeCity=cities[Number(select.value)]||cities[0];
-  const primaryIdLabel=activeCity.ibge==="2611606"?"DSQFL":activeCity.ibge==="3304557"?"Inscrição / referência":activeCity.ibge==="3106200"?"Lote CTM":"SQL";
+  const primaryIdLabel=activeCity.ibge==="2611606"?"DSQFL":activeCity.ibge==="3304557"?"Inscrição / referência":activeCity.ibge==="3106200"?"Lote CTM":activeCity.ibge==="2507507"?"Código cartográfico":"SQL";
   document.getElementById("reportSubtitle").innerHTML=
     '<div class="zola-lot-label">LOTE FISCAL <span style="color:#aaa">|</span> '+primaryIdLabel+' '+escapeHtml(text(p.sql_reference))+'</div>'+
     '<div class="zola-lot-meta">'+escapeHtml(activeCity.name)+' · '+escapeHtml(activeCity.uf)+' &nbsp;|&nbsp; Setor '+escapeHtml(text(p.fiscal_sector))+
@@ -724,9 +724,9 @@ function renderParcel(payload){
   }
   selectedParcelLayer.bringToFront();
   document.getElementById("parcelState").textContent="lote oficial";
-  const idLabel=activeCity.ibge==="2611606"?"DSQFL":activeCity.ibge==="3304557"?"Inscrição / referência":activeCity.ibge==="3106200"?"Lote CTM":"SQL";
-  const secondLabel=activeCity.ibge==="2611606"?"SeqImóvel":activeCity.ibge==="3304557"?"Matrícula / RGI":activeCity.ibge==="3106200"?"ID quadra CTM":"CIB";
-  const secondValue=activeCity.ibge==="2611606"?p.seqimovel:activeCity.ibge==="3304557"?([p.matricula,p.rgi].filter(Boolean).join(" / ")):activeCity.ibge==="3106200"?p.ctm_block_id:p.cib;
+  const idLabel=activeCity.ibge==="2611606"?"DSQFL":activeCity.ibge==="3304557"?"Inscrição / referência":activeCity.ibge==="3106200"?"Lote CTM":activeCity.ibge==="2507507"?"Código cartográfico":"SQL";
+  const secondLabel=activeCity.ibge==="2611606"?"SeqImóvel":activeCity.ibge==="3304557"?"Matrícula / RGI":activeCity.ibge==="3106200"?"ID quadra CTM":activeCity.ibge==="2507507"?"Tipo cadastral":"CIB";
+  const secondValue=activeCity.ibge==="2611606"?p.seqimovel:activeCity.ibge==="3304557"?([p.matricula,p.rgi].filter(Boolean).join(" / ")):activeCity.ibge==="3106200"?p.ctm_block_id:activeCity.ibge==="2507507"?p.parcel_type:p.cib;
   const locValue=activeCity.ibge==="2611606"
     ?[p.district,p.fiscal_sector,p.fiscal_block,p.face,p.fiscal_lot].map(v=>text(v)).join(" / ")
     :activeCity.ibge==="3304557"
