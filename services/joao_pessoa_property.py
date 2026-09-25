@@ -7,6 +7,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 import psycopg2
+import municipality_utilities
 from psycopg2.extras import RealDictCursor
 
 ROOT = Path("/srv/lotediretor/app")
@@ -160,26 +161,7 @@ def context(parcel: dict) -> dict:
         },
         "risk": {"geological": [], "hydrological": []},
         "heritage": {"assets": [], "buffers": {}},
-        "utilities": {
-            "electricity": [
-                {
-                    "provider_authority": "Energisa Paraíba",
-                    "evidence_level": "PROVIDER_IDENTIFIED",
-                }
-            ],
-            "water_sewer": [
-                {
-                    "provider_authority": "CAGEPA",
-                    "evidence_level": "CONCESSION_AREA",
-                }
-            ],
-            "drainage": [
-                {
-                    "provider_authority": "Prefeitura de João Pessoa / SEINFRA",
-                    "evidence_level": "PROVIDER_IDENTIFIED",
-                }
-            ],
-        },
+        "utilities": municipality_utilities.load("2507507"),
         "licensing": {
             "housing_permits_exact_sql": [],
             "impact_spatial_incidence": [],
@@ -260,6 +242,8 @@ def vals(section_id: str, parcel: dict, ctx: dict) -> list[dict]:
                 ),
             }
         ]
+    if s=="infrastructure_utilities":
+        return municipality_utilities.report_values(c.get("utilities") or {})
     return []
 
 
