@@ -1837,16 +1837,20 @@
           "field": "urban parameters",
           "status": "PARTIAL",
           "source_id": "pb-joao-pessoa-filipeia",
-          "supporting_source_ids": [],
+          "supporting_source_ids": [
+            "pb-joao-pessoa-luos-166-169",
+            "pb-joao-pessoa-plano-diretor-164",
+            "pb-tjpb-luos-adi-2026"
+          ],
           "endpoint": "https://filipeia.joaopessoa.pb.gov.br/",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "LIVE_PARTIAL_PROPERTY_RESOLVER",
+          "connector_status": "LIVE_LUOS_PROPERTY_RESOLVER",
           "missing_fields": [
-            "structured parameter/legal-rule parser",
-            "legal precedence normalization"
+            "use-permission resolver by intended use and road hierarchy",
+            "special instrument/overlay precedence beyond current zoning, macrozone and coastal restriction"
           ],
-          "notes": "Zone and macrozone are live per parcel. Numeric/use parameters still require structured parsing of LC 166/2024 and related rules."
+          "notes": "Live resolver now returns IA basic/max by macrozone, TO, permeability, front/side/rear setback rules, environmental-licensing condition, road hierarchy and coastal-restriction incidence. Coastal height from LC 166 art. 62 is deliberately not used after the 2026 TJPB decision."
         },
         {
           "field": "permits",
@@ -2014,11 +2018,12 @@
           "endpoint": "https://www.gov.br/dnit/pt-br/assuntos/sistema-nacional-de-viacao",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "connector_status": "LIVE_WFS_PROPERTY_INTERSECTION",
           "missing_fields": [
-            "municipal hierarchy/right-of-way"
+            "right-of-way width/official alignment resolver",
+            "intended-use permission normalization against hierarchy"
           ],
-          "notes": null
+          "notes": "Filipeia road-hierarchy WFS is queried by parcel intersection and exposed in the planning dossier."
         },
         {
           "field": "imagery",
@@ -2044,11 +2049,12 @@
           "endpoint": "https://filipeia.joaopessoa.pb.gov.br/",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "LIVE_POSTGIS_CONTOUR_RESOLVER",
+          "connector_status": "LIVE_POSTGIS_CONTOUR_PROFILE_RESOLVER",
           "missing_fields": [
-            "resolution/quality metadata normalization"
+            "continuous MDT for interpolated surface beyond official contour evidence",
+            "field-survey confirmation for executive design"
           ],
-          "notes": null
+          "notes": "Official 2022 contours are materialized and now generate discrete parcel A-A/B-B profiles when supported by contour crossings."
         },
         {
           "field": "public works",
