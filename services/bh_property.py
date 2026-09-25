@@ -29,7 +29,7 @@ def query(key,lat=None,lng=None,cql=None,count=50):
     q={"service":"WFS","version":"2.0.0","request":"GetFeature","typeNames":typename,"srsName":"EPSG:4326","count":str(count),"propertyName":",".join(fields),"outputFormat":"application/json"}
     if cql:q["CQL_FILTER"]=cql
     else:
-        d=.001
+        d=.0005
         q["bbox"]=f"{lng-d},{lat-d},{lng+d},{lat+d},EPSG:4326"
     data=request(q);allowed=set(fields)-{"GEOMETRIA"};out=[]
     for f in data.get("features") or []:
