@@ -126,6 +126,27 @@ def vals(s,p,c):
             {"label":"Ressalva","value":"Edificações 2019 são contexto cartográfico e não substituem cadastro/licenciamento atual."}
         ]
     if s=="planning_buildability":return [{"label":"Macrozona","value":z.get("macrozone")},{"label":"Zona/subzona","value":z.get("tx_zoneamento_perimetro")},{"label":"Sigla","value":z.get("cd_zoneamento_perimetro")},{"label":"Legislação","value":z.get("legislation")},{"label":"AP","value":z.get("ap")},{"label":"CAB","value":z.get("ca_basic")},{"label":"CAM","value":z.get("ca_max")},{"label":"Taxa de ocupação","value":z.get("occupancy")},{"label":"Lote mínimo","value":z.get("min_lot_area_m2"),"unit":"m²"},{"label":"Testada mínima","value":z.get("min_frontage_m"),"unit":"m"},{"label":"Gabarito com afastamento","value":z.get("max_height_setback")},{"label":"Gabarito sem afastamento","value":z.get("max_height_no_setback")},{"label":"Afastamento frontal","value":z.get("front_setback")},{"label":"ICS","value":z.get("ics")}]
+    if s=="environment_risk_heritage":
+        out=[]
+        for item in (c.get("risk") or {}).get("hydrological") or []:
+            r=item.get("properties") or {}
+            out.extend([
+                {"label":"ISMFI · suscetibilidade a inundação","value":r.get("ismfi_v45")},
+                {"label":"Bairro · ISMFI","value":r.get("nm_bairro")},
+                {"label":"Índice declividade","value":r.get("ind_dec")},
+                {"label":"Índice impermeabilização","value":r.get("ind_imp")},
+                {"label":"Índice cota","value":r.get("ind_cota")},
+                {"label":"Índice proximidade","value":r.get("ind_prox")}
+            ])
+        for item in (c.get("heritage") or {}).get("assets") or []:
+            r=item.get("properties") or {}
+            out.extend([
+                {"label":"APAC","value":r.get("nome")},
+                {"label":"Tipo APAC","value":r.get("tipo")},
+                {"label":"Legislação APAC","value":r.get("legislacao")},
+                {"label":"Órgão APAC","value":r.get("orgao")}
+            ])
+        return out or [{"label":"Risco/patrimônio","value":"Sem incidência nas camadas consultadas."}]
     if s=="registry_due_diligence":
         out=[]
         for r in reg.get("references") or []:out.extend([{"label":"Matrícula cadastral publicada","value":r.get("registry_number")},{"label":"Fonte registral","value":r.get("source")},{"label":"Data de verificação cadastral","value":r.get("verification_date")}])
