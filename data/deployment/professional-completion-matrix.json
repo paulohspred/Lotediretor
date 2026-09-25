@@ -628,11 +628,11 @@
           "endpoint": "https://esigportal2.recife.pe.gov.br/arcgis/rest/services/MeioAmbiente",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "LIVE_PARTIAL_PROPERTY_RESOLVER",
+          "connector_status": "LIVE_PROPERTY_RESOLVER",
           "missing_fields": [
             "license per service"
           ],
-          "notes": null
+          "notes": "Parcel resolver now exposes hydrographic basin context, non-aedificandi/marginal protection incidences, SSA1 and SMUP protected-unit/IPAV incidences through closed allowlists. Basin context is not rendered as flood-risk evidence."
         },
         {
           "field": "risk",
