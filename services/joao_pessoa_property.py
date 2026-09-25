@@ -21,6 +21,7 @@ FILIPEIA_WMS = "https://filipeia.joaopessoa.pb.gov.br/geoserver/wms"
 FILIPEIA_WFS = "https://filipeia.joaopessoa.pb.gov.br/geoserver/wfs"
 SPATIAL_LAYERS = {
     "coastal_restriction": ("digeoc:faixas", ["OBJECTID","Faixas","SHAPE_Area"]),
+    "road_hierarchy": ("digeoc:Hierarquia", ["Hierarquia","Shape_Area"]),
     "buildings": ("digeoc:EDIFICACOES", ["OBJECTID_1","N_PAVIM","BAIRRO","EDIFICACAO","AREA","Shape_Area"]),
     "conservation": ("digeoc:UC", ["NOME","DECRETO"]),
     "susceptibility": ("digeoc:Suscetibilidade", ["OBJECTID","classe","tipo","Shape_Area"]),
@@ -61,24 +62,48 @@ OCCUPANCY_169 = {
     "SEAV": {"to_max_pct":40,"tap_min_pct":15,"front_m":5.0,"side_rule":"Até 3º pav.: 1,50 m; 4º pav.: 3,00 m; acima: 3,00 + [(N-4) × 0,30] m","rear_rule":"Até 2º pav.: 2,00 m; 3º e 4º: 3,00 m; acima: 3,00 + [(N-4) × 0,30] m"},
 }
 
+MACROZONE_IA = {
+    "MAD1": {"ia_basic":1.0,"ia_max":6.0,"name":"Macrozona Adensável 1"},
+    "MAD2": {"ia_basic":1.0,"ia_max":4.0,"name":"Macrozona Adensável 2"},
+    "MAD3": {"ia_basic":1.0,"ia_max":2.0,"name":"Macrozona Adensável 3"},
+    "MBD": {"ia_basic":1.0,"ia_max":1.0,"name":"Macrozona de Baixa Densidade"},
+    "MPA": {"ia_basic":1.0,"ia_max":1.0,"name":"Macrozona de Proteção Ambiental"},
+    "MAP": {"ia_basic":1.0,"ia_max":1.0,"name":"Macrozona de Proteção Ambiental"},
+}
+
 def normalized_zone_code(value: str | None) -> str | None:
     if not value:
         return None
     return re.sub(r"[^A-Z0-9]", "", str(value).upper())
 
-def occupancy_parameters(zone_code: str | None, coastal_restrictions: list[dict]) -> dict:
+def occupancy_parameters(
+    zone_code: str | None,
+    macrozone_code: str | None,
+    coastal_restrictions: list[dict],
+    road_hierarchy: list[dict],
+) -> dict:
     key=normalized_zone_code(zone_code)
     data=dict(OCCUPANCY_169.get(key) or {})
     if not data:
         return {"available":False,"zone_code":key}
+    macro_key=normalized_zone_code(macrozone_code)
+    macro_ia=MACROZONE_IA.get(macro_key) or {}
     data.update({
         "available":True,
         "zone_code":key,
-        "ia_basic":1.0,
+        "macrozone_code":macro_key,
+        "ia_basic":macro_ia.get("ia_basic",1.0),
+        "ia_max":macro_ia.get("ia_max"),
         "legal_basis":"LC 166/2024 (art. 53) c/c LC 169/2024 (Anexo IV substitutivo do Anexo V da LC 166/2024)",
         "legal_status_checked_at":"2026-09-25",
         "legal_status_note":"TJPB manteve a LUOS em vigor em 21/01/2026, com inconstitucionalidade do art. 62. O sistema não usa o art. 62 para calcular altura na orla.",
         "coastal_restriction_intersections":len(coastal_restrictions or []),
+        "road_hierarchy":sorted({
+            str((item.get("properties") or {}).get("Hierarquia")).strip()
+            for item in (road_hierarchy or [])
+            if (item.get("properties") or {}).get("Hierarquia")
+        }),
+        "ia_legal_basis":"LC 164/2024, art. 50, §1º (Plano Diretor)",
     })
     if coastal_restrictions:
         data["coastal_restriction_note"]="O terreno intersecta faixa de restrição costeira publicada; gabarito/altura exige conferência específica da regra atualmente aplicável."
@@ -362,7 +387,9 @@ def context(parcel: dict, lat: float, lng: float) -> dict:
     }
     occupancy = occupancy_parameters(
         (planning.get("zoning") or {}).get("sigla"),
+        (planning.get("macrozone") or {}).get("sigla"),
         spatial.get("coastal_restriction") or [],
+        spatial.get("road_hierarchy") or [],
     )
     return {
         "planning": {
@@ -505,6 +532,8 @@ def vals(section_id: str, parcel: dict, ctx: dict) -> list[dict]:
             {"label":"Descrição da macrozona","value":macro.get("nome")},
             {"label":"Tipo de macrozona","value":macro.get("tipo")},
             {"label":"Índice de aproveitamento básico","value":params.get("ia_basic")},
+            {"label":"Índice de aproveitamento máximo","value":params.get("ia_max")},
+            {"label":"Base legal dos índices de aproveitamento","value":params.get("ia_legal_basis")},
             {"label":"Taxa de ocupação máxima","value":params.get("to_max_pct"),"unit":"%"},
             {"label":"Taxa de área permeável mínima","value":params.get("tap_min_pct"),"unit":"%"},
             {"label":"Recuo frontal mínimo","value":params.get("front_m"),"unit":"m"},
@@ -512,6 +541,7 @@ def vals(section_id: str, parcel: dict, ctx: dict) -> list[dict]:
             {"label":"Regra de recuo de fundos","value":params.get("rear_rule")},
             {"label":"Regra de altura","value":params.get("height_rule")},
             {"label":"Licenciamento ambiental exigido pela zona","value":params.get("environmental_license")},
+            {"label":"Hierarquia viária no terreno","value":", ".join(params.get("road_hierarchy") or [])},
             {"label":"Faixa de restrição costeira intersectante","value":params.get("coastal_restriction_intersections")},
             {"label":"Condicionante costeira","value":params.get("coastal_restriction_note")},
             {"label":"Observação específica do quadro","value":params.get("conditional_note")},
