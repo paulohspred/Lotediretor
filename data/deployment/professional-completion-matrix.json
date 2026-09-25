@@ -1044,7 +1044,7 @@
         },
         {
           "field": "environment",
-          "status": "READY",
+          "status": "PARTIAL",
           "source_id": "rj-rio-hidrografia-drenagem",
           "supporting_source_ids": [
             "rj-rio-pgeo3"
@@ -1052,11 +1052,13 @@
           "endpoint": "https://pgeo3.rio.rj.gov.br/arcgis/rest/services/Meio_Ambiente/Hidrografia/FeatureServer",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": "CC BY 4.0 (confirmed for related sub-bacias item; verify per service item)",
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "connector_status": "LIVE_MUNICIPAL_APP_APE_RESOLVER_PENDING_DEPLOY_VALIDATION",
           "missing_fields": [
-            "license per service"
+            "production smoke validation after deployment",
+            "state/federal environmental overlay reconciliation",
+            "resource license/version review"
           ],
-          "notes": null
+          "notes": "Repository implementation queries municipal APP and APE FeatureServer layers with closed public-field allowlists and exposes matching map overlays. Production deployment validation is still pending because the server execution channel was unavailable when this change was committed."
         },
         {
           "field": "risk",
