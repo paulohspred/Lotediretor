@@ -170,7 +170,7 @@ def vals(s,p,c):
             {"label":"Tipos cartográficos","value":", ".join(types[:8]) if types else None},
             {"label":"Ressalva","value":"Edificações 2019 são contexto cartográfico e não substituem cadastro/licenciamento atual."}
         ]
-    if s=="planning_buildability":return [{"label":"Macrozona","value":z.get("macrozone")},{"label":"Zona/subzona","value":z.get("tx_zoneamento_perimetro")},{"label":"Sigla","value":z.get("cd_zoneamento_perimetro")},{"label":"Legislação","value":z.get("legislation")},{"label":"AP","value":z.get("ap")},{"label":"Coeficiente de aproveitamento básico","value":z.get("ca_basic")},{"label":"Coeficiente de aproveitamento máximo","value":z.get("ca_max")},{"label":"Taxa de ocupação","value":z.get("occupancy")},{"label":"Lote mínimo","value":z.get("min_lot_area_m2"),"unit":"m²"},{"label":"Testada mínima","value":z.get("min_frontage_m"),"unit":"m"},{"label":"Gabarito com afastamento","value":z.get("max_height_setback")},{"label":"Gabarito sem afastamento","value":z.get("max_height_no_setback")},{"label":"Afastamento frontal","value":z.get("front_setback")},{"label":"Parâmetro urbanístico ICS","value":z.get("ics")}]
+    if s=="planning_buildability":return [{"label":"Macrozona","value":z.get("macrozone")},{"label":"Zona/subzona","value":z.get("tx_zoneamento_perimetro")},{"label":"Sigla","value":z.get("cd_zoneamento_perimetro")},{"label":"Legislação","value":z.get("legislation")},{"label":"Área de planejamento","value":z.get("ap")},{"label":"Coeficiente de aproveitamento básico","value":z.get("ca_basic")},{"label":"Coeficiente de aproveitamento máximo","value":z.get("ca_max")},{"label":"Taxa de ocupação","value":z.get("occupancy")},{"label":"Lote mínimo","value":z.get("min_lot_area_m2"),"unit":"m²"},{"label":"Testada mínima","value":z.get("min_frontage_m"),"unit":"m"},{"label":"Gabarito com afastamento","value":z.get("max_height_setback")},{"label":"Gabarito sem afastamento","value":z.get("max_height_no_setback")},{"label":"Afastamento frontal","value":z.get("front_setback")},{"label":"Índice urbanístico complementar (ICS)","value":z.get("ics")}]
     if s=="environment_risk_heritage":
         out=[]
         for item in (c.get("risk") or {}).get("hydrological") or []:
@@ -178,10 +178,10 @@ def vals(s,p,c):
             out.extend([
                 {"label":"Suscetibilidade física a inundação (ISMFI)","value":r.get("ismfi_v45")},
                 {"label":"Bairro considerado no índice de inundação","value":r.get("nm_bairro")},
-                {"label":"Índice declividade","value":r.get("ind_dec")},
-                {"label":"Índice impermeabilização","value":r.get("ind_imp")},
-                {"label":"Índice cota","value":r.get("ind_cota")},
-                {"label":"Índice proximidade","value":r.get("ind_prox")}
+                {"label":"Componente de declividade do índice","value":r.get("ind_dec")},
+                {"label":"Componente de impermeabilização do índice","value":r.get("ind_imp")},
+                {"label":"Componente altimétrico do índice","value":r.get("ind_cota")},
+                {"label":"Componente de proximidade do índice","value":r.get("ind_prox")}
             ])
         for item in (c.get("heritage") or {}).get("assets") or []:
             r=item.get("properties") or {}
@@ -210,10 +210,10 @@ def vals(s,p,c):
             {"label":"Cota máxima amostrada","value":t.get("max_sampled_elevation_m"),"unit":"m"},
             {"label":"Desnível amostrado","value":t.get("sampled_relief_m"),"unit":"m"},
             {"label":"Pontos de terreno analisados","value":t.get("sample_count")},
-            {"label":"Fonte topográfica","value":src.get("dataset")},
+            {"label":"Fonte topográfica","value":"Modelo oficial de terreno da Prefeitura do Rio"},
             {"label":"Resolução do modelo de terreno","value":src.get("resolution_m"),"unit":"m"},
             {"label":"Ano do modelo de terreno","value":2019},
-            {"label":"Qualidade","value":"Triagem topográfica por MDT LiDAR reamostrado; não substitui levantamento planialtimétrico executivo."}
+            {"label":"Qualidade","value":"Triagem topográfica com modelo oficial de terreno derivado de levantamento a laser; não substitui levantamento planialtimétrico executivo."}
         ]
     return []
 
