@@ -100,7 +100,47 @@ def vals(s,p,c):
             for x in sp.get(k) or []:
                 r=x.get("properties") or {};out.append({"label":f"Incidência {l}","value":r.get("NMNOME") or r.get("ZEC") or r.get("ZONA_NOME") or l})
         return out
-    if s=="fiscal_market":return [{"label":"Campo V0 · ESIG","value":q.get("v0")},{"label":"Situação cadastral","value":q.get("parcel_status")},{"label":"Área lote","value":q.get("land_area_m2"),"unit":"m²"},{"label":"Área construída","value":q.get("built_area_m2"),"unit":"m²"},{"label":"Testada","value":q.get("frontage_m"),"unit":"m"},{"label":"Observação","value":"V0 permanece campo bruto; significado fiscal não é inferido."}]
+    if s=="fiscal_market":
+        fiscal=c.get("fiscal") or {};iptu=(fiscal.get("iptu") or {}).get("latest") or {};itbi=fiscal.get("itbi") or {}
+        out=[
+            {"label":"Cadastro IPTU 2026","value":"Encontrado no Dados Abertos Recife" if (fiscal.get("iptu") or {}).get("found") else "Ainda sem registro exato no índice"},
+            {"label":"Valor unitário terreno · IPTU","value":iptu.get("land_unit_value_brl_m2"),"unit":"BRL/m²"},
+            {"label":"Valor unitário construção · IPTU","value":iptu.get("building_unit_value_brl_m2"),"unit":"BRL/m²"},
+            {"label":"Valor total estimado · IPTU","value":iptu.get("estimated_total_value_brl"),"unit":"BRL"},
+            {"label":"Valor cobrado de IPTU","value":iptu.get("iptu_charged_brl"),"unit":"BRL"},
+            {"label":"Regime IPTU","value":iptu.get("iptu_tax_regime")},
+            {"label":"Área lote","value":iptu.get("land_area_m2") or q.get("land_area_m2"),"unit":"m²"},
+            {"label":"Área construída","value":iptu.get("built_area_m2") or q.get("built_area_m2"),"unit":"m²"},
+            {"label":"ITBI 2026 · transações dentro do lote","value":itbi.get("count",0)}
+        ]
+        for i,tx in enumerate((itbi.get("transactions") or [])[:8],1):
+            out.extend([
+                {"label":f"ITBI {i} · data","value":tx.get("transaction_date")},
+                {"label":f"ITBI {i} · valor de avaliação","value":tx.get("assessed_value"),"unit":"BRL"},
+                {"label":f"ITBI {i} · tipo imóvel","value":tx.get("property_type")},
+                {"label":f"ITBI {i} · uso","value":tx.get("use_description")},
+                {"label":f"ITBI {i} · área construída","value":tx.get("built_area_m2"),"unit":"m²"},
+                {"label":f"ITBI {i} · método de vínculo","value":tx.get("match_method")}
+            ])
+        return out
+    if s=="licensing_history":
+        out=[]
+        for item in (c.get("licensing") or {}).get("housing_permits_exact_sql") or []:
+            r=item.get("properties") or {}
+            out.extend([
+                {"label":"Licença","value":r.get("num_licenca")},
+                {"label":"Processo","value":r.get("num_processo")},
+                {"label":"Assunto","value":r.get("assunto")},
+                {"label":"Situação","value":r.get("situacao_processo")},
+                {"label":"Tipo de processo","value":r.get("tipo_processo")},
+                {"label":"Emissão","value":r.get("data_emissao_licenca")},
+                {"label":"Validade","value":r.get("data_validade_licenca")},
+                {"label":"Conclusão","value":r.get("data_conclusao")},
+                {"label":"Área total construída licenciada","value":recife_index.num(r.get("areatotalconstruida")),"unit":"m²"},
+                {"label":"Uso","value":r.get("uso_imovel")}
+            ])
+        if not out:out.append({"label":"Licenciamento por DSQFL","value":"Nenhum evento exato localizado no índice público materializado."})
+        return out
     if s=="environment_risk_heritage":
         out=[]
         for k,l in [("iep","IEP"),("zeph","ZEPH"),("ipav","IPAV"),("ucn","UCN")]:
