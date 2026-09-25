@@ -12,7 +12,7 @@ from pathlib import Path
 import psycopg2
 import municipality_utilities
 from psycopg2.extras import RealDictCursor
-from shapely.geometry import shape
+from shapely.geometry import shape, Point
 
 ROOT = Path("/srv/lotediretor/app")
 DB_DSN = "dbname=lotediretor user=sentinelx host=/var/run/postgresql"
@@ -248,37 +248,42 @@ def spatial_layer_for_parcel(key: str, parcel: dict, count: int = 250) -> list[d
 def planning_at_point(lat: float, lng: float) -> tuple[dict, dict]:
     out = {}
     errors = {}
+    pt = Point(lng, lat)
     for key, layer in PLANNING_LAYERS.items():
-        span = 0.002
+        span = 0.0007
         params = {
-            "service": "WMS",
-            "version": "1.1.1",
-            "request": "GetFeatureInfo",
-            "layers": layer,
-            "query_layers": layer,
-            "styles": "",
-            "srs": "EPSG:4326",
-            "bbox": f"{lng-span},{lat-span},{lng+span},{lat+span}",
-            "width": "256",
-            "height": "256",
-            "x": "128",
-            "y": "128",
-            "info_format": "application/json",
-            "feature_count": "5",
+            "service": "WFS",
+            "version": "2.0.0",
+            "request": "GetFeature",
+            "typeNames": layer,
+            "srsName": "EPSG:4326",
+            "count": "10",
+            "bbox": f"{lng-span},{lat-span},{lng+span},{lat+span},EPSG:4326",
+            "propertyName": "the_geom,sigla,nome,tipo",
+            "outputFormat": "application/json",
         }
         try:
             req = urllib.request.Request(
-                FILIPEIA_WMS + "?" + urllib.parse.urlencode(params),
+                FILIPEIA_WFS + "?" + urllib.parse.urlencode(params),
                 headers={
                     "User-Agent": "LoteDiretor/0.1 (+https://lotediretor.com)",
                     "Accept": "application/json",
                 },
             )
-            with urllib.request.urlopen(req, timeout=15) as response:
+            with urllib.request.urlopen(req, timeout=20) as response:
                 data = json.loads(response.read(2000000))
-            features = data.get("features") or []
-            props = (features[0].get("properties") or {}) if features else {}
-            out[key] = {k: props.get(k) for k in PLANNING_FIELDS if props.get(k) is not None}
+            selected = {}
+            for feature in data.get("features") or []:
+                geom = feature.get("geometry")
+                props = feature.get("properties") or {}
+                if geom and (shape(geom).contains(pt) or shape(geom).touches(pt)):
+                    selected = {
+                        k: props.get(k)
+                        for k in PLANNING_FIELDS
+                        if props.get(k) is not None
+                    }
+                    break
+            out[key] = selected
         except Exception as exc:
             out[key] = {}
             errors[key] = type(exc).__name__
@@ -310,8 +315,8 @@ def context(parcel: dict, lat: float, lng: float) -> dict:
             "macrozone": {"properties": planning.get("macrozone") or {}},
             "special_regimes": {},
             "note": (
-                "Zoneamento e macrozoneamento 2024 consultados pontualmente no GeoServer "
-                "oficial do Filipeia; a base não é espelhada."
+                "Zoneamento e macrozoneamento 2024 consultados por interseção WFS no "
+                "GeoServer oficial do Filipeia; a base não é espelhada."
             ),
         },
         "buildings": spatial.get("buildings") or [],
