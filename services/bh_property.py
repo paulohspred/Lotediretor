@@ -19,6 +19,7 @@ LAYERS={
  "heritage_municipal":("ide_bhgeo:AREA_PROTECAO_CULTURAL_CDPCM-BH",["ID_AREA_PROTECAO_CULTURAL","DESC_TIPO_AREA_PROTECAO","NOME_AREA_PROTECAO","GEOMETRIA"]),
  "heritage_state":("ide_bhgeo:AREA_PROTECAO_CULTURAL_IEPHA",["ID_AREA_PROTECAO_CULTURAL","DESC_TIPO_AREA_PROTECAO","NOME_AREA_PROTECAO","GEOMETRIA"]),
  "heritage_federal":("ide_bhgeo:AREA_PROTECAO_CULTURAL_IPHAN",["ID_AREA_PROTECAO_CULTURAL","DESC_TIPO_AREA_PROTECAO","NOME_AREA_PROTECAO","GEOMETRIA"]),
+ "contour_1m":("ide_bhgeo:CURVA_NIVEL_SEGMENTADA_1M",["ID_CURVA_SEC_SEGMENTADA","ID_CURVA_SEC","COTA_CURVA_NIVEL","GEOMETRIA"]),
  "permit":("ide_bhgeo:PROJETO_EDIFICACAO_LICENCIADO",["ID_PROJETO_EDIFICACOES","NUMERO_PROCESSO","SITUACAO_REQUERIMENTO","TITULO_PROJETO","TIPO","SITUACAO_PROJETO","NUM_ULTIMO_ALVARA","DT_EMISSAO_ALVARA_CONSTRUCAO","DT_CONCESSAO_ULTIMO_ALVARA","DT_VALIDADE_ULTIMO_ALVARA","DATA_COMUNICADO_INICIO_OBRA","DATA_ULTIMA_BAIXA","TIPO_ULTIMA_BAIXA","ENDERECO","LOTE_PROJETO","USO_GERAL","QTD_UND_RESIDENCIAL","QTD_UND_NAO_RESIDENCIAL","AREA_CONSTRUIDA","TIPO_APROVACAO","DATA_APROVACAO","AREA_LIQUIDA","QTDE_PAVIMENTOS","LINK_SIATU_EDIFICACAO","GEOMETRIA"])
 }
 LABEL={"identity":"Identidade","land":"Terreno","building":"Edificação","IPTU":"IPTU","PGV":"PGV","ITBI":"ITBI","registry reference":"Registro imobiliário","zoning":"Zoneamento","urban parameters":"Parâmetros urbanísticos","permits":"Licenciamento","habite-se":"Habite-se","environment":"Ambiental","risk":"Risco","heritage":"Patrimônio","electricity":"Energia","gas":"Gás","water/sewer":"Água e esgoto","drainage":"Drenagem","telecom":"Telecom","transport":"Sistema viário","imagery":"Imagens","terrain":"Terreno/topografia","public works":"Obras públicas","public processes":"Processos públicos","official gazette":"Diário Oficial","historical data":"Histórico"}
@@ -69,6 +70,24 @@ def point(lat,lng):
 def spatial(key,lat,lng):
     return [x for x in query(key,lat=lat,lng=lng) if contains(x,lat,lng)]
 
+def parcel_intersections(key,parcel,count=1000):
+    geom=shape(parcel.get("geometry") or {})
+    minx,miny,maxx,maxy=geom.bounds
+    typename,fields=LAYERS[key]
+    q={
+        "service":"WFS","version":"2.0.0","request":"GetFeature",
+        "typeNames":typename,"srsName":"EPSG:4326","count":str(count),
+        "propertyName":",".join(fields),"outputFormat":"application/json",
+        "bbox":f"{minx},{miny},{maxx},{maxy},EPSG:4326"
+    }
+    data=request(q);allowed=set(fields)-{"GEOMETRIA"};out=[]
+    for f in data.get("features") or []:
+        p=f.get("properties") or {}
+        if set(p)-allowed:raise RuntimeError("bh_unexpected_fields")
+        item={"type":"Feature","id":f.get("id"),"geometry":f.get("geometry"),"properties":p}
+        if item["geometry"] and shape(item["geometry"]).intersects(geom):out.append(item)
+    return out
+
 def context(lat,lng,parcel):
     errors={}
     try:approved=spatial("approved",lat,lng)
@@ -88,9 +107,23 @@ def context(lat,lng,parcel):
         except Exception as e:heritage[key]=[];errors[key]=type(e).__name__
     try:permits=spatial("permit",lat,lng)
     except Exception as e:permits=[];errors["permits"]=type(e).__name__
+    try:contours=parcel_intersections("contour_1m",parcel,count=1000)
+    except Exception as e:contours=[];errors["terrain_contours"]=type(e).__name__
+    contour_values=sorted({(x.get("properties") or {}).get("COTA_CURVA_NIVEL") for x in contours if isinstance((x.get("properties") or {}).get("COTA_CURVA_NIVEL"),(int,float))})
+    terrain={
+        "available":bool(contour_values),
+        "method":"BHGEO curvas de nível segmentadas de 1 m intersectando o polígono do lote",
+        "quality":"OFFICIAL_CONTOUR_INTERSECTION",
+        "contour_count":len(contours),
+        "min_elevation_m":min(contour_values) if contour_values else None,
+        "max_elevation_m":max(contour_values) if contour_values else None,
+        "amplitude_m":(max(contour_values)-min(contour_values)) if contour_values else None,
+        "contour_elevations_m":contour_values,
+        "caveat":"Faixa altimétrica baseada somente nas curvas oficiais que cruzam o lote; não substitui MDT contínuo nem levantamento topográfico de campo."
+    }
     z=(zoning[0].get("properties") if zoning else {}) or {}
     return {"planning":{"zoning":{"properties":{"cd_zoneamento_perimetro":z.get("SIGLA_TIPO_ZONEAMENTO"),"tx_zoneamento_perimetro":z.get("DESC_TIPO_ZONEAMENTO"),"source_layer":"ZONEAMENTO_11181"}},"special_regimes":{}},
-    "approved_parcel":approved,"buildings":buildings,"terrain":{"available":False,"reason":"pending_bh_terrain"},
+    "approved_parcel":approved,"buildings":buildings,"terrain":terrain,
     "risk":{"geological":risk_slide,"hydrological":risk_flood},"heritage":{"assets":[],"buffers":heritage},"utilities":municipality_utilities.load("3106200"),
     "licensing":{"housing_permits_exact_sql":permits,"impact_spatial_incidence":[],"environment_spatial_incidence":[]},
     "fiscal":{"pgv":{"found":False},"iptu":{"found":False,"latest":{}},"itbi":{"available":False,"count":0,"registry_references":[],"transactions":[]}},
@@ -132,6 +165,19 @@ def vals(s,p,c):
                 {"label":"Pavimentos licenciados","value":r.get("QTDE_PAVIMENTOS")}
             ])
         return out or [{"label":"Projeto licenciado no ponto","value":"Nenhum projeto intersectante localizado na camada BHGEO consultada."}]
+    if s=="terrain_visual":
+        t=c.get("terrain") or {}
+        if not t.get("available"):
+            return [{"label":"Topografia","value":"Nenhuma curva de nível de 1 m intersecta o lote nesta consulta."}]
+        return [
+            {"label":"Curvas de nível de 1 m intersectantes","value":t.get("contour_count")},
+            {"label":"Menor cota de curva no lote","value":t.get("min_elevation_m"),"unit":"m"},
+            {"label":"Maior cota de curva no lote","value":t.get("max_elevation_m"),"unit":"m"},
+            {"label":"Amplitude entre curvas intersectantes","value":t.get("amplitude_m"),"unit":"m"},
+            {"label":"Cotas intersectantes","value":", ".join(str(v) for v in t.get("contour_elevations_m") or [])},
+            {"label":"Método","value":t.get("method")},
+            {"label":"Limite topográfico","value":t.get("caveat")}
+        ]
     if s=="environment_risk_heritage":
         out=[]
         for item in (c.get("risk") or {}).get("hydrological") or []:
