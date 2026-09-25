@@ -168,6 +168,25 @@ def _contour_profiles(parcel_geometry,contours):
             })
     return profiles
 
+def parcel_nearby(key,parcel,count=300,pad_deg=0.00025):
+    geom=shape(parcel.get("geometry") or {})
+    if geom.is_empty:return []
+    minx,miny,maxx,maxy=geom.bounds
+    typename,fields=LAYERS[key]
+    q={
+        "service":"WFS","version":"2.0.0","request":"GetFeature",
+        "typeNames":typename,"srsName":"EPSG:4326","count":str(count),
+        "propertyName":",".join(fields),"outputFormat":"application/json",
+        "bbox":f"{minx-pad_deg},{miny-pad_deg},{maxx+pad_deg},{maxy+pad_deg},EPSG:4326"
+    }
+    data=request(q);allowed=set(fields)-{"GEOMETRIA"};out=[];search_area=geom.buffer(pad_deg)
+    for f in data.get("features") or []:
+        p=f.get("properties") or {}
+        if set(p)-allowed:raise RuntimeError("bh_unexpected_fields")
+        item={"type":"Feature","id":f.get("id"),"geometry":f.get("geometry"),"properties":p}
+        if item["geometry"] and shape(item["geometry"]).intersects(search_area):out.append(item)
+    return out
+
 def context(lat,lng,parcel):
     errors={}
     try:approved=spatial("approved",lat,lng)
@@ -195,7 +214,7 @@ def context(lat,lng,parcel):
         except Exception as e:environment[key]=[];errors[key]=type(e).__name__
     transport={}
     for key in ["road_class","road_circulation"]:
-        try:transport[key]=parcel_intersections(key,parcel,count=200)
+        try:transport[key]=parcel_nearby(key,parcel,count=250,pad_deg=0.00025)
         except Exception as e:transport[key]=[];errors[key]=type(e).__name__
     try:microdrainage=parcel_intersections("microdrainage",parcel,count=500)
     except Exception as e:microdrainage=[];errors["microdrainage"]=type(e).__name__
@@ -321,16 +340,16 @@ def vals(s,p,c):
         for item in (c.get("transport") or {}).get("road_class") or []:
             r=item.get("properties") or {}
             out.extend([
-                {"label":"Classificação viária","value":r.get("CLASSIFICACAO_VIARIA")},
-                {"label":"Subdivisão viária","value":r.get("SUBDIVISAO_CLASSF_VIARIA")},
-                {"label":"Logradouro classificado","value":" ".join(str(x) for x in [r.get("TP_LOG"),r.get("NO_LOG")] if x)},
+                {"label":"Classificação da via próxima","value":r.get("CLASSIFICACAO_VIARIA")},
+                {"label":"Subdivisão da classificação viária","value":r.get("SUBDIVISAO_CLASSF_VIARIA")},
+                {"label":"Logradouro próximo","value":" ".join(str(x) for x in [r.get("TP_LOG"),r.get("NO_LOG")] if x)},
                 {"label":"Afastamento frontal informado","value":r.get("AFASTAMENTO_FRONTAL")},
                 {"label":"Largura viária","value":r.get("DESCRICAO_TIPO_LARGURA") or r.get("TIPO_LARGURA_VIA")}
             ])
         for item in (c.get("transport") or {}).get("road_circulation") or []:
             r=item.get("properties") or {}
             out.extend([
-                {"label":"Trecho de circulação viária","value":" ".join(str(x) for x in [r.get("TIPO_LOGRADOURO"),r.get("LOGRADOURO")] if x)},
+                {"label":"Trecho de circulação próximo","value":" ".join(str(x) for x in [r.get("TIPO_LOGRADOURO"),r.get("LOGRADOURO")] if x)},
                 {"label":"Tipo de circulação","value":r.get("TIPO_TRECHO_CIRCULACAO")}
             ])
         return out
