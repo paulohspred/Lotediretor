@@ -750,7 +750,7 @@ function renderParcel(payload){
 }
 async function inspectParcel(latlng){
   const city=cities[Number(select.value)];
-  const endpoint=city.ibge==="3550308"?"/api/parcel/v1/sp/parcel":city.ibge==="2611606"?"/api/parcel/v1/recife/parcel":city.ibge==="3304557"?"/api/parcel/v1/rio/parcel":city.ibge==="3106200"?"/api/parcel/v1/bh/parcel":null;
+  const endpoint=city.ibge==="3550308"?"/api/parcel/v1/sp/parcel":city.ibge==="2611606"?"/api/parcel/v1/recife/parcel":city.ibge==="3304557"?"/api/parcel/v1/rio/parcel":city.ibge==="3106200"?"/api/parcel/v1/bh/parcel":city.ibge==="2507507"?"/api/parcel/v1/jp/parcel":null;
   if(!endpoint){
     clearSelectedParcel();
     setParcelMessage("em integração",`O clique cadastral ainda não está ligado em ${city.name}.`);
@@ -778,13 +778,13 @@ async function inspectParcel(latlng){
 async function searchParcel(){
   const city=cities[Number(select.value)];
   const q=lotInput.value.trim();
-  const endpoint=city.ibge==="3550308"?"/api/parcel/v1/sp/search":city.ibge==="2611606"?"/api/parcel/v1/recife/search":city.ibge==="3304557"?"/api/parcel/v1/rio/search":city.ibge==="3106200"?"/api/parcel/v1/bh/search":null;
+  const endpoint=city.ibge==="3550308"?"/api/parcel/v1/sp/search":city.ibge==="2611606"?"/api/parcel/v1/recife/search":city.ibge==="3304557"?"/api/parcel/v1/rio/search":city.ibge==="3106200"?"/api/parcel/v1/bh/search":city.ibge==="2507507"?"/api/parcel/v1/jp/search":null;
   if(!endpoint){
     searchStatus.textContent="Busca cadastral ainda não ligada neste município.";
     return;
   }
   if(!q){
-    searchStatus.textContent=city.ibge==="2611606"?"Informe DSQFL ou SeqImóvel.":city.ibge==="3304557"?"Informe inscrição imobiliária, matrícula ou RGI.":city.ibge==="3106200"?"Informe o número CTM do lote.":"Informe um SQL com 11 dígitos ou um CIB.";
+    searchStatus.textContent=city.ibge==="2611606"?"Informe DSQFL ou SeqImóvel.":city.ibge==="3304557"?"Informe inscrição imobiliária, matrícula ou RGI.":city.ibge==="3106200"?"Informe o número CTM do lote.":city.ibge==="2507507"?"Informe o código cartográfico de 9 dígitos.":"Informe um SQL com 11 dígitos ou um CIB.";
     lotInput.focus();return;
   }
   lotSearch.disabled=true;
@@ -819,13 +819,13 @@ select.addEventListener("change",e=>{
   const idx=Number(e.target.value);
   applyCity(idx,true);
   const city=cities[idx];
-  const active=["3550308","2611606","3304557","3106200"].includes(city.ibge);
+  const active=["3550308","2611606","3304557","3106200","2507507"].includes(city.ibge);
   lotInput.disabled=!active;
   lotSearch.disabled=!active;
   if(active){
-    lotInput.placeholder=city.ibge==="2611606"?"DSQFL ou SeqImóvel":city.ibge==="3304557"?"Inscrição, matrícula ou RGI":city.ibge==="3106200"?"Número do lote CTM":"Ex.: 00205900496 ou SFPRPQ1W";
+    lotInput.placeholder=city.ibge==="2611606"?"DSQFL ou SeqImóvel":city.ibge==="3304557"?"Inscrição, matrícula ou RGI":city.ibge==="3106200"?"Número do lote CTM":city.ibge==="2507507"?"Código cartográfico (9 dígitos)":"Ex.: 00205900496 ou SFPRPQ1W";
     searchStatus.textContent=`Busca oficial disponível para ${city.name}.`;
-    setParcelMessage("clique no mapa",city.ibge==="2611606"?"Clique no lote ou busque por DSQFL/SeqImóvel.":city.ibge==="3304557"?"Clique no lote ou busque por inscrição/matrícula/RGI.":city.ibge==="3106200"?"Clique no lote ou busque pelo número CTM.":"Clique no lote ou busque por SQL/CIB.");
+    setParcelMessage("clique no mapa",city.ibge==="2611606"?"Clique no lote ou busque por DSQFL/SeqImóvel.":city.ibge==="3304557"?"Clique no lote ou busque por inscrição/matrícula/RGI.":city.ibge==="3106200"?"Clique no lote ou busque pelo número CTM.":city.ibge==="2507507"?"Clique no lote ou busque pelo código cartográfico.":"Clique no lote ou busque por SQL/CIB.");
   }else{
     lotInput.value="";
     lotInput.placeholder="Busca cadastral em integração";
