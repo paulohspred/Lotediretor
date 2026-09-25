@@ -131,9 +131,9 @@ def context(lat,lng,parcel):
 
 def vals(s,p,c):
     q=p["properties"];z=(c["planning"]["zoning"] or {}).get("properties") or {};approved=c.get("approved_parcel") or []
-    if s=="executive_summary":return [{"label":"Lote CTM","value":q.get("ctm_number")},{"label":"Área do lote","value":q.get("land_area_m2"),"unit":"m²"},{"label":"Zoneamento","value":z.get("cd_zoneamento_perimetro")},{"label":"Descrição","value":z.get("tx_zoneamento_perimetro")}]
+    if s=="executive_summary":return [{"label":"Identificação do lote (CTM)","value":q.get("ctm_number")},{"label":"Área do lote","value":q.get("land_area_m2"),"unit":"m²"},{"label":"Zoneamento","value":z.get("cd_zoneamento_perimetro")},{"label":"Descrição","value":z.get("tx_zoneamento_perimetro")}]
     if s=="identity_location":
-        out=[{"label":"Lote CTM","value":q.get("ctm_number")},{"label":"ID lote CTM","value":q.get("municipal_parcel_feature_id")},{"label":"ID quadra CTM","value":q.get("ctm_block_id")},{"label":"Área CTM","value":q.get("land_area_m2"),"unit":"m²"}]
+        out=[{"label":"Identificação do lote (CTM)","value":q.get("ctm_number")},{"label":"Identificador cadastral do lote","value":q.get("municipal_parcel_feature_id")},{"label":"Identificador cadastral da quadra","value":q.get("ctm_block_id")},{"label":"Área cadastral do terreno","value":q.get("land_area_m2"),"unit":"m²"}]
         for x in approved[:5]:
             r=x.get("properties") or {};out.extend([{"label":"Zona fiscal · lote aprovado","value":r.get("ZONA_FISCAL")},{"label":"Quarteirão · lote aprovado","value":r.get("QUARTEIRAO")},{"label":"Lote aprovado","value":r.get("LOTE")},{"label":"Planta CP","value":r.get("PLANTA_CP")}])
         return out
@@ -142,9 +142,9 @@ def vals(s,p,c):
         areas=[(x.get("properties") or {}).get("AREA") for x in buildings if isinstance((x.get("properties") or {}).get("AREA"),(int,float))]
         heights=[(x.get("properties") or {}).get("ALT_EST_MAXMDE_MINMDT") for x in buildings if isinstance((x.get("properties") or {}).get("ALT_EST_MAXMDE_MINMDT"),(int,float))]
         return [
-            {"label":"Edificações BHGEO vinculadas ao lote CTM","value":len(buildings)},
+            {"label":"Edificações cartográficas vinculadas ao terreno","value":len(buildings)},
             {"label":"Soma de áreas de footprint","value":round(sum(areas),2) if areas else None,"unit":"m²"},
-            {"label":"Maior altura estimada MDE-MDT","value":round(max(heights),2) if heights else None,"unit":"m"},
+            {"label":"Maior altura estimada das edificações","value":round(max(heights),2) if heights else None,"unit":"m"},
             {"label":"Ressalva","value":"Alturas/footprints BHGEO são contexto cartográfico e não substituem cadastro/licenciamento vigente."}
         ]
     if s=="licensing_history":
