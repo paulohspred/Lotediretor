@@ -126,7 +126,8 @@ header{height:56px;background:var(--nav);color:#fff;border-bottom:4px solid var(
     <div class="layer-list">
       <label class="layer-toggle"><input type="checkbox" data-zlayer="parcel" checked><span>Lotes fiscais<small>Cadastro oficial da Prefeitura de São Paulo</small></span></label>
       <label class="layer-toggle"><input type="checkbox" data-zlayer="zoning" checked><span>Zoneamento vigente<small>Lei 18.177/2024</small></span></label>
-      <label class="layer-toggle"><input type="checkbox" data-zlayer="heritage"><span>Patrimônio cultural<small>Tombamento / envoltórias</small></span></label>\n      <label class="layer-toggle"><input type="checkbox" data-zlayer="environment"><span>Áreas ambientais<small>Unidades de conservação e áreas especiais</small></span></label>
+      <label class="layer-toggle"><input type="checkbox" data-zlayer="heritage"><span>Patrimônio cultural<small>Tombamento / envoltórias</small></span></label>
+      <label class="layer-toggle"><input type="checkbox" data-zlayer="environment"><span>Áreas ambientais<small>Unidades de conservação e áreas especiais</small></span></label>
       <label class="layer-toggle"><input type="checkbox" data-zlayer="coastal"><span>Restrição costeira<small>Faixas oficiais da orla</small></span></label>
       <label class="layer-toggle"><input type="checkbox" data-zlayer="roads"><span>Hierarquia viária<small>Classificação oficial das vias</small></span></label>
       <label class="layer-toggle"><input type="checkbox" data-zlayer="geoRisk"><span>Risco geológico<small>Triagem espacial</small></span></label>
@@ -137,6 +138,7 @@ header{height:56px;background:var(--nav);color:#fff;border-bottom:4px solid var(
       <label class="layer-toggle"><input type="checkbox" data-zlayer="buildings"><span>Edificações<small>Implantação das construções mapeadas</small></span></label>
       <label class="layer-toggle"><input type="checkbox" data-zlayer="terrain"><span>Topografia<small>Curvas, relevo ou modelo de terreno</small></span></label>
       <label class="layer-toggle"><input type="checkbox" data-zlayer="gas"><span>Rede de gás<small>Contexto de infraestrutura quando publicado</small></span></label>
+      <label class="layer-toggle"><input type="checkbox" data-zlayer="drainage"><span>Microdrenagem<small>Rede municipal publicada</small></span></label>
     </div>
 
   </aside>
@@ -403,6 +405,19 @@ const bhTerrainWms=L.tileLayer.wms("https://bhmap.pbh.gov.br/v2/api/idebhgeo/wms
   layers:"ide_bhgeo:CURVA_NIVEL_SEGMENTADA_1M",format:"image/png",transparent:true,version:"1.1.1",
   opacity:.62,attribution:"Curvas de nível de 1 m · Prefeitura de Belo Horizonte"
 }).setZIndex(350);
+const bhEnvironmentWms=L.tileLayer.wms("https://bhmap.pbh.gov.br/v2/api/idebhgeo/wms",{
+  layers:"ide_bhgeo:ADE_INTERESSE_AMBIENTAL_11181,ide_bhgeo:AEIS_INTERESSE_AMBIENTAL_11181,ide_bhgeo:UNID_CONSERV_AMBIENTAL,ide_bhgeo:PARQUES_MUNICIPAIS,ide_bhgeo:CORREDOR_ECOLOGICO_SERRA_CURRAL",
+  format:"image/png",transparent:true,version:"1.1.1",
+  opacity:.36,attribution:"Áreas ambientais · Prefeitura de Belo Horizonte"
+}).setZIndex(365);
+const bhRoadsWms=L.tileLayer.wms("https://bhmap.pbh.gov.br/v2/api/idebhgeo/wms",{
+  layers:"ide_bhgeo:CLASSIFICACAO_VIARIA_11181",format:"image/png",transparent:true,version:"1.1.1",
+  opacity:.58,attribution:"Classificação viária · Prefeitura de Belo Horizonte"
+}).setZIndex(355);
+const bhDrainageWms=L.tileLayer.wms("https://bhmap.pbh.gov.br/v2/api/idebhgeo/wms",{
+  layers:"ide_bhgeo:REDE_MICRODRENAGEM",format:"image/png",transparent:true,version:"1.1.1",
+  opacity:.62,attribution:"Microdrenagem · Prefeitura de Belo Horizonte"
+}).setZIndex(354);
 
 const spParcelWms=L.tileLayer.wms("https://wms.geosampa.prefeitura.sp.gov.br/geoserver/geoportal/wms",{
   layers:"lote_cidadao",
@@ -529,7 +544,7 @@ const cityLayerMap={
   "3550308":{parcel:spParcelWms,zoning:spZoningWms,heritage:spHeritageWms,geoRisk:spGeoRiskWms,hydroRisk:spHydroRiskWms,hillshade:spHillshadeWms,slope:spSlopeWms,ortho:spOrthoIndex2020Wms},
   "2611606":{parcel:recifeParcelOverlay,zoning:recifeZoningOverlay,buildings:recifeBuildingOverlay,slope:recifeSlopeTiles,roads:recifeRoadOverlay},
   "3304557":{parcel:rioParcelOverlay,zoning:rioZoningOverlay},
-  "3106200":{parcel:bhParcelWms,zoning:bhZoningWms,buildings:bhBuildingsWms,terrain:bhTerrainWms},
+  "3106200":{parcel:bhParcelWms,zoning:bhZoningWms,environment:bhEnvironmentWms,roads:bhRoadsWms,drainage:bhDrainageWms,buildings:bhBuildingsWms,terrain:bhTerrainWms},
   "2507507":{parcel:jpParcelWms,zoning:jpZoningWms,heritage:jpHeritageWms,environment:jpEnvironmentWms,hydroRisk:jpSusceptibilityWms,coastal:jpCoastalWms,roads:jpRoadHierarchyWms,buildings:jpBuildingsWms,terrain:jpTerrainWms,gas:jpGasWms,ortho:jpOrthoWms}
 };
 const layerLabelsByCity={
@@ -557,6 +572,9 @@ const layerLabelsByCity={
   "3106200":{
     parcel:["Lotes cadastrais","Cadastro territorial da Prefeitura de Belo Horizonte"],
     zoning:["Zoneamento","Lei municipal de uso e ocupação"],
+    environment:["Áreas ambientais","Unidades de conservação, parques e áreas de interesse ambiental"],
+    roads:["Classificação viária","Hierarquia e parâmetros oficiais das vias"],
+    drainage:["Microdrenagem","Rede cartográfica municipal"],
     buildings:["Edificações","Cartografia oficial de edificações"],
     terrain:["Curvas de nível","Curvas oficiais com equidistância de 1 m"]
   },
@@ -574,7 +592,7 @@ const layerLabelsByCity={
     ortho:["Ortofoto 2021","Aerofotogrametria municipal"]
   }
 };
-const allThematicLayers=[spParcelWms,spZoningWms,spHeritageWms,spGeoRiskWms,spHydroRiskWms,spHillshadeWms,spSlopeWms,spOrthoIndex2020Wms,recifeParcelOverlay,recifeZoningOverlay,recifeBuildingOverlay,recifeSlopeTiles,recifeRoadOverlay,rioParcelOverlay,rioZoningOverlay,bhParcelWms,bhZoningWms,bhBuildingsWms,bhTerrainWms,jpParcelWms,jpZoningWms,jpHeritageWms,jpEnvironmentWms,jpSusceptibilityWms,jpCoastalWms,jpRoadHierarchyWms,jpBuildingsWms,jpTerrainWms,jpGasWms,jpOrthoWms];
+const allThematicLayers=[spParcelWms,spZoningWms,spHeritageWms,spGeoRiskWms,spHydroRiskWms,spHillshadeWms,spSlopeWms,spOrthoIndex2020Wms,recifeParcelOverlay,recifeZoningOverlay,recifeBuildingOverlay,recifeSlopeTiles,recifeRoadOverlay,rioParcelOverlay,rioZoningOverlay,bhParcelWms,bhZoningWms,bhEnvironmentWms,bhRoadsWms,bhDrainageWms,bhBuildingsWms,bhTerrainWms,jpParcelWms,jpZoningWms,jpHeritageWms,jpEnvironmentWms,jpSusceptibilityWms,jpCoastalWms,jpRoadHierarchyWms,jpBuildingsWms,jpTerrainWms,jpGasWms,jpOrthoWms];
 function activeCityLayers(){const city=cities[Number(select.value)];return cityLayerMap[city.ibge]||{}}
 function syncCityLayers(){
   allThematicLayers.forEach(layer=>{if(map.hasLayer(layer))map.removeLayer(layer)});
