@@ -4,6 +4,8 @@ import json,re,urllib.parse,urllib.request
 from datetime import datetime,timezone
 from pathlib import Path
 
+import recife_index
+
 ROOT=Path("/srv/lotediretor/app")
 PARCEL="https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Planejamento/BASES_BAIRRO_FACEQUADRA_LOGRADOURO_LOTE/FeatureServer/3"
 ZBASE="https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Planejamento/BASES_ZONEAMENTO_G_PD2020/FeatureServer"
@@ -68,12 +70,24 @@ def context(lat,lng,parcel):
         try:layers[k]=query(f"{ZBASE}/{i}",fields,lat=lat,lng=lng,geometry=False)
         except Exception as e:layers[k]=[];errors[k]=type(e).__name__
     z=((layers.get("zoning") or [{}])[0].get("properties") or {});p=parcel["properties"]
+    ix=recife_index.resolve(parcel)
+    iptu_record=ix.get("iptu")
+    iptu_latest=recife_index.iptu_latest(iptu_record) if iptu_record else {
+        "land_area_m2":p.get("land_area_m2"),"built_area_m2":p.get("built_area_m2"),
+        "frontage_m":p.get("frontage_m"),"floors":p.get("floors"),
+        "corrected_construction_year":p.get("construction_year"),
+        "use_description":p.get("use_description"),"property_status":p.get("parcel_status"),
+        "raw_v0":p.get("v0")
+    }
+    tx=recife_index.transactions(ix.get("itbi") or [])
+    permits=recife_index.permits(ix.get("licensing") or [])
     return {"planning":{"zoning":{"properties":{"cd_zoneamento_perimetro":z.get("ZONA"),"tx_zoneamento_perimetro":z.get("ZONA2") or z.get("ZONA"),"macrozone":z.get("MACROZONA"),"ca_min":z.get("VLCOEFMIN"),"ca_basic":z.get("VLCOEFBAS"),"ca_max":z.get("VLCOEFMAX"),"considerations":z.get("NMCONSIDERAC")}},"special_regimes":{k:v for k,v in layers.items() if k!="zoning" and v}},
     "buildings":[],"terrain":{"available":False,"reason":"pending_recife_terrain"},"risk":{"geological":[],"hydrological":[]},
     "heritage":{"assets":layers.get("iep") or [],"buffers":{"ZEPH":layers.get("zeph") or [],"IPAV":layers.get("ipav") or [],"UCN":layers.get("ucn") or []}},
-    "utilities":{},"licensing":{"housing_permits_exact_sql":[],"impact_spatial_incidence":[],"environment_spatial_incidence":[]},
-    "fiscal":{"pgv":{"found":False},"iptu":{"found":True,"latest":{"land_area_m2":p.get("land_area_m2"),"built_area_m2":p.get("built_area_m2"),"frontage_m":p.get("frontage_m"),"floors":p.get("floors"),"corrected_construction_year":p.get("construction_year"),"use_description":p.get("use_description"),"property_status":p.get("parcel_status"),"raw_v0":p.get("v0")}},"itbi":{"available":False,"count":0,"registry_references":[],"transactions":[]}},
-    "query_errors":errors,"queried_at":now(),"source":"Prefeitura do Recife / ESIG"}
+    "utilities":{},"licensing":{"housing_permits_exact_sql":permits,"impact_spatial_incidence":[],"environment_spatial_incidence":[],"match_method":"EXACT_DSQFL"},
+    "fiscal":{"pgv":{"found":False},"iptu":{"found":bool(iptu_record),"latest":iptu_latest,"source_record":iptu_record},"itbi":{"available":True,"count":len(tx),"coverage_years":[2026] if (ix.get("coverage") or {}).get("itbi_2026") else [],"registry_references":[],"transactions":tx,"match_method":"OFFICIAL_POINT_INSIDE_PARCEL"}},
+    "data_index_coverage":ix.get("coverage") or {},
+    "query_errors":errors,"queried_at":now(),"source":"Prefeitura do Recife / ESIG + Dados Abertos ODbL"}
 
 def vals(s,p,c):
     q=p["properties"];z=((c["planning"].get("zoning") or {}).get("properties") or {});sp=c["planning"].get("special_regimes") or {}
