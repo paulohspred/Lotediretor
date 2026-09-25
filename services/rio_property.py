@@ -3,6 +3,7 @@ from __future__ import annotations
 import json,re,urllib.parse,urllib.request
 from datetime import datetime,timezone
 from pathlib import Path
+import municipality_utilities
 
 ROOT=Path("/srv/lotediretor/app")
 PARCEL="https://pgeo3.rio.rj.gov.br/arcgis/rest/services/CadParcel/IMOVEIS_TERRITORIAIS/FeatureServer/0"
@@ -67,7 +68,7 @@ def context(lat,lng,parcel):
     if p.get("matricula"):refs.append({"registry_office":None,"registry_number":p.get("matricula"),"source":"PCRJ CadParcel","verification_date":p.get("verification_date")})
     return {"planning":{"zoning":{"properties":{"cd_zoneamento_perimetro":z.get("sigla") or z.get("zona"),"tx_zoneamento_perimetro":" ".join(x for x in [z.get("zona"),z.get("subzona")] if x),"macrozone":m.get("macrozona"),"legislation":z.get("legislacao"),"ap":z.get("ap"),"ca_basic":z.get("cab"),"ca_max":z.get("cam"),"occupancy":z.get("to_"),"min_lot_area_m2":z.get("lote_min"),"min_frontage_m":z.get("testada_min"),"max_height_setback":z.get("gab_afast"),"max_height_no_setback":z.get("gab_n_afast"),"front_setback":z.get("afast_fron"),"ics":z.get("ics"),"observations":z.get("obs")}},"special_regimes":{}},
     "registry":{"available":bool(refs),"references":refs,"interpretation":"Matrícula/RGI são referências públicas da camada cadastral territorial da PCRJ; não substituem certidão atualizada."},
-    "buildings":[],"terrain":{"available":False,"reason":"pending_rio_terrain"},"risk":{"geological":[],"hydrological":[]},"heritage":{"assets":[],"buffers":{}},"utilities":{},"licensing":{"housing_permits_exact_sql":[],"impact_spatial_incidence":[],"environment_spatial_incidence":[]},
+    "buildings":[],"terrain":{"available":False,"reason":"pending_rio_terrain"},"risk":{"geological":[],"hydrological":[]},"heritage":{"assets":[],"buffers":{}},"utilities":municipality_utilities.load("3304557"),"licensing":{"housing_permits_exact_sql":[],"impact_spatial_incidence":[],"environment_spatial_incidence":[]},
     "fiscal":{"pgv":{"found":False},"iptu":{"found":False,"latest":{}},"itbi":{"available":False,"count":0,"registry_references":[],"transactions":[]}},
     "query_errors":errors,"queried_at":now(),"source":"Prefeitura da Cidade do Rio de Janeiro / Data.Rio"}
 
@@ -81,6 +82,8 @@ def vals(s,p,c):
         for r in reg.get("references") or []:out.extend([{"label":"Matrícula cadastral publicada","value":r.get("registry_number")},{"label":"Fonte registral","value":r.get("source")},{"label":"Data de verificação cadastral","value":r.get("verification_date")}])
         out.append({"label":"Ressalva","value":reg.get("interpretation")})
         return out
+    if s=="infrastructure_utilities":
+        return municipality_utilities.report_values(c.get("utilities") or {})
     return []
 
 def report(parcel,ctx):
