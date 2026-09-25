@@ -107,7 +107,10 @@ def terrain_context(parcel,lat,lng):
         "available":True,"sample_method":"clicked point + parcel boundary samples",
         "sample_count":len(samples),"clicked_elevation_m":samples[0]["elevation_m"] if samples and samples[0]["lat"]==lat and samples[0]["lng"]==lng else None,
         "min_sampled_elevation_m":min(elevations),"max_sampled_elevation_m":max(elevations),
-        "sampled_relief_m":max(elevations)-min(elevations),"samples":samples,
+        "sampled_relief_m":max(elevations)-min(elevations),
+        "min_elevation_m":min(elevations),"max_elevation_m":max(elevations),
+        "amplitude_m":max(elevations)-min(elevations),"quality":"Amostragem do modelo oficial de terreno de 5 m",
+        "samples":samples,
         "source":{"authority":"Instituto Pereira Passos / Prefeitura do Rio","dataset":"Modelo Digital de Terreno LiDAR 2019","resolution_m":5,"license":"CC BY 4.0","method":"ArcGIS MapServer identify"}
     }
 
