@@ -1617,15 +1617,16 @@
           "status": "PARTIAL",
           "source_id": "mg-belo-horizonte-ortofotos",
           "supporting_source_ids": [],
-          "endpoint": "https://dados.pbh.gov.br/dataset/ortofoto-2015",
+          "endpoint": "https://bhmap.pbh.gov.br/v2/api/idebhgeo/wms",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "connector_status": "LIVE_2015_ORTHOPHOTO_PENDING_DEPLOY_VALIDATION",
           "missing_fields": [
-            "license review",
-            "current imagery"
+            "production WMS validation after deployment",
+            "newer official citywide imagery",
+            "explicit reuse/cache license review"
           ],
-          "notes": null
+          "notes": "Repository map exposes the official PBH Ortofoto 2015 WMS layer at 1:2,000. The year is shown explicitly because it is historical imagery, not a current aerial view."
         },
         {
           "field": "terrain",
