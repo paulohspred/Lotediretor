@@ -121,6 +121,39 @@ BUILDING_LAYER = {
     ],
 }
 
+ROAD_CONTEXT_LAYERS = {
+    "zoning_road_class": {
+        "type_name": "geoportal:zoneamento_classificacao_viaria",
+        "geometry": "ge_linha",
+        "fields": [
+            "cd_identificador",
+            "tx_logradouro_valido",
+            "cd_logradouro_valido",
+            "tx_classificacao_viaria_eixo",
+            "tx_observacao_eixo",
+            "sigla_fonte_original",
+        ],
+    },
+    "street_segment": {
+        "type_name": "geoportal:segmento_logradouro",
+        "geometry": "ge_linha",
+        "fields": [
+            "cd_identificador",
+            "cd_identificador_logradouro",
+            "codlog",
+            "cd_tipo_logradouro",
+            "cd_titulo_logradouro",
+            "tx_preposicao_logradouro",
+            "nm_logradouro",
+            "cd_numero_inicial_par",
+            "cd_numero_final_par",
+            "cd_numero_inicial_impar",
+            "cd_numero_final_impar",
+            "qt_leito_carrocavel",
+        ],
+    },
+}
+
 THEMATIC_LAYERS = {
     "terrain_tile": {
         "type_name": "geoportal:quadricula_folha_mdt_mds_2020",
@@ -631,6 +664,67 @@ def fetch_buildings_for_parcel(parcel_geometry: dict) -> list[dict]:
             "properties": props,
         })
     return output
+
+
+def fetch_context_layer_for_parcel(config: dict, parcel_geometry: dict, count: int = 200) -> list[dict]:
+    min_lng, min_lat, max_lng, max_lat = geometry_bbox(parcel_geometry)
+    pad = 0.00012
+    bbox = (
+        f"{min_lng-pad},{min_lat-pad},{max_lng+pad},{max_lat+pad},EPSG:4326"
+    )
+    query = {
+        "service": "WFS",
+        "version": "2.0.0",
+        "request": "GetFeature",
+        "typeNames": config["type_name"],
+        "srsName": "EPSG:4326",
+        "bbox": bbox,
+        "count": str(count),
+        "propertyName": ",".join([config["geometry"], *config["fields"]]),
+        "outputFormat": "application/json",
+    }
+    url = WFS + "?" + urllib.parse.urlencode(query)
+    request = urllib.request.Request(
+        url,
+        headers={
+            "User-Agent": "LoteDiretor/0.1 (+https://lotediretor.com)",
+            "Accept": "application/json",
+        },
+    )
+    with urllib.request.urlopen(request, timeout=12) as response:
+        body = response.read(4 * 1024 * 1024 + 1)
+        if response.status != 200:
+            raise RuntimeError(
+                f"GeoSampa {config['type_name']} returned HTTP {response.status}"
+            )
+        if len(body) > 4 * 1024 * 1024:
+            raise RuntimeError(
+                f"GeoSampa {config['type_name']} parcel context exceeded safety limit"
+            )
+    payload = json.loads(body)
+    if payload.get("type") != "FeatureCollection":
+        raise RuntimeError(
+            f"GeoSampa {config['type_name']} did not return FeatureCollection"
+        )
+    allowed = set(config["fields"])
+    out = []
+    for feature in payload.get("features") or []:
+        geometry = feature.get("geometry") or {}
+        if not geometry_intersects(parcel_geometry, geometry):
+            continue
+        props = feature.get("properties") or {}
+        unexpected = set(props) - allowed
+        if unexpected:
+            raise RuntimeError(
+                f"GeoSampa {config['type_name']} returned unexpected fields: "
+                + ", ".join(sorted(unexpected))
+            )
+        out.append({
+            "id": feature.get("id"),
+            "geometry": geometry,
+            "properties": props,
+        })
+    return out
 
 
 def fetch_housing_permits(sql: str | None) -> list[dict]:
@@ -1692,6 +1786,15 @@ def build_context(lat: float, lng: float, parcel_geometry: dict, parcel: dict) -
             pool.submit(fetch_large_point_layer, "urban_operation", lat, lng)
         ] = "urban_operation"
         futures[pool.submit(fetch_buildings_for_parcel, parcel_geometry)] = "__buildings__"
+        for road_key, road_config in ROAD_CONTEXT_LAYERS.items():
+            futures[
+                pool.submit(
+                    fetch_context_layer_for_parcel,
+                    road_config,
+                    parcel_geometry,
+                    200,
+                )
+            ] = "__road__" + road_key
         futures[
             pool.submit(
                 fetch_housing_permits,
@@ -1735,6 +1838,10 @@ def build_context(lat: float, lng: float, parcel_geometry: dict, parcel: dict) -
             "special_regimes": special_regimes,
         },
         "buildings": results.get("__buildings__") or [],
+        "transport": {
+            key: results.get("__road__" + key) or []
+            for key in ROAD_CONTEXT_LAYERS
+        },
         "terrain": results.get("__terrain__") or {
             "available": False,
             "reason": errors.get("__terrain__") or "not_available",
@@ -2374,6 +2481,71 @@ def actual_values_for_section(
                 {"label": f"Corte {name} · inclinação média", "value": profile.get("average_slope_pct"), "unit": "%"},
             ])
         values.append({"label": "Limite topográfico", "value": terrain.get("caveat")})
+        return values
+
+    if section_id == "public_change_context":
+        transport = context.get("transport") or {}
+        values = []
+        seen = set()
+        for item in transport.get("zoning_road_class") or []:
+            props = item.get("properties") or {}
+            key = (
+                props.get("tx_logradouro_valido"),
+                props.get("tx_classificacao_viaria_eixo"),
+            )
+            if key in seen:
+                continue
+            seen.add(key)
+            values.extend([
+                {
+                    "label": "Via que confronta/intersecta o terreno",
+                    "value": props.get("tx_logradouro_valido"),
+                },
+                {
+                    "label": "Classificação viária urbanística",
+                    "value": props.get("tx_classificacao_viaria_eixo"),
+                },
+                {
+                    "label": "Observação da classificação viária",
+                    "value": props.get("tx_observacao_eixo"),
+                },
+            ])
+        seen_segments = set()
+        for item in transport.get("street_segment") or []:
+            props = item.get("properties") or {}
+            key = (
+                props.get("codlog"),
+                props.get("nm_logradouro"),
+                props.get("qt_leito_carrocavel"),
+            )
+            if key in seen_segments:
+                continue
+            seen_segments.add(key)
+            values.extend([
+                {
+                    "label": "Logradouro cadastrado",
+                    "value": props.get("nm_logradouro"),
+                },
+                {
+                    "label": "Código do logradouro",
+                    "value": props.get("codlog"),
+                },
+                {
+                    "label": "Largura cartográfica do leito carroçável",
+                    "value": props.get("qt_leito_carrocavel"),
+                    "unit": "m",
+                },
+            ])
+        if values:
+            values.append({
+                "label": "Limite da leitura viária",
+                "value": (
+                    "A largura do leito carroçável e a classificação do eixo são "
+                    "dados cartográficos/urbanísticos publicados. Não equivalem "
+                    "automaticamente à largura legal total do logradouro, alinhamento "
+                    "definitivo ou faixa de domínio."
+                ),
+            })
         return values
 
     if section_id == "registry_due_diligence":
