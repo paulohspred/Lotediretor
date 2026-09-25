@@ -239,8 +239,8 @@ def context(lat,lng,parcel):
 
 def vals(s,p,c):
     q=p["properties"];z=(c["planning"]["zoning"] or {}).get("properties") or {};reg=c.get("registry") or {}
-    if s=="executive_summary":return [{"label":"Inscrição imobiliária","value":q.get("inscricao_imobiliaria")},{"label":"RGI","value":q.get("rgi")},{"label":"Matrícula cadastral","value":q.get("matricula")},{"label":"Quadra","value":q.get("fiscal_block")},{"label":"Lote","value":q.get("fiscal_lot")},{"label":"Zona","value":z.get("cd_zoneamento_perimetro")},{"label":"CA básico","value":z.get("ca_basic")},{"label":"CA máximo","value":z.get("ca_max")}]
-    if s=="identity_location":return [{"label":"Inscrição imobiliária","value":q.get("inscricao_imobiliaria")},{"label":"RGI","value":q.get("rgi")},{"label":"Projeto","value":q.get("project_number")},{"label":"PAA","value":q.get("paa")},{"label":"Tipo parcelamento","value":q.get("parceling_type")},{"label":"Origem","value":q.get("origin")},{"label":"Tipo do lote","value":q.get("parcel_type")},{"label":"Classificação","value":q.get("classification")},{"label":"Quadra","value":q.get("fiscal_block")},{"label":"Lote","value":q.get("fiscal_lot")},{"label":"Área descrita","value":q.get("land_area_m2"),"unit":"m²"},{"label":"Data verificação","value":q.get("verification_date")},{"label":"Publicação","value":q.get("publication_date")}]
+    if s=="executive_summary":return [{"label":"Inscrição imobiliária","value":q.get("inscricao_imobiliaria")},{"label":"Referência registral publicada","value":q.get("rgi")},{"label":"Matrícula cadastral","value":q.get("matricula")},{"label":"Quadra","value":q.get("fiscal_block")},{"label":"Lote","value":q.get("fiscal_lot")},{"label":"Zona","value":z.get("cd_zoneamento_perimetro")},{"label":"CA básico","value":z.get("ca_basic")},{"label":"CA máximo","value":z.get("ca_max")}]
+    if s=="identity_location":return [{"label":"Inscrição imobiliária","value":q.get("inscricao_imobiliaria")},{"label":"RGI","value":q.get("rgi")},{"label":"Projeto","value":q.get("project_number")},{"label":"Projeto Aprovado de Alinhamento","value":q.get("paa")},{"label":"Tipo parcelamento","value":q.get("parceling_type")},{"label":"Origem","value":q.get("origin")},{"label":"Tipo do lote","value":q.get("parcel_type")},{"label":"Classificação","value":q.get("classification")},{"label":"Quadra","value":q.get("fiscal_block")},{"label":"Lote","value":q.get("fiscal_lot")},{"label":"Área descrita","value":q.get("land_area_m2"),"unit":"m²"},{"label":"Data verificação","value":q.get("verification_date")},{"label":"Publicação","value":q.get("publication_date")}]
     if s=="building_existing":
         buildings=c.get("buildings") or []
         heights=[(x.get("properties") or {}).get("altura") for x in buildings if isinstance((x.get("properties") or {}).get("altura"),(int,float))]
@@ -251,7 +251,7 @@ def vals(s,p,c):
             {"label":"Tipos cartográficos","value":", ".join(types[:8]) if types else None},
             {"label":"Ressalva","value":"Edificações 2019 são contexto cartográfico e não substituem cadastro/licenciamento atual."}
         ]
-    if s=="planning_buildability":return [{"label":"Macrozona","value":z.get("macrozone")},{"label":"Zona/subzona","value":z.get("tx_zoneamento_perimetro")},{"label":"Sigla","value":z.get("cd_zoneamento_perimetro")},{"label":"Legislação","value":z.get("legislation")},{"label":"Área de planejamento","value":z.get("ap")},{"label":"Coeficiente de aproveitamento básico","value":z.get("ca_basic")},{"label":"Coeficiente de aproveitamento máximo","value":z.get("ca_max")},{"label":"Taxa de ocupação","value":z.get("occupancy")},{"label":"Lote mínimo","value":z.get("min_lot_area_m2"),"unit":"m²"},{"label":"Testada mínima","value":z.get("min_frontage_m"),"unit":"m"},{"label":"Gabarito com afastamento","value":z.get("max_height_setback")},{"label":"Gabarito sem afastamento","value":z.get("max_height_no_setback")},{"label":"Afastamento frontal","value":z.get("front_setback")},{"label":"Índice urbanístico complementar (ICS)","value":z.get("ics")}]
+    if s=="planning_buildability":return [{"label":"Macrozona","value":z.get("macrozone")},{"label":"Zona/subzona","value":z.get("tx_zoneamento_perimetro")},{"label":"Sigla","value":z.get("cd_zoneamento_perimetro")},{"label":"Legislação","value":z.get("legislation")},{"label":"Área de planejamento","value":z.get("ap")},{"label":"Coeficiente de aproveitamento básico","value":z.get("ca_basic")},{"label":"Coeficiente de aproveitamento máximo","value":z.get("ca_max")},{"label":"Taxa de ocupação","value":z.get("occupancy")},{"label":"Lote mínimo","value":z.get("min_lot_area_m2"),"unit":"m²"},{"label":"Testada mínima","value":z.get("min_frontage_m"),"unit":"m"},{"label":"Gabarito com afastamento","value":z.get("max_height_setback")},{"label":"Gabarito sem afastamento","value":z.get("max_height_no_setback")},{"label":"Afastamento frontal","value":z.get("front_setback")},{"label":"Parâmetro urbanístico adicional publicado","value":z.get("ics")}]
     if s=="environment_risk_heritage":
         out=[]
         env=c.get("environment") or {}
@@ -267,7 +267,7 @@ def vals(s,p,c):
         for item in (c.get("risk") or {}).get("hydrological") or []:
             r=item.get("properties") or {}
             out.extend([
-                {"label":"Suscetibilidade física a inundação (ISMFI)","value":r.get("ismfi_v45")},
+                {"label":"Índice municipal de suscetibilidade a inundação","value":r.get("ismfi_v45")},
                 {"label":"Bairro considerado no índice de inundação","value":r.get("nm_bairro")},
                 {"label":"Componente de declividade do índice","value":r.get("ind_dec")},
                 {"label":"Componente de impermeabilização do índice","value":r.get("ind_imp")},
@@ -277,10 +277,10 @@ def vals(s,p,c):
         for item in (c.get("heritage") or {}).get("assets") or []:
             r=item.get("properties") or {}
             out.extend([
-                {"label":"APAC","value":r.get("nome")},
-                {"label":"Tipo APAC","value":r.get("tipo")},
-                {"label":"Legislação APAC","value":r.get("legislacao")},
-                {"label":"Órgão APAC","value":r.get("orgao")}
+                {"label":"Área de Proteção do Ambiente Cultural","value":r.get("nome")},
+                {"label":"Tipo de proteção cultural","value":r.get("tipo")},
+                {"label":"Legislação da proteção cultural","value":r.get("legislacao")},
+                {"label":"Órgão responsável pela proteção cultural","value":r.get("orgao")}
             ])
         return out or [{"label":"Risco/patrimônio","value":"Sem incidência nas camadas consultadas."}]
     if s=="registry_due_diligence":
