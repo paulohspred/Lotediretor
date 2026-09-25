@@ -182,8 +182,9 @@ function ensure3d(){
   map3d.on("load",()=>{
     map3dReady=true;
     const style=map3d.getStyle();
+    const existing3d=(style.layers||[]).find(l=>l["source-layer"]==="building"&&l.type==="fill-extrusion");
     const base=(style.layers||[]).find(l=>l["source-layer"]==="building"&&l.source);
-    if(base&&!map3d.getLayer("lotediretor-buildings-3d")){
+    if(!existing3d&&base&&!map3d.getLayer("lotediretor-buildings-3d")){
       const firstSymbol=(style.layers||[]).find(l=>l.type==="symbol");
       map3d.addLayer({
         id:"lotediretor-buildings-3d",
@@ -235,7 +236,8 @@ function setMapViewMode(mode){
   wrap.classList.toggle("view-3d",is3d);
   document.getElementById("view2d").classList.toggle("active",!is3d);
   document.getElementById("view3d").classList.toggle("active",is3d);
-  document.getElementById("mapBadge").textContent=is3d?"Visão 3D urbana · OpenStreetMap/OpenMapTiles":"Mapa base © OpenStreetMap · camadas oficiais municipais";
+  const activeCity=cities[Number(select.value)]||cities[0];
+  document.getElementById("mapBadge").textContent=is3d?("Visão 3D de "+activeCity.name+" · edifícios e terreno urbano"):("Mapa de "+activeCity.name+" · camadas oficiais municipais");
   if(is3d){
     const m=ensure3d(),center=map.getCenter();
     m.jumpTo({center:[center.lng,center.lat],zoom:Math.max(15,map.getZoom()),pitch:58});
