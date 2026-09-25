@@ -1463,7 +1463,7 @@
         },
         {
           "field": "environment",
-          "status": "PARTIAL",
+          "status": "READY",
           "source_id": "mg-ide-sisema",
           "supporting_source_ids": [
             "mg-belo-horizonte-bhgeo"
@@ -1471,11 +1471,11 @@
           "endpoint": "https://geoserver.meioambiente.mg.gov.br/",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "connector_status": "LIVE_WFS_PROPERTY_INTERSECTION",
           "missing_fields": [
-            "municipal layer allowlist"
+            "site-specific environmental confirmation where a professional decision requires it"
           ],
-          "notes": null
+          "notes": "Parcel intersections are live for ADE/AEIS environmental-interest areas, conservation units, municipal parks and Serra do Curral ecological corridor through the official BHGEO WFS with closed field allowlists."
         },
         {
           "field": "risk",
@@ -1567,11 +1567,12 @@
           "endpoint": "https://prefeitura.pbh.gov.br/bhgeo/acesso-aos-dados",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "UTILITY_CONTEXT_LIVE",
+          "connector_status": "LIVE_WFS_NETWORK_INTERSECTION",
           "missing_fields": [
-            "drainage asset inventory/coverage"
+            "complete network coverage validation",
+            "parcel-specific hydraulic capacity/connection confirmation"
           ],
-          "notes": null
+          "notes": "Official BHGEO microdrainage network intersections are live and exposed in the dossier/map. A mapped segment does not prove hydraulic capacity or service availability for the parcel."
         },
         {
           "field": "telecom",
@@ -1589,7 +1590,7 @@
         },
         {
           "field": "transport",
-          "status": "PARTIAL",
+          "status": "READY",
           "source_id": "br-dnit-snv",
           "supporting_source_ids": [
             "br-antt-rail-network",
@@ -1598,11 +1599,11 @@
           "endpoint": "https://www.gov.br/dnit/pt-br/assuntos/sistema-nacional-de-viacao",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "connector_status": "LIVE_WFS_PROPERTY_INTERSECTION",
           "missing_fields": [
-            "municipal road hierarchy connector"
+            "field/right-of-way confirmation where project decisions require surveyed alignment"
           ],
-          "notes": null
+          "notes": "Official road-classification and road-circulation layers are queried against the parcel through BHGEO WFS; the map exposes the classification layer as optional context."
         },
         {
           "field": "imagery",
