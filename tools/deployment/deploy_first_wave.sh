@@ -21,6 +21,7 @@ Path("/tmp/lotediretor-ui.js").write_text(s[start:end], encoding="utf-8")
 print("json=ok")
 PY
 node --check /tmp/lotediretor-ui.js
+python3 tools/regression/audit_frontend.py
 
 echo "[2/7] compiling parcel services"
 python3 -m py_compile   services/demo_parcel_api.py   services/recife_property.py   services/rio_property.py   services/bh_property.py   services/joao_pessoa_property.py   services/municipality_utilities.py
