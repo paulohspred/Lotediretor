@@ -1071,7 +1071,7 @@ function renderParcel(payload){
       (p.floors!=null?'<div class="parcel-datum"><small>Pavimentos</small><strong>'+escapeHtml(text(p.floors))+'</strong></div>':"")+
       '<div class="parcel-datum" style="grid-column:1/-1"><small>Uso cadastral</small><strong>'+escapeHtml(text(p.use_description))+'</strong></div>'+
     '</div>'+
-    '<div class="parcel-source">Fonte oficial: '+escapeHtml(payload.source.authority||"órgão público responsável")+' · consulta em '+escapeHtml(formatSourceDate(payload.source.queried_at))+'</div>';
+    '<div class="parcel-source">Fonte oficial: '+escapeHtml(friendlySource(payload.source.id))+' · consulta em '+escapeHtml(formatSourceDate(payload.source.queried_at))+'</div>';
   renderReport(payload.report,p,payload.context,payload.feature);
 }
 async function inspectParcel(latlng){
