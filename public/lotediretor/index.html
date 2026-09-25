@@ -115,6 +115,8 @@ header{height:56px;background:var(--nav);color:#fff;border-bottom:4px solid var(
       <label class="layer-toggle"><input type="checkbox" data-zlayer="parcel" checked><span>Lotes fiscais<small>Cadastro oficial da Prefeitura de São Paulo</small></span></label>
       <label class="layer-toggle"><input type="checkbox" data-zlayer="zoning" checked><span>Zoneamento vigente<small>Lei 18.177/2024</small></span></label>
       <label class="layer-toggle"><input type="checkbox" data-zlayer="heritage"><span>Patrimônio cultural<small>Tombamento / envoltórias</small></span></label>\n      <label class="layer-toggle"><input type="checkbox" data-zlayer="environment"><span>Áreas ambientais<small>Unidades de conservação e áreas especiais</small></span></label>
+      <label class="layer-toggle"><input type="checkbox" data-zlayer="coastal"><span>Restrição costeira<small>Faixas oficiais da orla</small></span></label>
+      <label class="layer-toggle"><input type="checkbox" data-zlayer="roads"><span>Hierarquia viária<small>Classificação oficial das vias</small></span></label>
       <label class="layer-toggle"><input type="checkbox" data-zlayer="geoRisk"><span>Risco geológico<small>Triagem espacial</small></span></label>
       <label class="layer-toggle"><input type="checkbox" data-zlayer="hydroRisk"><span>Risco hidrológico<small>Triagem espacial</small></span></label>
       <label class="layer-toggle"><input type="checkbox" data-zlayer="hillshade"><span>Hillshade MDC 2004<small>Contexto histórico</small></span></label>
@@ -459,6 +461,14 @@ const jpZoningWms=L.tileLayer.wms("https://filipeia.joaopessoa.pb.gov.br/geoserv
   layers:"digeoc:zoneamento2024",format:"image/png",transparent:true,version:"1.1.1",
   opacity:.30,attribution:"Zoneamento 2024 · Prefeitura de João Pessoa"
 }).setZIndex(380);
+const jpCoastalWms=L.tileLayer.wms("https://filipeia.joaopessoa.pb.gov.br/geoserver/wms",{
+  layers:"digeoc:faixas",format:"image/png",transparent:true,version:"1.1.1",
+  opacity:.44,attribution:"Restrições da orla · Prefeitura de João Pessoa"
+}).setZIndex(368);
+const jpRoadHierarchyWms=L.tileLayer.wms("https://filipeia.joaopessoa.pb.gov.br/geoserver/wms",{
+  layers:"digeoc:Hierarquia",format:"image/png",transparent:true,version:"1.1.1",
+  opacity:.48,attribution:"Hierarquia viária · Prefeitura de João Pessoa"
+}).setZIndex(330);
 const jpEnvironmentWms=L.tileLayer.wms("https://filipeia.joaopessoa.pb.gov.br/geoserver/wms",{
   layers:"digeoc:UC,digeoc:ZEIS",format:"image/png",transparent:true,version:"1.1.1",
   opacity:.36,attribution:"Áreas ambientais e especiais · Prefeitura de João Pessoa"
@@ -496,7 +506,7 @@ const cityLayerMap={
   "2611606":{parcel:recifeParcelOverlay,zoning:recifeZoningOverlay,buildings:recifeBuildingOverlay,slope:recifeSlopeTiles},
   "3304557":{parcel:rioParcelOverlay,zoning:rioZoningOverlay},
   "3106200":{parcel:bhParcelWms,zoning:bhZoningWms},
-  "2507507":{parcel:jpParcelWms,zoning:jpZoningWms,heritage:jpHeritageWms,environment:jpEnvironmentWms,hydroRisk:jpSusceptibilityWms,buildings:jpBuildingsWms,terrain:jpTerrainWms,gas:jpGasWms,ortho:jpOrthoWms}
+  "2507507":{parcel:jpParcelWms,zoning:jpZoningWms,heritage:jpHeritageWms,environment:jpEnvironmentWms,hydroRisk:jpSusceptibilityWms,coastal:jpCoastalWms,roads:jpRoadHierarchyWms,buildings:jpBuildingsWms,terrain:jpTerrainWms,gas:jpGasWms,ortho:jpOrthoWms}
 };
 const layerLabelsByCity={
   "3550308":{
@@ -529,13 +539,15 @@ const layerLabelsByCity={
     heritage:["Patrimônio cultural","IPHAN, IPHAEP e Centro Histórico"],
     environment:["Áreas ambientais e especiais","Unidades de conservação e ZEIS"],
     hydroRisk:["Suscetibilidade a inundação","Camada oficial de suscetibilidade"],
+    coastal:["Restrição costeira","Faixas oficiais da orla"],
+    roads:["Hierarquia viária","Classificação oficial das vias"],
     buildings:["Edificações","Construções mapeadas pelo município"],
     terrain:["Curvas de nível","Topografia oficial de 2022"],
     gas:["Rede de gás","Rede publicada no portal municipal"],
     ortho:["Ortofoto 2021","Aerofotogrametria municipal"]
   }
 };
-const allThematicLayers=[spParcelWms,spZoningWms,spHeritageWms,spGeoRiskWms,spHydroRiskWms,spHillshadeWms,spSlopeWms,spOrthoIndex2020Wms,recifeParcelOverlay,recifeZoningOverlay,recifeBuildingOverlay,recifeSlopeTiles,rioParcelOverlay,rioZoningOverlay,bhParcelWms,bhZoningWms,jpParcelWms,jpZoningWms,jpHeritageWms,jpEnvironmentWms,jpSusceptibilityWms,jpBuildingsWms,jpTerrainWms,jpGasWms,jpOrthoWms];
+const allThematicLayers=[spParcelWms,spZoningWms,spHeritageWms,spGeoRiskWms,spHydroRiskWms,spHillshadeWms,spSlopeWms,spOrthoIndex2020Wms,recifeParcelOverlay,recifeZoningOverlay,recifeBuildingOverlay,recifeSlopeTiles,rioParcelOverlay,rioZoningOverlay,bhParcelWms,bhZoningWms,jpParcelWms,jpZoningWms,jpHeritageWms,jpEnvironmentWms,jpSusceptibilityWms,jpCoastalWms,jpRoadHierarchyWms,jpBuildingsWms,jpTerrainWms,jpGasWms,jpOrthoWms];
 function activeCityLayers(){const city=cities[Number(select.value)];return cityLayerMap[city.ibge]||{}}
 function syncCityLayers(){
   allThematicLayers.forEach(layer=>{if(map.hasLayer(layer))map.removeLayer(layer)});
