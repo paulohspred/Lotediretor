@@ -423,7 +423,7 @@ def planning_at_point(lat: float, lng: float) -> tuple[dict, dict]:
     return out, errors
 
 def context(parcel: dict, lat: float, lng: float) -> dict:
-    federal=federal_context.load(lat,lng,"2507507")
+    federal=federal_context.load(lat,lng,"2507507",parcel.get("geometry") or {})
     planning, planning_errors = planning_at_point(lat, lng)
     spatial = {}
     spatial_errors = {}
