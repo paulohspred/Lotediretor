@@ -1,6 +1,6 @@
 {
   "schema_version": "0.1.0",
-  "generated_at": "2026-09-24",
+  "generated_at": "2026-09-28",
   "description": "Bootstrap do catálogo nacional de fontes do LoteDiretor. Entradas VERIFIED foram confirmadas em fonte oficial; DISCOVERY precisa de validação de endpoint/licença antes de ingestão.",
   "access_classes": [
     "OPEN_REUSABLE",
@@ -5015,7 +5015,140 @@
       "license": null,
       "temporal_coverage": "2026-01-21",
       "notes": "Public TJPB status reference: LUOS maintained except article 62. Used only to prevent presenting article 62 coastal-height values as current."
+    },
+    {
+      "id": "br-ibge-agregados-api",
+      "authority": "IBGE",
+      "scope": "BR",
+      "domain": [
+        "demography",
+        "census",
+        "housing",
+        "income",
+        "sanitation"
+      ],
+      "source_type": "open_REST_API",
+      "base_url": "https://servicodados.ibge.gov.br/api/v3/agregados",
+      "discovery_url": "https://servicodados.ibge.gov.br/api/docs/agregados?versao=v3",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED_API_DOCUMENTED",
+      "notes": "API de Agregados/SIDRA. Usar sempre com nível territorial e período explicitados; dado municipal/setorial é contexto territorial e não atributo do lote."
+    },
+    {
+      "id": "br-ibge-malhas-api",
+      "authority": "IBGE",
+      "scope": "BR",
+      "domain": [
+        "administrative_boundaries",
+        "census_geography"
+      ],
+      "source_type": "open_REST_GEOJSON_API",
+      "base_url": "https://servicodados.ibge.gov.br/api/v3/malhas",
+      "discovery_url": "https://servicodados.ibge.gov.br/api/docs/malhas?versao=v3",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED_API_DOCUMENTED",
+      "notes": "Malhas administrativas oficiais para município/distrito/subdistrito e outros recortes suportados. Não usar escala regional como limite cadastral de lote."
+    },
+    {
+      "id": "br-ibge-censo2022-geoservices",
+      "authority": "IBGE",
+      "scope": "BR",
+      "domain": [
+        "census",
+        "demography",
+        "housing",
+        "urban_environment"
+      ],
+      "source_type": "WFS_WMS",
+      "base_url": "https://geoservicoscenso2022.ibge.gov.br/geoserver/censo2022/ows",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED_LIVE_2026",
+      "notes": "GeoServer oficial Censo 2022 com resultados SIDRA espacializados. Preservar nível territorial e definição do indicador."
+    },
+    {
+      "id": "br-ibge-bcim-geoservices",
+      "authority": "IBGE",
+      "scope": "BR",
+      "domain": [
+        "roads",
+        "hydrography",
+        "toponymy",
+        "regional_cartography"
+      ],
+      "source_type": "WFS_WMS",
+      "base_url": "https://geoservicos.ibge.gov.br/geoserver/ows",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED_LIVE_2026",
+      "notes": "Cartografia contínua/regional. Escala insuficiente para substituir cartografia municipal de lote, alinhamento ou rede urbana detalhada."
+    },
+    {
+      "id": "br-ana-snirh-inde",
+      "authority": "Agência Nacional de Águas e Saneamento Básico / IBGE",
+      "scope": "BR",
+      "domain": [
+        "hydrology",
+        "water_security",
+        "water_supply",
+        "hydrographic_divisions"
+      ],
+      "source_type": "ArcGIS_REST_WMS",
+      "base_url": "https://www.snirh.gov.br/arcgis/rest/services/INDE/Camadas/MapServer",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "LIVE_PROPERTY_CONTEXT_2026",
+      "notes": "Consulta pontual integrada para macro/meso/microrregião hidrográfica. Bacia/divisão hidrográfica não é risco de inundação."
+    },
+    {
+      "id": "br-siconfi-api",
+      "authority": "Tesouro Nacional",
+      "scope": "BR",
+      "domain": [
+        "municipal_finance",
+        "public_budget",
+        "fiscal_capacity"
+      ],
+      "source_type": "open_REST_API",
+      "base_url": "https://apidatalake.tesouro.gov.br/ords/siconfi",
+      "discovery_url": "https://apidatalake.tesouro.gov.br/docs/siconfi/",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "REGISTERED_CONNECTOR_PENDING",
+      "notes": "Contexto fiscal municipal. Não anexar receitas/despesas municipais como atributo financeiro do lote."
+    },
+    {
+      "id": "global-osm-overpass",
+      "authority": "OpenStreetMap contributors / Overpass API",
+      "scope": "GLOBAL",
+      "domain": [
+        "mobility",
+        "poi",
+        "sidewalks",
+        "crossings",
+        "cycleways",
+        "transit",
+        "public_space"
+      ],
+      "source_type": "open_query_API",
+      "base_url": "https://overpass-api.de/api/interpreter",
+      "license": "ODbL 1.0",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "REGISTERED_FALLBACK_ONLY",
+      "notes": "Usar como fallback/complemento quando não houver fonte pública oficial local adequada. Respeitar rate limits e atribuição; não usar dados de usuário/changeset."
+    },
+    {
+      "id": "br-brasilapi-cep-v2",
+      "authority": "BrasilAPI / múltiplos provedores de CEP",
+      "scope": "BR",
+      "domain": [
+        "address",
+        "postal_code",
+        "geocoding"
+      ],
+      "source_type": "open_REST_API",
+      "base_url": "https://brasilapi.com.br/api/cep/v2",
+      "discovery_url": "https://brasilapi.com.br/docs",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "LIVE_SEARCH_FALLBACK_2026",
+      "notes": "CEP V2 inclui endereço e coordenadas. A própria documentação alerta que coordenadas podem derivar do OpenStreetMap; usar para busca/localização, não como limite cadastral."
     }
   ],
-  "as_of": "2026-09-25"
+  "as_of": "2026-09-28"
 }
