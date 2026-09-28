@@ -2467,6 +2467,9 @@ def actual_values_for_section(
                 "ligação, disponibilidade ou capacidade técnica no lote."
             ),
         })
+        values.extend(
+            federal_context.transport_report_values(context.get("federal") or {})
+        )
         return values
 
     if section_id == "terrain_visual":
@@ -2636,6 +2639,9 @@ def actual_values_for_section(
         })
         return values
 
+    if section_id == "territorial_context":
+        return federal_context.territorial_report_values(context.get("federal") or {})
+
     if section_id == "environment_risk_heritage":
         values = []
         for item in risk.get("geological") or []:
@@ -2667,7 +2673,7 @@ def actual_values_for_section(
                     "value": props.get("nm_area") or "Incidência identificada",
                 })
         values.extend(
-            federal_context.report_values(context.get("federal") or {})
+            federal_context.environment_report_values(context.get("federal") or {})
         )
         if not values:
             values.append({
