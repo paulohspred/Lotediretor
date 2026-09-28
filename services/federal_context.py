@@ -389,6 +389,7 @@ def load(lat: float, lng: float, municipality_ibge: str | None = None, parcel_ge
         for level in ANA_LAYERS:
             jobs[pool.submit(ana_region, level, lat, lng)] = ("ana", level)
         jobs[pool.submit(icmbio_at_point, lat, lng)] = ("icmbio", "federal_uc")
+        jobs[pool.submit(funai_at_point, lat, lng)] = ("funai", "indigenous_territories")
         jobs[pool.submit(sgb_risk_at_point, lat, lng)] = ("sgb", "risk")
         if parcel_geometry:
             jobs[
