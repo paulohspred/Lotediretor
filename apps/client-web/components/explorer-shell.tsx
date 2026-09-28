@@ -84,6 +84,13 @@ type SearchResult = {
   lat: number;
   lng: number;
   exact_house_number?: boolean;
+  matched_by?: {
+    type?: string | null;
+    label?: string | null;
+    value?: string | null;
+    registry_office?: string | null;
+    caveat?: string | null;
+  } | null;
 };
 
 function formatNumber(value: number, digits = 2): string {
@@ -385,9 +392,19 @@ export function ExplorerShell() {
                     }}
                   >
                     <span className="search-result-kind">
-                      {result.kind === "parcel" ? "Cadastro" : "Endereço"}
+                      {result.kind === "parcel"
+                        ? result.matched_by?.type === "registry_reference"
+                          ? "Matrícula"
+                          : "Cadastro"
+                        : "Endereço"}
                     </span>
                     <span>{result.display_name || "Resultado localizado"}</span>
+                    {result.matched_by?.registry_office && (
+                      <small>
+                        {result.matched_by.label} · {result.matched_by.value} ·{" "}
+                        {result.matched_by.registry_office}
+                      </small>
+                    )}
                   </button>
                 ))}
               </div>
