@@ -5211,6 +5211,36 @@
       "access_class": "PUBLIC_QUERY_ONLY",
       "verification_status": "LIVE_EXACT_PARCEL_MATCH_2026",
       "notes": "Consulta por inscrição fiscal do lote; somente campos públicos não pessoais são expostos."
+    },
+    {
+      "id": "br-onr-saec",
+      "authority": "Operador Nacional do Sistema de Registro Eletrônico de Imóveis / SAEC",
+      "scope": "BR",
+      "domain": [
+        "registry",
+        "certificates",
+        "property_registration"
+      ],
+      "source_type": "authenticated_web_service",
+      "base_url": "https://registradores.onr.org.br/",
+      "access_class": "PRIVATE_AUTHORIZED",
+      "verification_status": "AUTHENTICATED_PRIVATE_ON_DEMAND",
+      "notes": "Certidões, matrícula atualizada e demais atos registrais dependem de fluxo legítimo/autorizado. LoteDiretor não indexa proprietários nem contorna autenticação."
+    },
+    {
+      "id": "br-sinter",
+      "authority": "Receita Federal do Brasil / Sinter",
+      "scope": "BR",
+      "domain": [
+        "cadastre",
+        "registry_interoperability",
+        "cnm"
+      ],
+      "source_type": "government_integration",
+      "discovery_url": "https://www.gov.br/receitafederal/pt-br/assuntos/sinter",
+      "access_class": "GOVERNMENT_AUTHORIZED",
+      "verification_status": "AUTHENTICATED_GOVERNMENT_INTEGRATION",
+      "notes": "Barramento/interoperabilidade cadastral destinado a integrações autorizadas. Não tratado como API pública anônima de consulta parcelar."
     }
   ],
   "as_of": "2026-09-28"
