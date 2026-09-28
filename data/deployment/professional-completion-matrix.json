@@ -455,7 +455,7 @@
           "missing_fields": [
             "unified temporal index across tax, risk, imagery, law and permits"
           ],
-          "notes": "ITBI public transaction series is materialized for 2006-2026 (2,641,502 rows). GeoSampa risk occurrences and other temporal sources remain to be unified into a single property timeline."
+          "notes": "ITBI public transaction series is materialized for 2006-2026 (2,641,502 rows). GeoSampa risk occurrences and other temporal sources remain to be unified into a single property timeline. MapBiomas Collection 11 land-cover history is live at the parcel representative point for 1985, 2000, 2010, 2020 and 2025 (30 m screening pixel)."
         }
       ]
     },
@@ -862,11 +862,11 @@
           "endpoint": "https://dados.recife.pe.gov.br/dataset/imposto-predial-e-territorial-urbano-iptu",
           "access_class": "OPEN_REUSABLE",
           "license": "ODbL",
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "connector_status": "MAPBIOMAS_HISTORY_LIVE_OTHER_HISTORY_PENDING",
           "missing_fields": [
             "unified temporal index"
           ],
-          "notes": null
+          "notes": "MapBiomas Collection 11 land-cover history is live at the parcel representative point for 1985, 2000, 2010, 2020 and 2025 (30 m screening pixel)."
         }
       ]
     },
@@ -1294,7 +1294,7 @@
           "missing_fields": [
             "unified temporal index"
           ],
-          "notes": null
+          "notes": "MapBiomas Collection 11 land-cover history is live at the parcel representative point for 1985, 2000, 2010, 2020 and 2025 (30 m screening pixel)."
         }
       ]
     },
@@ -1710,11 +1710,11 @@
           "endpoint": "https://dados.pbh.gov.br/dataset/ortofoto-2015",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "connector_status": "MAPBIOMAS_HISTORY_LIVE_OTHER_HISTORY_PENDING",
           "missing_fields": [
             "unified temporal index"
           ],
-          "notes": null
+          "notes": "MapBiomas Collection 11 land-cover history is live at the parcel representative point for 1985, 2000, 2010, 2020 and 2025 (30 m screening pixel)."
         }
       ]
     },
@@ -2128,11 +2128,11 @@
           "endpoint": "https://filipeia.joaopessoa.pb.gov.br/",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "SOURCE_REGISTERED_CONNECTOR_PENDING",
+          "connector_status": "MAPBIOMAS_HISTORY_LIVE_OTHER_HISTORY_PENDING",
           "missing_fields": [
             "unified imagery/legal temporal index"
           ],
-          "notes": null
+          "notes": "MapBiomas Collection 11 land-cover history is live at the parcel representative point for 1985, 2000, 2010, 2020 and 2025 (30 m screening pixel)."
         }
       ]
     }
