@@ -16,28 +16,11 @@ DB_NAME="${DB_NAME:-lotediretor}"
 APP_DB_USER="${APP_DB_USER:-sentinelx}"
 BASE_URL="https://ftp.ibge.gov.br/Censos/Censo_Demografico_2022/Agregados_por_Setores_Censitarios/malha_com_atributos/setores/gpkg/UF"
 
-declare -A CITY_UF=(
-  [3550308]=SP
-  [2611606]=PE
-  [3304557]=RJ
-  [3106200]=MG
-  [2507507]=PB
-)
-
-mkdir -p "$CACHE_DIR"
-
-for code in 3550308 2611606 3304557 3106200 2507507; do
-  uf="${CITY_UF[$code]}"
-  state_file="$CACHE_DIR/${uf}_setores_CD2022.gpkg"
-  city_file="$CACHE_DIR/${code}_setores_CD2022.gpkg"
-
-  if [[ ! -s "$state_file" ]]; then
-    curl -A 'LoteDiretor/1.0' -fL --retry 3       -o "$state_file"       "$BASE_URL/$uf/${uf}_setores_CD2022.gpkg"
-  fi
-
-  rm -f "$city_file"
-  ogr2ogr -f GPKG "$city_file" "$state_file"     "${uf}_setores_CD2022"     -where "CD_MUN='${code}'"     -nln setores     -nlt MULTIPOLYGON     -t_srs EPSG:4674
-done
+# Reuse the canonical municipality materializer. It streams the official
+# state GeoPackage over /vsicurl and keeps only the five municipalities.
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+bash "$REPO_ROOT/tools/data/materialize_ibge_2022_sectors.sh" "$CACHE_DIR"
 
 runuser -u postgres -- psql -d "$DB_NAME" -v ON_ERROR_STOP=1 <<'SQL'
 CREATE SCHEMA IF NOT EXISTS ld_stage;
