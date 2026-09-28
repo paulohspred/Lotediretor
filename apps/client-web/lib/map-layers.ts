@@ -724,6 +724,7 @@ const layers: MapLayerSpec[] = [
 
 const sicarByCity: Record<string, string> = {
   "3550308": "sicar:sicar_imoveis_sp",
+  "3505708": "sicar:sicar_imoveis_sp",
   "2611606": "sicar:sicar_imoveis_pe",
   "3304557": "sicar:sicar_imoveis_rj",
   "3106200": "sicar:sicar_imoveis_mg",
