@@ -26,10 +26,17 @@ CREATE TABLE IF NOT EXISTS ld_analysis.analysis_run (
     input_sha256 text NOT NULL CHECK (input_sha256 ~ '^[0-9a-f]{64}$'),
     result_sha256 text NOT NULL CHECK (result_sha256 ~ '^[0-9a-f]{64}$'),
     run_fingerprint text NOT NULL UNIQUE CHECK (run_fingerprint ~ '^[0-9a-f]{64}$'),
-    status text NOT NULL DEFAULT 'COMPLETED' CHECK (status='COMPLETED'),
+    status text NOT NULL DEFAULT 'BUILDING' CHECK (
+        status IN ('BUILDING', 'COMPLETED')
+    ),
     created_at timestamptz NOT NULL DEFAULT now(),
-    completed_at timestamptz NOT NULL DEFAULT now(),
-    CHECK (completed_at >= created_at)
+    completed_at timestamptz,
+    CHECK (
+        (status='BUILDING' AND completed_at IS NULL)
+        OR
+        (status='COMPLETED' AND completed_at IS NOT NULL
+         AND completed_at >= created_at)
+    )
 );
 
 CREATE INDEX IF NOT EXISTS analysis_run_subject_created_idx
@@ -89,39 +96,105 @@ CREATE TABLE IF NOT EXISTS ld_analysis.report_snapshot (
     created_at timestamptz NOT NULL DEFAULT now()
 );
 
-CREATE OR REPLACE FUNCTION ld_analysis.reject_mutation()
+CREATE OR REPLACE FUNCTION ld_analysis.protect_run()
 RETURNS trigger
 LANGUAGE plpgsql
-AS $$
+AS $
 BEGIN
-    RAISE EXCEPTION 'immutable analysis artifact: % cannot be updated or deleted',
-        TG_TABLE_NAME;
+    IF TG_OP='DELETE' THEN
+        RAISE EXCEPTION 'immutable analysis run cannot be deleted';
+    END IF;
+
+    IF OLD.status='BUILDING'
+       AND NEW.status='COMPLETED'
+       AND (to_jsonb(NEW) - ARRAY['status','completed_at'])
+           = (to_jsonb(OLD) - ARRAY['status','completed_at'])
+    THEN
+        RETURN NEW;
+    END IF;
+
+    RAISE EXCEPTION 'immutable analysis run can only be sealed once';
 END;
-$$;
+$;
+
+CREATE OR REPLACE FUNCTION ld_analysis.protect_run_child()
+RETURNS trigger
+LANGUAGE plpgsql
+AS $
+DECLARE
+    run_status text;
+BEGIN
+    IF TG_OP <> 'INSERT' THEN
+        RAISE EXCEPTION 'immutable analysis artifact cannot be updated or deleted';
+    END IF;
+
+    SELECT status INTO run_status
+    FROM ld_analysis.analysis_run
+    WHERE analysis_run_id=NEW.analysis_run_id;
+
+    IF run_status <> 'BUILDING' THEN
+        RAISE EXCEPTION 'completed analysis run cannot receive new artifacts';
+    END IF;
+    RETURN NEW;
+END;
+$;
 
 DROP TRIGGER IF EXISTS analysis_run_immutable
     ON ld_analysis.analysis_run;
 CREATE TRIGGER analysis_run_immutable
 BEFORE UPDATE OR DELETE ON ld_analysis.analysis_run
-FOR EACH ROW EXECUTE FUNCTION ld_analysis.reject_mutation();
+FOR EACH ROW EXECUTE FUNCTION ld_analysis.protect_run();
 
 DROP TRIGGER IF EXISTS analysis_input_immutable
     ON ld_analysis.analysis_input;
 CREATE TRIGGER analysis_input_immutable
-BEFORE UPDATE OR DELETE ON ld_analysis.analysis_input
-FOR EACH ROW EXECUTE FUNCTION ld_analysis.reject_mutation();
+BEFORE INSERT OR UPDATE OR DELETE ON ld_analysis.analysis_input
+FOR EACH ROW EXECUTE FUNCTION ld_analysis.protect_run_child();
 
 DROP TRIGGER IF EXISTS finding_immutable
     ON ld_analysis.finding;
 CREATE TRIGGER finding_immutable
-BEFORE UPDATE OR DELETE ON ld_analysis.finding
-FOR EACH ROW EXECUTE FUNCTION ld_analysis.reject_mutation();
+BEFORE INSERT OR UPDATE OR DELETE ON ld_analysis.finding
+FOR EACH ROW EXECUTE FUNCTION ld_analysis.protect_run_child();
 
 DROP TRIGGER IF EXISTS report_snapshot_immutable
     ON ld_analysis.report_snapshot;
 CREATE TRIGGER report_snapshot_immutable
-BEFORE UPDATE OR DELETE ON ld_analysis.report_snapshot
-FOR EACH ROW EXECUTE FUNCTION ld_analysis.reject_mutation();
+BEFORE INSERT OR UPDATE OR DELETE ON ld_analysis.report_snapshot
+FOR EACH ROW EXECUTE FUNCTION ld_analysis.protect_run_child();
+
+CREATE OR REPLACE FUNCTION ld_analysis.complete_run(p_analysis_run_id uuid)
+RETURNS void
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = pg_catalog, public, ld_analysis
+AS $
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM ld_analysis.analysis_input
+        WHERE analysis_run_id=p_analysis_run_id
+    ) THEN
+        RAISE EXCEPTION 'analysis run has no frozen input';
+    END IF;
+    IF NOT EXISTS (
+        SELECT 1 FROM ld_analysis.report_snapshot
+        WHERE analysis_run_id=p_analysis_run_id
+    ) THEN
+        RAISE EXCEPTION 'analysis run has no report snapshot';
+    END IF;
+
+    UPDATE ld_analysis.analysis_run
+    SET status='COMPLETED', completed_at=now()
+    WHERE analysis_run_id=p_analysis_run_id
+      AND status='BUILDING';
+
+    IF NOT FOUND THEN
+        RAISE EXCEPTION 'analysis run not found or already completed';
+    END IF;
+END;
+$;
+
+REVOKE ALL ON FUNCTION ld_analysis.complete_run(uuid) FROM PUBLIC;
 
 GRANT USAGE ON SCHEMA ld_analysis TO sentinelx;
 GRANT SELECT, INSERT ON
@@ -130,6 +203,7 @@ GRANT SELECT, INSERT ON
     ld_analysis.finding,
     ld_analysis.report_snapshot
 TO sentinelx;
+GRANT EXECUTE ON FUNCTION ld_analysis.complete_run(uuid) TO sentinelx;
 
 COMMENT ON TABLE ld_analysis.analysis_run IS
     'Immutable completed analysis artifact. Freezes the input, engine state, rules/calculations/findings and privacy-filtered result used for a reproducible dossier.';
