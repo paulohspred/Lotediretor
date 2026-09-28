@@ -2761,8 +2761,13 @@ class Handler(BaseHTTPRequestHandler):
         self.send_header("Content-Length", str(len(body)))
         self.send_header("Cache-Control", "no-store")
         self.send_header("X-Content-Type-Options", "nosniff")
-        self.end_headers()
-        self.wfile.write(body)
+        try:
+            self.end_headers()
+            self.wfile.write(body)
+        except (BrokenPipeError, ConnectionResetError):
+            # The browser/reverse proxy may abandon a slow upstream request.
+            # Treat client disconnect as normal transport cancellation.
+            return
 
     def do_GET(self):
         parsed = urllib.parse.urlsplit(self.path)
