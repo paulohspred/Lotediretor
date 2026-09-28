@@ -167,6 +167,14 @@ export function ExplorerShell() {
     null;
 
   async function resolveParcel(lat: number, lng: number) {
+    if (city.parcelSupported === false) {
+      setPayload(null);
+      setFocusPoint({ lat, lng });
+      setStatus(
+        "Barueri localizado. A geometria cadastral será ativada quando a base oficial de lotes/IPTU for importada.",
+      );
+      return;
+    }
     setBusy(true);
     setSearchResults([]);
     setFocusPoint({ lat, lng });
@@ -369,7 +377,9 @@ export function ExplorerShell() {
                         void resolveParcel(result.lat, result.lng);
                       } else {
                         setStatus(
-                          "Rua localizada. Clique no terreno desejado para abrir a ficha.",
+                          city.parcelSupported === false
+                            ? "Endereço localizado em Barueri. Cadastro/IPTU e lote serão ligados à base oficial importada."
+                            : "Rua localizada. Clique no terreno desejado para abrir a ficha.",
                         );
                       }
                     }}
@@ -414,6 +424,22 @@ export function ExplorerShell() {
               ))}
             </div>
 
+            {city.ibge === "3505708" && (
+              <div className="panel-card official-links">
+                <h2>Fontes oficiais de Barueri</h2>
+                <a href={city.officialZoningUrl} target="_blank" rel="noreferrer">
+                  Zoneamento e PRC 2023
+                </a>
+                <a href={city.officialIptuUrl} target="_blank" rel="noreferrer">
+                  Serviços oficiais de IPTU
+                </a>
+                <p className="muted">
+                  O mapa permanece neutro. Não atribuímos geometria de lote sem
+                  fonte cadastral espacial verificável.
+                </p>
+              </div>
+            )}
+
             <div className="panel-card">
               <h2>Seleção</h2>
               <p className="muted">
@@ -430,7 +456,16 @@ export function ExplorerShell() {
               focusPoint={focusPoint}
               activeLayerIds={activeLayerIds}
               viewMode={viewMode}
-              onPick={({ lat, lng }) => resolveParcel(lat, lng)}
+              onPick={({ lat, lng }) => {
+                if (city.parcelSupported === false) {
+                  setFocusPoint({ lat, lng });
+                  setStatus(
+                    "Ponto localizado em Barueri. A ficha cadastral depende da base oficial de lotes/IPTU.",
+                  );
+                  return;
+                }
+                void resolveParcel(lat, lng);
+              }}
             />
             <div className="map-context-bar">
               <span>
