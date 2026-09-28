@@ -1591,6 +1591,42 @@ function showAddressResults(places,city){
     });
   });
 }
+function showCadastralResults(matches,city){
+  clearSearchResults();
+  if(!matches.length)return;
+  searchResults.innerHTML=matches.slice(0,12).map((match,i)=>{
+    const p=(match.feature||{}).properties||{};
+    const m=match.match||{};
+    const primary=[p.street,p.number].filter(Boolean).join(", ")||("Inscrição "+text(p.sql_reference));
+    const registry=m.type==="registry_reference"
+      ?["Matrícula "+text(m.value),m.registry_office].filter(Boolean).join(" · ")
+      :"";
+    const secondary=[
+      registry,
+      p.sql_reference?("IPTU/inscrição "+p.sql_reference):"",
+      p.neighborhood||""
+    ].filter(Boolean).join(" · ");
+    return '<button class="search-result-btn" type="button" data-cadastral-index="'+i+'"><b>'+escapeHtml(primary)+'</b><small>'+escapeHtml(secondary)+'</small></button>';
+  }).join("");
+  searchResults.classList.add("open");
+  searchResults.querySelectorAll("[data-cadastral-index]").forEach(btn=>{
+    btn.addEventListener("click",async()=>{
+      const match=matches[Number(btn.dataset.cadastralIndex)];
+      clearSearchResults();
+      if(!match)return;
+      const p=(match.feature||{}).properties||{};
+      const point=match.representative_point;
+      searchStatus.textContent=[
+        match.match&&match.match.label,
+        p.street||("Lote "+text(p.sql_reference))
+      ].filter(Boolean).join(" · ");
+      map.flyTo([point.lat,point.lng],20,{duration:.7});
+      if(map3d)map3d.flyTo({center:[point.lng,point.lat],zoom:20,pitch:58,duration:700});
+      await inspectParcel(L.latLng(point.lat,point.lng));
+    });
+  });
+}
+
 async function lookupCep(query,city){
   const cep=query.replace(/\D/g,"");
   if(!/^\d{8}$/.test(cep))return [];
@@ -1673,6 +1709,11 @@ async function searchParcel(){
       throw new Error(payload.error||"search_failed");
     }
     if(!payload.count){searchStatus.textContent="Nenhum lote encontrado para esta identificação.";return}
+    if(payload.matches.length>1){
+      searchStatus.textContent="Encontrei mais de um imóvel. Escolha pelo endereço, inscrição e cartório.";
+      showCadastralResults(payload.matches,city);
+      return;
+    }
     const match=payload.matches[0],p=match.feature.properties,point=match.representative_point;
     const matchLabel=match.match&&match.match.label?match.match.label+" · ":"";
     searchStatus.textContent=matchLabel+(p.street||("Lote "+text(p.sql_reference)));
