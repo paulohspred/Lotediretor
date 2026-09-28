@@ -551,6 +551,9 @@ def vals(section_id: str, parcel: dict, ctx: dict) -> list[dict]:
             {"label":"Tipos de edificação informados","value":", ".join(sorted(set(types))) if types else None},
             {"label":"Ressalva","value":"As edificações são contexto cartográfico municipal e não substituem cadastro fiscal, projeto aprovado ou levantamento atual."},
         ]
+    if section_id == "territorial_context":
+        return federal_context.territorial_report_values(ctx.get("federal") or {})
+
     if section_id == "environment_risk_heritage":
         out=[]
         for item in (ctx.get("environment") or {}).get("conservation_units") or []:
@@ -578,7 +581,7 @@ def vals(section_id: str, parcel: dict, ctx: dict) -> list[dict]:
             ])
         for item in ((ctx.get("heritage") or {}).get("buffers") or {}).get("Centro Histórico") or []:
             out.append({"label":"Centro Histórico","value":"Terreno intersecta a poligonal publicada."})
-        out.extend(federal_context.report_values(ctx.get("federal") or {}))
+        out.extend(federal_context.environment_report_values(ctx.get("federal") or {}))
         return out or [{"label":"Incidências ambientais, de suscetibilidade e patrimônio","value":"Nenhuma incidência nas camadas oficiais consultadas para este terreno."}]
     if section_id == "planning_buildability":
         zoning=((ctx.get("planning") or {}).get("zoning") or {}).get("properties") or {}
@@ -634,7 +637,9 @@ def vals(section_id: str, parcel: dict, ctx: dict) -> list[dict]:
             }
         ]
     if section_id == "infrastructure_utilities":
-        return municipality_utilities.report_values(ctx.get("utilities") or {})
+        out=municipality_utilities.report_values(ctx.get("utilities") or {})
+        out.extend(federal_context.transport_report_values(ctx.get("federal") or {}))
+        return out
     return []
 
 
