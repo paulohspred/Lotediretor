@@ -187,7 +187,7 @@ def vals(s,p,c):
                 {"label":f"Edificação {i} · cota superior","value":mde,"unit":"m"},
                 {"label":f"Edificação {i} · altura estimada","value":round(height,2) if height is not None else None,"unit":"m"},
             ])
-        if buildings:out.append({"label":"Ressalva","value":"As cotas MDT/MDE e a geometria 3D são cartografia municipal; não substituem levantamento topográfico, projeto aprovado ou cadastro predial atualizado."})
+        if buildings:out.append({"label":"Ressalva","value":"As cotas do Modelo Digital de Terreno (MDT) e do Modelo Digital de Elevação (MDE), assim como a geometria 3D, são cartografia municipal; não substituem levantamento topográfico, projeto aprovado ou cadastro predial atualizado."})
         return out
     if s=="planning_buildability":
         out=[{"label":"Macrozona","value":z.get("macrozone")},{"label":"Zona","value":z.get("cd_zoneamento_perimetro")},{"label":"Descrição","value":z.get("tx_zoneamento_perimetro")},{"label":"Coeficiente de aproveitamento mínimo","value":z.get("ca_min")},{"label":"Coeficiente de aproveitamento básico","value":z.get("ca_basic")},{"label":"CA máximo","value":z.get("ca_max")},{"label":"Considerações","value":z.get("considerations")}]
