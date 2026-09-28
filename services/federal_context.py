@@ -54,6 +54,12 @@ ICMBIO_FIELDS = [
     "grupouc", "biomas", "bioma_pred", "categoria_", "sigla_cate",
     "demarcacao", "escalauc", "uf",
 ]
+INCRA_FIELDS = [
+    "status", "rt", "data_aprovacao", "data_submissao", "parcela_codigo",
+    "situacao_informada", "registro_cns", "registro_matricula", "data_registro",
+    "transcricao", "natureza", "codigo_imovel", "municipio_id", "uf_id",
+    "area_hectares", "nome_area", "tipo_envio",
+]
 FUNAI_FIELDS = [
     "terrai_codigo", "terrai_nome", "municipio_nome", "uf_sigla",
     "superficie_perimetro_ha", "fase_ti", "modalidade_ti", "reestudo_ti",
@@ -193,6 +199,35 @@ def icmbio_at_point(lat: float, lng: float) -> list[dict]:
             key: props.get(key)
             for key in ICMBIO_FIELDS
             if props.get(key) is not None
+        })
+    return out
+
+
+def incra_sigef_at_point(lat: float, lng: float) -> list[dict]:
+    params = {
+        "service": "WFS",
+        "version": "2.0.0",
+        "request": "GetFeature",
+        "typeNames": "geonode:sigef_geo",
+        "srsName": "EPSG:4326",
+        "count": "20",
+        "propertyName": ",".join(INCRA_FIELDS),
+        "cql_filter": (
+            f"INTERSECTS(geometry,SRID=4326;POINT({lng} {lat}))"
+        ),
+        "outputFormat": "application/json",
+    }
+    data = _get_json(INCRA_WFS + "?" + urllib.parse.urlencode(params), 4_000_000)
+    out = []
+    allowed = set(INCRA_FIELDS)
+    for feature in data.get("features") or []:
+        props = feature.get("properties") or {}
+        if set(props) - allowed:
+            raise RuntimeError("incra_unexpected_fields")
+        out.append({
+            k: props.get(k)
+            for k in INCRA_FIELDS
+            if props.get(k) is not None
         })
     return out
 
@@ -555,6 +590,7 @@ def load(
         "hydrology": {},
         "federal_conservation_units": [],
         "indigenous_lands": [],
+        "sigef_parcels": [],
         "indigenous_territories": [],
         "municipality_demographics": {},
         "municipality_finance": {},
