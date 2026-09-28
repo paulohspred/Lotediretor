@@ -44,6 +44,23 @@ function text(value: unknown): string | null {
   return String(value);
 }
 
+function formattedAddress(
+  street: string | null,
+  number: string | null,
+): string | null {
+  if (!street) return null;
+  if (!number) return street;
+  const normalizedStreet = street.toLowerCase().replace(/\s+/g, " ");
+  const normalizedNumber = number.toLowerCase().trim();
+  if (
+    normalizedStreet.endsWith(` ${normalizedNumber}`) ||
+    normalizedStreet.includes(`, ${normalizedNumber}`)
+  ) {
+    return street;
+  }
+  return `${street}, ${number}`;
+}
+
 function numberValue(value: unknown): number | null {
   return typeof value === "number" && Number.isFinite(value) ? value : null;
 }
@@ -252,9 +269,7 @@ export class ParcelEngineService {
           text(props.logradouro);
         const number = text(props.number);
 
-        const address = street
-          ? `${street}${number ? `, ${number}` : ""}`
-          : null;
+        const address = formattedAddress(street, number);
         const reference = fiscalReference
           ? `Cadastro ${fiscalReference}`
           : secondaryReference
