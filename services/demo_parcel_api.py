@@ -35,6 +35,7 @@ import rio_property
 import bh_property
 import joao_pessoa_property
 import postgis_store
+import federal_context
 
 HOST = "127.0.0.1"
 PORT = 8765
@@ -1819,6 +1820,7 @@ def build_context(lat: float, lng: float, parcel_geometry: dict, parcel: dict) -
             pool.submit(resolve_terrain_context, lat, lng, parcel_geometry)
         ] = "__terrain__"
         futures[pool.submit(resolve_siszon_qa, parcel)] = "__siszon__"
+        futures[pool.submit(federal_context.load, lat, lng)] = "__federal__"
         for future in as_completed(futures):
             key = futures[future]
             try:
@@ -1860,6 +1862,7 @@ def build_context(lat: float, lng: float, parcel_geometry: dict, parcel: dict) -
             "available": False,
             "reason": errors.get("__terrain__") or "not_available",
         },
+        "federal": results.get("__federal__") or {},
         "licensing": {
             "housing_permits_exact_sql": results.get("__housing_permits__") or [],
             "impact_spatial_incidence": results.get("impact_license") or [],
@@ -2663,6 +2666,9 @@ def actual_values_for_section(
                     "label": f"Área envoltória {authority}",
                     "value": props.get("nm_area") or "Incidência identificada",
                 })
+        values.extend(
+            federal_context.report_values(context.get("federal") or {})
+        )
         if not values:
             values.append({
                 "label": "Triagem espacial",
