@@ -21,7 +21,6 @@ from pyproj import Transformer
 from shapely.geometry import Point, shape
 from shapely.ops import transform as shapely_transform
 
-import ibge_sector
 
 DB_DSN = "dbname=lotediretor user=sentinelx host=/var/run/postgresql"
 ANA_BASE = "https://www.snirh.gov.br/arcgis/rest/services/INDE/Camadas/MapServer"
@@ -1012,14 +1011,6 @@ def load(
             ] = ("ibge", "sector")
             jobs[
                 pool.submit(
-                    ibge_sector.lookup,
-                    municipality_ibge,
-                    lat,
-                    lng,
-                )
-            ] = ("ibge", "census_sector")
-            jobs[
-                pool.submit(
                     siconfi_municipality_context,
                     municipality_ibge,
                 )
@@ -1044,7 +1035,7 @@ def load(
                     result["sigef_parcels"] = value
                 elif group == "ibge" and key == "municipality":
                     result["municipality_demographics"] = value
-                elif group == "ibge" and key == "census_sector":
+                elif group == "ibge" and key == "sector":
                     result["census_sector"] = value
                 elif group == "siconfi":
                     result["municipality_finance"] = value
@@ -1070,7 +1061,6 @@ def load(
 
 def territorial_report_values(context: dict) -> list[dict]:
     out = []
-    out.extend(ibge_sector.report_values((context or {}).get("census_sector") or {}))
     hyd = (context or {}).get("hydrology") or {}
     labels = {
         "macro": "Macrorregião hidrográfica (ANA/IBGE)",
