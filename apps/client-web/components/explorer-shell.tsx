@@ -51,6 +51,10 @@ type ParcelPayload = {
       complement?: string | null;
     };
     identifiers?: {
+      primary?: {
+        label?: string | null;
+        value?: string | null;
+      };
       fiscal_registration?: string | null;
       real_estate_code?: string | null;
     };
@@ -280,7 +284,13 @@ export function ExplorerShell() {
     setStatus("Selecione um terreno no mapa ou busque um endereço.");
   }
 
-  const sql = parcel?.identifiers?.fiscal_registration ?? null;
+  const primaryReference = parcel?.identifiers?.primary ?? null;
+  const primaryReferenceValue =
+    primaryReference?.value ??
+    parcel?.identifiers?.fiscal_registration ??
+    null;
+  const primaryReferenceLabel =
+    primaryReference?.label ?? "Referência cadastral";
   const cib = parcel?.identifiers?.real_estate_code ?? null;
   const street = parcel?.address?.street ?? null;
   const number = parcel?.address?.number ?? null;
@@ -426,8 +436,8 @@ export function ExplorerShell() {
               <span>
                 {busy
                   ? "Analisando…"
-                  : sql
-                    ? `Lote ${sql}`
+                  : primaryReferenceValue
+                    ? `Lote ${primaryReferenceValue}`
                     : "Nenhum lote selecionado"}
               </span>
               <div className="map-mode">
@@ -472,7 +482,7 @@ export function ExplorerShell() {
                   {sql && (
                     <div>
                       <span>Inscrição fiscal</span>
-                      <strong>{sql}</strong>
+                      <strong>{primaryReferenceValue}</strong>
                     </div>
                   )}
                   {cib && (
