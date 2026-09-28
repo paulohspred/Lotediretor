@@ -20,9 +20,16 @@
     {
       "key": "ibge_censo2022_geoservices",
       "source_id": "br-ibge-censo2022-geoservices",
-      "status": "REGISTERED_NEXT_STAGE",
-      "runtime_use": "Candidate for spatialized Census 2022 indicators and urban-surroundings analysis.",
-      "parcel_rule": "Must preserve territorial level and indicator definition."
+      "status": "VERIFIED_REFERENCE",
+      "runtime_use": "Official Censo 2022 GeoServer is verified as a reference source; deterministic parcel runtime uses the official IBGE 2022 census-sector GeoPackage materialized locally.",
+      "parcel_rule": "Always preserve territorial level and indicator definition; sector data is context, not parcel/household fact."
+    },
+    {
+      "key": "ibge_censo2022_sector_mesh",
+      "source_id": "br-ibge-censo2022-sector-mesh",
+      "status": "LIVE_PARCEL_CONTEXT",
+      "runtime_use": "Exact point-in-polygon census-sector context for the five first-wave municipalities: sector identity, population, households and average residents from the official 2022 mesh-with-attributes.",
+      "parcel_rule": "Sector indicators describe the census sector containing the parcel point; they are not parcel-specific or household-specific attributes."
     },
     {
       "key": "ibge_bcim",
@@ -48,44 +55,44 @@
     {
       "key": "sicar",
       "source_id": "br-sicar-car",
-      "status": "REGISTERED_QUERY_ONLY",
-      "runtime_use": "Rural environmental registry workflow when a rural property case requires it.",
-      "parcel_rule": "The tested sistemas.florestal.gov.br GeoServer currently exposes SNIF/CNFP layers, not confirmed CAR parcel polygons; do not relabel it as SICAR WFS."
+      "status": "BLOCKED_PUBLIC_LAYER",
+      "runtime_use": "Public SICAR/CAR portal is registered, but the tested public GeoServer catalog exposes SNIF/CNFP rather than confirmed CAR parcel/APP/Reserva Legal layers.",
+      "parcel_rule": "Do not infer CAR registration or environmental restrictions until an official reproducible parcel layer or authorized connector is available."
     },
     {
       "key": "sgb_cprm",
-      "source_id": "br-sgb-susceptibility",
+      "source_id": "br-sgb-arcgis",
       "status": "LIVE_MUNICIPAL_AND_PARCEL_CONTEXT",
-      "runtime_use": "Official SGB municipality susceptibility-map coverage plus live parcel-point setorização de risco and inundation polygons.",
+      "runtime_use": "Official SGB ArcGIS provides municipality susceptibility-map coverage plus live parcel-point risk-sector and flood-susceptibility polygons.",
       "parcel_rule": "Municipal summary does not classify the parcel; parcel-point SGB geometry is complementary to higher-resolution municipal/state risk mapping."
     },
     {
       "key": "mapbiomas",
       "source_id": "br-mapbiomas",
-      "status": "REGISTERED_NOT_RUNTIME",
-      "runtime_use": "Historical land-cover/use candidate.",
-      "parcel_rule": "Requires a reproducible licensed query/export workflow; MapBiomas/GEE website alone is not treated as a parcel REST API."
+      "status": "LIVE_POINT_HISTORY",
+      "runtime_use": "Official MapBiomas Collection 11 GeoTIFFs are sampled at the parcel representative point for 1985, 2000, 2010, 2020 and 2025 via HTTP range/rasterio.",
+      "parcel_rule": "30 m pixel history is screening context only; it does not describe the entire parcel or prove legal/licensed land use."
     },
     {
       "key": "sigef_incra",
-      "source_id": "br-incra-sigef",
-      "status": "AUTHENTICATED_QUERY_WORKFLOW",
-      "runtime_use": "Certified rural-property due diligence where applicable.",
-      "parcel_rule": "User-supplied INDE/INCRA WFS endpoint returned 404 in current verification; do not claim public WFS integration."
+      "source_id": "br-incra-acervo-fundiario",
+      "status": "LIVE_PUBLIC_SPATIAL_CONTEXT",
+      "runtime_use": "Official INCRA Geoportal WFS/WMS geonode:sigef_geo is intersected with the parcel point; public certification/CNS/matricula references feed due diligence.",
+      "parcel_rule": "SIGEF certification/reference does not replace current registry certificate, ownership, encumbrance or chain-of-title analysis."
     },
     {
       "key": "onr_saec",
-      "source_id": "br-onr-ridigital",
-      "status": "PAID_OR_AUTHENTICATED_ON_DEMAND",
-      "runtime_use": "Current registry certificate/matricula and encumbrance due diligence.",
-      "parcel_rule": "Never expose ownership from unverified or unrelated public records."
+      "source_id": "br-onr-saec",
+      "status": "AUTHENTICATED_PRIVATE_ON_DEMAND",
+      "runtime_use": "Current registry certificate/matricula and encumbrance due diligence through legitimate authorized access.",
+      "parcel_rule": "Never index or infer current owners from unrelated public records; do not bypass authentication."
     },
     {
       "key": "sinter",
-      "source_id": "br-rfb-sinter-cib",
-      "status": "REGISTERED_QUERY_ONLY",
-      "runtime_use": "Government interoperability/CIB context.",
-      "parcel_rule": "No anonymous public parcel REST contract confirmed."
+      "source_id": "br-sinter",
+      "status": "AUTHENTICATED_GOVERNMENT_INTEGRATION",
+      "runtime_use": "Future authorized government interoperability/CIB/CNM integration.",
+      "parcel_rule": "No anonymous public parcel REST contract is treated as available."
     },
     {
       "key": "funai",
@@ -118,9 +125,9 @@
     {
       "key": "overpass_osm",
       "source_id": "global-osm-overpass",
-      "status": "REGISTERED_FALLBACK_ONLY",
-      "runtime_use": "Sidewalks, crossings, cycleways, transit/POIs when no better official local source exists.",
-      "parcel_rule": "Use as contextual fallback with ODbL attribution; municipal official layers take precedence."
+      "status": "LIVE_COMPLEMENTARY_SOFT_FAIL",
+      "runtime_use": "Cached, serialized small-radius pedestrian crossing, transit stop/platform, cycle infrastructure and bicycle-parking context.",
+      "parcel_rule": "Collaborative OSM data varies in completeness; official municipal layers prevail and Overpass outages never block the dossier."
     },
     {
       "key": "dnit",
