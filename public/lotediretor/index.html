@@ -139,6 +139,9 @@ header{height:56px;background:var(--nav);color:#fff;border-bottom:4px solid var(
       <label class="layer-toggle"><input type="checkbox" data-zlayer="terrain"><span>Topografia<small>Curvas, relevo ou modelo de terreno</small></span></label>
       <label class="layer-toggle"><input type="checkbox" data-zlayer="gas"><span>Rede de gás<small>Contexto de infraestrutura quando publicado</small></span></label>
       <label class="layer-toggle"><input type="checkbox" data-zlayer="drainage"><span>Microdrenagem<small>Rede municipal publicada</small></span></label>
+      <label class="layer-toggle"><input type="checkbox" data-zlayer="federalEnvironment"><span>Unidades de conservação federais<small>Limites oficiais publicados pelo ICMBio</small></span></label>
+      <label class="layer-toggle"><input type="checkbox" data-zlayer="federalRisk"><span>Risco federal<small>Setorização de risco e inundação publicadas pelo SGB</small></span></label>
+      <label class="layer-toggle"><input type="checkbox" data-zlayer="federalRoads"><span>Rodovias federais<small>Sistema Nacional de Viação publicado pelo DNIT</small></span></label>
     </div>
 
   </aside>
@@ -147,7 +150,7 @@ header{height:56px;background:var(--nav);color:#fff;border-bottom:4px solid var(
     <div class="maptop">
       <button class="view-toggle active" id="view2d" type="button">2D</button>
       <button class="view-toggle" id="view3d" type="button">3D</button>
-      <span class="mapbadge" id="mapBadge">Mapa base © OpenStreetMap · camadas oficiais municipais</span>
+      <span class="mapbadge" id="mapBadge">Mapa base © OpenStreetMap · camadas oficiais municipais e federais</span>
     </div>
     <div id="map"></div>
     <div id="map3d" aria-label="Mapa 3D urbano"></div>
@@ -622,6 +625,24 @@ const jpOrthoWms=L.tileLayer.wms("https://filipeia.joaopessoa.pb.gov.br/geoserve
   opacity:.90,attribution:"Aerofotogrametria 2021 · Prefeitura de João Pessoa"
 }).setZIndex(120);
 
+const federalUcWms=L.tileLayer.wms("https://geoservicos.inde.gov.br/geoserver/ICMBio/wms",{
+  layers:"ICMBio:limiteucsfederais_a",format:"image/png",transparent:true,version:"1.1.1",
+  opacity:.38,attribution:"Unidades de conservação federais · ICMBio"
+}).setZIndex(330);
+const federalRoadsWms=L.tileLayer.wms("https://geoservicos.inde.gov.br/geoserver/DNIT/wms",{
+  layers:"DNIT:snv_202507a",format:"image/png",transparent:true,version:"1.1.1",
+  opacity:.62,attribution:"Sistema Nacional de Viação · DNIT"
+}).setZIndex(325);
+const federalSgbRiskOverlay=arcgisDynamicLayer(
+  "https://geoportal.sgb.gov.br/server/rest/services/gestaoterritorial/risco/MapServer/export",
+  0,"Setorização de risco · Serviço Geológico do Brasil",.40
+);
+const federalSgbFloodOverlay=arcgisDynamicLayer(
+  "https://geoportal.sgb.gov.br/server/rest/services/gestaoterritorial/inundacao/MapServer/export",
+  0,"Suscetibilidade a inundação · Serviço Geológico do Brasil",.36
+);
+const federalRiskGroup=L.layerGroup([federalSgbRiskOverlay,federalSgbFloodOverlay]);
+
 
 
 const cityLayerMap={
@@ -631,6 +652,11 @@ const cityLayerMap={
   "3106200":{parcel:bhParcelWms,zoning:bhZoningWms,environment:bhEnvironmentWms,roads:bhRoadsWms,drainage:bhDrainageWms,buildings:bhBuildingsWms,terrain:bhTerrainWms,ortho:bhOrtho2015Wms},
   "2507507":{parcel:jpParcelWms,zoning:jpZoningWms,heritage:jpHeritageWms,environment:jpEnvironmentWms,hydroRisk:jpSusceptibilityWms,coastal:jpCoastalWms,roads:jpRoadHierarchyWms,buildings:jpBuildingsWms,terrain:jpTerrainWms,gas:jpGasWms,ortho:jpOrthoWms}
 };
+Object.values(cityLayerMap).forEach(layers=>{
+  layers.federalEnvironment=federalUcWms;
+  layers.federalRisk=federalRiskGroup;
+  layers.federalRoads=federalRoadsWms;
+});
 const layerLabelsByCity={
   "3550308":{
     parcel:["Lotes fiscais","Cadastro oficial da Prefeitura de São Paulo"],
@@ -689,7 +715,7 @@ const layerLabelsByCity={
     ortho:["Ortofoto 2021","Aerofotogrametria municipal"]
   }
 };
-const allThematicLayers=[spParcelWms,spZoningWms,spHeritageWms,spGeoRiskWms,spHydroRiskWms,spHillshadeWms,spSlopeWms,spOrtho2020Wms,spRoadsWms,recifeParcelOverlay,recifeZoningOverlay,recifeBuildingOverlay,recifeSlopeTiles,recifeRoadOverlay,recifeOrtho2018Overlay,recifeGeoRiskOverlay,recifeHydroRiskOverlay,rioParcelOverlay,rioZoningOverlay,rioBuildingsOverlay,rioHydroRiskOverlay,rioHeritageOverlay,rioEnvironmentOverlay,rioProtectionOverlay,rioTerrainOverlay,rioRoadsOverlay,rioOrtho2025,bhParcelWms,bhZoningWms,bhEnvironmentWms,bhRoadsWms,bhDrainageWms,bhBuildingsWms,bhTerrainWms,bhOrtho2015Wms,jpParcelWms,jpZoningWms,jpHeritageWms,jpEnvironmentWms,jpSusceptibilityWms,jpCoastalWms,jpRoadHierarchyWms,jpBuildingsWms,jpTerrainWms,jpGasWms,jpOrthoWms];
+const allThematicLayers=[spParcelWms,spZoningWms,spHeritageWms,spGeoRiskWms,spHydroRiskWms,spHillshadeWms,spSlopeWms,spOrtho2020Wms,spRoadsWms,recifeParcelOverlay,recifeZoningOverlay,recifeBuildingOverlay,recifeSlopeTiles,recifeRoadOverlay,recifeOrtho2018Overlay,recifeGeoRiskOverlay,recifeHydroRiskOverlay,rioParcelOverlay,rioZoningOverlay,rioBuildingsOverlay,rioHydroRiskOverlay,rioHeritageOverlay,rioEnvironmentOverlay,rioProtectionOverlay,rioTerrainOverlay,rioRoadsOverlay,rioOrtho2025,bhParcelWms,bhZoningWms,bhEnvironmentWms,bhRoadsWms,bhDrainageWms,bhBuildingsWms,bhTerrainWms,bhOrtho2015Wms,jpParcelWms,jpZoningWms,jpHeritageWms,jpEnvironmentWms,jpSusceptibilityWms,jpCoastalWms,jpRoadHierarchyWms,jpBuildingsWms,jpTerrainWms,jpGasWms,jpOrthoWms,federalUcWms,federalRiskGroup,federalRoadsWms];
 function activeCityLayers(){const city=cities[Number(select.value)];return cityLayerMap[city.ibge]||{}}
 function syncCityLayers(){
   allThematicLayers.forEach(layer=>{if(map.hasLayer(layer))map.removeLayer(layer)});
