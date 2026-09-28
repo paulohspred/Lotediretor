@@ -4,6 +4,7 @@ import json,re,urllib.parse,urllib.request
 from datetime import datetime,timezone
 from pathlib import Path
 import municipality_utilities
+import federal_context
 from shapely.geometry import Point,shape,LineString
 from math import atan2,cos,degrees,radians,sin,sqrt
 
@@ -188,6 +189,7 @@ def parcel_nearby(key,parcel,count=300,pad_deg=0.00025):
     return out
 
 def context(lat,lng,parcel):
+    federal=federal_context.load(lat,lng)
     errors={}
     try:approved=spatial("approved",lat,lng)
     except Exception as e:approved=[];errors["approved_lot"]=type(e).__name__
@@ -234,6 +236,7 @@ def context(lat,lng,parcel):
     }
     z=(zoning[0].get("properties") if zoning else {}) or {}
     return {"planning":{"zoning":{"properties":{"cd_zoneamento_perimetro":z.get("SIGLA_TIPO_ZONEAMENTO"),"tx_zoneamento_perimetro":z.get("DESC_TIPO_ZONEAMENTO"),"source_layer":"ZONEAMENTO_11181"}},"special_regimes":{}},
+    "federal":federal,
     "approved_parcel":approved,"buildings":buildings,"terrain":terrain,
     "risk":{"geological":risk_slide,"hydrological":risk_flood},
     "environment":environment,
@@ -323,6 +326,7 @@ def vals(s,p,c):
                     {"label":labels.get(key,key),"value":r.get("NOME_AREA_PROTECAO")},
                     {"label":"Tipo de proteção","value":r.get("DESC_TIPO_AREA_PROTECAO")}
                 ])
+        out.extend(federal_context.report_values(c.get("federal") or {}))
         return out or [{"label":"Risco/patrimônio","value":"Sem incidência nas camadas consultadas."}]
     if s=="planning_buildability":return [{"label":"Zoneamento Lei 11.181","value":z.get("cd_zoneamento_perimetro")},{"label":"Descrição do zoneamento","value":z.get("tx_zoneamento_perimetro")},{"label":"Fonte do zoneamento","value":"Mapa oficial de zoneamento da Prefeitura de Belo Horizonte"}]
     if s=="infrastructure_utilities":
