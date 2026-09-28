@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import re
 from datetime import datetime, timezone
 
@@ -11,6 +12,11 @@ from psycopg2.extras import Json
 
 DB_DSN = "dbname=lotediretor user=sentinelx host=/var/run/postgresql"
 RUNTIME_SOURCE_ID = "ld-runtime-public-dossier"
+ENGINE_VERSION = os.getenv(
+    "LOTEDIRETOR_ENGINE_VERSION",
+    "python-property-engine-v2-bridge",
+)
+ANALYSIS_CONTRACT_VERSION = "2.0"
 
 IDENTIFIER_NAMESPACES = {
     "3550308": [
@@ -55,14 +61,18 @@ def stable_payload(payload: dict) -> dict:
     }
 
 
-def canonical_bytes(payload: dict) -> bytes:
+def canonical_json_bytes(value) -> bytes:
     return json.dumps(
-        stable_payload(payload),
+        value,
         ensure_ascii=False,
         sort_keys=True,
         separators=(",", ":"),
         default=str,
     ).encode("utf-8")
+
+
+def canonical_bytes(payload: dict) -> bytes:
+    return canonical_json_bytes(stable_payload(payload))
 
 
 def sha256_hex(data: bytes) -> str:
@@ -121,7 +131,7 @@ def ensure_snapshot(cur, municipality_ibge: str, primary_id: str, payload: dict)
             content_type, content_length, sha256, manifest
         )
         VALUES(%s, now(), %s, %s, 200, 'application/json', %s, %s, %s)
-        ON CONFLICT(source_id, sha256) DO UPDATE SET sha256=EXCLUDED.sha256
+        ON CONFLICT(source_id, sha256) DO NOTHING
         RETURNING snapshot_id::text
         """,
         (
@@ -139,7 +149,21 @@ def ensure_snapshot(cur, municipality_ibge: str, primary_id: str, payload: dict)
             ),
         ),
     )
-    snapshot_id = cur.fetchone()[0]
+    row = cur.fetchone()
+    if row:
+        snapshot_id = row[0]
+    else:
+        cur.execute(
+            """
+            SELECT snapshot_id::text
+            FROM ld_catalog.snapshot
+            WHERE source_id=%s AND sha256=%s
+            """,
+            (RUNTIME_SOURCE_ID, digest),
+        )
+        snapshot_id = cur.fetchone()[0]
+
+    upstream_key = f"{municipality_ibge}:{primary_id}"
     cur.execute(
         """
         INSERT INTO ld_catalog.normalized_record(
@@ -148,19 +172,31 @@ def ensure_snapshot(cur, municipality_ibge: str, primary_id: str, payload: dict)
         )
         VALUES(%s, %s::uuid, %s, 'PUBLIC_PROPERTY_DOSSIER',
                now(), now(), %s, %s)
-        ON CONFLICT(source_id, upstream_key, snapshot_id)
-        DO UPDATE SET attributes=EXCLUDED.attributes
+        ON CONFLICT(source_id, upstream_key, snapshot_id) DO NOTHING
         RETURNING record_id::text
         """,
         (
             RUNTIME_SOURCE_ID,
             snapshot_id,
-            f"{municipality_ibge}:{primary_id}",
+            upstream_key,
             digest,
             Json(stable_payload(payload)),
         ),
     )
-    return snapshot_id, cur.fetchone()[0]
+    row = cur.fetchone()
+    if row:
+        record_id = row[0]
+    else:
+        cur.execute(
+            """
+            SELECT record_id::text
+            FROM ld_catalog.normalized_record
+            WHERE source_id=%s AND upstream_key=%s AND snapshot_id=%s::uuid
+            """,
+            (RUNTIME_SOURCE_ID, upstream_key, snapshot_id),
+        )
+        record_id = cur.fetchone()[0]
+    return snapshot_id, record_id
 
 
 def primary_identifier(municipality_ibge: str, props: dict) -> tuple[str, str]:
@@ -447,14 +483,182 @@ def persist_assertions(cur, subject_id: str, source_record_id: str, report: dict
             )
 
 
+def frozen_findings(report: dict) -> list[dict]:
+    findings = []
+    for section in report.get("sections") or []:
+        section_id = section.get("id") or "unknown"
+        for item in section.get("actual_values") or []:
+            value = item.get("value")
+            if value in (None, ""):
+                continue
+            findings.append(
+                {
+                    "section_id": section_id,
+                    "field_key": slug(item.get("label") or "field"),
+                    "label": item.get("label"),
+                    "value": value,
+                    "unit": item.get("unit"),
+                }
+            )
+    return findings
+
+
+def persist_analysis_run(
+    cur,
+    *,
+    payload: dict,
+    municipality_ibge: str,
+    subject_id: str,
+    primary_namespace: str,
+    primary_id: str,
+    snapshot_id: str,
+    source_record_id: str,
+) -> str:
+    context = payload.get("context") or {}
+    report = payload.get("report") or {}
+    frozen_input = {
+        "municipality_ibge": municipality_ibge,
+        "primary_namespace": primary_namespace,
+        "primary_identifier": primary_id,
+        "clicked": payload.get("clicked"),
+    }
+    rules = {
+        "planning": context.get("planning") or {},
+        "licensing": context.get("licensing") or {},
+    }
+    calculations = {
+        "terrain": context.get("terrain") or {},
+        "fiscal": context.get("fiscal") or {},
+    }
+    findings = frozen_findings(report)
+    result_payload = stable_payload(payload)
+
+    input_sha = sha256_hex(canonical_json_bytes(frozen_input))
+    result_sha = sha256_hex(canonical_json_bytes(result_payload))
+    report_sha = sha256_hex(canonical_json_bytes(report))
+    fingerprint = sha256_hex(
+        canonical_json_bytes(
+            {
+                "subject_id": subject_id,
+                "snapshot_id": snapshot_id,
+                "engine_version": ENGINE_VERSION,
+                "contract_version": ANALYSIS_CONTRACT_VERSION,
+                "input_sha256": input_sha,
+                "result_sha256": result_sha,
+            }
+        )
+    )
+
+    cur.execute(
+        """
+        INSERT INTO ld_analysis.analysis_run(
+            subject_id, municipality_ibge, primary_namespace,
+            primary_identifier, analysis_date, engine_version,
+            contract_version, lineage_status, frozen_input,
+            frozen_rules, frozen_calculations, frozen_findings,
+            result_payload, input_sha256, result_sha256,
+            run_fingerprint
+        )
+        VALUES(
+            %s::uuid,%s,%s,%s,NULL,%s,%s,
+            'AGGREGATED_RUNTIME_SNAPSHOT',
+            %s,%s,%s,%s,%s,%s,%s,%s
+        )
+        ON CONFLICT(run_fingerprint) DO NOTHING
+        RETURNING analysis_run_id::text
+        """,
+        (
+            subject_id,
+            municipality_ibge,
+            primary_namespace,
+            primary_id,
+            ENGINE_VERSION,
+            ANALYSIS_CONTRACT_VERSION,
+            Json(frozen_input),
+            Json(rules),
+            Json(calculations),
+            Json(findings),
+            Json(result_payload),
+            input_sha,
+            result_sha,
+            fingerprint,
+        ),
+    )
+    row = cur.fetchone()
+    if not row:
+        cur.execute(
+            """
+            SELECT analysis_run_id::text
+            FROM ld_analysis.analysis_run
+            WHERE run_fingerprint=%s
+            """,
+            (fingerprint,),
+        )
+        return cur.fetchone()[0]
+
+    analysis_run_id = row[0]
+    cur.execute(
+        """
+        INSERT INTO ld_analysis.analysis_input(
+            analysis_run_id, snapshot_id, normalized_record_id,
+            source_id, input_role
+        )
+        VALUES(
+            %s::uuid,%s::uuid,%s::uuid,%s,'PRIMARY_PROPERTY_SNAPSHOT'
+        )
+        """,
+        (
+            analysis_run_id,
+            snapshot_id,
+            source_record_id,
+            RUNTIME_SOURCE_ID,
+        ),
+    )
+
+    cur.execute(
+        """
+        INSERT INTO ld_analysis.finding(
+            analysis_run_id, assertion_id, section_id, field_key,
+            value, unit, confidence
+        )
+        SELECT
+            %s::uuid, assertion_id, section_id, field_key,
+            value, unit, confidence
+        FROM ld_evidence.assertion
+        WHERE subject_id=%s::uuid
+          AND source_record_id=%s::uuid
+        ORDER BY section_id, field_key, assertion_id
+        """,
+        (analysis_run_id, subject_id, source_record_id),
+    )
+
+    cur.execute(
+        """
+        INSERT INTO ld_analysis.report_snapshot(
+            analysis_run_id, report_payload, report_sha256
+        )
+        VALUES(%s::uuid,%s,%s)
+        """,
+        (analysis_run_id, Json(report), report_sha),
+    )
+    cur.execute(
+        "SELECT ld_analysis.complete_run(%s::uuid)",
+        (analysis_run_id,),
+    )
+    return analysis_run_id
+
+
 def persist_payload(payload: dict, municipality_ibge: str) -> dict:
     feature = payload.get("feature") or {}
     props = feature.get("properties") or {}
-    _, primary_id = primary_identifier(municipality_ibge, props)
+    primary_namespace, primary_id = primary_identifier(
+        municipality_ibge,
+        props,
+    )
     with psycopg2.connect(DB_DSN) as conn:
         with conn.cursor() as cur:
             source_catalog(cur)
-            _, record_id = ensure_snapshot(
+            snapshot_id, record_id = ensure_snapshot(
                 cur, municipality_ibge, primary_id, payload
             )
             subject_id, primary_id = ensure_subject(
@@ -462,10 +666,21 @@ def persist_payload(payload: dict, municipality_ibge: str) -> dict:
             )
             persist_fiscal(cur, subject_id, record_id, payload.get("context") or {})
             persist_assertions(cur, subject_id, record_id, payload.get("report") or {})
+            analysis_run_id = persist_analysis_run(
+                cur,
+                payload=payload,
+                municipality_ibge=municipality_ibge,
+                subject_id=subject_id,
+                primary_namespace=primary_namespace,
+                primary_id=primary_id,
+                snapshot_id=snapshot_id,
+                source_record_id=record_id,
+            )
         conn.commit()
     return {
         "subject_id": subject_id,
         "primary_id": primary_id,
         "municipality_ibge": municipality_ibge,
+        "analysis_run_id": analysis_run_id,
         "persisted_at": utc_now(),
     }
