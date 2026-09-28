@@ -2,7 +2,7 @@ import { Body, Controller, Module, Post } from "@nestjs/common";
 import {
   ParcelEngineService,
   ParcelResolveInput,
-} from "./parcel-engine.service";
+} from "./parcel-engine.service.js";
 
 @Controller()
 class ParcelController {
