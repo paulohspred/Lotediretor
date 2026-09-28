@@ -28,7 +28,7 @@ DNIT_WFS = "https://geoservicos.inde.gov.br/geoserver/DNIT/ows"
 SGB_RISK = "https://geoportal.sgb.gov.br/server/rest/services/gestaoterritorial/risco/FeatureServer/0"
 SGB_FLOOD = "https://geoportal.sgb.gov.br/server/rest/services/gestaoterritorial/inundacao/FeatureServer/0"
 DNIT_FIELDS = [
-    "id_trecho_", "vl_br", "sg_uf", "nm_tipo_tr", "sg_tipo_tr",
+    "ogc_fid", "id_trecho_", "vl_br", "sg_uf", "nm_tipo_tr", "sg_tipo_tr",
     "ds_local_i", "ds_local_f", "vl_km_inic", "vl_km_fina",
     "vl_extensa", "ds_sup_fed", "ds_obra", "ds_tipo_ad",
     "ds_ato_leg", "ds_jurisdi", "ds_superfi", "ds_legenda",
