@@ -14,12 +14,35 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timezone
 
 from pyproj import Transformer
+from shapely.geometry import shape
+from shapely.ops import transform as shapely_transform
+
+from pyproj import Transformer
 from shapely.geometry import Point, shape
 from shapely.ops import transform as shapely_transform
 
 ANA_BASE = "https://www.snirh.gov.br/arcgis/rest/services/INDE/Camadas/MapServer"
 ICMBIO_WFS = "https://geoservicos.inde.gov.br/geoserver/ICMBio/ows"
 IBGE_AGGREGATES = "https://servicodados.ibge.gov.br/api/v3/agregados"
+DNIT_WFS = "https://geoservicos.inde.gov.br/geoserver/DNIT/ows"
+SGB_RISK = "https://geoportal.sgb.gov.br/server/rest/services/gestaoterritorial/risco/FeatureServer/0"
+SGB_FLOOD = "https://geoportal.sgb.gov.br/server/rest/services/gestaoterritorial/inundacao/FeatureServer/0"
+DNIT_FIELDS = [
+    "id_trecho_", "vl_br", "sg_uf", "nm_tipo_tr", "sg_tipo_tr",
+    "ds_local_i", "ds_local_f", "vl_km_inic", "vl_km_fina",
+    "vl_extensa", "ds_sup_fed", "ds_obra", "ds_tipo_ad",
+    "ds_ato_leg", "ds_jurisdi", "ds_superfi", "ds_legenda",
+    "sg_legenda", "versao_snv",
+]
+SGB_RISK_FIELDS = [
+    "objectid", "uf", "munic", "cd_geocmu", "num_setor", "data_setor",
+    "local", "tipolo_g1", "tipolo_e1", "grau_vulne", "grau_risco",
+    "orgao_exec",
+]
+SGB_FLOOD_FIELDS = [
+    "objectid", "uf", "municipio", "processo", "classe", "fonte",
+    "execucao", "projeto", "ano", "executor",
+]
 SGB_SUSCET = "https://geoportal.sgb.gov.br/server/rest/services/Hosted/Base_Suscet_v2/FeatureServer/0"
 DNIT_WFS = "https://geoservicos.inde.gov.br/geoserver/DNIT/ows"
 FUNAI_WFS = "https://geoserver.funai.gov.br/geoserver/ows"
@@ -62,6 +85,80 @@ def _get_json(url: str, limit: int = 2_000_000) -> dict:
     except UnicodeDecodeError:
         text = raw.decode("utf-8", errors="strict")
     return json.loads(text)
+
+
+def _arcgis_point_query(url: str, fields: list[str], lat: float, lng: float) -> list[dict]:
+    params = {
+        "f": "json",
+        "geometry": f"{lng},{lat}",
+        "geometryType": "esriGeometryPoint",
+        "inSR": "4326",
+        "spatialRel": "esriSpatialRelIntersects",
+        "outFields": ",".join(fields),
+        "returnGeometry": "false",
+        "resultRecordCount": "50",
+    }
+    data = _get_json(url + "/query?" + urllib.parse.urlencode(params))
+    allowed = set(fields)
+    out = []
+    for feature in data.get("features") or []:
+        attrs = feature.get("attributes") or {}
+        if set(attrs) - allowed:
+            raise RuntimeError("sgb_unexpected_fields")
+        out.append({k: attrs.get(k) for k in fields if attrs.get(k) is not None})
+    return out
+
+
+def sgb_risk_at_point(lat: float, lng: float) -> dict:
+    return {
+        "risk_sectors": _arcgis_point_query(SGB_RISK, SGB_RISK_FIELDS, lat, lng),
+        "flood_susceptibility": _arcgis_point_query(SGB_FLOOD, SGB_FLOOD_FIELDS, lat, lng),
+    }
+
+
+def dnit_near_parcel(parcel_geometry: dict | None, lat: float, lng: float, max_distance_m: float = 80.0) -> list[dict]:
+    if not parcel_geometry:
+        return []
+    parcel = shape(parcel_geometry)
+    if parcel.is_empty:
+        return []
+    minx, miny, maxx, maxy = parcel.bounds
+    pad = 0.0012
+    params = {
+        "service": "WFS",
+        "version": "2.0.0",
+        "request": "GetFeature",
+        "typeNames": "DNIT:snv_202507a",
+        "srsName": "EPSG:4326",
+        "bbox": f"{minx-pad},{miny-pad},{maxx+pad},{maxy+pad},EPSG:4326",
+        "count": "100",
+        "propertyName": ",".join(["the_geom"] + DNIT_FIELDS),
+        "outputFormat": "application/json",
+    }
+    data = _get_json(DNIT_WFS + "?" + urllib.parse.urlencode(params), 4_000_000)
+    transformer = Transformer.from_crs("EPSG:4326", "EPSG:3857", always_xy=True)
+    parcel_metric = shapely_transform(transformer.transform, parcel)
+    allowed = set(DNIT_FIELDS)
+    out = []
+    for feature in data.get("features") or []:
+        geom = feature.get("geometry")
+        props = feature.get("properties") or {}
+        if set(props) - allowed:
+            raise RuntimeError("dnit_unexpected_fields")
+        if not geom:
+            continue
+        try:
+            road_metric = shapely_transform(transformer.transform, shape(geom))
+            distance_m = float(parcel_metric.distance(road_metric))
+        except Exception:
+            continue
+        if distance_m <= max_distance_m:
+            out.append({
+                "distance_to_parcel_m": round(distance_m, 1),
+                "properties": {k: props.get(k) for k in DNIT_FIELDS if props.get(k) is not None},
+            })
+    out.sort(key=lambda x: x["distance_to_parcel_m"])
+    return out[:8]
 
 
 def ana_region(level: str, lat: float, lng: float) -> dict:
@@ -268,11 +365,13 @@ def funai_at_point(lat: float, lng: float) -> list[dict]:
     return out
 
 
-def load(lat: float, lng: float, municipality_ibge: str | None = None) -> dict:
+def load(lat: float, lng: float, municipality_ibge: str | None = None, parcel_geometry: dict | None = None) -> dict:
     result = {
         "hydrology": {},
         "federal_conservation_units": [],
         "municipality_demographics": {},
+        "sgb": {"risk_sectors": [], "flood_susceptibility": []},
+        "federal_roads": [],
         "sgb_susceptibility": {},
         "nearby_federal_roads": [],
         "indigenous_territories": [],
@@ -290,6 +389,11 @@ def load(lat: float, lng: float, municipality_ibge: str | None = None) -> dict:
         for level in ANA_LAYERS:
             jobs[pool.submit(ana_region, level, lat, lng)] = ("ana", level)
         jobs[pool.submit(icmbio_at_point, lat, lng)] = ("icmbio", "federal_uc")
+        jobs[pool.submit(sgb_risk_at_point, lat, lng)] = ("sgb", "risk")
+        if parcel_geometry:
+            jobs[
+                pool.submit(dnit_near_parcel, parcel_geometry, lat, lng)
+            ] = ("dnit", "roads")
         if municipality_ibge:
             jobs[
                 pool.submit(ibge_municipality_context, municipality_ibge)
@@ -384,6 +488,30 @@ def environment_report_values(context: dict) -> list[dict]:
             "label": "Limite da incidência FUNAI",
             "value": "A incidência territorial é baseada na geometria pública da FUNAI e requer leitura jurídica própria; não identifica titularidade privada do imóvel.",
         })
+    sgb=(context or {}).get("sgb") or {}
+    for item in sgb.get("risk_sectors") or []:
+        out.extend([
+            {"label":"Setor de risco federal (SGB)","value":item.get("num_setor") or item.get("local")},
+            {"label":"Grau de risco informado pelo SGB","value":item.get("grau_risco")},
+            {"label":"Tipologia do risco (SGB)","value":item.get("tipolo_e1") or item.get("tipolo_g1")},
+            {"label":"Data da setorização do SGB","value":item.get("data_setor")},
+        ])
+    for item in sgb.get("flood_susceptibility") or []:
+        out.extend([
+            {"label":"Suscetibilidade a inundação (SGB)","value":item.get("classe")},
+            {"label":"Processo de inundação (SGB)","value":item.get("processo")},
+            {"label":"Ano da cartografia de inundação (SGB)","value":item.get("ano")},
+        ])
+    for item in (context or {}).get("federal_roads") or []:
+        p=item.get("properties") or {}
+        out.extend([
+            {"label":"Rodovia federal próxima","value":("BR-"+str(p.get("vl_br"))) if p.get("vl_br") else p.get("ds_legenda")},
+            {"label":"Distância aproximada da rodovia federal ao terreno","value":item.get("distance_to_parcel_m"),"unit":"m"},
+            {"label":"Jurisdição do trecho federal","value":p.get("ds_jurisdi")},
+            {"label":"Superfície do trecho federal","value":p.get("ds_superfi")},
+            {"label":"Versão do Sistema Nacional de Viação","value":p.get("versao_snv")},
+        ])
+
     for uc in (context or {}).get("federal_conservation_units") or []:
         out.extend([
             {"label": "Unidade de conservação federal", "value": uc.get("nomeuc")},
