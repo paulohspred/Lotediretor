@@ -61,9 +61,9 @@
     {
       "name": "SICAR / CAR",
       "source_id": "br-sicar-car",
-      "status": "BLOCKED_PUBLIC_LAYER",
-      "usage": "Public portal verified; listed GeoServer currently exposes SNIF/CNFP layers rather than parcel CAR/APP/Reserva Legal layers.",
-      "parcel_semantics": "No CAR parcel inference until an official reproducible public layer or authorized connector is available."
+      "status": "LIVE_PUBLIC_PROPERTY_GEOMETRY",
+      "usage": "Official SICAR WFS state layers are queried by parcel point using only non-personal public fields: CAR code, status, creation date, declared area, condition, municipality, fiscal modules and property type.",
+      "parcel_semantics": "CAR is declaratory and does not prove ownership, current registry title or final environmental validation. APP, Reserva Legal and restricted-use geometries remain unavailable until a verified official public layer or authorized integration exists."
     },
     {
       "name": "SGB / CPRM",
