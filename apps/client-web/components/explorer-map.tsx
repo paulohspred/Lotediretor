@@ -18,6 +18,7 @@ type Props = {
   onPick: (point: { lat: number; lng: number }) => void;
   focusPoint?: { lat: number; lng: number } | null;
   activeLayerIds: string[];
+  viewMode: "2d" | "3d";
 };
 
 const SELECTED_SOURCE = "selected-parcel";
@@ -25,6 +26,7 @@ const SELECTED_FILL = "selected-parcel-fill";
 const SELECTED_LINE = "selected-parcel-line";
 const CATALOG_SOURCE_PREFIX = "catalog-source:";
 const CATALOG_LAYER_PREFIX = "catalog-layer:";
+const BUILDINGS_3D = "ld-buildings-3d";
 
 function sourceId(layerId: string): string {
   return `${CATALOG_SOURCE_PREFIX}${layerId}`;
@@ -40,6 +42,7 @@ export function ExplorerMap({
   onPick,
   focusPoint,
   activeLayerIds,
+  viewMode,
 }: Props) {
   const container = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
@@ -99,6 +102,79 @@ export function ExplorerMap({
       duration: 700,
     });
   }, [focusPoint]);
+
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map) return;
+
+    const applyViewMode = () => {
+      map.easeTo({
+        pitch: viewMode === "3d" ? 58 : 0,
+        bearing: viewMode === "3d" ? -18 : 0,
+        duration: 650,
+      });
+
+      if (viewMode !== "3d") {
+        if (map.getLayer(BUILDINGS_3D)) {
+          map.removeLayer(BUILDINGS_3D);
+        }
+        return;
+      }
+
+      if (map.getLayer(BUILDINGS_3D)) return;
+      const styleLayers = map.getStyle().layers ?? [];
+      const buildingLayer = styleLayers.find((layer) => {
+        const candidate = layer as maplibregl.LayerSpecification & {
+          source?: string;
+          "source-layer"?: string;
+        };
+        return (
+          typeof candidate.source === "string" &&
+          candidate["source-layer"] === "building"
+        );
+      }) as
+        | (maplibregl.LayerSpecification & {
+            source: string;
+            "source-layer": string;
+          })
+        | undefined;
+
+      if (!buildingLayer) return;
+
+      map.addLayer(
+        {
+          id: BUILDINGS_3D,
+          type: "fill-extrusion",
+          source: buildingLayer.source,
+          "source-layer": buildingLayer["source-layer"],
+          minzoom: 15,
+          paint: {
+            "fill-extrusion-color": "#C7CFCC",
+            "fill-extrusion-height": [
+              "coalesce",
+              ["get", "render_height"],
+              ["get", "height"],
+              6,
+            ],
+            "fill-extrusion-base": [
+              "coalesce",
+              ["get", "render_min_height"],
+              ["get", "min_height"],
+              0,
+            ],
+            "fill-extrusion-opacity": 0.78,
+          },
+        } as maplibregl.FillExtrusionLayerSpecification,
+        map.getLayer(SELECTED_FILL) ? SELECTED_FILL : undefined,
+      );
+
+      if (map.getLayer(SELECTED_FILL)) map.moveLayer(SELECTED_FILL);
+      if (map.getLayer(SELECTED_LINE)) map.moveLayer(SELECTED_LINE);
+    };
+
+    if (map.loaded()) applyViewMode();
+    else map.once("load", applyViewMode);
+  }, [viewMode]);
 
   useEffect(() => {
     const map = mapRef.current;
