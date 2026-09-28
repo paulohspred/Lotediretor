@@ -259,6 +259,12 @@ def vals(s,p,c):
             ])
         out.extend(federal_context.transport_report_values(c.get("federal") or {}))
         return out
+    if s=="terrain_visual":
+        out=[
+            {"label":"Topografia contínua","value":"Raster municipal de declividade disponível para visualização; cota numérica contínua não é exposta pelo serviço público atual."}
+        ]
+        out.extend(federal_context.historical_report_values(c.get("federal") or {}))
+        return out
     if s=="territorial_context":
         return federal_context.territorial_report_values(c.get("federal") or {})
     if s=="environment_risk_heritage":
