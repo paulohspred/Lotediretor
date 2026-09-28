@@ -129,6 +129,13 @@ def main() -> int:
         else:
             ok(f"{name}: normalized parcel + human dossier")
 
+        analysis = body.get("analysis") or {}
+        run_id = analysis.get("run_id")
+        if run_id and analysis.get("audit_available") is True:
+            ok(f"{name}: immutable Analysis Run reference")
+        else:
+            fail(errors, f"{name}: immutable Analysis Run reference")
+
         leaked = sorted(keys & FORBIDDEN_PUBLIC_KEYS)
         if leaked:
             fail(errors, f"{name}: public contract leaked technical keys {leaked}")
