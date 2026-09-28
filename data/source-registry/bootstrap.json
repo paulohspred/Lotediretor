@@ -5136,8 +5136,8 @@
       "base_url": "https://overpass-api.de/api/interpreter",
       "license": "ODbL 1.0",
       "access_class": "OPEN_REUSABLE",
-      "verification_status": "REGISTERED_FALLBACK_ONLY",
-      "notes": "Usar como fallback/complemento quando não houver fonte pública oficial local adequada. Respeitar rate limits e atribuição; não usar dados de usuário/changeset."
+      "verification_status": "LIVE_COMPLEMENTARY_SOFT_FAIL_2026",
+      "notes": "Used as collaborative mobility context only: pedestrian crossings, transit stops/platforms, cycle infrastructure and bicycle parking in a small parcel-adjacent radius. Requests are serialized and cached for 12h. Municipal official layers prevail; Overpass failure never blocks the parcel dossier."
     },
     {
       "id": "br-brasilapi-cep-v2",
