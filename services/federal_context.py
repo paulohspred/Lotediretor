@@ -31,6 +31,7 @@ _SICONFI_LOCK = threading.Lock()
 _SICONFI_LAST_REQUEST = 0.0
 DNIT_WFS = "https://geoservicos.inde.gov.br/geoserver/DNIT/ows"
 FUNAI_WFS = "https://geoserver.funai.gov.br/geoserver/ows"
+INCRA_WFS = "https://geoportal.incra.gov.br/geoserver/wfs"
 SGB_RISK = (
     "https://geoportal.sgb.gov.br/server/rest/services/"
     "gestaoterritorial/risco/FeatureServer/0"
