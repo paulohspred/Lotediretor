@@ -111,9 +111,9 @@
     {
       "key": "transferegov",
       "source_id": "br-transferegov-public-works",
-      "status": "VERIFIED_2026_PORTAL_CONTEXT",
-      "runtime_use": "Current portal is api-publica.transferegov.gestao.gov.br. Public APIs currently cover Gestão de Parcerias and Transferências Especiais; the TransfereGov Obras API is scheduled for 2027.",
-      "parcel_rule": "Do not use retired repository endpoints. Do not attach a transfer/project to a parcel without defensible official geometry; ObrasGov remains the current public-works source."
+      "status": "LIVE_MUNICIPAL_CONTEXT",
+      "runtime_use": "Transferências Especiais 2026 resolved by the municipality institutional CNPJ: plan count, investment and operating values. Zero plans is a valid result.",
+      "parcel_rule": "Municipality-level transfer context only. Plan names/values are never treated as parcel works or nearby projects without official geometry."
     },
     {
       "key": "overpass_osm",
