@@ -2637,6 +2637,11 @@ def actual_values_for_section(
                 "averbações permanecem no fluxo privado sob demanda."
             ),
         })
+        values.extend(
+            federal_context.registry_report_values(
+                context.get("federal") or {}
+            )
+        )
         return values
 
     if section_id == "territorial_context":
