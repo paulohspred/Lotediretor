@@ -322,23 +322,29 @@ def vals(s,p,c):
         if env.get("ssa1"):
             out.append({"label":"Setor de Sustentabilidade Ambiental 1","value":"Incidência identificada"})
         for item in env.get("smup_sectors") or []:
-            r=item.get("properties") or {};out.append({"label":"Setor de unidade de conservação (SMUP)","value":r.get("zonas") or "Incidência identificada"})
+            r=item.get("properties") or {};out.append({"label":"Setor do Sistema Municipal de Unidades Protegidas (SMUP)","value":r.get("zonas") or "Incidência identificada"})
         for item in env.get("smup_trees") or []:
             r=item.get("properties") or {};tree=r.get("nmpopul") or r.get("cdnmcient") or "Árvore tombada"
             out.append({"label":"Árvore protegida pelo sistema municipal","value":tree})
             if r.get("cdnum") not in (None,""):out.append({"label":"Número de identificação da árvore protegida","value":r.get("cdnum")})
         for item in env.get("smup_ipav") or []:
             r=item.get("properties") or {};out.append({"label":"Imóvel de proteção de área verde (IPAV)","value":r.get("nome_ipav") or "Incidência identificada"})
-            if r.get("instrumento_criacao"):out.append({"label":"IPAV · norma de criação","value":r.get("instrumento_criacao")})
-            if r.get("instrumento_regulamentacao"):out.append({"label":"IPAV · norma de regulamentação","value":r.get("instrumento_regulamentacao")})
+            if r.get("instrumento_criacao"):out.append({"label":"Imóvel de Proteção de Área Verde (IPAV) · norma de criação","value":r.get("instrumento_criacao")})
+            if r.get("instrumento_regulamentacao"):out.append({"label":"Imóvel de Proteção de Área Verde (IPAV) · norma de regulamentação","value":r.get("instrumento_regulamentacao")})
         for item in env.get("smup_ucn") or []:
             r=item.get("properties") or {};out.append({"label":"Unidade de conservação da natureza","value":r.get("cdzona_nome") or r.get("cdid") or "Incidência identificada"})
             if r.get("cdzona_tipo"):out.append({"label":"Unidade de conservação · tipo","value":r.get("cdzona_tipo")})
             if r.get("categoria"):out.append({"label":"Unidade de conservação · categoria","value":r.get("categoria")})
             if r.get("decreto"):out.append({"label":"Unidade de conservação · decreto","value":r.get("decreto")})
-        for k,l in [("iep","IEP"),("zeph","ZEPH"),("ipav","IPAV"),("ucn","UCN")]:
+        heritage_labels={
+            "iep":"Imóvel Especial de Preservação (IEP)",
+            "zeph":"Zona Especial de Preservação do Patrimônio Histórico-Cultural (ZEPH)",
+            "ipav":"Imóvel de Proteção de Área Verde (IPAV)",
+            "ucn":"Unidade de Conservação da Natureza (UCN)",
+        }
+        for k,l in heritage_labels.items():
             for x in sp.get(k) or []:
-                r=x.get("properties") or {};out.append({"label":f"Incidência {l}","value":r.get("NMDESCR") or r.get("NMNOME") or r.get("NOME_IPAV") or r.get("CDZONA_NOME") or l})
+                r=x.get("properties") or {};out.append({"label":f"Incidência · {l}","value":r.get("NMDESCR") or r.get("NMNOME") or r.get("NOME_IPAV") or r.get("CDZONA_NOME") or l})
         out.extend(federal_context.environment_report_values(c.get("federal") or {}))
         return out or [{"label":"Patrimônio/áreas especiais","value":"Sem incidência nas camadas consultadas."}]
     if s=="registry_due_diligence":
