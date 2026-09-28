@@ -25,6 +25,14 @@ IBGE_AGGREGATES = "https://servicodados.ibge.gov.br/api/v3/agregados"
 SICONFI_RREO = "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo"
 SICONFI_ENTES = "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/entes"
 TRANSFERE_ESPECIAIS = "https://api-publica.transferegov.gestao.gov.br/especiais"
+MAPBIOMAS_TIF = (
+    "https://storage.googleapis.com/mapbiomas-public/initiatives/brasil/"
+    "collection11/lulc/coverage/brazil_coverage/"
+    "brazil_coverage-col11_{year}.tif"
+)
+MAPBIOMAS_YEARS = (1985, 2000, 2010, 2020, 2025)
+_MAPBIOMAS_CACHE = {}
+_MAPBIOMAS_CACHE_TTL = 24 * 3600
 _TRANSFERE_CACHE = {}
 _SICONFI_CACHE = {}
 _SICONFI_LOCK = threading.Lock()
@@ -81,6 +89,159 @@ SGB_FLOOD_FIELDS = [
     "objectid", "uf", "municipio", "processo", "classe", "fonte",
     "execucao", "projeto", "ano", "executor",
 ]
+MAPBIOMAS_NAMES_OFFICIAL = {
+    0: "Not Observed",
+    1: "Forest",
+    3: "Forest Formation",
+    4: "Savanna Formation",
+    5: "Mangrove",
+    6: "Floodable Forest",
+    7: "Flooded Savanna",
+    9: "Forest Plantation",
+    10: "Herbaceous and Shrubby Vegetation",
+    11: "Wetland",
+    12: "Grassland Formation",
+    13: "Other non-forest natural formation",
+    14: "Farming",
+    15: "Pasture",
+    18: "Agriculture",
+    19: "Temporary Crop",
+    20: "Sugar cane",
+    21: "Mosaic of Uses",
+    22: "Non vegetated area",
+    23: "Beach, Dune and Sand Spot",
+    24: "Urban Area",
+    25: "Other non Vegetated Areas",
+    26: "Water",
+    27: "Not Observed",
+    29: "Rocky Outcrop",
+    30: "Mining",
+    31: "Aquaculture",
+    32: "Hypersaline Tidal Flat",
+    33: "River, Lake and Ocean",
+    34: "Glacier",
+    35: "Palm Oil",
+    36: "Perennial Crop",
+    39: "Soybean",
+    40: "Rice",
+    41: "Other Temporary Crops",
+    42: "Open Grassland",
+    43: "Closed Grassland",
+    44: "Sparse Grassland",
+    45: "Sparse woodland",
+    46: "Coffee",
+    47: "Citrus",
+    48: "Other Perennial Crops",
+    49: "Wooded Sandbank Vegetation",
+    50: "Herbaceous Sandbank Vegetation",
+    51: "Lowland Flooded Grassland",
+    52: "Coastal salt flat surface",
+    57: "Single crop",
+    58: "Multiple crop",
+    59: "Primary Forest",
+    60: "Secondary Forest",
+    61: "Salt flat",
+    62: "Cotton (beta)",
+    63: "Shrub and herbaceous mosaics",
+    65: "Tea",
+    66: "Closed shrublands",
+    67: "Dwarf Forest",
+    68: "Other natural non-vegetated area",
+    70: "Coastal Lomas (beta)",
+    72: "Other crops",
+    73: "Peatlands",
+    74: "Banana",
+    75: "Photovoltaic Power Plant (beta)",
+    76: "Peat Swamp Forest",
+    77: "Herbaceous-Shrub Mosaic",
+    79: "Pinus plantation",
+    80: "Eucalyptus plantation",
+    81: "Andean grassland and shrubland",
+    82: "Flooded Andean grassland and shrubland",
+    83: "Other forestry uses",
+    84: "Marisma",
+    88: "Temperate forest",
+    89: "Tropical dry forest",
+    91: "Wind Farm",
+    92: "Rocky surface",
+}
+MAPBIOMAS_NAMES_PT = {
+    0: "Não observado",
+    1: "Floresta",
+    3: "Formação florestal",
+    4: "Formação savânica",
+    5: "Mangue",
+    6: "Floresta alagável",
+    7: "Savana alagável",
+    9: "Silvicultura",
+    10: "Vegetação herbácea e arbustiva",
+    11: "Área úmida",
+    12: "Formação campestre",
+    13: "Outra formação natural não florestal",
+    14: "Agropecuária",
+    15: "Pastagem",
+    18: "Agricultura",
+    19: "Lavoura temporária",
+    20: "Cana-de-açúcar",
+    21: "Mosaico de usos",
+    22: "Área não vegetada",
+    23: "Praia, duna e areal",
+    24: "Área urbana",
+    25: "Outra área não vegetada",
+    26: "Água",
+    27: "Não observado",
+    29: "Afloramento rochoso",
+    30: "Mineração",
+    31: "Aquicultura",
+    32: "Apicum",
+    33: "Rio, lago e oceano",
+    34: "Geleira",
+    35: "Dendê",
+    36: "Lavoura perene",
+    39: "Soja",
+    40: "Arroz",
+    41: "Outras lavouras temporárias",
+    42: "Campo aberto",
+    43: "Campo fechado",
+    44: "Campo esparso",
+    45: "Formação lenhosa esparsa",
+    46: "Café",
+    47: "Cítricos",
+    48: "Outras lavouras perenes",
+    49: "Restinga arbórea",
+    50: "Restinga herbácea",
+    51: "Campo alagado de baixada",
+    52: "Superfície salina costeira",
+    57: "Cultivo único",
+    58: "Cultivo múltiplo",
+    59: "Floresta primária",
+    60: "Floresta secundária",
+    61: "Salina",
+    62: "Algodão (beta)",
+    63: "Mosaico arbustivo e herbáceo",
+    65: "Chá",
+    66: "Arbustal fechado",
+    67: "Floresta anã",
+    68: "Outra área natural não vegetada",
+    70: "Lomas costeiras (beta)",
+    72: "Outras culturas",
+    73: "Turfeiras",
+    74: "Banana",
+    75: "Usina fotovoltaica (beta)",
+    76: "Floresta pantanosa turfosa",
+    77: "Mosaico herbáceo-arbustivo",
+    79: "Plantação de pinus",
+    80: "Plantação de eucalipto",
+    81: "Campo e arbustal andino",
+    82: "Campo e arbustal andino alagado",
+    83: "Outros usos florestais",
+    84: "Marisma",
+    88: "Floresta temperada",
+    89: "Floresta tropical seca",
+    91: "Parque eólico",
+    92: "Superfície rochosa",
+}
+
 SGB_SUSCET_FIELDS = [
     "nm_municip", "cd_geocmu", "uf", "carta_suscet", "ano_execucao",
     "mes_public", "ano_public", "area_municipio", "area_mapeada",
@@ -486,6 +647,129 @@ def transferegov_municipality_context(cnpj: str | None) -> dict:
     return value
 
 
+def _mapbiomas_sample(year: int, lat: float, lng: float) -> dict:
+    try:
+        import rasterio
+        from rasterio.warp import transform as raster_transform
+    except ImportError as exc:
+        raise RuntimeError("mapbiomas_rasterio_not_installed") from exc
+
+    url = MAPBIOMAS_TIF.format(year=year)
+    with rasterio.Env(
+        GDAL_HTTP_MULTIRANGE="YES",
+        GDAL_DISABLE_READDIR_ON_OPEN="EMPTY_DIR",
+        CPL_VSIL_CURL_ALLOWED_EXTENSIONS=".tif",
+    ):
+        with rasterio.open(url) as ds:
+            xs, ys = raster_transform(
+                "EPSG:4326",
+                ds.crs,
+                [lng],
+                [lat],
+            )
+            row, col = ds.index(xs[0], ys[0])
+            if row < 0 or col < 0 or row >= ds.height or col >= ds.width:
+                return {
+                    "year": year,
+                    "available": False,
+                    "reason": "outside_raster_extent",
+                }
+            value = int(
+                ds.read(
+                    1,
+                    window=((row, row + 1), (col, col + 1)),
+                )[0, 0]
+            )
+    return {
+        "year": year,
+        "available": True,
+        "class_id": value,
+        "class_name": MAPBIOMAS_NAMES_PT.get(
+            value,
+            f"Classe {value}",
+        ),
+        "official_class_name": MAPBIOMAS_NAMES_OFFICIAL.get(value),
+    }
+
+
+def mapbiomas_history(
+    parcel_geometry: dict | None,
+    lat: float,
+    lng: float,
+) -> dict:
+    sample_lat = lat
+    sample_lng = lng
+    if parcel_geometry:
+        try:
+            p = shape(parcel_geometry).representative_point()
+            sample_lng, sample_lat = p.x, p.y
+        except Exception:
+            pass
+    cache_key = (
+        round(sample_lat, 5),
+        round(sample_lng, 5),
+        MAPBIOMAS_YEARS,
+    )
+    cached = _MAPBIOMAS_CACHE.get(cache_key)
+    if cached and time.time() - cached["cached_at"] < _MAPBIOMAS_CACHE_TTL:
+        return cached["value"]
+
+    with ThreadPoolExecutor(max_workers=len(MAPBIOMAS_YEARS)) as pool:
+        samples = list(
+            pool.map(
+                lambda year: _mapbiomas_sample(
+                    year,
+                    sample_lat,
+                    sample_lng,
+                ),
+                MAPBIOMAS_YEARS,
+            )
+        )
+    samples.sort(key=lambda item: item["year"])
+    transitions = []
+    previous = None
+    for item in samples:
+        if not item.get("available"):
+            continue
+        current = item.get("class_id")
+        if previous and current != previous.get("class_id"):
+            transitions.append({
+                "from_year": previous.get("year"),
+                "from_class_id": previous.get("class_id"),
+                "from_class_name": previous.get("class_name"),
+                "to_year": item.get("year"),
+                "to_class_id": current,
+                "to_class_name": item.get("class_name"),
+            })
+        previous = item
+    value = {
+        "available": any(item.get("available") for item in samples),
+        "collection": 11,
+        "resolution_m": 30,
+        "sample_point": {
+            "lat": round(sample_lat, 7),
+            "lng": round(sample_lng, 7),
+        },
+        "years": list(MAPBIOMAS_YEARS),
+        "samples": samples,
+        "transitions_between_sampled_years": transitions,
+        "source": (
+            "MapBiomas Brasil · Coleção 11 · cobertura e uso da terra 30 m"
+        ),
+        "interpretation": (
+            "A classificação representa o pixel de 30 m no ponto "
+            "representativo do terreno em marcos históricos selecionados. "
+            "Não equivale a levantamento do lote inteiro nem comprova uso "
+            "jurídico/licenciado em cada ano."
+        ),
+    }
+    _MAPBIOMAS_CACHE[cache_key] = {
+        "cached_at": time.time(),
+        "value": value,
+    }
+    return value
+
+
 def sgb_municipality_context(municipality_ibge: str) -> dict:
     params = {
         "f": "json",
@@ -602,6 +886,7 @@ def load(
             "flood_susceptibility": [],
         },
         "federal_roads": [],
+        "land_cover_history": {},
         "query_errors": {},
         "queried_at": now(),
         "interpretation": (
@@ -636,6 +921,14 @@ def load(
                     lng,
                 )
             ] = ("dnit", "roads")
+            jobs[
+                pool.submit(
+                    mapbiomas_history,
+                    parcel_geometry,
+                    lat,
+                    lng,
+                )
+            ] = ("mapbiomas", "land_cover")
         if municipality_ibge:
             jobs[
                 pool.submit(
@@ -673,6 +966,8 @@ def load(
                     result["municipality_finance"] = value
                 elif group == "dnit":
                     result["federal_roads"] = value
+                elif group == "mapbiomas":
+                    result["land_cover_history"] = value
                 elif group == "sgb" and key == "risk":
                     result["sgb"] = value
                 elif group == "sgb" and key == "susceptibility":
@@ -971,6 +1266,45 @@ def environment_report_values(context: dict) -> list[dict]:
                 "Ausência federal não exclui proteção estadual ou municipal."
             ),
         })
+    return [
+        item
+        for item in out
+        if item.get("value") not in (None, "")
+    ]
+
+
+def historical_report_values(context: dict) -> list[dict]:
+    history = (context or {}).get("land_cover_history") or {}
+    if not history.get("available"):
+        return []
+    out = []
+    for item in history.get("samples") or []:
+        if not item.get("available"):
+            continue
+        out.append({
+            "label": f"MapBiomas · uso/cobertura {item.get('year')}",
+            "value": item.get("class_name"),
+        })
+    transitions = history.get("transitions_between_sampled_years") or []
+    for index, item in enumerate(transitions, start=1):
+        out.append({
+            "label": f"MapBiomas · mudança observada #{index}",
+            "value": (
+                f"{item.get('from_year')}: {item.get('from_class_name')} → "
+                f"{item.get('to_year')}: {item.get('to_class_name')}"
+            ),
+        })
+    out.extend([
+        {
+            "label": "MapBiomas · resolução espacial",
+            "value": history.get("resolution_m"),
+            "unit": "m",
+        },
+        {
+            "label": "Limite do histórico MapBiomas",
+            "value": history.get("interpretation"),
+        },
+    ])
     return [
         item
         for item in out
