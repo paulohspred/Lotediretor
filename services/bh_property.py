@@ -189,7 +189,7 @@ def parcel_nearby(key,parcel,count=300,pad_deg=0.00025):
     return out
 
 def context(lat,lng,parcel):
-    federal=federal_context.load(lat,lng,"3106200")
+    federal=federal_context.load(lat,lng,"3106200",parcel.get("geometry") or {})
     errors={}
     try:approved=spatial("approved",lat,lng)
     except Exception as e:approved=[];errors["approved_lot"]=type(e).__name__
