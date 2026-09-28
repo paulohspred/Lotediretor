@@ -87,14 +87,19 @@ def main() -> int:
         micro = ((federal.get("hydrology") or {}).get("micro") or {}).get("DMI_NM")
         demo = federal.get("municipality_demographics") or {}
         population = (((demo.get("population") or {}).get("93") or {}).get("value"))
+        finance = federal.get("municipality_finance") or {}
         if federal_errors:
             fail(errors, f"{name}: federal context errors={federal_errors}")
         elif not micro:
             fail(errors, f"{name}: federal hydrology missing")
         elif not population:
             fail(errors, f"{name}: IBGE municipality population missing")
+        elif not all(finance.get(k) is not None for k in (
+            "iptu_revenue_brl", "itbi_revenue_brl", "rcl_brl"
+        )):
+            fail(errors, f"{name}: SICONFI municipality finance missing")
         else:
-            ok(f"{name}: federal context + IBGE Censo 2022")
+            ok(f"{name}: federal context + IBGE + SICONFI")
 
         report_text = json.dumps(
             (payload.get("report") or {}).get("sections") or [],
