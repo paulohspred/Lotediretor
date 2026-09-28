@@ -257,7 +257,10 @@ def vals(s,p,c):
                 {"label":"Categoria funcional da via próxima","value":r.get("CATEGORIA_FUNCIONAL")},
                 {"label":"Via de referência da categoria","value":r.get("NLGPAVOFIC") or r.get("NLOGRACONC")},
             ])
+        out.extend(federal_context.transport_report_values(c.get("federal") or {}))
         return out
+    if s=="territorial_context":
+        return federal_context.territorial_report_values(c.get("federal") or {})
     if s=="environment_risk_heritage":
         out=[]
         env=c.get("environment") or {}
@@ -330,6 +333,7 @@ def vals(s,p,c):
         for k,l in [("iep","IEP"),("zeph","ZEPH"),("ipav","IPAV"),("ucn","UCN")]:
             for x in sp.get(k) or []:
                 r=x.get("properties") or {};out.append({"label":f"Incidência {l}","value":r.get("NMDESCR") or r.get("NMNOME") or r.get("NOME_IPAV") or r.get("CDZONA_NOME") or l})
+        out.extend(federal_context.environment_report_values(c.get("federal") or {}))
         return out or [{"label":"Patrimônio/áreas especiais","value":"Sem incidência nas camadas consultadas."}]
     return []
 
