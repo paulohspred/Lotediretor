@@ -99,7 +99,7 @@ CREATE TABLE IF NOT EXISTS ld_analysis.report_snapshot (
 CREATE OR REPLACE FUNCTION ld_analysis.protect_run()
 RETURNS trigger
 LANGUAGE plpgsql
-AS $
+AS $ld$
 BEGIN
     IF TG_OP='DELETE' THEN
         RAISE EXCEPTION 'immutable analysis run cannot be deleted';
@@ -115,12 +115,12 @@ BEGIN
 
     RAISE EXCEPTION 'immutable analysis run can only be sealed once';
 END;
-$;
+$ld$;
 
 CREATE OR REPLACE FUNCTION ld_analysis.protect_run_child()
 RETURNS trigger
 LANGUAGE plpgsql
-AS $
+AS $ld$
 DECLARE
     run_status text;
 BEGIN
@@ -137,7 +137,7 @@ BEGIN
     END IF;
     RETURN NEW;
 END;
-$;
+$ld$;
 
 DROP TRIGGER IF EXISTS analysis_run_immutable
     ON ld_analysis.analysis_run;
@@ -168,7 +168,7 @@ RETURNS void
 LANGUAGE plpgsql
 SECURITY DEFINER
 SET search_path = pg_catalog, public, ld_analysis
-AS $
+AS $ld$
 BEGIN
     IF NOT EXISTS (
         SELECT 1 FROM ld_analysis.analysis_input
@@ -192,7 +192,7 @@ BEGIN
         RAISE EXCEPTION 'analysis run not found or already completed';
     END IF;
 END;
-$;
+$ld$;
 
 REVOKE ALL ON FUNCTION ld_analysis.complete_run(uuid) FROM PUBLIC;
 
