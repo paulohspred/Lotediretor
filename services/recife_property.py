@@ -335,6 +335,8 @@ def vals(s,p,c):
                 r=x.get("properties") or {};out.append({"label":f"Incidência {l}","value":r.get("NMDESCR") or r.get("NMNOME") or r.get("NOME_IPAV") or r.get("CDZONA_NOME") or l})
         out.extend(federal_context.environment_report_values(c.get("federal") or {}))
         return out or [{"label":"Patrimônio/áreas especiais","value":"Sem incidência nas camadas consultadas."}]
+    if s=="registry_due_diligence":
+        return federal_context.registry_report_values(c.get("federal") or {})
     return []
 
 def report(parcel,ctx):
