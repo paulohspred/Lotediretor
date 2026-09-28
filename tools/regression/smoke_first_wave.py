@@ -98,8 +98,10 @@ def main() -> int:
             "iptu_revenue_brl", "itbi_revenue_brl", "rcl_brl"
         )):
             fail(errors, f"{name}: SICONFI municipality finance missing")
+        elif (federal.get("municipality_transfers") or {}).get("plan_count") is None:
+            fail(errors, f"{name}: TransfereGov municipality context missing")
         else:
-            ok(f"{name}: federal context + IBGE + SICONFI")
+            ok(f"{name}: federal context + IBGE + SICONFI + TransfereGov")
 
         report_text = json.dumps(
             (payload.get("report") or {}).get("sections") or [],
