@@ -1439,10 +1439,11 @@
         "geocoded_projects"
       ],
       "source_type": "public_directory_CSV_ZIP",
-      "base_url": "https://repositorio.dados.gov.br/seges/detru/",
+      "base_url": "https://api-publica.transferegov.gestao.gov.br",
       "access_class": "PUBLIC_QUERY_ONLY",
-      "verification_status": "VERIFIED_DIRECTORY_LICENSE_REVIEW",
-      "notes": "Diretório oficial contém coordenadas de obras, dados ObrasGov, contratos, convênios e séries SICONV. Útil para contexto de infraestrutura/projetos públicos próximos ao imóvel; revisar licença e granularidade antes de materialização."
+      "verification_status": "VERIFIED_CURRENT_PORTAL_2026",
+      "notes": "Novo portal público de APIs do Transferegov.br. Em setembro de 2026 há APIs públicas para Gestão de Parcerias e Transferências Especiais e nova área de downloads de Discricionárias e Legais. O endpoint antigo repositorio.dados.gov.br/seges/detru/ foi anunciado para desligamento em 31/08/2026. API do módulo de Obras do Transferegov está prevista para 2027; para obras usar ObrasGov.",
+      "discovery_url": "https://www.gov.br/transferegov/pt-br/ferramentas-gestao/api-de-dados-abertos-transferegov.br"
     },
     {
       "id": "ce-fortaleza-iptu",
@@ -5107,11 +5108,11 @@
         "fiscal_capacity"
       ],
       "source_type": "open_REST_API",
-      "base_url": "https://apidatalake.tesouro.gov.br/ords/siconfi",
+      "base_url": "https://apidatalake.tesouro.gov.br/ords/cdwhprd/siconfi/tt/",
       "discovery_url": "https://apidatalake.tesouro.gov.br/docs/siconfi/",
       "access_class": "OPEN_REUSABLE",
-      "verification_status": "REGISTERED_CONNECTOR_PENDING",
-      "notes": "Contexto fiscal municipal. Não anexar receitas/despesas municipais como atributo financeiro do lote."
+      "verification_status": "VERIFIED_CURRENT_API_2026",
+      "notes": "API de dados abertos do Tesouro, JSON, sem autenticação. Base oficial atual /ords/cdwhprd/siconfi/tt/. Limite documentado de 1 requisição por segundo. Usar como contexto fiscal municipal, nunca como atributo do lote."
     },
     {
       "id": "global-osm-overpass",
