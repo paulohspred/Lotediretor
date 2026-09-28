@@ -1,4 +1,12 @@
-import { Body, Controller, HttpCode, Module, Post } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  Module,
+  Param,
+  Post,
+} from "@nestjs/common";
 import {
   ParcelEngineService,
   ParcelResolveInput,
@@ -12,6 +20,11 @@ class ParcelController {
   @HttpCode(200)
   resolve(@Body() body: ParcelResolveInput) {
     return this.engine.resolve(body);
+  }
+
+  @Get("/analysis/:analysisRunId/evidence")
+  evidence(@Param("analysisRunId") analysisRunId: string) {
+    return this.engine.evidence(analysisRunId);
   }
 }
 
