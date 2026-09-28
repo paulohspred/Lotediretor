@@ -123,6 +123,64 @@ function primaryReference(
   };
 }
 
+function friendlyLabel(raw: string): string {
+  const exact: Record<string, string> = {
+    "CEP": "Código postal (CEP)",
+    "CA básico": "Coeficiente de aproveitamento básico",
+    "CA máximo": "Coeficiente de aproveitamento máximo",
+    "Planta CP": "Referência da planta cadastral (CP)",
+    "Cadastro IPTU 2026":
+      "Cadastro fiscal imobiliário 2026 (IPTU)",
+    "Nota legal · permeabilidade x TO":
+      "Nota legal · permeabilidade versus taxa de ocupação",
+    "RCL ajustada para limites de endividamento · RREO 2025":
+      "Receita Corrente Líquida ajustada para limites de endividamento · Relatório Resumido da Execução Orçamentária 2025",
+  };
+  if (exact[raw]) return exact[raw];
+
+  return raw
+    .replaceAll(
+      "(ANA/IBGE)",
+      "(Agência Nacional de Águas e Saneamento Básico / Instituto Brasileiro de Geografia e Estatística)",
+    )
+    .replaceAll(
+      " · RREO 2025",
+      " · Relatório Resumido da Execução Orçamentária 2025",
+    )
+    .replaceAll(
+      "Arrecadação municipal de IPTU",
+      "Arrecadação municipal do Imposto Predial e Territorial Urbano (IPTU)",
+    )
+    .replaceAll(
+      "Arrecadação municipal de ITBI",
+      "Arrecadação municipal do Imposto sobre Transmissão de Bens Imóveis (ITBI)",
+    )
+    .replaceAll(
+      "Transações de ITBI",
+      "Transações do Imposto sobre Transmissão de Bens Imóveis (ITBI)",
+    )
+    .replaceAll(
+      "Como interpretar o histórico de ITBI",
+      "Como interpretar o histórico do Imposto sobre Transmissão de Bens Imóveis (ITBI)",
+    )
+    .replace(
+      /^ITBI #(\d+) · /,
+      "Transmissão imobiliária #$1 (ITBI) · ",
+    )
+    .replaceAll(
+      "(SGB)",
+      "(Serviço Geológico do Brasil)",
+    )
+    .replace(
+      /^SGB · /,
+      "Serviço Geológico do Brasil · ",
+    )
+    .replaceAll(
+      "(OSM)",
+      "(OpenStreetMap)",
+    );
+}
+
 function humanValues(value: unknown): HumanValue[] {
   if (!Array.isArray(value)) return [];
   return value
@@ -136,7 +194,7 @@ function humanValues(value: unknown): HumanValue[] {
         item.value !== "",
     )
     .map((item) => ({
-      label: String(item.label),
+      label: friendlyLabel(String(item.label)),
       value: item.value,
       ...(item.unit ? { unit: String(item.unit) } : {}),
     }));
