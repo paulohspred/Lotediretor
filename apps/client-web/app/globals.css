@@ -80,3 +80,14 @@ h1{font-size:22px}h2{font-size:16px}
 .dossier-row dd{margin:0;font-size:11px;line-height:1.35;text-align:right;font-weight:650;overflow-wrap:anywhere}
 .detail-panel{scrollbar-gutter:stable}
 @media(max-width:1280px){:root{--detail:330px}.dossier-row{grid-template-columns:1fr}.dossier-row dd{text-align:left}}
+
+.layer-panel{gap:14px}
+.layer-group{display:grid;gap:6px}
+.layer-group h3{margin:4px 0 2px;font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--brand-moss)}
+.layer-check{display:grid;grid-template-columns:18px 1fr;gap:8px;align-items:start;padding:8px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);cursor:pointer}
+.layer-check:hover{border-color:#B9D6C9;background:#F6FAF8}
+.layer-check input{margin:2px 0 0;accent-color:var(--brand-primary)}
+.layer-check span{display:grid;gap:2px}
+.layer-check strong{font-size:11px;font-weight:700}
+.layer-check small{font-size:10px;line-height:1.35;color:var(--muted)}
+.explorer-panel{scrollbar-gutter:stable}
