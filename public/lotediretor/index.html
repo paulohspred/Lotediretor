@@ -177,6 +177,7 @@ header{height:56px;background:var(--nav);color:#fff;border-bottom:4px solid var(
 <script>
 const cities=[
   {name:"São Paulo",uf:"SP",ibge:"3550308",lat:-23.5505,lng:-46.6333,z:16},
+  {name:"Barueri",uf:"SP",ibge:"3505708",lat:-23.5114,lng:-46.8765,z:14},
   {name:"Recife",uf:"PE",ibge:"2611606",lat:-8.0476,lng:-34.8770,z:12},
   {name:"Rio de Janeiro",uf:"RJ",ibge:"3304557",lat:-22.9068,lng:-43.1729,z:11},
   {name:"Belo Horizonte",uf:"MG",ibge:"3106200",lat:-19.9167,lng:-43.9345,z:12},
@@ -501,14 +502,48 @@ const bhOrtho2015Wms=L.tileLayer.wms("https://bhmap.pbh.gov.br/v2/api/idebhgeo/w
   opacity:.92,attribution:"Ortofoto 2015 · Prefeitura de Belo Horizonte"
 }).setZIndex(120);
 
-const spParcelWms=L.tileLayer.wms("https://wms.geosampa.prefeitura.sp.gov.br/geoserver/geoportal/wms",{
-  layers:"lote_cidadao",
-  format:"image/png",
-  transparent:true,
-  version:"1.1.1",
-  opacity:.62,
-  attribution:"Prefeitura de São Paulo"
-}).setZIndex(420);
+const spParcelWms=L.geoJSON([],{
+  style:()=>({
+    color:"#28473d",
+    weight:1.1,
+    opacity:.82,
+    fill:false,
+    interactive:false
+  })
+});
+let spParcelVectorAbort=null;
+let spParcelVectorTimer=null;
+async function refreshSpParcelVectors(){
+  const city=cities[Number(select.value)];
+  if(!city||city.ibge!=="3550308"||!map.hasLayer(spParcelWms))return;
+  if(map.getZoom()<16){spParcelWms.clearLayers();return}
+  if(spParcelVectorTimer)clearTimeout(spParcelVectorTimer);
+  spParcelVectorTimer=setTimeout(async()=>{
+    if(spParcelVectorAbort)spParcelVectorAbort.abort();
+    const controller=new AbortController();
+    spParcelVectorAbort=controller;
+    const b=map.getBounds();
+    const bbox=[b.getWest(),b.getSouth(),b.getEast(),b.getNorth()].join(",");
+    try{
+      const response=await fetch("/api/parcel/v1/sp/parcels?bbox="+encodeURIComponent(bbox),{
+        headers:{"Accept":"application/json"},
+        signal:controller.signal
+      });
+      if(!response.ok)return;
+      const data=await response.json();
+      if(controller!==spParcelVectorAbort)return;
+      spParcelWms.clearLayers();
+      spParcelWms.addData(data);
+      if(selectedParcelLayer)selectedParcelLayer.bringToFront();
+      if(selectedBuildingLayer)selectedBuildingLayer.bringToFront();
+      if(selectedTerrainProfileLayer)selectedTerrainProfileLayer.bringToFront();
+    }catch(err){
+      if(!(err&&err.name==="AbortError"))console.warn("parcel vector overlay unavailable");
+    }finally{
+      if(spParcelVectorAbort===controller)spParcelVectorAbort=null;
+    }
+  },180);
+}
 
 const spZoningWms=L.tileLayer.wms("https://wms.geosampa.prefeitura.sp.gov.br/geoserver/geoportal/wms",{
   layers:"perimetro_zona_lei_18177_24",
@@ -674,7 +709,8 @@ const cityLayerMap={
   "2611606":{parcel:recifeParcelOverlay,zoning:recifeZoningOverlay,buildings:recifeBuildingOverlay,slope:recifeSlopeTiles,roads:recifeRoadOverlay,ortho:recifeOrtho2018Overlay,geoRisk:recifeGeoRiskOverlay,hydroRisk:recifeHydroRiskOverlay,federalCar:sicarPeWms},
   "3304557":{parcel:rioParcelOverlay,zoning:rioZoningOverlay,buildings:rioBuildingsOverlay,hydroRisk:rioHydroRiskOverlay,heritage:rioHeritageOverlay,environment:rioEnvironmentOverlay,coastal:rioProtectionOverlay,terrain:rioTerrainOverlay,roads:rioRoadsOverlay,ortho:rioOrtho2025,federalCar:sicarRjWms},
   "3106200":{parcel:bhParcelWms,zoning:bhZoningWms,environment:bhEnvironmentWms,roads:bhRoadsWms,drainage:bhDrainageWms,buildings:bhBuildingsWms,terrain:bhTerrainWms,ortho:bhOrtho2015Wms,federalCar:sicarMgWms},
-  "2507507":{parcel:jpParcelWms,zoning:jpZoningWms,heritage:jpHeritageWms,environment:jpEnvironmentWms,hydroRisk:jpSusceptibilityWms,coastal:jpCoastalWms,roads:jpRoadHierarchyWms,buildings:jpBuildingsWms,terrain:jpTerrainWms,gas:jpGasWms,ortho:jpOrthoWms,federalCar:sicarPbWms}
+  "2507507":{parcel:jpParcelWms,zoning:jpZoningWms,heritage:jpHeritageWms,environment:jpEnvironmentWms,hydroRisk:jpSusceptibilityWms,coastal:jpCoastalWms,roads:jpRoadHierarchyWms,buildings:jpBuildingsWms,terrain:jpTerrainWms,gas:jpGasWms,ortho:jpOrthoWms,federalCar:sicarPbWms},
+  "3505708":{federalCar:sicarSpWms}
 };
 Object.values(cityLayerMap).forEach(layers=>{
   layers.federalEnvironment=federalUcWms;
@@ -684,8 +720,11 @@ Object.values(cityLayerMap).forEach(layers=>{
   layers.federalRural=federalRuralWms;
 });
 const layerLabelsByCity={
+  "3505708":{
+    federalCar:["Cadastro Ambiental Rural","Imóveis declarados no SICAR; não representa domínio"]
+  },
   "3550308":{
-    parcel:["Lotes fiscais","Cadastro oficial da Prefeitura de São Paulo"],
+    parcel:["Lotes cadastrais","Linhas vetoriais oficiais, sem imagem ou marca de portal"],
     zoning:["Zoneamento vigente","Lei municipal vigente"],
     heritage:["Patrimônio cultural","Tombamentos e áreas de proteção"],
     geoRisk:["Risco geológico","Áreas oficiais de triagem"],
@@ -760,12 +799,16 @@ function syncCityLayers(){
     }
     if(layer&&input.checked)layer.addTo(map);
   });
+  if(city.ibge==="3550308")refreshSpParcelVectors();
 }
 document.querySelectorAll("[data-zlayer]").forEach(input=>{
   input.addEventListener("change",()=>{
     const layer=activeCityLayers()[input.dataset.zlayer];
     if(!layer)return;
     if(input.checked){layer.addTo(map)}else if(map.hasLayer(layer)){map.removeLayer(layer)}
+    if(input.dataset.zlayer==="parcel"&&cities[Number(select.value)].ibge==="3550308"){
+      refreshSpParcelVectors();
+    }
   });
 });
 document.getElementById("view2d").addEventListener("click",()=>setMapViewMode("2d"));
@@ -784,7 +827,7 @@ cities.forEach((c,i)=>{
     radius:9,weight:3,color:"#071019",fillColor:"#3bd790",fillOpacity:1,bubblingMouseEvents:false
   }).addTo(map);
   marker.bindPopup(`<div class="popup-title">${c.name} · ${c.uf}</div><div class="popup-meta">Clique no mapa para selecionar um terreno.</div>`);
-  marker.on("click",()=>{select.value=i;clearSelectedParcel();applyCity(i,true);const active=["3550308","2611606","3304557","3106200","2507507"].includes(c.ibge);setParcelMessage(active?"clique no mapa":"em integração",active?"Clique no interior de um terreno para consultar a parcela oficial.":`Clique cadastral ainda não ligado em ${c.name}; o conector espacial desta cidade será o próximo estágio.`)});
+  marker.on("click",()=>{select.value=i;clearSelectedParcel();applyCity(i,true);const active=["3550308","2611606","3304557","3106200","2507507"].includes(c.ibge);const addressOnly=c.ibge==="3505708";setParcelMessage(active?"clique no mapa":addressOnly?"busca por endereço":"em integração",active?"Clique no interior de um terreno para consultar a parcela oficial.":addressOnly?"Barueri já está disponível para busca de endereço. O lote cadastral entra quando a base oficial for importada.":`Clique cadastral ainda não ligado em ${c.name}; o conector espacial desta cidade será o próximo estágio.`)});
   markers.push(marker);
 });
 
@@ -1577,10 +1620,6 @@ async function searchParcel(){
   const q=lotInput.value.trim();
   clearSearchResults();
   const endpoint=city.ibge==="3550308"?"/api/parcel/v1/sp/search":city.ibge==="2611606"?"/api/parcel/v1/recife/search":city.ibge==="3304557"?"/api/parcel/v1/rio/search":city.ibge==="3106200"?"/api/parcel/v1/bh/search":city.ibge==="2507507"?"/api/parcel/v1/jp/search":null;
-  if(!endpoint){
-    searchStatus.textContent="Busca cadastral ainda não ligada neste município.";
-    return;
-  }
   if(!q){
     searchStatus.textContent="Informe uma rua, endereço ou identificação cadastral do terreno.";
     lotInput.focus();return;
@@ -1620,6 +1659,10 @@ async function searchParcel(){
         return;
       }
     }
+    if(!endpoint){
+      searchStatus.textContent="Endereço não localizado. A busca por cadastro/IPTU em "+city.name+" depende de base cadastral importada.";
+      return;
+    }
     const response=await fetch(endpoint+`?q=${encodeURIComponent(q)}`,{headers:{"Accept":"application/json"}});
     const payload=await response.json();
     if(!response.ok){
@@ -1631,7 +1674,8 @@ async function searchParcel(){
     }
     if(!payload.count){searchStatus.textContent="Nenhum lote encontrado para esta identificação.";return}
     const match=payload.matches[0],p=match.feature.properties,point=match.representative_point;
-    searchStatus.textContent=p.street||("Lote "+text(p.sql_reference));
+    const matchLabel=match.match&&match.match.label?match.match.label+" · ":"";
+    searchStatus.textContent=matchLabel+(p.street||("Lote "+text(p.sql_reference)));
     map.flyTo([point.lat,point.lng],20,{duration:.7});
     await inspectParcel(L.latLng(point.lat,point.lng));
   }catch(err){
@@ -1643,11 +1687,13 @@ lotInput.addEventListener("keydown",e=>{
   if(e.key==="Enter"){e.preventDefault();searchParcel()}
 });
 map.on("zoomend",()=>{
+  refreshSpParcelVectors();
   if(selectedParcelLayer)selectedParcelLayer.bringToFront();
   if(selectedBuildingLayer)selectedBuildingLayer.bringToFront();
   if(selectedTerrainProfileLayer)selectedTerrainProfileLayer.bringToFront();
   if(selectedDimensionLayer)selectedDimensionLayer.eachLayer(layer=>{if(layer.bringToFront)layer.bringToFront()});
 });
+map.on("moveend",refreshSpParcelVectors);
 map.on("click",e=>inspectParcel(e.latlng));
 select.addEventListener("change",e=>{
   clearSearchResults();
@@ -1657,12 +1703,17 @@ select.addEventListener("change",e=>{
   applyCity(idx,true);
   const city=cities[idx];
   const active=["3550308","2611606","3304557","3106200","2507507"].includes(city.ibge);
-  lotInput.disabled=!active;
-  lotSearch.disabled=!active;
-  if(active){
-    lotInput.placeholder="Rua, número, CEP ou identificação cadastral";
-    searchStatus.textContent=`Busque por rua/endereço ou identificação cadastral em ${city.name}.`;
-    setParcelMessage("clique no mapa","Clique dentro de um terreno ou busque por rua, endereço ou identificação cadastral.");
+  const addressOnly=city.ibge==="3505708";
+  lotInput.disabled=!(active||addressOnly);
+  lotSearch.disabled=!(active||addressOnly);
+  if(active||addressOnly){
+    lotInput.placeholder=active?"Rua, número, CEP, IPTU ou matrícula":"Rua, número ou CEP em Barueri";
+    searchStatus.textContent=active
+      ?`Busque por rua/endereço, IPTU, matrícula ou identificação cadastral em ${city.name}.`
+      :"Barueri: busca por endereço ativa. Cadastro/IPTU será ligado à base oficial importada.";
+    setParcelMessage(active?"clique no mapa":"busca por endereço",active
+      ?"Clique dentro de um terreno ou busque por rua, endereço, IPTU ou matrícula."
+      :"Barueri já está no mapa. Use a busca de endereço; lote cadastral em integração.");
   }else{
     lotInput.value="";
     lotInput.placeholder="Busca cadastral em integração";
