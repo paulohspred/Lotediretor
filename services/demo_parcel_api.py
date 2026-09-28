@@ -2972,6 +2972,7 @@ class Handler(BaseHTTPRequestHandler):
                 return self.send_json(400, {"error": "invalid_cep"})
             allowed_cities = {
                 ("São Paulo", "SP"),
+                ("Barueri", "SP"),
                 ("Recife", "PE"),
                 ("Rio de Janeiro", "RJ"),
                 ("Belo Horizonte", "MG"),
@@ -3044,6 +3045,7 @@ class Handler(BaseHTTPRequestHandler):
                 return self.send_json(400, {"error": "invalid_query"})
             allowed_cities = {
                 ("São Paulo", "SP"),
+                ("Barueri", "SP"),
                 ("Recife", "PE"),
                 ("Rio de Janeiro", "RJ"),
                 ("Belo Horizonte", "MG"),
