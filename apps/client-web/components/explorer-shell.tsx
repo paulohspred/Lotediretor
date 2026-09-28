@@ -125,6 +125,7 @@ export function ExplorerShell() {
     "Selecione um terreno no mapa ou busque um endereço.",
   );
   const [busy, setBusy] = useState(false);
+  const [viewMode, setViewMode] = useState<"2d" | "3d">("2d");
 
   const parcel = payload?.parcel;
   const geometry = parcel?.geometry ?? null;
@@ -381,6 +382,7 @@ export function ExplorerShell() {
               feature={feature}
               focusPoint={focusPoint}
               activeLayerIds={activeLayerIds}
+              viewMode={viewMode}
               onPick={({ lat, lng }) => resolveParcel(lat, lng)}
             />
             <div className="map-context-bar">
@@ -391,6 +393,22 @@ export function ExplorerShell() {
                     ? `Lote ${sql}`
                     : "Nenhum lote selecionado"}
               </span>
+              <div className="map-mode">
+                <button
+                  className={viewMode === "2d" ? "active" : ""}
+                  type="button"
+                  onClick={() => setViewMode("2d")}
+                >
+                  2D
+                </button>
+                <button
+                  className={viewMode === "3d" ? "active" : ""}
+                  type="button"
+                  onClick={() => setViewMode("3d")}
+                >
+                  3D urbano
+                </button>
+              </div>
               <span>{city.name} · {city.uf} · MapLibre</span>
             </div>
           </div>
