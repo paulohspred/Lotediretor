@@ -143,6 +143,7 @@ header{height:56px;background:var(--nav);color:#fff;border-bottom:4px solid var(
       <label class="layer-toggle"><input type="checkbox" data-zlayer="federalRisk"><span>Risco federal<small>Setorização de risco e inundação publicadas pelo SGB</small></span></label>
       <label class="layer-toggle"><input type="checkbox" data-zlayer="federalRoads"><span>Rodovias federais<small>Sistema Nacional de Viação publicado pelo DNIT</small></span></label>
       <label class="layer-toggle"><input type="checkbox" data-zlayer="federalIndigenous"><span>Terras indígenas<small>Poligonais oficiais publicadas pela FUNAI</small></span></label>
+      <label class="layer-toggle"><input type="checkbox" data-zlayer="federalRural"><span>Parcelas rurais certificadas<small>Referência pública do Geoportal INCRA/SIGEF</small></span></label>
     </div>
 
   </aside>
@@ -649,6 +650,11 @@ const federalSgbFloodOverlay=arcgisDynamicLayer(
 const federalRiskGroup=L.layerGroup([federalSgbRiskOverlay,federalSgbFloodOverlay]);
 
 
+const federalRuralWms=L.tileLayer.wms("https://geoportal.incra.gov.br/geoserver/wms",{
+  layers:"geonode:sigef_geo",format:"image/png",transparent:true,version:"1.1.1",
+  opacity:.36,attribution:"Parcelas certificadas · Geoportal INCRA/SIGEF"
+}).setZIndex(327);
+
 
 const cityLayerMap={
   "3550308":{parcel:spParcelWms,zoning:spZoningWms,heritage:spHeritageWms,geoRisk:spGeoRiskWms,hydroRisk:spHydroRiskWms,hillshade:spHillshadeWms,slope:spSlopeWms,ortho:spOrtho2020Wms,roads:spRoadsWms},
@@ -662,6 +668,7 @@ Object.values(cityLayerMap).forEach(layers=>{
   layers.federalRisk=federalRiskGroup;
   layers.federalRoads=federalRoadsWms;
   layers.federalIndigenous=federalFunaiWms;
+  layers.federalRural=federalRuralWms;
 });
 const layerLabelsByCity={
   "3550308":{
@@ -721,7 +728,7 @@ const layerLabelsByCity={
     ortho:["Ortofoto 2021","Aerofotogrametria municipal"]
   }
 };
-const allThematicLayers=[spParcelWms,spZoningWms,spHeritageWms,spGeoRiskWms,spHydroRiskWms,spHillshadeWms,spSlopeWms,spOrtho2020Wms,spRoadsWms,recifeParcelOverlay,recifeZoningOverlay,recifeBuildingOverlay,recifeSlopeTiles,recifeRoadOverlay,recifeOrtho2018Overlay,recifeGeoRiskOverlay,recifeHydroRiskOverlay,rioParcelOverlay,rioZoningOverlay,rioBuildingsOverlay,rioHydroRiskOverlay,rioHeritageOverlay,rioEnvironmentOverlay,rioProtectionOverlay,rioTerrainOverlay,rioRoadsOverlay,rioOrtho2025,bhParcelWms,bhZoningWms,bhEnvironmentWms,bhRoadsWms,bhDrainageWms,bhBuildingsWms,bhTerrainWms,bhOrtho2015Wms,jpParcelWms,jpZoningWms,jpHeritageWms,jpEnvironmentWms,jpSusceptibilityWms,jpCoastalWms,jpRoadHierarchyWms,jpBuildingsWms,jpTerrainWms,jpGasWms,jpOrthoWms,federalUcWms,federalRiskGroup,federalRoadsWms,federalFunaiWms];
+const allThematicLayers=[spParcelWms,spZoningWms,spHeritageWms,spGeoRiskWms,spHydroRiskWms,spHillshadeWms,spSlopeWms,spOrtho2020Wms,spRoadsWms,recifeParcelOverlay,recifeZoningOverlay,recifeBuildingOverlay,recifeSlopeTiles,recifeRoadOverlay,recifeOrtho2018Overlay,recifeGeoRiskOverlay,recifeHydroRiskOverlay,rioParcelOverlay,rioZoningOverlay,rioBuildingsOverlay,rioHydroRiskOverlay,rioHeritageOverlay,rioEnvironmentOverlay,rioProtectionOverlay,rioTerrainOverlay,rioRoadsOverlay,rioOrtho2025,bhParcelWms,bhZoningWms,bhEnvironmentWms,bhRoadsWms,bhDrainageWms,bhBuildingsWms,bhTerrainWms,bhOrtho2015Wms,jpParcelWms,jpZoningWms,jpHeritageWms,jpEnvironmentWms,jpSusceptibilityWms,jpCoastalWms,jpRoadHierarchyWms,jpBuildingsWms,jpTerrainWms,jpGasWms,jpOrthoWms,federalUcWms,federalRiskGroup,federalRoadsWms,federalFunaiWms,federalRuralWms];
 function activeCityLayers(){const city=cities[Number(select.value)];return cityLayerMap[city.ibge]||{}}
 function syncCityLayers(){
   allThematicLayers.forEach(layer=>{if(map.hasLayer(layer))map.removeLayer(layer)});
