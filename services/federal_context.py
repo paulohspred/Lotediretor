@@ -21,6 +21,7 @@ ICMBIO_WFS = "https://geoservicos.inde.gov.br/geoserver/ICMBio/ows"
 IBGE_AGGREGATES = "https://servicodados.ibge.gov.br/api/v3/agregados"
 SGB_SUSCET = "https://geoportal.sgb.gov.br/server/rest/services/Hosted/Base_Suscet_v2/FeatureServer/0"
 DNIT_WFS = "https://geoservicos.inde.gov.br/geoserver/DNIT/ows"
+FUNAI_WFS = "https://geoserver.funai.gov.br/geoserver/ows"
 
 ANA_LAYERS = {
     "macro": (102, ["DMA_CD", "DMA_NM", "DMA_AR_KM2"]),
@@ -223,6 +224,41 @@ def dnit_near_point(lat: float, lng: float, max_distance_m: float = 1000.0) -> l
     return sorted(out, key=lambda x: x["distance_m"])[:8]
 
 
+def funai_at_point(lat: float, lng: float) -> list[dict]:
+    fields = [
+        "terrai_codigo", "terrai_nome", "municipio_nome", "uf_sigla",
+        "superficie_perimetro_ha", "fase_ti", "modalidade_ti",
+        "reestudo_ti", "faixa_fronteira", "dominio_uniao",
+        "data_atualizacao",
+    ]
+    params = {
+        "service": "WFS",
+        "version": "2.0.0",
+        "request": "GetFeature",
+        "typeNames": "Funai:tis_poligonais",
+        "srsName": "EPSG:4326",
+        "count": "20",
+        "propertyName": ",".join(fields),
+        "cql_filter": (
+            f"INTERSECTS(the_geom,SRID=4326;POINT({lng} {lat}))"
+        ),
+        "outputFormat": "application/json",
+    }
+    data = _get_json(FUNAI_WFS + "?" + urllib.parse.urlencode(params))
+    allowed = set(fields)
+    out = []
+    for feature in data.get("features") or []:
+        props = feature.get("properties") or {}
+        if set(props) - allowed:
+            raise RuntimeError("funai_unexpected_fields")
+        out.append({
+            k: props.get(k)
+            for k in fields
+            if props.get(k) is not None
+        })
+    return out
+
+
 def load(lat: float, lng: float, municipality_ibge: str | None = None) -> dict:
     result = {
         "hydrology": {},
@@ -230,6 +266,7 @@ def load(lat: float, lng: float, municipality_ibge: str | None = None) -> dict:
         "municipality_demographics": {},
         "sgb_susceptibility": {},
         "nearby_federal_roads": [],
+        "indigenous_territories": [],
         "query_errors": {},
         "queried_at": now(),
         "interpretation": (
@@ -252,6 +289,7 @@ def load(lat: float, lng: float, municipality_ibge: str | None = None) -> dict:
                 pool.submit(sgb_municipality_context, municipality_ibge)
             ] = ("sgb", "susceptibility")
         jobs[pool.submit(dnit_near_point, lat, lng)] = ("dnit", "roads")
+        jobs[pool.submit(funai_at_point, lat, lng)] = ("funai", "territories")
         for future in as_completed(jobs):
             group, key = jobs[future]
             try:
@@ -266,6 +304,8 @@ def load(lat: float, lng: float, municipality_ibge: str | None = None) -> dict:
                     result["sgb_susceptibility"] = value
                 elif group == "dnit":
                     result["nearby_federal_roads"] = value
+                elif group == "funai":
+                    result["indigenous_territories"] = value
             except Exception as exc:
                 result["query_errors"][f"{group}_{key}"] = type(exc).__name__
     return result
@@ -350,6 +390,20 @@ def report_values(context: dict) -> list[dict]:
         out.append({
             "label":"Limite do contexto rodoviário federal",
             "value":"Proximidade ao eixo do SNV não comprova acesso direto, alinhamento, faixa de domínio ou restrição específica no terreno.",
+        })
+
+    for ti in (context or {}).get("indigenous_territories") or []:
+        out.extend([
+            {"label":"Terra indígena federal","value":ti.get("terrai_nome")},
+            {"label":"Fase da terra indígena","value":ti.get("fase_ti")},
+            {"label":"Modalidade da terra indígena","value":ti.get("modalidade_ti")},
+            {"label":"Área publicada pela FUNAI","value":ti.get("superficie_perimetro_ha"),"unit":"ha"},
+            {"label":"Atualização FUNAI","value":ti.get("data_atualizacao")},
+        ])
+    if (context or {}).get("indigenous_territories"):
+        out.append({
+            "label":"Limite da incidência FUNAI",
+            "value":"A incidência territorial é baseada na geometria pública da FUNAI e requer leitura jurídica própria; não identifica titularidade privada do imóvel.",
         })
 
     for uc in (context or {}).get("federal_conservation_units") or []:
