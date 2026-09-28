@@ -1,0 +1,19 @@
+[Unit]
+Description=LoteDiretor Martin MVT v2
+After=network.target postgresql.service
+Requires=postgresql.service
+
+[Service]
+Type=simple
+User=sentinelx
+Group=sentinelx
+WorkingDirectory=/srv/lotediretor/app
+Environment=RUST_LOG=martin=info
+ExecStart=/opt/lotediretor/martin/martin -c /srv/lotediretor/app/deploy/martin/martin.yaml
+Restart=on-failure
+RestartSec=3
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
