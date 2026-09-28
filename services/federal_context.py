@@ -8,6 +8,8 @@ from __future__ import annotations
 
 import gzip
 import json
+import threading
+import time
 import urllib.parse
 import urllib.request
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -20,6 +22,10 @@ from shapely.ops import transform as shapely_transform
 ANA_BASE = "https://www.snirh.gov.br/arcgis/rest/services/INDE/Camadas/MapServer"
 ICMBIO_WFS = "https://geoservicos.inde.gov.br/geoserver/ICMBio/ows"
 IBGE_AGGREGATES = "https://servicodados.ibge.gov.br/api/v3/agregados"
+SICONFI_RREO = "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo"
+_SICONFI_CACHE = {}
+_SICONFI_LOCK = threading.Lock()
+_SICONFI_LAST_REQUEST = 0.0
 DNIT_WFS = "https://geoservicos.inde.gov.br/geoserver/DNIT/ows"
 FUNAI_WFS = "https://geoserver.funai.gov.br/geoserver/ows"
 SGB_RISK = (
@@ -271,6 +277,71 @@ def ibge_municipality_context(municipality_ibge: str) -> dict:
     }
 
 
+def siconfi_municipality_context(municipality_ibge: str) -> dict:
+    global _SICONFI_LAST_REQUEST
+    cache_key = ("2025", municipality_ibge)
+    cached = _SICONFI_CACHE.get(cache_key)
+    if cached and time.time() - cached["cached_at"] < 12 * 3600:
+        return cached["value"]
+
+    with _SICONFI_LOCK:
+        cached = _SICONFI_CACHE.get(cache_key)
+        if cached and time.time() - cached["cached_at"] < 12 * 3600:
+            return cached["value"]
+        wait = 1.05 - (time.monotonic() - _SICONFI_LAST_REQUEST)
+        if wait > 0:
+            time.sleep(wait)
+        params = {
+            "an_exercicio": "2025",
+            "nr_periodo": "6",
+            "co_tipo_demonstrativo": "RREO",
+            "id_ente": municipality_ibge,
+        }
+        data = _get_json(
+            SICONFI_RREO + "?" + urllib.parse.urlencode(params),
+            4_000_000,
+        )
+        _SICONFI_LAST_REQUEST = time.monotonic()
+
+    items = data.get("items") or []
+    exact = {}
+    wanted = {
+        ("RREO6IPTU", "RECEITAS REALIZADAS (a)"): "iptu_revenue_brl",
+        ("RREO6ITBI", "RECEITAS REALIZADAS (a)"): "itbi_revenue_brl",
+        (
+            "ReceitaCorrenteLiquidaDemonstrativoSimplificado",
+            "Até o Bimestre",
+        ): "rcl_brl",
+        (
+            "ReceitaCorrenteLiquidaAjustadaParaCalculoDosLimitesDeEndividamentoDemonstrativoSimplificado",
+            "Até o Bimestre",
+        ): "rcl_adjusted_debt_limit_brl",
+    }
+    institution = None
+    for item in items:
+        key = (item.get("cod_conta"), item.get("coluna"))
+        name = wanted.get(key)
+        if name and item.get("valor") is not None:
+            exact[name] = item.get("valor")
+        if institution is None and item.get("instituicao"):
+            institution = item.get("instituicao")
+    value = {
+        "year": 2025,
+        "period": 6,
+        "institution": institution,
+        **exact,
+        "interpretation": (
+            "Valores do RREO/SICONFI são contexto fiscal do município e não "
+            "representam valor, imposto ou capacidade financeira do terreno."
+        ),
+    }
+    _SICONFI_CACHE[cache_key] = {
+        "cached_at": time.time(),
+        "value": value,
+    }
+    return value
+
+
 def sgb_municipality_context(municipality_ibge: str) -> dict:
     params = {
         "f": "json",
@@ -377,6 +448,7 @@ def load(
         "federal_conservation_units": [],
         "indigenous_territories": [],
         "municipality_demographics": {},
+        "municipality_finance": {},
         "sgb_susceptibility": {},
         "sgb": {
             "risk_sectors": [],
@@ -423,6 +495,12 @@ def load(
             ] = ("ibge", "municipality")
             jobs[
                 pool.submit(
+                    siconfi_municipality_context,
+                    municipality_ibge,
+                )
+            ] = ("siconfi", "municipality_finance")
+            jobs[
+                pool.submit(
                     sgb_municipality_context,
                     municipality_ibge,
                 )
@@ -439,6 +517,8 @@ def load(
                     result["indigenous_territories"] = value
                 elif group == "ibge":
                     result["municipality_demographics"] = value
+                elif group == "siconfi":
+                    result["municipality_finance"] = value
                 elif group == "dnit":
                     result["federal_roads"] = value
                 elif group == "sgb" and key == "risk":
@@ -518,6 +598,36 @@ def territorial_report_values(context: dict) -> list[dict]:
         out.append({
             "label": "Limite do contexto demográfico",
             "value": demo.get("interpretation"),
+        })
+    finance = (context or {}).get("municipality_finance") or {}
+    if finance.get("iptu_revenue_brl") is not None:
+        out.append({
+            "label": "Arrecadação municipal de IPTU · RREO 2025",
+            "value": finance.get("iptu_revenue_brl"),
+            "unit": "BRL",
+        })
+    if finance.get("itbi_revenue_brl") is not None:
+        out.append({
+            "label": "Arrecadação municipal de ITBI · RREO 2025",
+            "value": finance.get("itbi_revenue_brl"),
+            "unit": "BRL",
+        })
+    if finance.get("rcl_brl") is not None:
+        out.append({
+            "label": "Receita Corrente Líquida municipal · RREO 2025",
+            "value": finance.get("rcl_brl"),
+            "unit": "BRL",
+        })
+    if finance.get("rcl_adjusted_debt_limit_brl") is not None:
+        out.append({
+            "label": "RCL ajustada para limites de endividamento · RREO 2025",
+            "value": finance.get("rcl_adjusted_debt_limit_brl"),
+            "unit": "BRL",
+        })
+    if finance.get("interpretation"):
+        out.append({
+            "label": "Limite do contexto fiscal municipal",
+            "value": finance.get("interpretation"),
         })
     out.append({
         "label": "Limite da divisão hidrográfica",
