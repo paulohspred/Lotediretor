@@ -2,6 +2,7 @@ import {
   BadGatewayException,
   BadRequestException,
   Injectable,
+  NotFoundException,
 } from "@nestjs/common";
 
 const MUNICIPALITY_SLUG: Record<string, string> = {
@@ -118,6 +119,7 @@ export class ParcelEngineService {
     const feature = object(raw.feature);
     const properties = object(feature.properties);
     const report = object(raw.report);
+    const persistence = object(raw.persistence);
     const sections = Array.isArray(report.sections) ? report.sections : [];
 
     const dossierSections = sections
@@ -156,11 +158,66 @@ export class ParcelEngineService {
         sections: dossierSections,
       },
       analysis: {
+        run_id: text(persistence.analysis_run_id),
+        audit_available: Boolean(text(persistence.analysis_run_id)),
+        lineage_status:
+          text(persistence.lineage_status) === "SOURCE_SNAPSHOTS_COMPLETE"
+            ? "Snapshots individuais por fonte"
+            : "Snapshot agregado do dossiê público",
         municipality_ibge: input.municipality_ibge,
         lat: input.lat,
         lng: input.lng,
         analysis_date: input.analysis_date ?? null,
       },
     };
+  }
+
+  async evidence(analysisRunId: string): Promise<JsonObject> {
+    if (
+      !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+        analysisRunId,
+      )
+    ) {
+      throw new BadRequestException({
+        code: "INVALID_ANALYSIS_RUN_ID",
+        message: "Identificador de análise inválido.",
+      });
+    }
+
+    let response: Response;
+    try {
+      response = await fetch(
+        `${this.engineBase}/v1/analysis/${encodeURIComponent(
+          analysisRunId,
+        )}/evidence`,
+        {
+          headers: { Accept: "application/json" },
+          signal: AbortSignal.timeout(30_000),
+        },
+      );
+    } catch {
+      throw new BadGatewayException({
+        code: "EVIDENCE_ENGINE_UNAVAILABLE",
+        message: "Trilha de evidência temporariamente indisponível.",
+        retryable: true,
+      });
+    }
+
+    if (response.status === 404) {
+      throw new NotFoundException({
+        code: "ANALYSIS_RUN_NOT_FOUND",
+        message: "Execução de análise não encontrada.",
+      });
+    }
+
+    const body = object(await response.json().catch(() => ({})));
+    if (!response.ok) {
+      throw new BadGatewayException({
+        code: "EVIDENCE_ENGINE_ERROR",
+        message: "Falha ao consultar a trilha de evidência.",
+        retryable: response.status >= 500,
+      });
+    }
+    return body;
   }
 }
