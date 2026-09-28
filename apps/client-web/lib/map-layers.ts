@@ -17,6 +17,10 @@ export type MapLayerSpec = {
   category: MapLayerCategory;
   tiles: string[];
   opacity: number;
+  sourceType?: "raster" | "vector";
+  sourceLayer?: string;
+  lineColor?: string;
+  lineWidth?: number;
   minZoom?: number;
   maxZoom?: number;
   defaultActive?: boolean;
@@ -88,6 +92,21 @@ const BH_WMS = "https://bhmap.pbh.gov.br/v2/api/idebhgeo/wms";
 const JP_WMS = "https://filipeia.joaopessoa.pb.gov.br/geoserver/wms";
 
 const layers: MapLayerSpec[] = [
+  {
+    id: "ibge-sectors-2022",
+    label: "Setores censitários 2022",
+    description: "Limites oficiais do Censo 2022 materializados no PostGIS.",
+    category: "territory",
+    sourceType: "vector",
+    sourceLayer: "ibge_censo2022_setores",
+    tiles: ["/api/tiles/ibge_censo2022_setores/{z}/{x}/{y}"],
+    opacity: 0.62,
+    lineColor: "#74695C",
+    lineWidth: 1,
+    minZoom: 12,
+    attribution: "IBGE",
+  },
+
   {
     id: "sp-parcels",
     cityIbge: "3550308",
@@ -517,12 +536,17 @@ const layers: MapLayerSpec[] = [
     id: "jp-parcels",
     cityIbge: "2507507",
     label: "Lotes cadastrais",
-    description: "Lotes publicados pela Prefeitura de João Pessoa.",
+    description: "Lotes oficiais materializados localmente e servidos como vetor MVT.",
     category: "territory",
-    tiles: [wms(JP_WMS, "digeoc:Lotes_Gerais")],
-    opacity: 0.72,
+    sourceType: "vector",
+    sourceLayer: "jp_lotes",
+    tiles: ["/api/tiles/jp_lotes/{z}/{x}/{y}"],
+    opacity: 0.9,
+    lineColor: "#356854",
+    lineWidth: 1.35,
+    minZoom: 14,
     defaultActive: true,
-    attribution: "Prefeitura de João Pessoa",
+    attribution: "Prefeitura de João Pessoa / LoteDiretor",
   },
   {
     id: "jp-zoning",
@@ -603,11 +627,16 @@ const layers: MapLayerSpec[] = [
     id: "jp-contours",
     cityIbge: "2507507",
     label: "Curvas de nível 2022",
-    description: "Curvas oficiais de nível de 2022.",
+    description: "Curvas oficiais materializadas localmente e servidas como vetor MVT.",
     category: "terrain",
-    tiles: [wms(JP_WMS, "digeoc:Curvas_Joao_Pessoa_2022")],
-    opacity: 0.62,
-    attribution: "Prefeitura de João Pessoa",
+    sourceType: "vector",
+    sourceLayer: "jp_curvas_nivel_2022",
+    tiles: ["/api/tiles/jp_curvas_nivel_2022/{z}/{x}/{y}"],
+    opacity: 0.8,
+    lineColor: "#7D6E57",
+    lineWidth: 1,
+    minZoom: 13,
+    attribution: "Prefeitura de João Pessoa / LoteDiretor",
   },
   {
     id: "jp-gas",
