@@ -342,7 +342,7 @@ def vals(s,p,c):
         out.extend(federal_context.environment_report_values(c.get("federal") or {}))
         return out or [{"label":"Patrimônio/áreas especiais","value":"Sem incidência nas camadas consultadas."}]
     if s=="registry_due_diligence":
-        return federal_context.registry_report_values(c.get("federal") or {})
+        return federal_context.rural_registry_report_values(c.get("federal") or {})
     return []
 
 def report(parcel,ctx):
