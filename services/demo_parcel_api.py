@@ -2474,11 +2474,14 @@ def actual_values_for_section(
 
     if section_id == "terrain_visual":
         terrain = context.get("terrain") or {}
+        history_values = federal_context.historical_report_values(
+            context.get("federal") or {}
+        )
         if not terrain.get("available"):
             return [{
                 "label": "Modelo de terreno por levantamento a laser (2020)",
                 "value": "Análise altimétrica não disponível para este lote nesta consulta.",
-            }]
+            }] + history_values
         tile = terrain.get("tile") or {}
         profiles = terrain.get("profiles") or []
         values = [
@@ -2501,6 +2504,7 @@ def actual_values_for_section(
                 {"label": f"Corte {name} · inclinação média", "value": profile.get("average_slope_pct"), "unit": "%"},
             ])
         values.append({"label": "Limite topográfico", "value": terrain.get("caveat")})
+        values.extend(history_values)
         return values
 
     if section_id == "public_change_context":
