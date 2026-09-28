@@ -5242,6 +5242,23 @@
       "access_class": "GOVERNMENT_AUTHORIZED",
       "verification_status": "AUTHENTICATED_GOVERNMENT_INTEGRATION",
       "notes": "Barramento/interoperabilidade cadastral destinado a integrações autorizadas. Não tratado como API pública anônima de consulta parcelar."
+    },
+    {
+      "id": "br-ibge-censo2022-sector-mesh",
+      "authority": "IBGE",
+      "scope": "BR",
+      "domain": [
+        "census",
+        "demography",
+        "census_sector",
+        "housing"
+      ],
+      "source_type": "official_GeoPackage_materialized_PostGIS",
+      "base_url": "https://ftp.ibge.gov.br/Censos/Censo_Demografico_2022/Agregados_por_Setores_Censitarios/malha_com_atributos/setores/gpkg/UF/",
+      "discovery_url": "https://ftp.ibge.gov.br/Censos/Censo_Demografico_2022/Agregados_por_Setores_Censitarios/",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "LIVE_LOCAL_PROPERTY_CONTEXT_2026",
+      "notes": "Official 2022 census-sector mesh with attributes. First-wave municipalities are materialized locally in PostGIS and queried by point-in-polygon. Exposed fields are limited to sector identity, situation, area, district/subdistrict/neighborhood and V0001-V0007. Sector values are territorial context, not parcel or household-specific facts."
     }
   ],
   "as_of": "2026-09-28"
