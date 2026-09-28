@@ -1,0 +1,147 @@
+{
+  "schema_version": "0.1.0",
+  "as_of": "2026-09-28",
+  "principle": "National sources complement municipality/state parcel evidence. Municipality-level or coarse national indicators must never be rendered as parcel-specific facts.",
+  "sources": [
+    {
+      "key": "ibge_aggregates_sidra",
+      "source_id": "br-ibge-agregados-api",
+      "status": "LIVE_MUNICIPAL_CONTEXT",
+      "runtime_use": "Censo 2022 population, density, occupied permanent households and average residents per household for the selected municipality.",
+      "parcel_rule": "Municipality context only; never a parcel or census-sector attribute."
+    },
+    {
+      "key": "ibge_geographic_meshes",
+      "source_id": "br-ibge-malhas-api",
+      "status": "REGISTERED_NOT_RUNTIME",
+      "runtime_use": "Potential administrative/district/subdistrict boundaries.",
+      "parcel_rule": "Municipal parcel geometry remains authoritative for parcel selection."
+    },
+    {
+      "key": "ibge_censo2022_geoservices",
+      "source_id": "br-ibge-censo2022-geoservices",
+      "status": "REGISTERED_NEXT_STAGE",
+      "runtime_use": "Candidate for spatialized Census 2022 indicators and urban-surroundings analysis.",
+      "parcel_rule": "Must preserve territorial level and indicator definition."
+    },
+    {
+      "key": "ibge_bcim",
+      "source_id": "br-ibge-bcim-geoservices",
+      "status": "REGISTERED_FALLBACK_ONLY",
+      "runtime_use": "Regional roads, hydrography and toponymy.",
+      "parcel_rule": "Scale is too coarse for parcel boundary, frontage or local road alignment."
+    },
+    {
+      "key": "ana_snirh",
+      "source_id": "br-ana-snirh-inde",
+      "status": "LIVE_PARCEL_CONTEXT",
+      "runtime_use": "Macro, meso and micro hydrographic region at clicked parcel.",
+      "parcel_rule": "Hydrographic region is not flood risk."
+    },
+    {
+      "key": "icmbio",
+      "source_id": "br-icmbio-geoservices",
+      "status": "LIVE_PARCEL_CONTEXT",
+      "runtime_use": "Federal conservation-unit polygon incidence at parcel point.",
+      "parcel_rule": "No federal UC incidence does not exclude state/municipal/environmental restrictions."
+    },
+    {
+      "key": "sicar",
+      "source_id": "br-sicar-car",
+      "status": "REGISTERED_QUERY_ONLY",
+      "runtime_use": "Rural environmental registry workflow when a rural property case requires it.",
+      "parcel_rule": "The tested sistemas.florestal.gov.br GeoServer currently exposes SNIF/CNFP layers, not confirmed CAR parcel polygons; do not relabel it as SICAR WFS."
+    },
+    {
+      "key": "sgb_cprm",
+      "source_id": "br-sgb-susceptibility",
+      "status": "LIVE_MUNICIPAL_CONTEXT",
+      "runtime_use": "Official SGB susceptibility-map coverage/year and municipality-level mapped areas by susceptibility class.",
+      "parcel_rule": "Municipal susceptibility summary does not classify the individual parcel."
+    },
+    {
+      "key": "mapbiomas",
+      "source_id": "br-mapbiomas",
+      "status": "REGISTERED_NOT_RUNTIME",
+      "runtime_use": "Historical land-cover/use candidate.",
+      "parcel_rule": "Requires a reproducible licensed query/export workflow; MapBiomas/GEE website alone is not treated as a parcel REST API."
+    },
+    {
+      "key": "sigef_incra",
+      "source_id": "br-incra-sigef",
+      "status": "AUTHENTICATED_QUERY_WORKFLOW",
+      "runtime_use": "Certified rural-property due diligence where applicable.",
+      "parcel_rule": "User-supplied INDE/INCRA WFS endpoint returned 404 in current verification; do not claim public WFS integration."
+    },
+    {
+      "key": "onr_saec",
+      "source_id": "br-onr-ridigital",
+      "status": "PAID_OR_AUTHENTICATED_ON_DEMAND",
+      "runtime_use": "Current registry certificate/matricula and encumbrance due diligence.",
+      "parcel_rule": "Never expose ownership from unverified or unrelated public records."
+    },
+    {
+      "key": "sinter",
+      "source_id": "br-rfb-sinter-cib",
+      "status": "REGISTERED_QUERY_ONLY",
+      "runtime_use": "Government interoperability/CIB context.",
+      "parcel_rule": "No anonymous public parcel REST contract confirmed."
+    },
+    {
+      "key": "funai",
+      "source_id": "br-funai-geospatial",
+      "status": "LIVE_PARCEL_CONTEXT",
+      "runtime_use": "Indigenous-territory polygon incidence using official FUNAI WFS.",
+      "parcel_rule": "Territorial incidence requires legal interpretation and is not private ownership data."
+    },
+    {
+      "key": "obrasgov",
+      "source_id": "br-obrasgov-api",
+      "status": "LIVE_CONNECTOR_GEOMETRY_BLOCKED_UPSTREAM",
+      "runtime_use": "Project, contract, physical/financial progress and public-event connectors.",
+      "parcel_rule": "Current public geometry contract does not expose coordinates/GeoJSON sufficient for defensible parcel distance; no text-address proximity."
+    },
+    {
+      "key": "siconfi",
+      "source_id": "br-siconfi-api",
+      "status": "REGISTERED_MUNICIPAL_CONTEXT_PENDING",
+      "runtime_use": "Municipal finance/capacity context.",
+      "parcel_rule": "Revenue/debt are municipality-level context, not parcel economics."
+    },
+    {
+      "key": "transferegov",
+      "source_id": "br-transferegov-public-works",
+      "status": "REGISTERED_PUBLIC_WORKS_CONTEXT",
+      "runtime_use": "Federal transfers/agreements and infrastructure investment context.",
+      "parcel_rule": "Needs defensible geometry before attaching a project to a parcel."
+    },
+    {
+      "key": "overpass_osm",
+      "source_id": "global-osm-overpass",
+      "status": "REGISTERED_FALLBACK_ONLY",
+      "runtime_use": "Sidewalks, crossings, cycleways, transit/POIs when no better official local source exists.",
+      "parcel_rule": "Use as contextual fallback with ODbL attribution; municipal official layers take precedence."
+    },
+    {
+      "key": "dnit",
+      "source_id": "br-dnit-snv",
+      "status": "LIVE_NEARBY_CONTEXT",
+      "runtime_use": "Official SNV federal-road geometry within 1 km, with metric distance and SNV version.",
+      "parcel_rule": "Road-centerline proximity does not prove frontage, access, legal right-of-way or federal-domain restriction on the parcel."
+    },
+    {
+      "key": "brasilapi_cep",
+      "source_id": "br-brasilapi-cep-v2",
+      "status": "LIVE_SEARCH_CONTEXT",
+      "runtime_use": "Same-origin CEP lookup for address search.",
+      "parcel_rule": "CEP coordinates are search hints, not parcel geometry."
+    },
+    {
+      "key": "openstreetmap",
+      "source_id": "global-openstreetmap",
+      "status": "LIVE_BASEMAP_GEOCODING_3D_CONTEXT",
+      "runtime_use": "Basemap, Nominatim address geocoding and 3D/base-map context.",
+      "parcel_rule": "Municipal official cadastral geometry remains authoritative for parcel selection."
+    }
+  ]
+}
