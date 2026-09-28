@@ -5111,11 +5111,11 @@
         "fiscal_capacity"
       ],
       "source_type": "open_REST_API",
-      "base_url": "https://apidatalake.tesouro.gov.br/ords/cdwhprd/siconfi/tt/",
+      "base_url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/",
       "discovery_url": "https://apidatalake.tesouro.gov.br/docs/siconfi/",
       "access_class": "OPEN_REUSABLE",
-      "verification_status": "VERIFIED_CURRENT_API_2026",
-      "notes": "API de dados abertos do Tesouro, JSON, sem autenticação. Base oficial atual /ords/cdwhprd/siconfi/tt/. Limite documentado de 1 requisição por segundo. Usar como contexto fiscal municipal, nunca como atributo do lote."
+      "verification_status": "LIVE_MUNICIPAL_CONTEXT_2026",
+      "notes": "API pública atual do Tesouro sem autenticação. LoteDiretor usa RREO 2025/6 com cache municipal e throttle >=1 s entre chamadas, extraindo somente contas explícitas de IPTU realizado, ITBI realizado, RCL e RCL ajustada para limites de endividamento. Nunca tratar como atributo econômico do lote."
     },
     {
       "id": "global-osm-overpass",
