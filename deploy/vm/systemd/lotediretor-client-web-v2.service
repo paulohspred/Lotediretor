@@ -1,0 +1,21 @@
+[Unit]
+Description=LoteDiretor Client Web v2
+After=network.target lotediretor-platform-api-v2.service
+Requires=lotediretor-platform-api-v2.service
+
+[Service]
+Type=simple
+User=sentinelx
+Group=sentinelx
+WorkingDirectory=/srv/lotediretor/app/apps/client-web
+Environment=NODE_ENV=production
+Environment=PLATFORM_API_URL=http://127.0.0.1:3000
+Environment=PATH=/opt/lotediretor/node22/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+ExecStart=/opt/lotediretor/node22/bin/node node_modules/next/dist/bin/next start -H 127.0.0.1 -p 3001
+Restart=on-failure
+RestartSec=3
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
