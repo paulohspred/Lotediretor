@@ -218,7 +218,7 @@
             "complete environmental layer allowlist",
             "state/federal overlays"
           ],
-          "notes": "Privacy-filtered environmental-license spatial incidence is implemented for the clicked parcel. Complete municipal/state/federal environmental overlay resolution remains pending."
+          "notes": "Privacy-filtered environmental-license spatial incidence is implemented for the clicked parcel. Complete municipal/state/federal environmental overlay resolution remains pending. Federal ICMBio conservation-unit context is now queried live as a complementary overlay; municipal/state sources remain authoritative where more detailed."
         },
         {
           "field": "risk",
@@ -234,7 +234,7 @@
           "missing_fields": [
             "site-specific geotechnical confirmation when professional decision requires it"
           ],
-          "notes": "Geological and hydrological risk layers are queried with closed allowlists for the clicked parcel. Results are screening context, not a site-specific geotechnical conclusion."
+          "notes": "Geological and hydrological risk layers are queried with closed allowlists for the clicked parcel. Results are screening context, not a site-specific geotechnical conclusion. Federal SGB risk-sector/inundation context is now queried live as a complementary source; it does not replace municipal risk mapping or site-specific technical confirmation."
         },
         {
           "field": "heritage",
@@ -355,7 +355,7 @@
             "official legal right-of-way/alignment width resolver",
             "federal/state road-domain reconciliation where applicable"
           ],
-          "notes": "Parcel-adjacent road context is live from GeoSampa zoneamento_classificacao_viaria and segmento_logradouro. The dossier reports urban road classification, nearby named segments, distance to the parcel and carriageway-count context. These fields are not treated as legal total street width or definitive right-of-way."
+          "notes": "Parcel-adjacent road context is live from GeoSampa zoneamento_classificacao_viaria and segmento_logradouro. The dossier reports urban road classification, nearby named segments, distance to the parcel and carriageway-count context. These fields are not treated as legal total street width or definitive right-of-way. DNIT SNV road context is now queried live around the parcel with approximate geometric distance; nearby federal road data does not establish right-of-way or parcel access."
         },
         {
           "field": "imagery",
@@ -636,12 +636,12 @@
           "missing_fields": [
             "license per service"
           ],
-          "notes": "Parcel resolver now exposes hydrographic basin context, non-aedificandi/marginal protection incidences, SSA1 and SMUP protected-unit/IPAV incidences through closed allowlists. Basin context is not rendered as flood-risk evidence."
+          "notes": "Parcel resolver now exposes hydrographic basin context, non-aedificandi/marginal protection incidences, SSA1 and SMUP protected-unit/IPAV incidences through closed allowlists. Basin context is not rendered as flood-risk evidence. Federal ICMBio conservation-unit context is now queried live as a complementary overlay; municipal/state sources remain authoritative where more detailed."
         },
         {
           "field": "risk",
           "status": "PARTIAL",
-          "source_id": "pe-recife-macrodrenagem",
+          "source_id": "pe-recife-sedec-risk-sectors",
           "supporting_source_ids": [
             "pe-recife-environment-restrictions"
           ],
@@ -650,10 +650,10 @@
           "license": null,
           "connector_status": "LIVE_MULTI_SOURCE_RISK_RESOLVER",
           "missing_fields": [
-            "formal coverage/version metadata reconciliation across SEDEC susceptibility and 2026 flood layers",
-            "site-specific geotechnical or hydraulic confirmation when required for design"
+            "formal coverage/version metadata reconciliation across municipal risk sources",
+            "site-specific geotechnical or hydraulic confirmation where required for design"
           ],
-          "notes": "Live parcel resolver now queries municipal Defesa Civil risk sectors, landslide susceptibility, 2026 mapped flood polygons and the municipal flooded-lot layer. Susceptibility, mapped flood incidence and risk-sector classification remain distinct evidence types."
+          "notes": "Live property resolver combines Recife SEDEC risk sectors, municipal landslide susceptibility, 2026 flood polygons and exact flooded-lot matching, plus federal SGB context. Each class remains semantically distinct."
         },
         {
           "field": "heritage",
@@ -765,7 +765,7 @@
             "current legal hierarchy reconciliation where CTTU and Atlas classifications differ",
             "official right-of-way/alignment widths"
           ],
-          "notes": "Nearby street segments are resolved from the CTTU service; functional category is supplemented from the official Recife Atlas road layer within a bounded spatial search."
+          "notes": "Nearby street segments are resolved from the CTTU service; functional category is supplemented from the official Recife Atlas road layer within a bounded spatial search. DNIT SNV road context is now queried live around the parcel with approximate geometric distance; nearby federal road data does not establish right-of-way or parcel access."
         },
         {
           "field": "imagery",
@@ -1060,7 +1060,7 @@
             "state/federal environmental overlay reconciliation",
             "resource license/version review"
           ],
-          "notes": "Repository implementation queries municipal APP and APE FeatureServer layers with closed public-field allowlists and exposes matching map overlays. Production deployment validation is still pending because the server execution channel was unavailable when this change was committed."
+          "notes": "Repository implementation queries municipal APP and APE FeatureServer layers with closed public-field allowlists and exposes matching map overlays. Production deployment validation is still pending because the server execution channel was unavailable when this change was committed. Federal ICMBio conservation-unit context is now queried live as a complementary overlay; municipal/state sources remain authoritative where more detailed."
         },
         {
           "field": "risk",
@@ -1074,7 +1074,7 @@
           "missing_fields": [
             "landslide/geotechnical complements"
           ],
-          "notes": null
+          "notes": "Federal SGB risk-sector/inundation context is now queried live as a complementary source; it does not replace municipal risk mapping or site-specific technical confirmation."
         },
         {
           "field": "heritage",
@@ -1191,7 +1191,7 @@
             "official right-of-way/alignment width normalizer",
             "documented circulation-code semantics if direction is exposed"
           ],
-          "notes": "CadLog Trechos_Logradouros is queried in a small parcel-adjacent buffer. The dossier exposes named street, hierarchy, neighborhood and published regulated speed. Undocumented oneway codes are intentionally not shown."
+          "notes": "CadLog Trechos_Logradouros is queried in a small parcel-adjacent buffer. The dossier exposes named street, hierarchy, neighborhood and published regulated speed. Undocumented oneway codes are intentionally not shown. DNIT SNV road context is now queried live around the parcel with approximate geometric distance; nearby federal road data does not establish right-of-way or parcel access."
         },
         {
           "field": "imagery",
@@ -1483,7 +1483,7 @@
           "missing_fields": [
             "site-specific environmental confirmation where a professional decision requires it"
           ],
-          "notes": "Parcel intersections are live for ADE/AEIS environmental-interest areas, conservation units, municipal parks and Serra do Curral ecological corridor through the official BHGEO WFS with closed field allowlists."
+          "notes": "Parcel intersections are live for ADE/AEIS environmental-interest areas, conservation units, municipal parks and Serra do Curral ecological corridor through the official BHGEO WFS with closed field allowlists. Federal ICMBio conservation-unit context is now queried live as a complementary overlay; municipal/state sources remain authoritative where more detailed."
         },
         {
           "field": "risk",
@@ -1499,7 +1499,7 @@
           "missing_fields": [
             "current site-specific technical inspection when required"
           ],
-          "notes": "Official risk layer covers significant geological risk and flood-risk areas. Method/date must remain visible because some source mapping is historical."
+          "notes": "Official risk layer covers significant geological risk and flood-risk areas. Method/date must remain visible because some source mapping is historical. Federal SGB risk-sector/inundation context is now queried live as a complementary source; it does not replace municipal risk mapping or site-specific technical confirmation."
         },
         {
           "field": "heritage",
@@ -1612,7 +1612,7 @@
             "production smoke validation of nearby-road buffer",
             "field/right-of-way confirmation where project decisions require surveyed alignment"
           ],
-          "notes": "Repository resolver now queries official BHGEO road classification and circulation layers in a small parcel-adjacent search area, because road centerlines normally do not cross lot polygons. Production validation of this proximity update is pending while the server execution channel is unavailable."
+          "notes": "Repository resolver now queries official BHGEO road classification and circulation layers in a small parcel-adjacent search area, because road centerlines normally do not cross lot polygons. Production validation of this proximity update is pending while the server execution channel is unavailable. DNIT SNV road context is now queried live around the parcel with approximate geometric distance; nearby federal road data does not establish right-of-way or parcel access."
         },
         {
           "field": "imagery",
@@ -1906,7 +1906,7 @@
           "missing_fields": [
             "environmental overlay completeness beyond UC and ZEIS"
           ],
-          "notes": "Live parcel intersection implemented against Filipeia WFS with a closed public-field allowlist; no bulk mirroring."
+          "notes": "Live parcel intersection implemented against Filipeia WFS with a closed public-field allowlist; no bulk mirroring. Federal ICMBio conservation-unit context is now queried live as a complementary overlay; municipal/state sources remain authoritative where more detailed."
         },
         {
           "field": "risk",
@@ -1920,7 +1920,7 @@
           "missing_fields": [
             "formal interpretation/coverage metadata for susceptibility classes"
           ],
-          "notes": "Live parcel intersection implemented against Filipeia WFS with a closed public-field allowlist; no bulk mirroring."
+          "notes": "Live parcel intersection implemented against Filipeia WFS with a closed public-field allowlist; no bulk mirroring. Federal SGB risk-sector/inundation context is now queried live as a complementary source; it does not replace municipal risk mapping or site-specific technical confirmation."
         },
         {
           "field": "heritage",
@@ -2035,7 +2035,7 @@
             "right-of-way width/official alignment resolver",
             "intended-use permission normalization against hierarchy"
           ],
-          "notes": "Filipeia road-hierarchy WFS is queried by parcel intersection and exposed in the planning dossier."
+          "notes": "Filipeia road-hierarchy WFS is queried by parcel intersection and exposed in the planning dossier. DNIT SNV road context is now queried live around the parcel with approximate geometric distance; nearby federal road data does not establish right-of-way or parcel access."
         },
         {
           "field": "imagery",
