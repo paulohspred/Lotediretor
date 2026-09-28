@@ -23,6 +23,9 @@ ANA_BASE = "https://www.snirh.gov.br/arcgis/rest/services/INDE/Camadas/MapServer
 ICMBIO_WFS = "https://geoservicos.inde.gov.br/geoserver/ICMBio/ows"
 IBGE_AGGREGATES = "https://servicodados.ibge.gov.br/api/v3/agregados"
 SICONFI_RREO = "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo"
+SICONFI_ENTES = "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/entes"
+TRANSFERE_ESPECIAIS = "https://api-publica.transferegov.gestao.gov.br/especiais"
+_TRANSFERE_CACHE = {}
 _SICONFI_CACHE = {}
 _SICONFI_LOCK = threading.Lock()
 _SICONFI_LAST_REQUEST = 0.0
@@ -277,31 +280,40 @@ def ibge_municipality_context(municipality_ibge: str) -> dict:
     }
 
 
-def siconfi_municipality_context(municipality_ibge: str) -> dict:
+def _siconfi_request(url: str):
     global _SICONFI_LAST_REQUEST
+    with _SICONFI_LOCK:
+        wait = 1.05 - (time.monotonic() - _SICONFI_LAST_REQUEST)
+        if wait > 0:
+            time.sleep(wait)
+        data = _get_json(url, 4_000_000)
+        _SICONFI_LAST_REQUEST = time.monotonic()
+        return data
+
+
+def siconfi_municipality_context(municipality_ibge: str) -> dict:
     cache_key = ("2025", municipality_ibge)
     cached = _SICONFI_CACHE.get(cache_key)
     if cached and time.time() - cached["cached_at"] < 12 * 3600:
         return cached["value"]
 
-    with _SICONFI_LOCK:
-        cached = _SICONFI_CACHE.get(cache_key)
-        if cached and time.time() - cached["cached_at"] < 12 * 3600:
-            return cached["value"]
-        wait = 1.05 - (time.monotonic() - _SICONFI_LAST_REQUEST)
-        if wait > 0:
-            time.sleep(wait)
-        params = {
-            "an_exercicio": "2025",
-            "nr_periodo": "6",
-            "co_tipo_demonstrativo": "RREO",
-            "id_ente": municipality_ibge,
-        }
-        data = _get_json(
-            SICONFI_RREO + "?" + urllib.parse.urlencode(params),
-            4_000_000,
-        )
-        _SICONFI_LAST_REQUEST = time.monotonic()
+    ente_params = urllib.parse.urlencode({"cod_ibge": municipality_ibge})
+    ente_data = _siconfi_request(SICONFI_ENTES + "?" + ente_params)
+    ente_rows = [
+        item for item in (ente_data.get("items") or [])
+        if str(item.get("cod_ibge")) == str(municipality_ibge)
+    ]
+    ente = ente_rows[0] if ente_rows else {}
+
+    params = {
+        "an_exercicio": "2025",
+        "nr_periodo": "6",
+        "co_tipo_demonstrativo": "RREO",
+        "id_ente": municipality_ibge,
+    }
+    data = _siconfi_request(
+        SICONFI_RREO + "?" + urllib.parse.urlencode(params)
+    )
 
     items = data.get("items") or []
     exact = {}
@@ -325,10 +337,14 @@ def siconfi_municipality_context(municipality_ibge: str) -> dict:
             exact[name] = item.get("valor")
         if institution is None and item.get("instituicao"):
             institution = item.get("instituicao")
+
     value = {
         "year": 2025,
         "period": 6,
         "institution": institution,
+        "municipality_name": ente.get("ente"),
+        "municipality_uf": ente.get("uf"),
+        "municipality_cnpj": ente.get("cnpj"),
         **exact,
         "interpretation": (
             "Valores do RREO/SICONFI são contexto fiscal do município e não "
@@ -336,6 +352,98 @@ def siconfi_municipality_context(municipality_ibge: str) -> dict:
         ),
     }
     _SICONFI_CACHE[cache_key] = {
+        "cached_at": time.time(),
+        "value": value,
+    }
+    return value
+
+
+def transferegov_municipality_context(cnpj: str | None) -> dict:
+    if not cnpj:
+        return {}
+    cached = _TRANSFERE_CACHE.get(cnpj)
+    if cached and time.time() - cached["cached_at"] < 12 * 3600:
+        return cached["value"]
+
+    beneficiary_params = urllib.parse.urlencode({
+        "cnpj_beneficiario": cnpj,
+        "pagina": 1,
+        "tamanho_da_pagina": 20,
+    })
+    beneficiary_data = _get_json(
+        TRANSFERE_ESPECIAIS
+        + "/beneficiarios-especiais?"
+        + beneficiary_params,
+        1_000_000,
+    )
+    beneficiary_rows = [
+        item for item in (beneficiary_data.get("data") or [])
+        if str(item.get("cnpj_beneficiario") or "") == str(cnpj)
+    ]
+    if not beneficiary_rows:
+        value = {
+            "year": 2026,
+            "plan_count": 0,
+            "investment_brl": 0.0,
+            "operating_brl": 0.0,
+            "plans": [],
+            "interpretation": (
+                "Nenhum beneficiário municipal correspondente foi localizado "
+                "na API de Transferências Especiais para este CNPJ."
+            ),
+        }
+        _TRANSFERE_CACHE[cnpj] = {
+            "cached_at": time.time(),
+            "value": value,
+        }
+        return value
+
+    beneficiary = beneficiary_rows[0]
+    beneficiary_id = beneficiary.get("id_beneficiario")
+    plan_params = urllib.parse.urlencode({
+        "id_beneficiario": beneficiary_id,
+        "ano_plano_acao": 2026,
+        "pagina": 1,
+        "tamanho_da_pagina": 100,
+    })
+    plan_data = _get_json(
+        TRANSFERE_ESPECIAIS
+        + "/planos-acao-especiais?"
+        + plan_params,
+        3_000_000,
+    )
+    plans = []
+    investment = 0.0
+    operating = 0.0
+    for item in plan_data.get("data") or []:
+        inv = float(item.get("valor_investimento_plano_acao") or 0)
+        cust = float(item.get("valor_custeio_plano_acao") or 0)
+        investment += inv
+        operating += cust
+        plans.append({
+            "code": item.get("codigo_plano_acao"),
+            "status": item.get("situacao_plano_acao"),
+            "object": item.get("nome_objeto"),
+            "category": item.get("categoria_despesa_plano_acao"),
+            "investment_brl": inv,
+            "operating_brl": cust,
+        })
+
+    value = {
+        "year": 2026,
+        "beneficiary_id": beneficiary_id,
+        "beneficiary_name": beneficiary.get("nome_beneficiario"),
+        "plan_count": len(plans),
+        "investment_brl": round(investment, 2),
+        "operating_brl": round(operating, 2),
+        "plans": plans[:20],
+        "interpretation": (
+            "Transferências Especiais são contexto de recursos federais do "
+            "município. Objeto, plano ou valor não é vinculado ao lote e não "
+            "deve ser apresentado como obra próxima sem geometria oficial."
+        ),
+    }
+    _TRANSFERE_CACHE[cnpj] = {
         "cached_at": time.time(),
         "value": value,
     }
@@ -449,6 +557,7 @@ def load(
         "indigenous_territories": [],
         "municipality_demographics": {},
         "municipality_finance": {},
+        "municipality_transfers": {},
         "sgb_susceptibility": {},
         "sgb": {
             "risk_sectors": [],
@@ -527,6 +636,13 @@ def load(
                     result["sgb_susceptibility"] = value
             except Exception as exc:
                 result["query_errors"][f"{group}_{key}"] = type(exc).__name__
+    finance = result.get("municipality_finance") or {}
+    try:
+        result["municipality_transfers"] = transferegov_municipality_context(
+            finance.get("municipality_cnpj")
+        )
+    except Exception as exc:
+        result["query_errors"]["transferegov_municipality"] = type(exc).__name__
     return result
 
 
@@ -628,6 +744,29 @@ def territorial_report_values(context: dict) -> list[dict]:
         out.append({
             "label": "Limite do contexto fiscal municipal",
             "value": finance.get("interpretation"),
+        })
+    transfers = (context or {}).get("municipality_transfers") or {}
+    if transfers.get("plan_count") is not None:
+        out.extend([
+            {
+                "label": "Transferências especiais federais · planos 2026",
+                "value": transfers.get("plan_count"),
+            },
+            {
+                "label": "Transferências especiais · investimento 2026",
+                "value": transfers.get("investment_brl"),
+                "unit": "BRL",
+            },
+            {
+                "label": "Transferências especiais · custeio 2026",
+                "value": transfers.get("operating_brl"),
+                "unit": "BRL",
+            },
+        ])
+    if transfers.get("interpretation"):
+        out.append({
+            "label": "Limite do contexto de transferências",
+            "value": transfers.get("interpretation"),
         })
     out.append({
         "label": "Limite da divisão hidrográfica",
