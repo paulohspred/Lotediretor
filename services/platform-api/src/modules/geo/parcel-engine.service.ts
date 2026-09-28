@@ -181,6 +181,10 @@ function friendlyLabel(raw: string): string {
       " do SGB",
       " do Serviço Geológico do Brasil",
     )
+    .replaceAll(
+      " pelo SGB",
+      " pelo Serviço Geológico do Brasil",
+    )
     .replace(
       /^SGB · /,
       "Serviço Geológico do Brasil · ",
@@ -441,7 +445,10 @@ export class ParcelEngineService {
           text(properties.parcel_status) ?? text(properties.cib_status),
       },
       dossier: {
-        title: text(report.title) ?? "Dossiê do imóvel",
+        title:
+          text(report.title) === "LoteDiretor Professional Property Report"
+            ? "Dossiê profissional do imóvel"
+            : text(report.title) ?? "Dossiê do imóvel",
         sections: dossierSections,
       },
       analysis: {
