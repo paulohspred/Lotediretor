@@ -55,9 +55,9 @@
     {
       "key": "sgb_cprm",
       "source_id": "br-sgb-susceptibility",
-      "status": "LIVE_MUNICIPAL_CONTEXT",
-      "runtime_use": "Official SGB susceptibility-map coverage/year and municipality-level mapped areas by susceptibility class.",
-      "parcel_rule": "Municipal susceptibility summary does not classify the individual parcel."
+      "status": "LIVE_MUNICIPAL_AND_PARCEL_CONTEXT",
+      "runtime_use": "Official SGB municipality susceptibility-map coverage plus live parcel-point setorização de risco and inundation polygons.",
+      "parcel_rule": "Municipal summary does not classify the parcel; parcel-point SGB geometry is complementary to higher-resolution municipal/state risk mapping."
     },
     {
       "key": "mapbiomas",
@@ -104,9 +104,9 @@
     {
       "key": "siconfi",
       "source_id": "br-siconfi-api",
-      "status": "VERIFIED_MUNICIPAL_CONTEXT_NOT_IN_PARCEL_REPORT",
-      "runtime_use": "Current SICONFI API verified at /ords/cdwhprd/siconfi/tt/. Candidate for a separate municipality-finance panel with the documented 1 request/second limit.",
-      "parcel_rule": "Revenue, expenditure, debt and fiscal-capacity data are municipality-level context and must not be rendered as parcel economics."
+      "status": "LIVE_MUNICIPAL_CONTEXT",
+      "runtime_use": "RREO 2025 municipal context: realized IPTU, realized ITBI, Receita Corrente Líquida and RCL adjusted for debt-limit calculations. Cached per municipality with request throttling.",
+      "parcel_rule": "Municipality-level fiscal context only; never render these values as parcel tax, parcel value, owner capacity or parcel-level economics."
     },
     {
       "key": "transferegov",
@@ -126,7 +126,7 @@
       "key": "dnit",
       "source_id": "br-dnit-snv",
       "status": "LIVE_NEARBY_CONTEXT",
-      "runtime_use": "Official SNV federal-road geometry within 1 km, with metric distance and SNV version.",
+      "runtime_use": "Official SNV federal-road geometry within 80 m of the parcel, with approximate metric distance and SNV version.",
       "parcel_rule": "Road-centerline proximity does not prove frontage, access, legal right-of-way or federal-domain restriction on the parcel."
     },
     {
