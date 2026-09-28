@@ -2755,6 +2755,78 @@ class Handler(BaseHTTPRequestHandler):
 
         params = urllib.parse.parse_qs(parsed.query)
 
+        if parsed.path == "/v1/cep":
+            raw_cep = re.sub(r"\D", "", params.get("cep", [""])[0] or "")
+            city = (params.get("city", [""])[0] or "").strip()
+            uf = (params.get("uf", [""])[0] or "").strip().upper()
+            if not re.fullmatch(r"\d{8}", raw_cep):
+                return self.send_json(400, {"error": "invalid_cep"})
+            allowed_cities = {
+                ("São Paulo", "SP"),
+                ("Recife", "PE"),
+                ("Rio de Janeiro", "RJ"),
+                ("Belo Horizonte", "MG"),
+                ("João Pessoa", "PB"),
+            }
+            if (city, uf) not in allowed_cities:
+                return self.send_json(400, {"error": "unsupported_municipality"})
+            try:
+                req = urllib.request.Request(
+                    "https://brasilapi.com.br/api/cep/v2/" + raw_cep,
+                    headers={
+                        "User-Agent": "LoteDiretor/1.0 (+https://lotediretor.com)",
+                        "Accept": "application/json",
+                    },
+                )
+                with urllib.request.urlopen(req, timeout=15) as response:
+                    data = json.loads(response.read(1000000))
+                if str(data.get("state") or "").upper() != uf:
+                    return self.send_json(404, {"error": "cep_outside_selected_state"})
+                returned_city = str(data.get("city") or "").strip()
+                if returned_city and returned_city.casefold() != city.casefold():
+                    return self.send_json(404, {"error": "cep_outside_selected_city"})
+                loc = (data.get("location") or {}).get("coordinates") or {}
+                street = data.get("street")
+                neighborhood = data.get("neighborhood")
+                lat = loc.get("latitude")
+                lon = loc.get("longitude")
+                address = {
+                    "road": street,
+                    "neighbourhood": neighborhood,
+                    "city": returned_city or city,
+                    "state": data.get("state") or uf,
+                    "postcode": data.get("cep") or raw_cep,
+                }
+                address = {k: v for k, v in address.items() if v not in (None, "")}
+                display = ", ".join(
+                    x for x in [street, neighborhood, returned_city or city, uf, raw_cep]
+                    if x
+                )
+                return self.send_json(200, {
+                    "cep": raw_cep,
+                    "count": 1 if lat is not None and lon is not None else 0,
+                    "results": ([{
+                        "lat": str(lat),
+                        "lon": str(lon),
+                        "display_name": display,
+                        "type": "postcode",
+                        "address": address,
+                    }] if lat is not None and lon is not None else []),
+                    "source": "BrasilAPI CEP V2",
+                    "caveat": (
+                        "Coordenadas de CEP são apoio de busca e podem derivar do "
+                        "OpenStreetMap. Não representam o limite cadastral do lote."
+                    ),
+                })
+            except urllib.error.HTTPError as exc:
+                if exc.code == 404:
+                    return self.send_json(404, {"error": "cep_not_found"})
+                print(f"CEP upstream error: {exc!r}", flush=True)
+                return self.send_json(502, {"error": "cep_unavailable"})
+            except Exception as exc:
+                print(f"CEP upstream error: {exc!r}", flush=True)
+                return self.send_json(502, {"error": "cep_unavailable"})
+
         if parsed.path == "/v1/geocode":
             query_text = (params.get("q", [""])[0] or "").strip()
             city = (params.get("city", [""])[0] or "").strip()
