@@ -74,7 +74,8 @@ type ParcelPayload = {
   };
 };
 
-type AddressResult = {
+type SearchResult = {
+  kind: "address" | "parcel";
   display_name?: string;
   lat: number;
   lng: number;
@@ -126,7 +127,7 @@ export function ExplorerShell() {
   const [activeLayerIds, setActiveLayerIds] = useState<string[]>(() =>
     defaultLayerIds(CITIES[0].ibge),
   );
-  const [addresses, setAddresses] = useState<AddressResult[]>([]);
+  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [payload, setPayload] = useState<ParcelPayload | null>(null);
   const [focusPoint, setFocusPoint] = useState<{ lat: number; lng: number } | null>(null);
   const [activeSectionId, setActiveSectionId] = useState<string | null>(null);
@@ -163,7 +164,7 @@ export function ExplorerShell() {
 
   async function resolveParcel(lat: number, lng: number) {
     setBusy(true);
-    setAddresses([]);
+    setSearchResults([]);
     setFocusPoint({ lat, lng });
     setStatus("Consultando cadastro, regras e contexto territorial…");
     try {
@@ -215,33 +216,54 @@ export function ExplorerShell() {
     }
   }
 
-  async function searchAddress(event: FormEvent) {
+  async function searchProperty(event: FormEvent) {
     event.preventDefault();
     if (query.trim().length < 3) return;
     setBusy(true);
     setPayload(null);
     setActiveSectionId(null);
-    setStatus("Buscando endereço…");
+    setStatus("Buscando endereço e cadastro municipal…");
     try {
       const params = new URLSearchParams({
         q: query.trim(),
         ibge: city.ibge,
       });
-      const response = await fetch(`/api/search/address?${params}`);
-      const body = (await response.json()) as {
-        results?: AddressResult[];
+
+      const [addressResponse, parcelResponse] = await Promise.all([
+        fetch(`/api/search/address?${params}`),
+        fetch(`/api/search/parcel?${params}`),
+      ]);
+
+      const addressBody = (await addressResponse.json()) as {
+        results?: Array<Omit<SearchResult, "kind">>;
         warning?: string;
       };
-      const results = body.results ?? [];
-      setAddresses(results);
+      const parcelBody = (await parcelResponse.json()) as {
+        results?: SearchResult[];
+        warning?: string;
+      };
+
+      const parcelResults = (parcelBody.results ?? []).map((item) => ({
+        ...item,
+        kind: "parcel" as const,
+      }));
+      const addressResults = (addressBody.results ?? []).map((item) => ({
+        ...item,
+        kind: "address" as const,
+      }));
+      const results = [...parcelResults, ...addressResults];
+
+      setSearchResults(results);
       setStatus(
         results.length
-          ? "Escolha um resultado para localizar o terreno."
-          : body.warning || "Endereço não localizado.",
+          ? "Escolha um resultado. Cadastros abrem o lote; ruas posicionam o mapa."
+          : addressBody.warning ||
+              parcelBody.warning ||
+              "Nenhum imóvel ou endereço foi localizado.",
       );
     } catch {
-      setAddresses([]);
-      setStatus("Busca de endereço temporariamente indisponível.");
+      setSearchResults([]);
+      setStatus("Busca temporariamente indisponível.");
     } finally {
       setBusy(false);
     }
@@ -250,7 +272,7 @@ export function ExplorerShell() {
   function changeCity(nextIbge: string) {
     setCityIbge(nextIbge);
     setPayload(null);
-    setAddresses([]);
+    setSearchResults([]);
     setFocusPoint(null);
     setActiveSectionId(null);
     setQuery("");
@@ -286,11 +308,11 @@ export function ExplorerShell() {
 
       <section className="app-stage">
         <header className="app-head">
-          <form className="global-search" onSubmit={searchAddress}>
+          <form className="global-search" onSubmit={searchProperty}>
             <span>Buscar imóvel</span>
             <input
               aria-label="Busca global"
-              placeholder="Rua, número ou endereço"
+              placeholder="Rua, número, inscrição ou código cadastral"
               value={query}
               onChange={(event) => setQuery(event.target.value)}
             />
@@ -321,16 +343,19 @@ export function ExplorerShell() {
             <h1>Terreno e contexto</h1>
             <p className="muted">{status}</p>
 
-            {addresses.length > 0 && (
+            {searchResults.length > 0 && (
               <div className="search-result-stack">
-                {addresses.map((result, index) => (
+                {searchResults.map((result, index) => (
                   <button
                     type="button"
                     key={`${result.lat}-${result.lng}-${index}`}
                     onClick={() => {
-                      setAddresses([]);
+                      setSearchResults([]);
                       setFocusPoint({ lat: result.lat, lng: result.lng });
-                      if (result.exact_house_number) {
+                      if (
+                        result.kind === "parcel" ||
+                        result.exact_house_number
+                      ) {
                         void resolveParcel(result.lat, result.lng);
                       } else {
                         setStatus(
@@ -339,7 +364,10 @@ export function ExplorerShell() {
                       }
                     }}
                   >
-                    {result.display_name || "Endereço localizado"}
+                    <span className="search-result-kind">
+                      {result.kind === "parcel" ? "Cadastro" : "Endereço"}
+                    </span>
+                    <span>{result.display_name || "Resultado localizado"}</span>
                   </button>
                 ))}
               </div>
