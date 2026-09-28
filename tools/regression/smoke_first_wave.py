@@ -82,6 +82,20 @@ def main() -> int:
         else:
             ok(f"{name}: parcel + sources")
 
+        federal = ctx.get("federal") or {}
+        federal_errors = federal.get("query_errors") or {}
+        micro = ((federal.get("hydrology") or {}).get("micro") or {}).get("DMI_NM")
+        demo = federal.get("municipality_demographics") or {}
+        population = (((demo.get("population") or {}).get("93") or {}).get("value"))
+        if federal_errors:
+            fail(errors, f"{name}: federal context errors={federal_errors}")
+        elif not micro:
+            fail(errors, f"{name}: federal hydrology missing")
+        elif not population:
+            fail(errors, f"{name}: IBGE municipality population missing")
+        else:
+            ok(f"{name}: federal context + IBGE Censo 2022")
+
         report_text = json.dumps(
             (payload.get("report") or {}).get("sections") or [],
             ensure_ascii=False,
@@ -101,6 +115,20 @@ def main() -> int:
             fail(errors, "sp: SQL search")
     except Exception as exc:
         fail(errors, f"sp: SQL search failed: {type(exc).__name__}")
+
+    # CEP V2 is proxied by the same-origin API and used only as search context.
+    cep_params = urllib.parse.urlencode(
+        {"cep": "01310930", "city": "São Paulo", "uf": "SP"}
+    )
+    try:
+        status, cep = get_json(base + "/v1/cep?" + cep_params, 60)
+        cep_results = cep.get("results") or []
+        if status == 200 and cep.get("count", 0) == 1 and cep_results:
+            ok("cep: BrasilAPI V2")
+        else:
+            fail(errors, "cep: BrasilAPI V2")
+    except Exception as exc:
+        fail(errors, f"cep: request failed: {type(exc).__name__}")
 
     # Same-origin geocode endpoint; browser does not depend on third-party CORS.
     params = urllib.parse.urlencode(
@@ -142,6 +170,16 @@ def main() -> int:
         fail(errors, "jp: contour profiles")
 
     recife_ctx = (payloads.get("recife") or {}).get("context", {})
+    recife_risk = recife_ctx.get("risk") or {}
+    required_risk_keys = {
+        "risk_sectors", "landslide_susceptibility",
+        "flood_polygons_2026", "flooded_lots_2026",
+    }
+    if required_risk_keys <= set(recife_risk):
+        ok("recife: risk connector contract")
+    else:
+        fail(errors, "recife: risk connector contract")
+
     if len(recife_ctx.get("buildings") or []) >= 1:
         ok("recife: official 3D building resolver")
     else:
