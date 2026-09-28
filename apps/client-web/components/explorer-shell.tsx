@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useMemo, useState } from "react";
+import type { Geometry } from "geojson";
 import { ExplorerMap } from "./explorer-map";
 import { CITIES, cityByIbge } from "@/lib/cities";
 
@@ -16,7 +17,7 @@ const rail = [
 
 type ParcelFeature = {
   type: "Feature";
-  geometry: GeoJSON.Geometry;
+  geometry: Geometry;
   properties?: Record<string, unknown> | null;
 };
 
