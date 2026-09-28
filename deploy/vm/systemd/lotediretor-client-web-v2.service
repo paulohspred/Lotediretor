@@ -10,6 +10,7 @@ Group=sentinelx
 WorkingDirectory=/srv/lotediretor/app/apps/client-web
 Environment=NODE_ENV=production
 Environment=PLATFORM_API_URL=http://127.0.0.1:3000
+Environment=MARTIN_URL=http://127.0.0.1:3002
 Environment=PATH=/opt/lotediretor/node22/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 ExecStart=/opt/lotediretor/node22/bin/node node_modules/next/dist/bin/next start -H 127.0.0.1 -p 3001
 Restart=on-failure
