@@ -13,12 +13,15 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 CONTRACT = ROOT / "database/schema-contract.json"
-MIGRATION = ROOT / "database/migrations/001_initial_postgis.sql"
+MIGRATIONS = sorted((ROOT / "database/migrations").glob("*.sql"))
 
 
 def main() -> int:
     contract = json.loads(CONTRACT.read_text(encoding="utf-8"))
-    sql = MIGRATION.read_text(encoding="utf-8")
+    sql = "\n\n".join(
+        migration.read_text(encoding="utf-8")
+        for migration in MIGRATIONS
+    )
     lowered = sql.lower()
 
     errors: list[str] = []
@@ -31,7 +34,7 @@ def main() -> int:
 
         for table in schema.get("tables", []):
             pattern = re.compile(
-                rf"create\s+table\s+{re.escape(schema_name)}\.{re.escape(table)}\s*\(",
+                rf"create\s+table\s+(?:if\s+not\s+exists\s+)?{re.escape(schema_name)}\.{re.escape(table)}\s*\(",
                 re.IGNORECASE,
             )
             if not pattern.search(sql):
@@ -39,7 +42,7 @@ def main() -> int:
 
         for view in schema.get("views", []):
             pattern = re.compile(
-                rf"create\s+view\s+{re.escape(schema_name)}\.{re.escape(view)}\s+as",
+                rf"create\s+view\s+(?:if\s+not\s+exists\s+)?{re.escape(schema_name)}\.{re.escape(view)}\s+as",
                 re.IGNORECASE,
             )
             if not pattern.search(sql):
@@ -77,8 +80,12 @@ def main() -> int:
                 f"public schema contains prohibited person-centric column: {pattern}"
             )
 
-    if "begin;" not in lowered or not lowered.rstrip().endswith("commit;"):
-        errors.append("migration must be transaction wrapped with BEGIN/COMMIT")
+    for migration in MIGRATIONS:
+        migration_sql = migration.read_text(encoding="utf-8").lower()
+        if "begin;" not in migration_sql or not migration_sql.rstrip().endswith("commit;"):
+            errors.append(
+                f"migration must be transaction wrapped with BEGIN/COMMIT: {migration.name}"
+            )
 
     if "st_isvalid" not in lowered:
         warnings.append("no geometry validity checks found")
