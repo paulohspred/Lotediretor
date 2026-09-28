@@ -15,13 +15,14 @@ type Props = {
   city: CityOption;
   feature: GeoFeature | null;
   onPick: (point: { lat: number; lng: number }) => void;
+  focusPoint?: { lat: number; lng: number } | null;
 };
 
 const SELECTED_SOURCE = "selected-parcel";
 const SELECTED_FILL = "selected-parcel-fill";
 const SELECTED_LINE = "selected-parcel-line";
 
-export function ExplorerMap({ city, feature, onPick }: Props) {
+export function ExplorerMap({ city, feature, onPick, focusPoint }: Props) {
   const container = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
   const onPickRef = useRef(onPick);
@@ -70,6 +71,16 @@ export function ExplorerMap({ city, feature, onPick }: Props) {
       duration: 700,
     });
   }, [city]);
+
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !focusPoint) return;
+    map.flyTo({
+      center: [focusPoint.lng, focusPoint.lat],
+      zoom: 19,
+      duration: 700,
+    });
+  }, [focusPoint]);
 
   useEffect(() => {
     const map = mapRef.current;
