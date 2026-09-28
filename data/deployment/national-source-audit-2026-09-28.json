@@ -1,0 +1,153 @@
+{
+  "as_of": "2026-09-28",
+  "purpose": "National-source usage audit for LoteDiretor first-wave property analysis",
+  "principles": [
+    "Municipal/state parcel-scale sources take precedence over coarser national sources.",
+    "National context never upgrades absence into a negative certificate.",
+    "Authenticated registral/rural systems are not bypassed.",
+    "Municipality-level fiscal/demographic data is labeled as territorial context, never parcel attributes.",
+    "Collaborative/open data is fallback or complementary and never overrides official municipal data."
+  ],
+  "sources": [
+    {
+      "name": "IBGE API de Agregados / SIDRA",
+      "source_id": "br-ibge-agregados-api",
+      "status": "LIVE",
+      "usage": "Municipal Census 2022 context: population, density, occupied permanent households, average residents per household.",
+      "parcel_semantics": "Municipality context only; not parcel/block/census-sector attributes."
+    },
+    {
+      "name": "IBGE API de Malhas Geográficas",
+      "source_id": "br-ibge-malhas-api",
+      "status": "REGISTERED_NOT_RUNTIME",
+      "usage": "Administrative/reference boundaries available for future regional context.",
+      "parcel_semantics": "Not used as parcel cadastral geometry because municipal cadastral sources are more precise."
+    },
+    {
+      "name": "IBGE Geoserviços Censo 2022",
+      "source_id": "br-ibge-censo2022-geoservices",
+      "status": "VERIFIED_NOT_RUNTIME",
+      "usage": "Verified official GeoServer; not yet used for automatic sector-level parcel context.",
+      "parcel_semantics": "Sector/demographic indicators require explicit territorial-unit matching; no silent parcel attribution."
+    },
+    {
+      "name": "IBGE Base Cartográfica Contínua / BCIM-BC250",
+      "source_id": "br-ibge-bcim-geoservices",
+      "status": "REGISTERED_REGIONAL_FALLBACK",
+      "usage": "Regional road/hydrography/toponymy reference only.",
+      "parcel_semantics": "Scale 1:250,000 is unsuitable for parcel boundary, street alignment or urban-network precision; municipal layers take precedence."
+    },
+    {
+      "name": "ANA / SNIRH",
+      "source_id": "br-ana-snirh-inde",
+      "status": "LIVE",
+      "usage": "Parcel-point macro/meso/micro hydrographic region context.",
+      "parcel_semantics": "Hydrographic region is not flood risk."
+    },
+    {
+      "name": "ICMBio / MMA",
+      "source_id": "br-icmbio-geoservices",
+      "status": "LIVE",
+      "usage": "Federal conservation-unit intersection at parcel point plus optional map overlay.",
+      "parcel_semantics": "Absence of federal UC does not exclude state/municipal protection, APP or other restrictions."
+    },
+    {
+      "name": "SICAR / CAR",
+      "source_id": "br-sicar-car",
+      "status": "BLOCKED_PUBLIC_LAYER",
+      "usage": "Public portal verified; listed GeoServer currently exposes SNIF/CNFP layers rather than parcel CAR/APP/Reserva Legal layers.",
+      "parcel_semantics": "No CAR parcel inference until an official reproducible public layer or authorized connector is available."
+    },
+    {
+      "name": "SGB / CPRM",
+      "source_id": "br-sgb-arcgis",
+      "status": "LIVE",
+      "usage": "Federal risk-sector and flood-susceptibility intersection; municipal susceptibility-map coverage metadata.",
+      "parcel_semantics": "Complementary to municipal risk mapping; site-specific technical confirmation remains required."
+    },
+    {
+      "name": "MapBiomas",
+      "source_id": "br-mapbiomas",
+      "status": "VERIFIED_MATERIALIZATION_PENDING",
+      "usage": "Official Collection 11 assets/GeoTIFFs verified for historical land-cover and urbanization context.",
+      "parcel_semantics": "Not in runtime yet: current server lacks managed raster dependency; avoid third-party/legacy WMS. Planned as reproducible offline/materialized raster sampling."
+    },
+    {
+      "name": "INCRA Geoportal / SIGEF public layer",
+      "source_id": "br-incra-acervo-fundiario",
+      "status": "LIVE",
+      "usage": "Public WFS geonode:sigef_geo parcel intersection; registry/CNS/matricula fields shown only as published SIGEF references.",
+      "parcel_semantics": "SIGEF certification does not replace current registry certificate, ownership or encumbrance research."
+    },
+    {
+      "name": "SIGEF authenticated service",
+      "source_id": "br-incra-sigef",
+      "status": "AUTHENTICATED",
+      "usage": "Not bypassed; full authenticated workflows remain outside public automatic query.",
+      "parcel_semantics": "Use only through legitimate authenticated/authorized flow."
+    },
+    {
+      "name": "ONR / SAEC",
+      "source_id": "br-onr-saec",
+      "status": "AUTHENTICATED_PRIVATE_ON_DEMAND",
+      "usage": "Current registry certificates/matricula workflow requires legitimate authorized access.",
+      "parcel_semantics": "No ownership indexing or scraping."
+    },
+    {
+      "name": "Sinter / Receita Federal",
+      "source_id": "br-sinter",
+      "status": "AUTHENTICATED_GOVERNMENT_INTEGRATION",
+      "usage": "Not a public anonymous parcel API; keep as future authorized government connector.",
+      "parcel_semantics": "Do not imply CNM/registry linkage without authorized integration."
+    },
+    {
+      "name": "FUNAI",
+      "source_id": "br-funai-geospatial",
+      "status": "LIVE",
+      "usage": "Indigenous-territory polygon intersection and optional map overlay; positive connector validated on official geometry.",
+      "parcel_semantics": "Published administrative phase is shown as source data; legal analysis remains separate."
+    },
+    {
+      "name": "Obrasgov.br",
+      "source_id": "br-obrasgov-api",
+      "status": "UPSTREAM_GEOMETRY_BLOCKED",
+      "usage": "Public event/project connectors configured.",
+      "parcel_semantics": "Current public geometry contract does not provide coordinates/GeoJSON sufficient for trustworthy parcel-distance matching; no textual-address proximity inference."
+    },
+    {
+      "name": "SICONFI / Tesouro Nacional",
+      "source_id": "br-siconfi-api",
+      "status": "LIVE",
+      "usage": "Municipal RREO context: IPTU/ITBI revenue and current-revenue indicators.",
+      "parcel_semantics": "Municipality finances are not property taxes/value of the selected parcel."
+    },
+    {
+      "name": "TransfereGov",
+      "source_id": "br-transferegov-public-works",
+      "status": "LIVE_MUNICIPAL_CONTEXT",
+      "usage": "Municipal federal-transfer/plans context.",
+      "parcel_semantics": "Plan/object/value is not linked to a parcel without official geometry."
+    },
+    {
+      "name": "Overpass / OpenStreetMap",
+      "source_id": "global-osm-overpass",
+      "status": "REGISTERED_FALLBACK_ONLY",
+      "usage": "Potential complementary pedestrian/cycling/transit/POI context; not called in every parcel report.",
+      "parcel_semantics": "Collaborative data quality varies; official municipal sources and OSM base map remain primary for current first-wave UI. Avoid high-volume public Overpass queries."
+    },
+    {
+      "name": "DNIT / SNV",
+      "source_id": "br-dnit-snv",
+      "status": "LIVE",
+      "usage": "Nearby federal-road context with approximate geometric distance and optional map overlay.",
+      "parcel_semantics": "Proximity to SNV axis does not prove access, legal right-of-way width or parcel-specific federal restriction."
+    },
+    {
+      "name": "BrasilAPI CEP V2",
+      "source_id": "br-brasilapi-cep-v2",
+      "status": "LIVE",
+      "usage": "Same-origin CEP search fallback for the five municipalities.",
+      "parcel_semantics": "CEP coordinate supports navigation/search only; it is not parcel geometry."
+    }
+  ]
+}
