@@ -7,6 +7,9 @@ from threading import Lock
 
 from osgeo import ogr
 
+# Preserve explicit current OGR error behavior and silence GDAL 4 migration warning.
+ogr.DontUseExceptions()
+
 CACHE_DIR = Path("/var/cache/lotediretor/ibge")
 SUPPORTED = {
     "3550308": "São Paulo",
