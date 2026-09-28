@@ -778,6 +778,7 @@ let selectedTerrainProfileLayer=null;
 let selectedDimensionLayer=null;
 let lastSelectedBuildings=[];
 let parcelRequestSeq=0;
+let parcelAbortController=null;
 cities.forEach((c,i)=>{
   const marker=L.circleMarker([c.lat,c.lng],{
     radius:9,weight:3,color:"#071019",fillColor:"#3bd790",fillOpacity:1,bubblingMouseEvents:false
@@ -1492,9 +1493,15 @@ async function inspectParcel(latlng){
     return;
   }
   const seq=++parcelRequestSeq;
+  if(parcelAbortController)parcelAbortController.abort();
+  parcelAbortController=new AbortController();
+  const controller=parcelAbortController;
   setParcelMessage("consultando",`Consultando lote oficial de ${city.name}…`);
   try{
-    const response=await fetch(endpoint+`?lat=${encodeURIComponent(latlng.lat)}&lng=${encodeURIComponent(latlng.lng)}`,{headers:{"Accept":"application/json"}});
+    const response=await fetch(endpoint+`?lat=${encodeURIComponent(latlng.lat)}&lng=${encodeURIComponent(latlng.lng)}`,{
+      headers:{"Accept":"application/json"},
+      signal:controller.signal
+    });
     const payload=await response.json();
     if(seq!==parcelRequestSeq)return;
     if(response.status===404){
@@ -1505,9 +1512,12 @@ async function inspectParcel(latlng){
     if(!response.ok)throw new Error(payload.error||"parcel_query_failed");
     renderParcel(payload);
   }catch(err){
+    if(err&&err.name==="AbortError")return;
     if(seq!==parcelRequestSeq)return;
     clearSelectedParcel();
     setParcelMessage("indisponível","A consulta cadastral não respondeu agora. Tente novamente.");
+  }finally{
+    if(parcelAbortController===controller)parcelAbortController=null;
   }
 }
 function clearSearchResults(){
