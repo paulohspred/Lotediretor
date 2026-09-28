@@ -1,0 +1,118 @@
+{
+  "as_of": "2026-09-28",
+  "baseline": "LoteDiretor Brasil Blueprint Final v2.0, Section 32 prevails",
+  "target": {
+    "web": "React/Next.js unified client",
+    "app_shell": "fixed rail + global search + workspace/date-base head + full-width task-focused content",
+    "map": "MapLibre GL + deck.gl baseline; Martin MVT from PostGIS",
+    "three_d": "Three.js/Cesium for terrain/building/scenario 3D",
+    "api": "NestJS modular monolith + Fastify Adapter + Mercurius REST/GraphQL",
+    "workers": "Python for ETL, geospatial engines, AI/solvers",
+    "data": "PostgreSQL/PostGIS source of truth + immutable snapshots + evidence lineage",
+    "search": "OpenSearch hybrid legal/document search",
+    "cache": "Valkey",
+    "events": "NATS JetStream",
+    "auth": "Keycloak OIDC Authorization Code + PKCE; HttpOnly/SameSite cookie/BFF",
+    "observability": "OpenTelemetry + Prometheus/Grafana/Loki",
+    "deploy": "Docker local; CI/CD staging→canary→prod; Terraform; Kubernetes only when justified"
+  },
+  "current_state": [
+    {
+      "area": "parcel/data resolvers",
+      "status": "ADVANCED_POC",
+      "notes": "Five first-wave cities have live parcel resolvers plus growing national context, provenance registry and regression smoke."
+    },
+    {
+      "area": "source registry",
+      "status": "PARTIAL_LIVE",
+      "notes": "Registry/audit/coverage exist and source-id consistency test exists; immutable raw snapshots are only partial."
+    },
+    {
+      "area": "evidence lineage",
+      "status": "PARTIAL",
+      "notes": "Public dossier persistence/hash exists, but every connector/result is not yet represented as source_id+snapshot_id+parser_version evidence."
+    },
+    {
+      "area": "IBGE census context",
+      "status": "LIVE",
+      "notes": "Municipality SIDRA context plus exact 2022 census-sector point-in-polygon for first-wave cities."
+    },
+    {
+      "area": "rural context",
+      "status": "LIVE_PARTIAL",
+      "notes": "INCRA/SIGEF public spatial refs, FUNAI, SICAR public property geometry; SNCR/CCIR/CAFIR/CIB authenticated flows remain."
+    },
+    {
+      "area": "environment/risk",
+      "status": "LIVE_PARTIAL",
+      "notes": "ANA, ICMBio, SGB, MapBiomas and several municipal layers live; IBAMA/INPE/ANM national layers still missing."
+    },
+    {
+      "area": "mobility",
+      "status": "LIVE_PARTIAL",
+      "notes": "Municipal road layers where available, DNIT and cached Overpass context live."
+    },
+    {
+      "area": "frontend architecture",
+      "status": "NONCOMPLIANT_POC",
+      "notes": "Production client is a static HTML app with Leaflet 2D and isolated MapLibre 3D. Blueprint requires React/Next.js and MapLibre/deck.gl; Leaflet out of baseline."
+    },
+    {
+      "area": "3D",
+      "status": "PARTIAL_POC",
+      "notes": "Pitched MapLibre urban view and building extrusion exists; no unified terrain/building/scenario engine in Three.js/Cesium yet."
+    },
+    {
+      "area": "platform API",
+      "status": "NONCOMPLIANT_POC",
+      "notes": "Operational API is Python http server. No NestJS/Fastify/Mercurius platform API/BFF yet."
+    },
+    {
+      "area": "vector tiles",
+      "status": "MISSING_BASELINE",
+      "notes": "Martin MVT baseline not yet serving the first-wave Explorer."
+    },
+    {
+      "area": "auth/tenant",
+      "status": "MISSING_BASELINE",
+      "notes": "No Keycloak OIDC cookie/BFF production shell yet."
+    },
+    {
+      "area": "legal temporal engine",
+      "status": "PARTIAL",
+      "notes": "Municipal zoning/parameters exist unevenly; no full versioned legal engine/OpenSearch hybrid corpus yet."
+    },
+    {
+      "area": "analysis run",
+      "status": "PARTIAL",
+      "notes": "Responses can be persisted, but no final immutable Analysis Run freezing all input snapshots/rules/calculations/findings."
+    },
+    {
+      "area": "report engine",
+      "status": "PARTIAL",
+      "notes": "Browser print/PDF exists; no canonical server Report Engine producing PDF/DOCX/JSON from a frozen Analysis Run."
+    },
+    {
+      "area": "observability",
+      "status": "MISSING_BASELINE",
+      "notes": "systemd/logs and smoke tests exist; no OTel traces, Prometheus/Grafana/Loki/SLO suite."
+    },
+    {
+      "area": "CI/CD/IaC",
+      "status": "PARTIAL",
+      "notes": "GitHub/versioned deploy scripts exist; no signed artifact canary pipeline/Terraform baseline yet."
+    }
+  ],
+  "next_sequence": [
+    "Finish national open parcel-context sources that directly support Blueprint sections 3/6: SICAR metadata, IBAMA/INPE, ANM, selected ANEEL/INEP/CNES/ANAC/ANP as appropriate.",
+    "Create apps/web Next.js shell using final design tokens and fixed-rail Explorer architecture; keep current static client running during parity migration.",
+    "Create apps/api NestJS/Fastify/Mercurius façade with versioned contracts over existing Python resolvers; Python becomes engine/worker layer.",
+    "Introduce Martin MVT for parcel/zoning/high-volume layers and migrate 2D map to MapLibre/deck.gl.",
+    "Create evidence/snapshot contract for every field and freeze Analysis Run objects.",
+    "Create canonical Report Engine PDF/DOCX/JSON from Analysis Run.",
+    "Add Keycloak/BFF auth, tenant entitlements and private-data boundaries before any authenticated registry integration.",
+    "Add OpenSearch legal corpus + temporal rules/evidence.",
+    "Add OTel/metrics/logs/SLO, CI/CD canary/rollback and Terraform.",
+    "Replace isolated 3D PoC with Three.js/Cesium terrain/building/constraint/scenario workspace."
+  ]
+}
