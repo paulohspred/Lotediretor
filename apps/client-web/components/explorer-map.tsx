@@ -2,11 +2,12 @@
 
 import { useEffect, useRef } from "react";
 import * as maplibregl from "maplibre-gl";
+import type { Feature, FeatureCollection, Geometry } from "geojson";
 import type { CityOption } from "@/lib/cities";
 
 type GeoFeature = {
   type: "Feature";
-  geometry: GeoJSON.Geometry;
+  geometry: Geometry;
   properties?: Record<string, unknown> | null;
 };
 
@@ -75,9 +76,9 @@ export function ExplorerMap({ city, feature, onPick }: Props) {
     if (!map) return;
 
     const apply = () => {
-      const data: GeoJSON.FeatureCollection = {
+      const data: FeatureCollection = {
         type: "FeatureCollection",
-        features: feature ? [feature as GeoJSON.Feature] : [],
+        features: feature ? [feature as Feature] : [],
       };
 
       const existing = map.getSource(SELECTED_SOURCE) as
@@ -126,7 +127,7 @@ export function ExplorerMap({ city, feature, onPick }: Props) {
             coordinates.forEach(walk);
           }
         };
-        const geometry = feature.geometry as GeoJSON.Geometry & {
+        const geometry = feature.geometry as Geometry & {
           coordinates?: unknown;
         };
         if ("coordinates" in geometry) walk(geometry.coordinates);
