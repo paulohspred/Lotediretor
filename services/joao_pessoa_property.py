@@ -583,6 +583,8 @@ def vals(section_id: str, parcel: dict, ctx: dict) -> list[dict]:
             out.append({"label":"Centro Histórico","value":"Terreno intersecta a poligonal publicada."})
         out.extend(federal_context.environment_report_values(ctx.get("federal") or {}))
         return out or [{"label":"Incidências ambientais, de suscetibilidade e patrimônio","value":"Nenhuma incidência nas camadas oficiais consultadas para este terreno."}]
+    if section_id == "registry_due_diligence":
+        return federal_context.registry_report_values(ctx.get("federal") or {})
     if section_id == "planning_buildability":
         zoning=((ctx.get("planning") or {}).get("zoning") or {}).get("properties") or {}
         macro=((ctx.get("planning") or {}).get("macrozone") or {}).get("properties") or {}
