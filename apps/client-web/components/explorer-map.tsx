@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import * as maplibregl from "maplibre-gl";
 import type { Feature, FeatureCollection, Geometry } from "geojson";
 import type { CityOption } from "@/lib/cities";
+import { layersForCity } from "@/lib/map-layers";
 
 type GeoFeature = {
   type: "Feature";
@@ -16,13 +17,30 @@ type Props = {
   feature: GeoFeature | null;
   onPick: (point: { lat: number; lng: number }) => void;
   focusPoint?: { lat: number; lng: number } | null;
+  activeLayerIds: string[];
 };
 
 const SELECTED_SOURCE = "selected-parcel";
 const SELECTED_FILL = "selected-parcel-fill";
 const SELECTED_LINE = "selected-parcel-line";
+const CATALOG_SOURCE_PREFIX = "catalog-source:";
+const CATALOG_LAYER_PREFIX = "catalog-layer:";
 
-export function ExplorerMap({ city, feature, onPick, focusPoint }: Props) {
+function sourceId(layerId: string): string {
+  return `${CATALOG_SOURCE_PREFIX}${layerId}`;
+}
+
+function mapLayerId(layerId: string): string {
+  return `${CATALOG_LAYER_PREFIX}${layerId}`;
+}
+
+export function ExplorerMap({
+  city,
+  feature,
+  onPick,
+  focusPoint,
+  activeLayerIds,
+}: Props) {
   const container = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
   const onPickRef = useRef(onPick);
@@ -81,6 +99,90 @@ export function ExplorerMap({ city, feature, onPick, focusPoint }: Props) {
       duration: 700,
     });
   }, [focusPoint]);
+
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map) return;
+
+    const sync = () => {
+      const available = layersForCity(city.ibge);
+      const availableIds = new Set(available.map((layer) => layer.id));
+      const wanted = new Set(
+        activeLayerIds.filter((id) => availableIds.has(id)),
+      );
+
+      for (const styleLayer of map.getStyle().layers ?? []) {
+        if (!styleLayer.id.startsWith(CATALOG_LAYER_PREFIX)) continue;
+        const id = styleLayer.id.slice(CATALOG_LAYER_PREFIX.length);
+        if (wanted.has(id)) continue;
+
+        if (map.getLayer(styleLayer.id)) {
+          map.removeLayer(styleLayer.id);
+        }
+        const sid = sourceId(id);
+        if (map.getSource(sid)) {
+          map.removeSource(sid);
+        }
+      }
+
+      const categoryOrder: Record<string, number> = {
+        imagery: 0,
+        terrain: 1,
+        territory: 2,
+        planning: 3,
+        environment: 4,
+        risk: 5,
+        infrastructure: 6,
+        buildings: 7,
+        rural: 8,
+      };
+
+      const activeSpecs = available
+        .filter((layer) => wanted.has(layer.id))
+        .sort(
+          (a, b) =>
+            (categoryOrder[a.category] ?? 10) -
+            (categoryOrder[b.category] ?? 10),
+        );
+
+      for (const spec of activeSpecs) {
+        const sid = sourceId(spec.id);
+        const lid = mapLayerId(spec.id);
+
+        if (!map.getSource(sid)) {
+          map.addSource(sid, {
+            type: "raster",
+            tiles: spec.tiles,
+            tileSize: 256,
+            minzoom: spec.minZoom ?? 0,
+            maxzoom: spec.maxZoom ?? 22,
+            attribution: spec.attribution,
+          });
+        }
+
+        if (!map.getLayer(lid)) {
+          map.addLayer(
+            {
+              id: lid,
+              type: "raster",
+              source: sid,
+              paint: {
+                "raster-opacity": spec.opacity,
+                "raster-fade-duration": 0,
+              },
+            },
+            map.getLayer(SELECTED_FILL) ? SELECTED_FILL : undefined,
+          );
+        }
+      }
+
+      if (map.getLayer(SELECTED_FILL)) map.moveLayer(SELECTED_FILL);
+      if (map.getLayer(SELECTED_LINE)) map.moveLayer(SELECTED_LINE);
+    };
+
+    if (map.loaded()) sync();
+    else map.once("load", sync);
+  }, [city.ibge, activeLayerIds]);
 
   useEffect(() => {
     const map = mapRef.current;
@@ -150,6 +252,9 @@ export function ExplorerMap({ city, feature, onPick, focusPoint }: Props) {
           });
         }
       }
+
+      if (map.getLayer(SELECTED_FILL)) map.moveLayer(SELECTED_FILL);
+      if (map.getLayer(SELECTED_LINE)) map.moveLayer(SELECTED_LINE);
     };
 
     if (map.loaded()) apply();
