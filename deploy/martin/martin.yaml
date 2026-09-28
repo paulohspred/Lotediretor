@@ -1,6 +1,4 @@
 listen_addresses: 127.0.0.1:3002
-cache_size_mb: 256
-cache_expiry: 1h
 preferred_encoding: gzip
 
 postgres:
