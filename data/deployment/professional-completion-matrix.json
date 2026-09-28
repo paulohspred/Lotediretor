@@ -1,6 +1,6 @@
 {
   "schema_version": "0.2.0",
-  "as_of": "2026-09-25",
+  "as_of": "2026-09-28",
   "target_level": "L3",
   "row_contract": [
     "field",
@@ -648,11 +648,12 @@
           "endpoint": "https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Hosted/PAINEL_MACRODRENAGEM_2026/FeatureServer",
           "access_class": "PUBLIC_QUERY_ONLY",
           "license": null,
-          "connector_status": "LIVE_PARTIAL_PROPERTY_RESOLVER",
+          "connector_status": "LIVE_MULTI_SOURCE_RISK_RESOLVER",
           "missing_fields": [
-            "landslide/geotechnical coverage"
+            "formal coverage/version metadata reconciliation across SEDEC susceptibility and 2026 flood layers",
+            "site-specific geotechnical or hydraulic confirmation when required for design"
           ],
-          "notes": null
+          "notes": "Live parcel resolver now queries municipal Defesa Civil risk sectors, landslide susceptibility, 2026 mapped flood polygons and the municipal flooded-lot layer. Susceptibility, mapped flood incidence and risk-sector classification remain distinct evidence types."
         },
         {
           "field": "heritage",
