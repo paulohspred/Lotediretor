@@ -4,6 +4,12 @@ import { FormEvent, useMemo, useState } from "react";
 import type { Geometry } from "geojson";
 import { ExplorerMap } from "./explorer-map";
 import { CITIES, cityByIbge } from "@/lib/cities";
+import {
+  CATEGORY_LABELS,
+  defaultLayerIds,
+  layersForCity,
+  type MapLayerCategory,
+} from "@/lib/map-layers";
 
 const rail = [
   "Dashboard",
@@ -108,6 +114,9 @@ export function ExplorerShell() {
   const [cityIbge, setCityIbge] = useState(CITIES[0].ibge);
   const city = useMemo(() => cityByIbge(cityIbge), [cityIbge]);
   const [query, setQuery] = useState("");
+  const [activeLayerIds, setActiveLayerIds] = useState<string[]>(() =>
+    defaultLayerIds(CITIES[0].ibge),
+  );
   const [addresses, setAddresses] = useState<AddressResult[]>([]);
   const [payload, setPayload] = useState<ParcelPayload | null>(null);
   const [focusPoint, setFocusPoint] = useState<{ lat: number; lng: number } | null>(null);
@@ -124,6 +133,19 @@ export function ExplorerShell() {
     : null;
 
   const sections = payload?.dossier?.sections ?? [];
+  const availableLayers = useMemo(
+    () => layersForCity(cityIbge),
+    [cityIbge],
+  );
+  const layerGroups = useMemo(() => {
+    const groups = new Map<MapLayerCategory, typeof availableLayers>();
+    for (const layer of availableLayers) {
+      const group = groups.get(layer.category) ?? [];
+      group.push(layer);
+      groups.set(layer.category, group);
+    }
+    return Array.from(groups.entries());
+  }, [availableLayers]);
   const activeSection =
     sections.find((section) => section.id === activeSectionId) ??
     sections[0] ??
@@ -222,6 +244,7 @@ export function ExplorerShell() {
     setFocusPoint(null);
     setActiveSectionId(null);
     setQuery("");
+    setActiveLayerIds(defaultLayerIds(nextIbge));
     setStatus("Selecione um terreno no mapa ou busque um endereço.");
   }
 
@@ -312,13 +335,35 @@ export function ExplorerShell() {
               </div>
             )}
 
-            <div className="panel-card">
+            <div className="panel-card layer-panel">
               <h2>Camadas</h2>
-              <button type="button">Território</button>
-              <button type="button">Urbanismo</button>
-              <button type="button">Risco e ambiente</button>
-              <button type="button">Infraestrutura</button>
-              <button type="button">Rural</button>
+              {layerGroups.map(([category, group]) => (
+                <div className="layer-group" key={category}>
+                  <h3>{CATEGORY_LABELS[category]}</h3>
+                  {group.map((layer) => {
+                    const checked = activeLayerIds.includes(layer.id);
+                    return (
+                      <label className="layer-check" key={layer.id}>
+                        <input
+                          type="checkbox"
+                          checked={checked}
+                          onChange={() =>
+                            setActiveLayerIds((current) =>
+                              checked
+                                ? current.filter((id) => id !== layer.id)
+                                : [...current, layer.id],
+                            )
+                          }
+                        />
+                        <span>
+                          <strong>{layer.label}</strong>
+                          <small>{layer.description}</small>
+                        </span>
+                      </label>
+                    );
+                  })}
+                </div>
+              ))}
             </div>
 
             <div className="panel-card">
@@ -335,6 +380,7 @@ export function ExplorerShell() {
               city={city}
               feature={feature}
               focusPoint={focusPoint}
+              activeLayerIds={activeLayerIds}
               onPick={({ lat, lng }) => resolveParcel(lat, lng)}
             />
             <div className="map-context-bar">
