@@ -133,6 +133,12 @@ function friendlyLabel(raw: string): string {
       "Cadastro fiscal imobiliário 2026 (IPTU)",
     "Nota legal · permeabilidade x TO":
       "Nota legal · permeabilidade versus taxa de ocupação",
+    "Alvará HIS/HMP · assunto":
+      "Alvará de Habitação de Interesse Social (HIS) / Habitação de Mercado Popular (HMP) · assunto",
+    "Unidades HIS":
+      "Unidades de Habitação de Interesse Social (HIS)",
+    "Unidades HMP":
+      "Unidades de Habitação de Mercado Popular (HMP)",
     "RCL ajustada para limites de endividamento · RREO 2025":
       "Receita Corrente Líquida ajustada para limites de endividamento · Relatório Resumido da Execução Orçamentária 2025",
   };
@@ -185,6 +191,38 @@ function friendlyLabel(raw: string): string {
     );
 }
 
+function friendlyDisplayValue(value: unknown): unknown {
+  if (typeof value !== "string") return value;
+
+  const exact: Record<string, string> = {
+    "Mapeamento LIDAR 2020 1:1000":
+      "Levantamento a laser (LiDAR) 2020 · escala 1:1.000",
+  };
+  if (exact[value]) return exact[value];
+
+  return value
+    .replaceAll(
+      "uma DTI",
+      "uma Declaração de Transações Imobiliárias (DTI)",
+    )
+    .replaceAll(
+      "na DTI",
+      "na Declaração de Transações Imobiliárias (DTI)",
+    )
+    .replaceAll(
+      "em DTI",
+      "em Declaração de Transações Imobiliárias (DTI)",
+    )
+    .replaceAll(
+      "MDT LiDAR oficial",
+      "Modelo Digital de Terreno (MDT) obtido por levantamento a laser (LiDAR) oficial",
+    )
+    .replaceAll(
+      "/RTK/estação total",
+      " com GNSS RTK ou estação total",
+    );
+}
+
 function humanValues(value: unknown): HumanValue[] {
   if (!Array.isArray(value)) return [];
   return value
@@ -199,7 +237,7 @@ function humanValues(value: unknown): HumanValue[] {
     )
     .map((item) => ({
       label: friendlyLabel(String(item.label)),
-      value: item.value,
+      value: friendlyDisplayValue(item.value),
       ...(item.unit ? { unit: String(item.unit) } : {}),
     }));
 }
