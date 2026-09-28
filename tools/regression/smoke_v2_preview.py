@@ -136,6 +136,31 @@ def main() -> int:
         else:
             fail(errors, f"{name}: immutable Analysis Run reference")
 
+        primary = ((parcel.get("identifiers") or {}).get("primary") or {})
+        primary_value = primary.get("value")
+        if not primary_value:
+            fail(errors, f"{name}: primary cadastral reference")
+        else:
+            params = urllib.parse.urlencode({
+                "q": primary_value,
+                "ibge": ibge,
+            })
+            try:
+                status_search, cadastral = get_json(
+                    WEB + "/api/search/parcel?" + params,
+                    60,
+                )
+                rows = cadastral.get("results") or []
+                if status_search == 200 and rows:
+                    ok(f"{name}: cadastral search round-trip")
+                else:
+                    fail(errors, f"{name}: cadastral search round-trip")
+            except Exception as exc:
+                fail(
+                    errors,
+                    f"{name}: cadastral search round-trip {type(exc).__name__}",
+                )
+
         leaked = sorted(keys & FORBIDDEN_PUBLIC_KEYS)
         if leaked:
             fail(errors, f"{name}: public contract leaked technical keys {leaked}")
