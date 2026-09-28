@@ -897,10 +897,10 @@
         "land_tenure"
       ],
       "source_type": "authenticated_catalog_WMS_WFS_download",
-      "discovery_url": "https://acervofundiario.incra.gov.br/acervo/login.php",
+      "discovery_url": "https://geoportal.incra.gov.br/",
       "access_class": "AUTHENTICATED_PUBLIC",
-      "verification_status": "GEOPORTAL_PUBLIC_SIGEF_AUTHENTICATED_2026",
-      "notes": "Geoportal INCRA publica serviços OGC, mas o endpoint WFS apresentou timeout na validação operacional desta rodada. SIGEF permanece autenticado para consultas completas; nenhum dado de parcela rural é marcado como live até existir endpoint público reproduzível.",
+      "verification_status": "LIVE_PUBLIC_SIGEF_WFS_2026",
+      "notes": "Geoportal INCRA expõe geonode:sigef_geo por WFS/WMS. LoteDiretor usa somente referência espacial/cadastral pública; SIGEF completo e atos autenticados continuam fora do conector público.",
       "geonode_url": "https://geoportal.incra.gov.br/",
       "developer_url": "https://geoportal.incra.gov.br/developer/",
       "csw_url": "https://geonodeincra.serpro.gov.br/catalogue/csw",
@@ -912,7 +912,8 @@
         "OpenSearch",
         "OAI-PMH",
         "WMTS"
-      ]
+      ],
+      "base_url": "https://geoportal.incra.gov.br/geoserver/wfs"
     },
     {
       "id": "br-incra-sigef",
@@ -926,7 +927,7 @@
       "discovery_url": "https://sigef.incra.gov.br/",
       "access_class": "AUTHENTICATED_PUBLIC",
       "verification_status": "AUTHENTICATED_QUERY_REQUIRED_2026",
-      "notes": "O SIGEF continua sendo a fonte oficial para certificação de imóveis rurais, mas consultas públicas completas exigem autenticação Gov.br no fluxo atual. Não automatizar nem contornar autenticação; usar Geoportal INCRA apenas para camadas efetivamente públicas e reproduzíveis."
+      "notes": "Fluxos completos do SIGEF permanecem autenticados. Não contornar login; o Geoportal público é tratado separadamente como referência espacial."
     },
     {
       "id": "br-inde",
@@ -1367,7 +1368,7 @@
       "discovery_url": "https://www.car.gov.br/publico/imoveis/index",
       "access_class": "PUBLIC_QUERY_ONLY",
       "verification_status": "PUBLIC_PORTAL_NO_CAR_WFS_AT_LISTED_ENDPOINT_2026",
-      "notes": "O endpoint https://sistemas.florestal.gov.br/geoserver/ows respondeu, porém as camadas WFS expostas na validação atual são do SNIF/Cadastro Nacional de Florestas Públicas, não imóveis CAR/APP/Reserva Legal. O CAR permanece consulta pública pelo portal oficial; não rotular o GeoServer listado como conector SICAR parcelar."
+      "notes": "O GeoServer público em sistemas.florestal.gov.br respondeu em 2026, porém o catálogo WFS exposto lista camadas SNIF/CNFP e não imóveis CAR/APP/Reserva Legal. Não integrar CAR parcelar a partir desse endpoint sem camada oficial adequada."
     },
     {
       "id": "br-sinisa",
