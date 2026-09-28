@@ -543,11 +543,67 @@ def fetch_parcels_by_cql(cql_filter: str, count: int = 8) -> list[dict]:
     return payload.get("features") or []
 
 
+def registry_reference_sql_matches(query_text: str, limit: int = 25) -> list[dict]:
+    raw = str(query_text or "").strip()
+    compact = re.sub(r"[^A-Za-z0-9]", "", raw).upper()
+    if not compact or compact == "0" or not ITBI_DB_PATH.exists():
+        return []
+
+    candidates = []
+    for value in (raw, compact):
+        value = value.strip()
+        if value and value not in candidates:
+            candidates.append(value)
+    if compact.isdigit():
+        no_zero = compact.lstrip("0") or "0"
+        if no_zero not in candidates:
+            candidates.append(no_zero)
+
+    placeholders = ",".join("?" for _ in candidates)
+    uri = f"file:{ITBI_DB_PATH}?mode=ro&immutable=1"
+    db = sqlite3.connect(uri, uri=True, timeout=3)
+    db.row_factory = sqlite3.Row
+    try:
+        rows = db.execute(
+            f"""
+            SELECT sql, registry_office, registry_number,
+                   MAX(COALESCE(transaction_date, '')) AS latest_transaction_date,
+                   MAX(source_year) AS latest_source_year,
+                   COUNT(*) AS occurrence_count
+            FROM transactions
+            WHERE registry_number IN ({placeholders})
+              AND registry_number IS NOT NULL
+              AND TRIM(registry_number) NOT IN ('', '0')
+              AND sql IS NOT NULL
+              AND LENGTH(sql)=11
+            GROUP BY sql, registry_office, registry_number
+            ORDER BY latest_transaction_date DESC, latest_source_year DESC
+            LIMIT ?
+            """,
+            (*candidates, limit),
+        ).fetchall()
+    finally:
+        db.close()
+    return [dict(row) for row in rows]
+
+
+def _parcel_search_output(feature: dict, match: dict) -> dict:
+    parcel = public_feature(feature)
+    lat, lng = representative_point(parcel["geometry"])
+    return {
+        "feature": parcel,
+        "representative_point": {"lat": lat, "lng": lng},
+        "match": match,
+    }
+
+
 def search_parcel(query_text: str) -> list[dict]:
     compact = re.sub(r"[^A-Za-z0-9]", "", query_text or "").upper()
     if not compact:
         raise ValueError("empty_search")
 
+    direct_features = []
+    direct_type = None
     if compact.isdigit() and len(compact) == 11:
         sector = compact[0:3]
         block = compact[3:6]
@@ -559,21 +615,135 @@ def search_parcel(query_text: str) -> list[dict]:
             f"cd_lote='{lot}' AND "
             f"cd_digito_sql='{digit}'"
         )
+        direct_features = fetch_parcels_by_cql(cql)
+        direct_type = "iptu_registration"
     elif re.fullmatch(r"[A-Z0-9]{6,20}", compact):
         cql = f"cd_cib='{compact}'"
-    else:
-        raise ValueError("unsupported_search_format")
+        direct_features = fetch_parcels_by_cql(cql)
+        direct_type = "real_estate_code"
 
-    features = fetch_parcels_by_cql(cql)
     output = []
-    for feature in features:
+    seen = set()
+    for feature in direct_features:
         parcel = public_feature(feature)
-        lat, lng = representative_point(parcel["geometry"])
-        output.append({
-            "feature": parcel,
-            "representative_point": {"lat": lat, "lng": lng},
-        })
-    return output
+        sql = (parcel.get("properties") or {}).get("sql_reference")
+        if sql:
+            seen.add(sql)
+        output.append(
+            _parcel_search_output(
+                feature,
+                {
+                    "type": direct_type,
+                    "label": (
+                        "Inscrição fiscal / IPTU"
+                        if direct_type == "iptu_registration"
+                        else "Código imobiliário"
+                    ),
+                    "value": compact,
+                    "authority": "Prefeitura de São Paulo",
+                },
+            )
+        )
+
+    # Matrícula is a historical registry reference published with ITBI.
+    # It is only used to resolve candidate SQLs; it is never presented as
+    # proof of current ownership/title.
+    if compact.isdigit() and 1 <= len(compact) <= 20:
+        for ref in registry_reference_sql_matches(query_text):
+            sql = ref.get("sql")
+            if not sql or sql in seen:
+                continue
+            sector, block, lot, digit = (
+                sql[0:3],
+                sql[3:6],
+                sql[6:10],
+                sql[10:11],
+            )
+            cql = (
+                f"cd_setor_fiscal='{sector}' AND "
+                f"cd_quadra_fiscal='{block}' AND "
+                f"cd_lote='{lot}' AND "
+                f"cd_digito_sql='{digit}'"
+            )
+            for feature in fetch_parcels_by_cql(cql):
+                seen.add(sql)
+                output.append(
+                    _parcel_search_output(
+                        feature,
+                        {
+                            "type": "registry_reference",
+                            "label": "Matrícula referenciada em ITBI",
+                            "value": ref.get("registry_number"),
+                            "registry_office": ref.get("registry_office"),
+                            "latest_transaction_date": ref.get(
+                                "latest_transaction_date"
+                            ),
+                            "occurrence_count": ref.get("occurrence_count"),
+                            "authority": "Secretaria Municipal da Fazenda de São Paulo",
+                            "caveat": (
+                                "Referência histórica declarada em transação de ITBI; "
+                                "não substitui certidão atual da matrícula."
+                            ),
+                        },
+                    )
+                )
+    if output:
+        return output
+
+    if re.fullmatch(r"[A-Z0-9]{1,20}", compact):
+        return []
+    raise ValueError("unsupported_search_format")
+
+
+def fetch_parcels_bbox(
+    min_lng: float,
+    min_lat: float,
+    max_lng: float,
+    max_lat: float,
+    count: int = 1200,
+) -> dict:
+    if min_lng >= max_lng or min_lat >= max_lat:
+        raise ValueError("invalid_bbox")
+    sp_min_lng, sp_min_lat, sp_max_lng, sp_max_lat = SP_BOUNDS
+    if (
+        max_lng < sp_min_lng
+        or min_lng > sp_max_lng
+        or max_lat < sp_min_lat
+        or min_lat > sp_max_lat
+    ):
+        return {"type": "FeatureCollection", "features": []}
+
+    bbox = f"{min_lng},{min_lat},{max_lng},{max_lat},EPSG:4326"
+    query = {
+        "service": "WFS",
+        "version": "2.0.0",
+        "request": "GetFeature",
+        "typeNames": TYPE_NAME,
+        "srsName": "EPSG:4326",
+        "bbox": bbox,
+        "count": str(min(max(int(count), 1), 2000)),
+        "propertyName": ",".join(FIELDS),
+        "outputFormat": "application/json",
+    }
+    request = urllib.request.Request(
+        WFS + "?" + urllib.parse.urlencode(query),
+        headers={
+            "User-Agent": "LoteDiretor/1.0 (+https://lotediretor.com)",
+            "Accept": "application/json",
+        },
+    )
+    with urllib.request.urlopen(request, timeout=18) as response:
+        raw = response.read(12 * 1024 * 1024 + 1)
+    if len(raw) > 12 * 1024 * 1024:
+        raise RuntimeError("parcel_bbox_response_too_large")
+    payload = json.loads(raw)
+    features = []
+    for feature in payload.get("features") or []:
+        try:
+            features.append(public_feature(feature))
+        except Exception:
+            continue
+    return {"type": "FeatureCollection", "features": features}
 
 
 def fetch_candidates(lat: float, lng: float) -> dict:
@@ -3103,6 +3273,20 @@ class Handler(BaseHTTPRequestHandler):
                 print(f"Recife parcel upstream error: {exc!r}", flush=True)
                 return self.send_json(502, {"error": "upstream_unavailable"})
 
+        if parsed.path == "/v1/sp/parcels":
+            try:
+                bbox_raw = params.get("bbox", [""])[0]
+                parts = [float(x) for x in bbox_raw.split(",")]
+                if len(parts) != 4 or not all(math.isfinite(x) for x in parts):
+                    raise ValueError("invalid_bbox")
+                payload = fetch_parcels_bbox(*parts)
+                return self.send_json(200, payload)
+            except ValueError as exc:
+                return self.send_json(400, {"error": str(exc)})
+            except Exception as exc:
+                print(f"parcel bbox upstream error: {exc!r}", flush=True)
+                return self.send_json(502, {"error": "upstream_unavailable"})
+
         if parsed.path == "/v1/sp/search":
             query_text = params.get("q", [""])[0]
             try:
@@ -3117,9 +3301,11 @@ class Handler(BaseHTTPRequestHandler):
                 "count": len(matches),
                 "matches": matches,
                 "source": {
-                    "id": "sp-sao-paulo-geosampa-wfs",
-                    "layer": TYPE_NAME,
-                    "authority": "Prefeitura de São Paulo / GeoSampa",
+                    "authority": "Prefeitura de São Paulo",
+                    "description": (
+                        "Cadastro municipal do lote; referências de matrícula "
+                        "podem ser resolvidas pelo histórico público de ITBI."
+                    ),
                 },
             })
 
