@@ -95,3 +95,14 @@ h1{font-size:22px}h2{font-size:16px}
 .map-mode{display:flex;gap:4px}
 .map-mode button{padding:5px 9px;border-radius:var(--radius-pill);font-size:11px;background:var(--surface)}
 .map-mode button.active{background:var(--brand-deep);border-color:var(--brand-deep);color:#fff;font-weight:700}
+
+.audit-card{display:grid;gap:7px;padding:11px;border:1px solid #BCD6C9;border-radius:var(--radius-sm);background:#F4FAF7}
+.audit-card>div{display:flex;align-items:center;gap:7px}
+.audit-card strong{font-size:11px;color:var(--brand-deep)}
+.audit-card p{margin:0;font-size:10px;line-height:1.4;color:var(--muted)}
+.audit-dot{width:8px;height:8px;border-radius:50%;background:var(--brand-primary);box-shadow:0 0 0 3px rgba(32,164,117,.12)}
+.audit-card details{font-size:10px}
+.audit-card summary{cursor:pointer;font-weight:700;color:var(--brand-deep)}
+.audit-card dl{display:grid;grid-template-columns:1fr;gap:3px;margin:8px 0 0}
+.audit-card dt{color:var(--muted)}
+.audit-card dd{margin:0;overflow-wrap:anywhere;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:9px}
