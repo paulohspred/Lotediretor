@@ -4,8 +4,8 @@ import {
   MercuriusDriver,
   MercuriusDriverConfig,
 } from "@nestjs/mercurius";
-import { CoreModule } from "./modules/core/core.module";
-import { GeoModule } from "./modules/geo/geo.module";
+import { CoreModule } from "./modules/core/core.module.js";
+import { GeoModule } from "./modules/geo/geo.module.js";
 
 @Module({
   imports: [
