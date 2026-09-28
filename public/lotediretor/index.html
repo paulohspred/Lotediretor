@@ -110,7 +110,7 @@ header{height:56px;background:var(--nav);color:#fff;border-bottom:4px solid var(
     <div class="control" style="padding-bottom:8px">
       <label for="lotInput">Buscar endereço, rua ou identificação do lote</label>
       <div class="searchline">
-        <input id="lotInput" autocomplete="off" inputmode="text" placeholder="Rua, número ou identificação cadastral">
+        <input id="lotInput" autocomplete="off" inputmode="text" placeholder="Rua, número, CEP ou identificação cadastral">
         <button class="searchbtn" id="lotSearch" type="button">Buscar</button>
       </div>
       <div class="search-status" id="searchStatus">Digite uma rua/endereço ou a identificação cadastral do lote.</div>
@@ -1466,6 +1466,18 @@ function showAddressResults(places,city){
     });
   });
 }
+async function lookupCep(query,city){
+  const cep=query.replace(/\D/g,"");
+  if(!/^\d{8}$/.test(cep))return [];
+  const params=new URLSearchParams({cep,city:city.name,uf:city.uf});
+  const response=await fetch("/api/parcel/v1/cep?"+params.toString(),{
+    headers:{"Accept":"application/json"}
+  });
+  if(response.status===404)return [];
+  if(!response.ok)throw new Error("cep_failed");
+  const payload=await response.json();
+  return Array.isArray(payload.results)?payload.results:[];
+}
 async function geocodeAddress(query,city){
   const params=new URLSearchParams({q:query,city:city.name,uf:city.uf});
   const response=await fetch("/api/parcel/v1/geocode?"+params.toString(),{
@@ -1494,6 +1506,19 @@ async function searchParcel(){
   lotSearch.disabled=true;
   searchStatus.textContent="Localizando…";
   try{
+    const looksLikeCep=/^\d{5}-?\d{3}$/.test(q);
+    if(looksLikeCep){
+      const places=await lookupCep(q,city);
+      if(places.length){
+        const place=places[0],lat=Number(place.lat),lng=Number(place.lon);
+        searchStatus.textContent=(place.display_name||"CEP localizado")+". Clique no terreno correto para abrir a ficha.";
+        map.flyTo([lat,lng],18,{duration:.7});
+        if(map3d)map3d.flyTo({center:[lng,lat],zoom:18,pitch:58,duration:700});
+        return;
+      }
+      searchStatus.textContent="CEP não localizado neste município.";
+      return;
+    }
     if(looksLikeAddress(q)){
       const places=await geocodeAddress(q,city);
       if(places.length){
@@ -1553,7 +1578,7 @@ select.addEventListener("change",e=>{
   lotInput.disabled=!active;
   lotSearch.disabled=!active;
   if(active){
-    lotInput.placeholder="Rua, número ou identificação cadastral";
+    lotInput.placeholder="Rua, número, CEP ou identificação cadastral";
     searchStatus.textContent=`Busque por rua/endereço ou identificação cadastral em ${city.name}.`;
     setParcelMessage("clique no mapa","Clique dentro de um terreno ou busque por rua, endereço ou identificação cadastral.");
   }else{
