@@ -26,9 +26,16 @@
     {
       "name": "IBGE Geoserviços Censo 2022",
       "source_id": "br-ibge-censo2022-geoservices",
-      "status": "VERIFIED_NOT_RUNTIME",
-      "usage": "Verified official GeoServer; not yet used for automatic sector-level parcel context.",
+      "status": "VERIFIED_REFERENCE",
+      "usage": "Official Censo 2022 GeoServer verified as a reference source; parcel runtime uses the official IBGE census-sector GeoPackage materialized locally for deterministic point-in-polygon queries.",
       "parcel_semantics": "Sector/demographic indicators require explicit territorial-unit matching; no silent parcel attribution."
+    },
+    {
+      "name": "IBGE Censo 2022 · malha de setores com atributos",
+      "source_id": "br-ibge-censo2022-sector-mesh",
+      "status": "LIVE",
+      "usage": "Exact census-sector point-in-polygon context for the five first-wave municipalities, including population, households and average residents from V0001-V0007.",
+      "parcel_semantics": "Sector indicators describe the census sector containing the parcel point; they are not parcel-specific or household-specific attributes."
     },
     {
       "name": "IBGE Base Cartográfica Contínua / BCIM-BC250",
