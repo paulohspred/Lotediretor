@@ -554,6 +554,7 @@ def load(
     result = {
         "hydrology": {},
         "federal_conservation_units": [],
+        "indigenous_lands": [],
         "indigenous_territories": [],
         "municipality_demographics": {},
         "municipality_finance": {},
