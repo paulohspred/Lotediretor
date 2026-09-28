@@ -171,6 +171,10 @@ function friendlyLabel(raw: string): string {
       "(SGB)",
       "(Serviço Geológico do Brasil)",
     )
+    .replaceAll(
+      " do SGB",
+      " do Serviço Geológico do Brasil",
+    )
     .replace(
       /^SGB · /,
       "Serviço Geológico do Brasil · ",
