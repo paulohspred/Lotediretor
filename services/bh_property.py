@@ -285,9 +285,10 @@ def vals(s,p,c):
         return out or [{"label":"Projeto licenciado no ponto","value":"Nenhum projeto intersectante localizado na camada BHGEO consultada."}]
     if s=="terrain_visual":
         t=c.get("terrain") or {}
+        history=federal_context.historical_report_values(c.get("federal") or {})
         if not t.get("available"):
-            return [{"label":"Topografia","value":"Nenhuma curva de nível de 1 m intersecta o lote nesta consulta."}]
-        return [
+            return [{"label":"Topografia","value":"Nenhuma curva de nível de 1 m intersecta o lote nesta consulta."}]+history
+        out=[
             {"label":"Curvas de nível de 1 m intersectantes","value":t.get("contour_count")},
             {"label":"Menor cota de curva no lote","value":t.get("min_elevation_m"),"unit":"m"},
             {"label":"Maior cota de curva no lote","value":t.get("max_elevation_m"),"unit":"m"},
@@ -296,6 +297,8 @@ def vals(s,p,c):
             {"label":"Método","value":t.get("method")},
             {"label":"Limite topográfico","value":t.get("caveat")}
         ]
+        out.extend(history)
+        return out
     if s=="territorial_context":
         return federal_context.territorial_report_values(c.get("federal") or {})
     if s=="environment_risk_heritage":
