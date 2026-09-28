@@ -19,12 +19,54 @@ export interface ParcelResolveInput {
   analysis_date?: string;
 }
 
+type JsonObject = Record<string, unknown>;
+
+type HumanValue = {
+  label: string;
+  value: unknown;
+  unit?: string;
+};
+
+function object(value: unknown): JsonObject {
+  return value && typeof value === "object" && !Array.isArray(value)
+    ? (value as JsonObject)
+    : {};
+}
+
+function text(value: unknown): string | null {
+  if (value === null || value === undefined || value === "") return null;
+  return String(value);
+}
+
+function numberValue(value: unknown): number | null {
+  return typeof value === "number" && Number.isFinite(value) ? value : null;
+}
+
+function humanValues(value: unknown): HumanValue[] {
+  if (!Array.isArray(value)) return [];
+  return value
+    .map((item) => object(item))
+    .filter(
+      (item) =>
+        typeof item.label === "string" &&
+        item.label.trim().length > 0 &&
+        item.value !== null &&
+        item.value !== undefined &&
+        item.value !== "",
+    )
+    .map((item) => ({
+      label: String(item.label),
+      value: item.value,
+      ...(item.unit ? { unit: String(item.unit) } : {}),
+    }));
+}
+
 @Injectable()
 export class ParcelEngineService {
   private readonly engineBase =
     process.env.PARCEL_ENGINE_BASE_URL ?? "http://127.0.0.1:8765";
 
-  async resolve(input: ParcelResolveInput): Promise<unknown> {
+  private async resolveRaw(input: ParcelResolveInput): Promise<JsonObject> {
     const slug = MUNICIPALITY_SLUG[input.municipality_ibge];
     if (!slug) {
       throw new BadRequestException({
@@ -59,7 +101,7 @@ export class ParcelEngineService {
       });
     }
 
-    const body = await response.json().catch(() => ({}));
+    const body = object(await response.json().catch(() => ({})));
     if (!response.ok) {
       throw new BadGatewayException({
         code: "PARCEL_ENGINE_ERROR",
@@ -69,5 +111,56 @@ export class ParcelEngineService {
       });
     }
     return body;
+  }
+
+  async resolve(input: ParcelResolveInput): Promise<JsonObject> {
+    const raw = await this.resolveRaw(input);
+    const feature = object(raw.feature);
+    const properties = object(feature.properties);
+    const report = object(raw.report);
+    const sections = Array.isArray(report.sections) ? report.sections : [];
+
+    const dossierSections = sections
+      .map((section) => object(section))
+      .map((section) => ({
+        id: text(section.id) ?? "section",
+        title: text(section.title) ?? "Informações",
+        order: numberValue(section.order) ?? 999,
+        type: text(section.section_type) ?? "DETAIL",
+        items: humanValues(section.actual_values),
+      }))
+      .filter((section) => section.items.length > 0)
+      .sort((a, b) => a.order - b.order);
+
+    return {
+      found: Boolean(raw.found),
+      parcel: {
+        geometry: feature.geometry ?? null,
+        address: {
+          street: text(properties.street),
+          number: text(properties.number),
+          complement: text(properties.complement),
+        },
+        identifiers: {
+          fiscal_registration: text(properties.sql_reference),
+          real_estate_code: text(properties.cib),
+        },
+        land_area_m2: numberValue(properties.land_area_m2),
+        built_area_m2: numberValue(properties.built_area_m2),
+        use: text(properties.use_description),
+        cadastral_status:
+          text(properties.parcel_status) ?? text(properties.cib_status),
+      },
+      dossier: {
+        title: text(report.title) ?? "Dossiê do imóvel",
+        sections: dossierSections,
+      },
+      analysis: {
+        municipality_ibge: input.municipality_ibge,
+        lat: input.lat,
+        lng: input.lng,
+        analysis_date: input.analysis_date ?? null,
+      },
+    };
   }
 }
