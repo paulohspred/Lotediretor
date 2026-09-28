@@ -68,9 +68,9 @@
     {
       "name": "MapBiomas",
       "source_id": "br-mapbiomas",
-      "status": "VERIFIED_MATERIALIZATION_PENDING",
-      "usage": "Official Collection 11 assets/GeoTIFFs verified for historical land-cover and urbanization context.",
-      "parcel_semantics": "Not in runtime yet: current server lacks managed raster dependency; avoid third-party/legacy WMS. Planned as reproducible offline/materialized raster sampling."
+      "status": "LIVE",
+      "usage": "MapBiomas Brasil Collection 11 land-cover sampling at the parcel representative point for 1985, 2000, 2010, 2020 and 2025 using official public GeoTIFFs.",
+      "parcel_semantics": "30 m pixel history is screening/context only; it does not describe the entire parcel or prove legal/licensed land use."
     },
     {
       "name": "INCRA Geoportal / SIGEF public layer",
