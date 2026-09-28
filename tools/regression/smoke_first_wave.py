@@ -84,6 +84,10 @@ def main() -> int:
 
         federal = ctx.get("federal") or {}
         federal_errors = federal.get("query_errors") or {}
+        sector = federal.get("census_sector") or {}
+        if not sector.get("sector_code") or sector.get("population") is None:
+            fail(errors, f"{name}: IBGE census sector missing")
+
         mapbiomas = federal.get("land_cover_history") or {}
         mapbiomas_samples = mapbiomas.get("samples") or []
         if not mapbiomas.get("available") or not any(
