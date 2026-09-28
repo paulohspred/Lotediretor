@@ -14,6 +14,7 @@ from datetime import datetime, timezone
 
 ANA_BASE = "https://www.snirh.gov.br/arcgis/rest/services/INDE/Camadas/MapServer"
 ICMBIO_WFS = "https://geoservicos.inde.gov.br/geoserver/ICMBio/ows"
+IBGE_AGGREGATES = "https://servicodados.ibge.gov.br/api/v3/agregados"
 
 ANA_LAYERS = {
     "macro": (102, ["DMA_CD", "DMA_NM", "DMA_AR_KM2"]),
@@ -99,10 +100,53 @@ def icmbio_at_point(lat: float, lng: float) -> list[dict]:
     return out
 
 
-def load(lat: float, lng: float) -> dict:
+def _ibge_aggregate(table: str, variables: list[str], municipality_ibge: str) -> dict:
+    variable_path = "|".join(variables)
+    url = (
+        f"{IBGE_AGGREGATES}/{table}/periodos/2022/variaveis/{variable_path}"
+        f"?localidades=N6[{municipality_ibge}]"
+    )
+    data = _get_json(url)
+    out = {}
+    for row in data if isinstance(data, list) else []:
+        var_id = str(row.get("id"))
+        results = row.get("resultados") or []
+        series = (results[0].get("series") or []) if results else []
+        if not series:
+            continue
+        place = series[0].get("localidade") or {}
+        value = (series[0].get("serie") or {}).get("2022")
+        out[var_id] = {
+            "name": row.get("variavel"),
+            "unit": row.get("unidade"),
+            "value": value,
+            "municipality": place.get("nome"),
+            "municipality_ibge": place.get("id"),
+            "territorial_level": ((place.get("nivel") or {}).get("nome")),
+        }
+    return out
+
+
+def ibge_municipality_context(municipality_ibge: str) -> dict:
+    population = _ibge_aggregate("4714", ["93", "6318", "614"], municipality_ibge)
+    households = _ibge_aggregate("4712", ["381", "382", "5930"], municipality_ibge)
+    return {
+        "year": 2022,
+        "population": population,
+        "households": households,
+        "interpretation": (
+            "Indicadores do Censo 2022 no nível do município. São contexto "
+            "territorial e não descrevem diretamente o lote, a quadra ou o "
+            "setor censitário do imóvel."
+        ),
+    }
+
+
+def load(lat: float, lng: float, municipality_ibge: str | None = None) -> dict:
     result = {
         "hydrology": {},
         "federal_conservation_units": [],
+        "municipality_demographics": {},
         "query_errors": {},
         "queried_at": now(),
         "interpretation": (
@@ -117,14 +161,20 @@ def load(lat: float, lng: float) -> dict:
         for level in ANA_LAYERS:
             jobs[pool.submit(ana_region, level, lat, lng)] = ("ana", level)
         jobs[pool.submit(icmbio_at_point, lat, lng)] = ("icmbio", "federal_uc")
+        if municipality_ibge:
+            jobs[
+                pool.submit(ibge_municipality_context, municipality_ibge)
+            ] = ("ibge", "municipality")
         for future in as_completed(jobs):
             group, key = jobs[future]
             try:
                 value = future.result()
                 if group == "ana":
                     result["hydrology"][key] = value
-                else:
+                elif group == "icmbio":
                     result["federal_conservation_units"] = value
+                elif group == "ibge":
+                    result["municipality_demographics"] = value
             except Exception as exc:
                 result["query_errors"][f"{group}_{key}"] = type(exc).__name__
     return result
@@ -151,6 +201,39 @@ def report_values(context: dict) -> list[dict]:
                 "label": labels[level] + " · código",
                 "value": row.get(code_keys[level]),
             })
+    demo=(context or {}).get("municipality_demographics") or {}
+    pop=demo.get("population") or {}
+    hh=demo.get("households") or {}
+    if (pop.get("93") or {}).get("value") is not None:
+        out.append({
+            "label":"Contexto municipal · população residente (Censo 2022)",
+            "value":(pop.get("93") or {}).get("value"),
+            "unit":"pessoas",
+        })
+    if (pop.get("614") or {}).get("value") is not None:
+        out.append({
+            "label":"Contexto municipal · densidade demográfica (Censo 2022)",
+            "value":(pop.get("614") or {}).get("value"),
+            "unit":"hab./km²",
+        })
+    if (hh.get("381") or {}).get("value") is not None:
+        out.append({
+            "label":"Contexto municipal · domicílios permanentes ocupados (Censo 2022)",
+            "value":(hh.get("381") or {}).get("value"),
+            "unit":"domicílios",
+        })
+    if (hh.get("5930") or {}).get("value") is not None:
+        out.append({
+            "label":"Contexto municipal · média de moradores por domicílio (Censo 2022)",
+            "value":(hh.get("5930") or {}).get("value"),
+            "unit":"pessoas",
+        })
+    if demo.get("interpretation"):
+        out.append({
+            "label":"Limite do contexto demográfico",
+            "value":demo.get("interpretation"),
+        })
+
     for uc in (context or {}).get("federal_conservation_units") or []:
         out.extend([
             {"label": "Unidade de conservação federal", "value": uc.get("nomeuc")},
