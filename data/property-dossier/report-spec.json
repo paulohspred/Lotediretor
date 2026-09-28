@@ -1,6 +1,6 @@
 {
   "schema_version": "0.1.0",
-  "as_of": "2026-09-24",
+  "as_of": "2026-09-28",
   "title": "LoteDiretor Professional Property Report",
   "target_completion_level": "L3",
   "principle": "Every material assertion must be traceable to evidence; absence of evidence must never be rendered as evidence of absence.",
@@ -117,9 +117,21 @@
       "section_type": "DETAIL"
     },
     {
+      "id": "territorial_context",
+      "title": "Contexto territorial e demográfico",
+      "order": 3,
+      "source_matrix_fields": [],
+      "panels": [
+        "hydrographic_context",
+        "municipality_census_context"
+      ],
+      "rule": "IBGE municipality indicators and ANA hydrographic divisions are contextual territorial evidence, not parcel attributes or flood-risk classifications.",
+      "section_type": "DETAIL"
+    },
+    {
       "id": "building_existing",
       "title": "Edificações existentes",
-      "order": 3,
+      "order": 4,
       "source_matrix_fields": [
         "building"
       ],
@@ -136,7 +148,7 @@
     {
       "id": "planning_buildability",
       "title": "Plano Diretor, zoneamento e potencial construtivo",
-      "order": 4,
+      "order": 5,
       "source_matrix_fields": [
         "zoning",
         "urban parameters"
@@ -156,7 +168,7 @@
     {
       "id": "fiscal_market",
       "title": "Fiscal, PGV e transações",
-      "order": 5,
+      "order": 6,
       "source_matrix_fields": [
         "IPTU",
         "PGV",
@@ -175,7 +187,7 @@
     {
       "id": "licensing_history",
       "title": "Licenciamento, habite-se e processos",
-      "order": 6,
+      "order": 7,
       "source_matrix_fields": [
         "permits",
         "habite-se",
@@ -196,7 +208,7 @@
     {
       "id": "environment_risk_heritage",
       "title": "Ambiental, risco e patrimônio",
-      "order": 7,
+      "order": 8,
       "source_matrix_fields": [
         "environment",
         "risk",
@@ -216,7 +228,7 @@
     {
       "id": "infrastructure_utilities",
       "title": "Infraestrutura e concessionárias",
-      "order": 8,
+      "order": 9,
       "source_matrix_fields": [
         "electricity",
         "gas",
@@ -251,7 +263,7 @@
     {
       "id": "terrain_visual",
       "title": "Terreno, imagens e leitura visual",
-      "order": 9,
+      "order": 10,
       "source_matrix_fields": [
         "imagery",
         "terrain",
@@ -274,7 +286,7 @@
     {
       "id": "public_change_context",
       "title": "Obras públicas e mudanças futuras",
-      "order": 10,
+      "order": 11,
       "source_matrix_fields": [
         "public works"
       ],
@@ -292,7 +304,7 @@
     {
       "id": "registry_due_diligence",
       "title": "Registro e due diligence privada",
-      "order": 11,
+      "order": 12,
       "source_matrix_fields": [
         "registry reference"
       ],
@@ -309,7 +321,7 @@
     {
       "id": "evidence_unknowns",
       "title": "Fontes, evidências e lacunas",
-      "order": 12,
+      "order": 13,
       "source_matrix_fields": [
         "identity",
         "land",
