@@ -617,9 +617,10 @@ def vals(section_id: str, parcel: dict, ctx: dict) -> list[dict]:
         return out
     if section_id == "terrain_visual":
         t=ctx.get("terrain") or {}
+        history=federal_context.historical_report_values(ctx.get("federal") or {})
         if not t.get("available"):
-            return [{"label":"Topografia","value":"Nenhuma curva de nível oficial intersecta o lote nesta consulta."}]
-        return [
+            return [{"label":"Topografia","value":"Nenhuma curva de nível oficial intersecta o lote nesta consulta."}]+history
+        out=[
             {"label":"Curvas de nível 2022 intersectantes","value":t.get("contour_count")},
             {"label":"Menor cota no lote","value":t.get("min_elevation_m"),"unit":"m"},
             {"label":"Maior cota no lote","value":t.get("max_elevation_m"),"unit":"m"},
@@ -628,6 +629,8 @@ def vals(section_id: str, parcel: dict, ctx: dict) -> list[dict]:
             {"label":"Método","value":t.get("method")},
             {"label":"Limite topográfico","value":t.get("caveat")}
         ]
+        out.extend(history)
+        return out
     if section_id == "licensing_history":
         return [
             {
