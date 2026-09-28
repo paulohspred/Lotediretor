@@ -355,7 +355,7 @@
             "official legal right-of-way/alignment width resolver",
             "federal/state road-domain reconciliation where applicable"
           ],
-          "notes": "Parcel-adjacent road context is live from GeoSampa zoneamento_classificacao_viaria and segmento_logradouro. The dossier reports urban road classification, nearby named segments, distance to the parcel and carriageway-count context. These fields are not treated as legal total street width or definitive right-of-way. DNIT SNV road context is now queried live around the parcel with approximate geometric distance; nearby federal road data does not establish right-of-way or parcel access."
+          "notes": "Parcel-adjacent road context is live from GeoSampa zoneamento_classificacao_viaria and segmento_logradouro. The dossier reports urban road classification, nearby named segments, distance to the parcel and carriageway-count context. These fields are not treated as legal total street width or definitive right-of-way. DNIT SNV road context is now queried live around the parcel with approximate geometric distance; nearby federal road data does not establish right-of-way or parcel access. OpenStreetMap/Overpass now adds cached collaborative pedestrian, transit and cycling context; official municipal road data remains primary."
         },
         {
           "field": "imagery",
@@ -765,7 +765,7 @@
             "current legal hierarchy reconciliation where CTTU and Atlas classifications differ",
             "official right-of-way/alignment widths"
           ],
-          "notes": "Nearby street segments are resolved from the CTTU service; functional category is supplemented from the official Recife Atlas road layer within a bounded spatial search. DNIT SNV road context is now queried live around the parcel with approximate geometric distance; nearby federal road data does not establish right-of-way or parcel access."
+          "notes": "Nearby street segments are resolved from the CTTU service; functional category is supplemented from the official Recife Atlas road layer within a bounded spatial search. DNIT SNV road context is now queried live around the parcel with approximate geometric distance; nearby federal road data does not establish right-of-way or parcel access. OpenStreetMap/Overpass now adds cached collaborative pedestrian, transit and cycling context; official municipal road data remains primary."
         },
         {
           "field": "imagery",
@@ -1191,7 +1191,7 @@
             "official right-of-way/alignment width normalizer",
             "documented circulation-code semantics if direction is exposed"
           ],
-          "notes": "CadLog Trechos_Logradouros is queried in a small parcel-adjacent buffer. The dossier exposes named street, hierarchy, neighborhood and published regulated speed. Undocumented oneway codes are intentionally not shown. DNIT SNV road context is now queried live around the parcel with approximate geometric distance; nearby federal road data does not establish right-of-way or parcel access."
+          "notes": "CadLog Trechos_Logradouros is queried in a small parcel-adjacent buffer. The dossier exposes named street, hierarchy, neighborhood and published regulated speed. Undocumented oneway codes are intentionally not shown. DNIT SNV road context is now queried live around the parcel with approximate geometric distance; nearby federal road data does not establish right-of-way or parcel access. OpenStreetMap/Overpass now adds cached collaborative pedestrian, transit and cycling context; official municipal road data remains primary."
         },
         {
           "field": "imagery",
@@ -1612,7 +1612,7 @@
             "production smoke validation of nearby-road buffer",
             "field/right-of-way confirmation where project decisions require surveyed alignment"
           ],
-          "notes": "Repository resolver now queries official BHGEO road classification and circulation layers in a small parcel-adjacent search area, because road centerlines normally do not cross lot polygons. Production validation of this proximity update is pending while the server execution channel is unavailable. DNIT SNV road context is now queried live around the parcel with approximate geometric distance; nearby federal road data does not establish right-of-way or parcel access."
+          "notes": "Repository resolver now queries official BHGEO road classification and circulation layers in a small parcel-adjacent search area, because road centerlines normally do not cross lot polygons. Production validation of this proximity update is pending while the server execution channel is unavailable. DNIT SNV road context is now queried live around the parcel with approximate geometric distance; nearby federal road data does not establish right-of-way or parcel access. OpenStreetMap/Overpass now adds cached collaborative pedestrian, transit and cycling context; official municipal road data remains primary."
         },
         {
           "field": "imagery",
@@ -2035,7 +2035,7 @@
             "right-of-way width/official alignment resolver",
             "intended-use permission normalization against hierarchy"
           ],
-          "notes": "Filipeia road-hierarchy WFS is queried by parcel intersection and exposed in the planning dossier. DNIT SNV road context is now queried live around the parcel with approximate geometric distance; nearby federal road data does not establish right-of-way or parcel access."
+          "notes": "Filipeia road-hierarchy WFS is queried by parcel intersection and exposed in the planning dossier. DNIT SNV road context is now queried live around the parcel with approximate geometric distance; nearby federal road data does not establish right-of-way or parcel access. OpenStreetMap/Overpass now adds cached collaborative pedestrian, transit and cycling context; official municipal road data remains primary."
         },
         {
           "field": "imagery",
