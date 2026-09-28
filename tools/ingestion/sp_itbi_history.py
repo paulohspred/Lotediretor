@@ -313,6 +313,9 @@ def init_db(db: sqlite3.Connection) -> None:
 
         CREATE INDEX IF NOT EXISTS idx_itbi_registry
         ON transactions(registry_office, registry_number);
+
+        CREATE INDEX IF NOT EXISTS idx_itbi_registry_number
+        ON transactions(registry_number);
         """
     )
 
