@@ -55,9 +55,9 @@
     {
       "key": "sicar",
       "source_id": "br-sicar-car",
-      "status": "BLOCKED_PUBLIC_LAYER",
-      "runtime_use": "Public SICAR/CAR portal is registered, but the tested public GeoServer catalog exposes SNIF/CNFP rather than confirmed CAR parcel/APP/Reserva Legal layers.",
-      "parcel_rule": "Do not infer CAR registration or environmental restrictions until an official reproducible parcel layer or authorized connector is available."
+      "status": "LIVE_PUBLIC_PROPERTY_CONTEXT",
+      "runtime_use": "Official geoserver.car.gov.br/sicar WFS state layers provide rural-property polygon incidence and non-personal public registration metadata.",
+      "parcel_rule": "CAR is declaratory and not proof of ownership/title or final environmental regularity; APP/RL/use-restricted geometries require a separately verified public or authorized source."
     },
     {
       "key": "sgb_cprm",
