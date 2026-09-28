@@ -50,6 +50,18 @@ _SICONFI_LAST_REQUEST = 0.0
 DNIT_WFS = "https://geoservicos.inde.gov.br/geoserver/DNIT/ows"
 FUNAI_WFS = "https://geoserver.funai.gov.br/geoserver/ows"
 INCRA_WFS = "https://geoportal.incra.gov.br/geoserver/wfs"
+SICAR_WFS = "https://geoserver.car.gov.br/geoserver/sicar/wfs"
+SICAR_LAYER_BY_MUNICIPALITY = {
+    "3550308": "sicar:sicar_imoveis_sp",
+    "2611606": "sicar:sicar_imoveis_pe",
+    "3304557": "sicar:sicar_imoveis_rj",
+    "3106200": "sicar:sicar_imoveis_mg",
+    "2507507": "sicar:sicar_imoveis_pb",
+}
+SICAR_FIELDS = [
+    "cod_imovel", "status_imovel", "dat_criacao", "area", "condicao",
+    "uf", "municipio", "cod_municipio_ibge", "m_fiscal", "tipo_imovel",
+]
 SGB_RISK = (
     "https://geoportal.sgb.gov.br/server/rest/services/"
     "gestaoterritorial/risco/FeatureServer/0"
@@ -371,6 +383,45 @@ def icmbio_at_point(lat: float, lng: float) -> list[dict]:
             key: props.get(key)
             for key in ICMBIO_FIELDS
             if props.get(key) is not None
+        })
+    return out
+
+
+def sicar_at_point(
+    municipality_ibge: str,
+    lat: float,
+    lng: float,
+) -> list[dict]:
+    layer = SICAR_LAYER_BY_MUNICIPALITY.get(municipality_ibge)
+    if not layer:
+        return []
+    params = {
+        "service": "WFS",
+        "version": "2.0.0",
+        "request": "GetFeature",
+        "typeNames": layer,
+        "srsName": "EPSG:4326",
+        "count": "20",
+        "propertyName": ",".join(SICAR_FIELDS),
+        "cql_filter": (
+            f"INTERSECTS(geo_area_imovel,SRID=4326;POINT({lng} {lat}))"
+        ),
+        "outputFormat": "application/json",
+    }
+    data = _get_json(
+        SICAR_WFS + "?" + urllib.parse.urlencode(params),
+        4_000_000,
+    )
+    allowed = set(SICAR_FIELDS)
+    out = []
+    for feature in data.get("features") or []:
+        props = feature.get("properties") or {}
+        if set(props) - allowed:
+            raise RuntimeError("sicar_unexpected_fields")
+        out.append({
+            k: props.get(k)
+            for k in SICAR_FIELDS
+            if props.get(k) is not None
         })
     return out
 
@@ -1110,6 +1161,7 @@ def load(
         "federal_conservation_units": [],
         "indigenous_lands": [],
         "sigef_parcels": [],
+        "sicar_properties": [],
         "indigenous_territories": [],
         "municipality_demographics": {},
         "census_sector": {},
@@ -1145,6 +1197,15 @@ def load(
         jobs[pool.submit(incra_sigef_at_point, lat, lng)] = (
             "incra", "sigef"
         )
+        if municipality_ibge:
+            jobs[
+                pool.submit(
+                    sicar_at_point,
+                    municipality_ibge,
+                    lat,
+                    lng,
+                )
+            ] = ("sicar", "properties")
         jobs[pool.submit(sgb_risk_at_point, lat, lng)] = (
             "sgb", "risk"
         )
@@ -1212,6 +1273,8 @@ def load(
                     result["indigenous_territories"] = value
                 elif group == "incra":
                     result["sigef_parcels"] = value
+                elif group == "sicar":
+                    result["sicar_properties"] = value
                 elif group == "ibge" and key == "municipality":
                     result["municipality_demographics"] = value
                 elif group == "ibge" and key == "sector":
@@ -1618,6 +1681,60 @@ def historical_report_values(context: dict) -> list[dict]:
             "value": history.get("interpretation"),
         },
     ])
+    return [
+        item
+        for item in out
+        if item.get("value") not in (None, "")
+    ]
+
+
+def rural_registry_report_values(context: dict) -> list[dict]:
+    out = []
+    out.extend(registry_report_values(context))
+    for item in (context or {}).get("sicar_properties") or []:
+        out.extend([
+            {
+                "label": "Imóvel inscrito no CAR/SICAR",
+                "value": item.get("cod_imovel"),
+            },
+            {
+                "label": "Situação pública do cadastro ambiental rural",
+                "value": item.get("status_imovel"),
+            },
+            {
+                "label": "Condição pública do cadastro ambiental rural",
+                "value": item.get("condicao"),
+            },
+            {
+                "label": "Tipo de imóvel declarado no SICAR",
+                "value": item.get("tipo_imovel"),
+            },
+            {
+                "label": "Área declarada no SICAR",
+                "value": item.get("area"),
+                "unit": "ha",
+            },
+            {
+                "label": "Módulos fiscais informados no SICAR",
+                "value": item.get("m_fiscal"),
+            },
+            {
+                "label": "Data de criação do registro SICAR",
+                "value": _date_text(item.get("dat_criacao")),
+            },
+        ])
+    if (context or {}).get("sicar_properties"):
+        out.append({
+            "label": "Limite da referência CAR/SICAR",
+            "value": (
+                "O CAR é cadastro ambiental declaratório e não comprova "
+                "domínio, titularidade, regularidade registral, validação "
+                "ambiental definitiva ou inexistência de sobreposições. "
+                "APP, Reserva Legal e uso restrito só são mostrados quando "
+                "houver camada oficial pública ou integração autorizada "
+                "específica."
+            ),
+        })
     return [
         item
         for item in out
