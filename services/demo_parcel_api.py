@@ -2642,7 +2642,7 @@ def actual_values_for_section(
             ),
         })
         values.extend(
-            federal_context.registry_report_values(
+            federal_context.rural_registry_report_values(
                 context.get("federal") or {}
             )
         )
