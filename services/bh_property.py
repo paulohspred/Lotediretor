@@ -296,6 +296,8 @@ def vals(s,p,c):
             {"label":"Método","value":t.get("method")},
             {"label":"Limite topográfico","value":t.get("caveat")}
         ]
+    if s=="territorial_context":
+        return federal_context.territorial_report_values(c.get("federal") or {})
     if s=="environment_risk_heritage":
         out=[]
         env=c.get("environment") or {}
@@ -326,7 +328,7 @@ def vals(s,p,c):
                     {"label":labels.get(key,key),"value":r.get("NOME_AREA_PROTECAO")},
                     {"label":"Tipo de proteção","value":r.get("DESC_TIPO_AREA_PROTECAO")}
                 ])
-        out.extend(federal_context.report_values(c.get("federal") or {}))
+        out.extend(federal_context.environment_report_values(c.get("federal") or {}))
         return out or [{"label":"Risco/patrimônio","value":"Sem incidência nas camadas consultadas."}]
     if s=="planning_buildability":return [{"label":"Zoneamento Lei 11.181","value":z.get("cd_zoneamento_perimetro")},{"label":"Descrição do zoneamento","value":z.get("tx_zoneamento_perimetro")},{"label":"Fonte do zoneamento","value":"Mapa oficial de zoneamento da Prefeitura de Belo Horizonte"}]
     if s=="infrastructure_utilities":
@@ -338,6 +340,7 @@ def vals(s,p,c):
                 {"label":"Material da microdrenagem","value":r.get("MATERIAL")},
                 {"label":"Diâmetro informado","value":r.get("DIAMETRO")}
             ])
+        out.extend(federal_context.transport_report_values(c.get("federal") or {}))
         return out
     if s=="public_change_context":
         out=[]
