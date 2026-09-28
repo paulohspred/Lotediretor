@@ -682,5 +682,6 @@ def persist_payload(payload: dict, municipality_ibge: str) -> dict:
         "primary_id": primary_id,
         "municipality_ibge": municipality_ibge,
         "analysis_run_id": analysis_run_id,
+        "lineage_status": "AGGREGATED_RUNTIME_SNAPSHOT",
         "persisted_at": utc_now(),
     }
