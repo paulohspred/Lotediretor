@@ -479,9 +479,9 @@ export function ExplorerShell() {
                 </div>
 
                 <div className="key-facts">
-                  {sql && (
+                  {primaryReferenceValue && (
                     <div>
-                      <span>Inscrição fiscal</span>
+                      <span>{primaryReferenceLabel}</span>
                       <strong>{primaryReferenceValue}</strong>
                     </div>
                   )}
