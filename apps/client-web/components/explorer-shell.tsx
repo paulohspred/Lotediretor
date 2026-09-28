@@ -32,6 +32,7 @@ type AddressResult = {
   display_name?: string;
   lat: number;
   lng: number;
+  exact_house_number?: boolean;
 };
 
 function textValue(
@@ -60,6 +61,7 @@ export function ExplorerShell() {
   const [query, setQuery] = useState("");
   const [addresses, setAddresses] = useState<AddressResult[]>([]);
   const [payload, setPayload] = useState<ParcelPayload | null>(null);
+  const [focusPoint, setFocusPoint] = useState<{ lat: number; lng: number } | null>(null);
   const [status, setStatus] = useState(
     "Selecione um terreno no mapa ou busque um endereço.",
   );
@@ -71,6 +73,7 @@ export function ExplorerShell() {
   async function resolveParcel(lat: number, lng: number) {
     setBusy(true);
     setAddresses([]);
+    setFocusPoint({ lat, lng });
     setStatus("Consultando cadastro, regras e contexto territorial…");
     try {
       const response = await fetch("/api/parcel/resolve", {
@@ -156,6 +159,7 @@ export function ExplorerShell() {
     setCityIbge(nextIbge);
     setPayload(null);
     setAddresses([]);
+    setFocusPoint(null);
     setQuery("");
     setStatus("Selecione um terreno no mapa ou busque um endereço.");
   }
@@ -232,7 +236,17 @@ export function ExplorerShell() {
                   <button
                     type="button"
                     key={`${result.lat}-${result.lng}-${index}`}
-                    onClick={() => resolveParcel(result.lat, result.lng)}
+                    onClick={() => {
+                      setAddresses([]);
+                      setFocusPoint({ lat: result.lat, lng: result.lng });
+                      if (result.exact_house_number) {
+                        void resolveParcel(result.lat, result.lng);
+                      } else {
+                        setStatus(
+                          "Rua localizada. Clique no terreno desejado para abrir a ficha.",
+                        );
+                      }
+                    }}
                   >
                     {result.display_name || "Endereço localizado"}
                   </button>
@@ -262,6 +276,7 @@ export function ExplorerShell() {
             <ExplorerMap
               city={city}
               feature={feature}
+              focusPoint={focusPoint}
               onPick={({ lat, lng }) => resolveParcel(lat, lng)}
             />
             <div className="map-context-bar">
