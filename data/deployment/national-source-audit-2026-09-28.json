@@ -138,9 +138,9 @@
     {
       "name": "Overpass / OpenStreetMap",
       "source_id": "global-osm-overpass",
-      "status": "REGISTERED_FALLBACK_ONLY",
-      "usage": "Potential complementary pedestrian/cycling/transit/POI context; not called in every parcel report.",
-      "parcel_semantics": "Collaborative data quality varies; official municipal sources and OSM base map remain primary for current first-wave UI. Avoid high-volume public Overpass queries."
+      "status": "LIVE_COMPLEMENTARY",
+      "usage": "Cached, serialized small-radius mobility context for pedestrian crossings, public transport stops/platforms, cycle infrastructure and bicycle parking.",
+      "parcel_semantics": "Collaborative data only; completeness varies and official municipal transport/cartography prevails. Overpass outages are soft-fail."
     },
     {
       "name": "DNIT / SNV",
