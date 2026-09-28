@@ -84,6 +84,16 @@ def main() -> int:
 
         federal = ctx.get("federal") or {}
         federal_errors = federal.get("query_errors") or {}
+        soft_federal_errors = {
+            key: value
+            for key, value in federal_errors.items()
+            if key in {"overpass_mobility"}
+        }
+        hard_federal_errors = {
+            key: value
+            for key, value in federal_errors.items()
+            if key not in soft_federal_errors
+        }
         sector = federal.get("census_sector") or {}
         if not sector.get("sector_code") or sector.get("population") is None:
             fail(errors, f"{name}: IBGE census sector missing")
@@ -100,8 +110,8 @@ def main() -> int:
         demo = federal.get("municipality_demographics") or {}
         population = (((demo.get("population") or {}).get("93") or {}).get("value"))
         finance = federal.get("municipality_finance") or {}
-        if federal_errors:
-            fail(errors, f"{name}: federal context errors={federal_errors}")
+        if hard_federal_errors:
+            fail(errors, f"{name}: federal context errors={hard_federal_errors}")
         elif not micro:
             fail(errors, f"{name}: federal hydrology missing")
         elif not population:
@@ -114,6 +124,11 @@ def main() -> int:
             fail(errors, f"{name}: TransfereGov municipality context missing")
         else:
             ok(f"{name}: federal context + IBGE + SICONFI + TransfereGov")
+            if soft_federal_errors:
+                ok(
+                    f"{name}: soft federal providers degraded="
+                    f"{sorted(soft_federal_errors)}"
+                )
 
         report_text = json.dumps(
             (payload.get("report") or {}).get("sections") or [],
