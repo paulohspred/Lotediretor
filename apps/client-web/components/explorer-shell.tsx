@@ -18,14 +18,45 @@ const rail = [
 type ParcelFeature = {
   type: "Feature";
   geometry: Geometry;
-  properties?: Record<string, unknown> | null;
+  properties: Record<string, never>;
+};
+
+type DossierItem = {
+  label: string;
+  value: unknown;
+  unit?: string;
+};
+
+type DossierSection = {
+  id: string;
+  title: string;
+  order: number;
+  type: string;
+  items: DossierItem[];
 };
 
 type ParcelPayload = {
   found?: boolean;
-  feature?: ParcelFeature | null;
-  context?: Record<string, unknown>;
-  report?: { title?: string };
+  parcel?: {
+    geometry?: Geometry | null;
+    address?: {
+      street?: string | null;
+      number?: string | null;
+      complement?: string | null;
+    };
+    identifiers?: {
+      fiscal_registration?: string | null;
+      real_estate_code?: string | null;
+    };
+    land_area_m2?: number | null;
+    built_area_m2?: number | null;
+    use?: string | null;
+    cadastral_status?: string | null;
+  };
+  dossier?: {
+    title?: string;
+    sections?: DossierSection[];
+  };
 };
 
 type AddressResult = {
@@ -35,24 +66,42 @@ type AddressResult = {
   exact_house_number?: boolean;
 };
 
-function textValue(
-  properties: Record<string, unknown>,
-  key: string,
-): string | null {
-  const value = properties[key];
-  if (value === null || value === undefined || value === "") return null;
-  return String(value);
+function formatNumber(value: number, digits = 2): string {
+  return new Intl.NumberFormat("pt-BR", {
+    maximumFractionDigits: digits,
+  }).format(value);
 }
 
-function numberValue(
-  properties: Record<string, unknown>,
-  key: string,
-): string | null {
-  const value = properties[key];
-  if (typeof value !== "number") return value ? String(value) : null;
-  return new Intl.NumberFormat("pt-BR", {
-    maximumFractionDigits: 2,
-  }).format(value);
+function formatItemValue(item: DossierItem): string {
+  const value = item.value;
+  if (typeof value === "boolean") return value ? "Sim" : "Não";
+
+  if (typeof value === "number") {
+    if (item.unit === "BRL") {
+      return new Intl.NumberFormat("pt-BR", {
+        style: "currency",
+        currency: "BRL",
+        maximumFractionDigits: 2,
+      }).format(value);
+    }
+    if (item.unit === "ratio_percent") {
+      return `${formatNumber(value * 100)}%`;
+    }
+    return `${formatNumber(value)}${item.unit ? ` ${item.unit}` : ""}`;
+  }
+
+  const text = String(value ?? "—");
+  if (item.unit === "BRL") {
+    const numeric = Number(text);
+    if (Number.isFinite(numeric)) {
+      return new Intl.NumberFormat("pt-BR", {
+        style: "currency",
+        currency: "BRL",
+        maximumFractionDigits: 2,
+      }).format(numeric);
+    }
+  }
+  return `${text}${item.unit ? ` ${item.unit}` : ""}`;
 }
 
 export function ExplorerShell() {
@@ -62,13 +111,23 @@ export function ExplorerShell() {
   const [addresses, setAddresses] = useState<AddressResult[]>([]);
   const [payload, setPayload] = useState<ParcelPayload | null>(null);
   const [focusPoint, setFocusPoint] = useState<{ lat: number; lng: number } | null>(null);
+  const [activeSectionId, setActiveSectionId] = useState<string | null>(null);
   const [status, setStatus] = useState(
     "Selecione um terreno no mapa ou busque um endereço.",
   );
   const [busy, setBusy] = useState(false);
 
-  const feature = payload?.feature ?? null;
-  const properties = (feature?.properties ?? {}) as Record<string, unknown>;
+  const parcel = payload?.parcel;
+  const geometry = parcel?.geometry ?? null;
+  const feature: ParcelFeature | null = geometry
+    ? { type: "Feature", geometry, properties: {} }
+    : null;
+
+  const sections = payload?.dossier?.sections ?? [];
+  const activeSection =
+    sections.find((section) => section.id === activeSectionId) ??
+    sections[0] ??
+    null;
 
   async function resolveParcel(lat: number, lng: number) {
     setBusy(true);
@@ -91,22 +150,21 @@ export function ExplorerShell() {
       if (!response.ok) {
         throw new Error(body.message || "Falha ao analisar o terreno.");
       }
-      if (!body.found || !body.feature) {
+      if (!body.found || !body.parcel?.geometry) {
         setPayload(null);
+        setActiveSectionId(null);
         setStatus(
           "Nenhum lote cadastral foi encontrado neste ponto. Tente clicar dentro do terreno.",
         );
         return;
       }
+
       setPayload(body);
-      const street = textValue(
-        (body.feature.properties ?? {}) as Record<string, unknown>,
-        "street",
-      );
-      const number = textValue(
-        (body.feature.properties ?? {}) as Record<string, unknown>,
-        "number",
-      );
+      const firstSection = body.dossier?.sections?.[0];
+      setActiveSectionId(firstSection?.id ?? null);
+
+      const street = body.parcel.address?.street;
+      const number = body.parcel.address?.number;
       setStatus(
         street
           ? `${street}${number ? `, ${number}` : ""}`
@@ -114,6 +172,7 @@ export function ExplorerShell() {
       );
     } catch (error) {
       setPayload(null);
+      setActiveSectionId(null);
       setStatus(
         error instanceof Error
           ? error.message
@@ -129,6 +188,7 @@ export function ExplorerShell() {
     if (query.trim().length < 3) return;
     setBusy(true);
     setPayload(null);
+    setActiveSectionId(null);
     setStatus("Buscando endereço…");
     try {
       const params = new URLSearchParams({
@@ -144,7 +204,7 @@ export function ExplorerShell() {
       setAddresses(results);
       setStatus(
         results.length
-          ? "Escolha um resultado para localizar e analisar o terreno."
+          ? "Escolha um resultado para localizar o terreno."
           : body.warning || "Endereço não localizado.",
       );
     } catch {
@@ -160,18 +220,16 @@ export function ExplorerShell() {
     setPayload(null);
     setAddresses([]);
     setFocusPoint(null);
+    setActiveSectionId(null);
     setQuery("");
     setStatus("Selecione um terreno no mapa ou busque um endereço.");
   }
 
-  const sql = textValue(properties, "sql_reference");
-  const cib = textValue(properties, "cib");
-  const street = textValue(properties, "street");
-  const number = textValue(properties, "number");
-  const complement = textValue(properties, "complement");
-  const landArea = numberValue(properties, "land_area_m2");
-  const builtArea = numberValue(properties, "built_area_m2");
-  const use = textValue(properties, "use_description");
+  const sql = parcel?.identifiers?.fiscal_registration ?? null;
+  const cib = parcel?.identifiers?.real_estate_code ?? null;
+  const street = parcel?.address?.street ?? null;
+  const number = parcel?.address?.number ?? null;
+  const complement = parcel?.address?.complement ?? null;
 
   return (
     <main className="app-shell">
@@ -266,8 +324,8 @@ export function ExplorerShell() {
             <div className="panel-card">
               <h2>Seleção</h2>
               <p className="muted">
-                Clique dentro de um terreno. O contorno oficial encontrado será
-                destacado no mapa e a ficha abrirá ao lado.
+                Clique dentro de um terreno. O contorno cadastral encontrado
+                será destacado e a ficha auditável abrirá ao lado.
               </p>
             </div>
           </aside>
@@ -295,7 +353,7 @@ export function ExplorerShell() {
             <div className="eyebrow">Ficha do imóvel</div>
             <h2>{street || "Análise territorial"}</h2>
 
-            {!feature ? (
+            {!parcel ? (
               <div className="empty-state">
                 A ficha aparecerá aqui após selecionar um terreno.
               </div>
@@ -309,42 +367,71 @@ export function ExplorerShell() {
                   {complement && <span>{complement}</span>}
                 </div>
 
-                <dl>
+                <div className="key-facts">
                   {sql && (
-                    <>
-                      <dt>Inscrição fiscal</dt>
-                      <dd>{sql}</dd>
-                    </>
+                    <div>
+                      <span>Inscrição fiscal</span>
+                      <strong>{sql}</strong>
+                    </div>
                   )}
                   {cib && (
-                    <>
-                      <dt>Código imobiliário</dt>
-                      <dd>{cib}</dd>
-                    </>
+                    <div>
+                      <span>Código imobiliário</span>
+                      <strong>{cib}</strong>
+                    </div>
                   )}
-                  {landArea && (
-                    <>
-                      <dt>Área do terreno</dt>
-                      <dd>{landArea} m²</dd>
-                    </>
-                  )}
-                  {builtArea && (
-                    <>
-                      <dt>Área construída cadastrada</dt>
-                      <dd>{builtArea} m²</dd>
-                    </>
-                  )}
-                  {use && (
-                    <>
-                      <dt>Uso cadastrado</dt>
-                      <dd>{use}</dd>
-                    </>
-                  )}
-                </dl>
+                  {parcel.land_area_m2 !== null &&
+                    parcel.land_area_m2 !== undefined && (
+                      <div>
+                        <span>Terreno</span>
+                        <strong>{formatNumber(parcel.land_area_m2)} m²</strong>
+                      </div>
+                    )}
+                  {parcel.built_area_m2 !== null &&
+                    parcel.built_area_m2 !== undefined && (
+                      <div>
+                        <span>Construído</span>
+                        <strong>{formatNumber(parcel.built_area_m2)} m²</strong>
+                      </div>
+                    )}
+                </div>
 
-                <button className="primary-action" type="button">
-                  Abrir dossiê completo
-                </button>
+                {sections.length > 0 && (
+                  <>
+                    <label className="section-picker">
+                      <span>Seção do dossiê</span>
+                      <select
+                        value={activeSection?.id ?? ""}
+                        onChange={(event) =>
+                          setActiveSectionId(event.target.value)
+                        }
+                      >
+                        {sections.map((section) => (
+                          <option key={section.id} value={section.id}>
+                            {section.title}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+
+                    {activeSection && (
+                      <section className="dossier-section">
+                        <h3>{activeSection.title}</h3>
+                        <dl>
+                          {activeSection.items.map((item, index) => (
+                            <div
+                              className="dossier-row"
+                              key={`${item.label}-${index}`}
+                            >
+                              <dt>{item.label}</dt>
+                              <dd>{formatItemValue(item)}</dd>
+                            </div>
+                          ))}
+                        </dl>
+                      </section>
+                    )}
+                  </>
+                )}
               </div>
             )}
           </aside>
