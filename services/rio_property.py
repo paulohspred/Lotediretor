@@ -255,6 +255,8 @@ def vals(s,p,c):
             {"label":"Ressalva","value":"Edificações 2019 são contexto cartográfico e não substituem cadastro/licenciamento atual."}
         ]
     if s=="planning_buildability":return [{"label":"Macrozona","value":z.get("macrozone")},{"label":"Zona/subzona","value":z.get("tx_zoneamento_perimetro")},{"label":"Sigla","value":z.get("cd_zoneamento_perimetro")},{"label":"Legislação","value":z.get("legislation")},{"label":"Área de planejamento","value":z.get("ap")},{"label":"Coeficiente de aproveitamento básico","value":z.get("ca_basic")},{"label":"Coeficiente de aproveitamento máximo","value":z.get("ca_max")},{"label":"Taxa de ocupação","value":z.get("occupancy")},{"label":"Lote mínimo","value":z.get("min_lot_area_m2"),"unit":"m²"},{"label":"Testada mínima","value":z.get("min_frontage_m"),"unit":"m"},{"label":"Gabarito com afastamento","value":z.get("max_height_setback")},{"label":"Gabarito sem afastamento","value":z.get("max_height_no_setback")},{"label":"Afastamento frontal","value":z.get("front_setback")},{"label":"Parâmetro urbanístico adicional publicado","value":z.get("ics")}]
+    if s=="territorial_context":
+        return federal_context.territorial_report_values(c.get("federal") or {})
     if s=="environment_risk_heritage":
         out=[]
         env=c.get("environment") or {}
@@ -285,7 +287,7 @@ def vals(s,p,c):
                 {"label":"Legislação da proteção cultural","value":r.get("legislacao")},
                 {"label":"Órgão responsável pela proteção cultural","value":r.get("orgao")}
             ])
-        out.extend(federal_context.report_values(c.get("federal") or {}))
+        out.extend(federal_context.environment_report_values(c.get("federal") or {}))
         return out or [{"label":"Risco/patrimônio","value":"Sem incidência nas camadas consultadas."}]
     if s=="registry_due_diligence":
         out=[]
@@ -293,7 +295,9 @@ def vals(s,p,c):
         out.append({"label":"Ressalva","value":reg.get("interpretation")})
         return out
     if s=="infrastructure_utilities":
-        return municipality_utilities.report_values(c.get("utilities") or {})
+        out=municipality_utilities.report_values(c.get("utilities") or {})
+        out.extend(federal_context.transport_report_values(c.get("federal") or {}))
+        return out
     if s=="public_change_context":
         out=[]
         seen=set()
