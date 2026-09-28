@@ -12,9 +12,15 @@ import urllib.request
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timezone
 
+from pyproj import Transformer
+from shapely.geometry import Point, shape
+from shapely.ops import transform as shapely_transform
+
 ANA_BASE = "https://www.snirh.gov.br/arcgis/rest/services/INDE/Camadas/MapServer"
 ICMBIO_WFS = "https://geoservicos.inde.gov.br/geoserver/ICMBio/ows"
 IBGE_AGGREGATES = "https://servicodados.ibge.gov.br/api/v3/agregados"
+SGB_SUSCET = "https://geoportal.sgb.gov.br/server/rest/services/Hosted/Base_Suscet_v2/FeatureServer/0"
+DNIT_WFS = "https://geoservicos.inde.gov.br/geoserver/DNIT/ows"
 
 ANA_LAYERS = {
     "macro": (102, ["DMA_CD", "DMA_NM", "DMA_AR_KM2"]),
@@ -142,11 +148,88 @@ def ibge_municipality_context(municipality_ibge: str) -> dict:
     }
 
 
+def sgb_municipality_context(municipality_ibge: str) -> dict:
+    fields = [
+        "nm_municip", "cd_geocmu", "uf", "carta_suscet", "ano_execucao",
+        "mes_public", "ano_public", "area_municipio", "area_mapeada",
+        "mov_massa_alta", "mov_massa_media", "mov_massa_baixa",
+        "inundacao_alta", "inundacao_media", "inundacao_baixa",
+    ]
+    params = {
+        "f": "json",
+        "where": f"cd_geocmu='{municipality_ibge}'",
+        "outFields": ",".join(fields),
+        "returnGeometry": "false",
+        "resultRecordCount": "5",
+    }
+    data = _get_json(SGB_SUSCET + "/query?" + urllib.parse.urlencode(params))
+    features = data.get("features") or []
+    if not features:
+        return {}
+    attrs = features[0].get("attributes") or {}
+    allowed = set(fields)
+    if set(attrs) - allowed:
+        raise RuntimeError("sgb_unexpected_fields")
+    return {k: attrs.get(k) for k in fields if attrs.get(k) is not None}
+
+
+def dnit_near_point(lat: float, lng: float, max_distance_m: float = 1000.0) -> list[dict]:
+    fields = [
+        "vl_br", "sg_uf", "nm_tipo_tr", "sg_tipo_tr", "ds_local_i",
+        "ds_local_f", "ds_sup_fed", "ds_obra", "ds_jurisdi",
+        "ds_superfi", "versao_snv",
+    ]
+    delta = 0.02
+    params = {
+        "service": "WFS",
+        "version": "2.0.0",
+        "request": "GetFeature",
+        "typeNames": "DNIT:snv_202507a",
+        "srsName": "EPSG:4326",
+        "count": "80",
+        "bbox": f"{lng-delta},{lat-delta},{lng+delta},{lat+delta},EPSG:4326",
+        "propertyName": ",".join(["the_geom", *fields]),
+        "outputFormat": "application/json",
+    }
+    data = _get_json(DNIT_WFS + "?" + urllib.parse.urlencode(params), 4_000_000)
+    metric_transform = Transformer.from_crs(
+        "EPSG:4326", "EPSG:3857", always_xy=True
+    ).transform
+    point_metric = shapely_transform(metric_transform, Point(lng, lat))
+    out = []
+    allowed = set(fields)
+    for feature in data.get("features") or []:
+        geom = feature.get("geometry")
+        props = feature.get("properties") or {}
+        props.pop("ogc_fid", None)
+        if not geom:
+            continue
+        if set(props) - allowed:
+            raise RuntimeError("dnit_unexpected_fields")
+        try:
+            geom_metric = shapely_transform(metric_transform, shape(geom))
+            distance_m = float(point_metric.distance(geom_metric))
+        except Exception:
+            continue
+        if distance_m <= max_distance_m:
+            out.append({
+                "distance_m": round(distance_m, 1),
+                "properties": {
+                    k: props.get(k)
+                    for k in fields
+                    if props.get(k) is not None
+                },
+            })
+    return sorted(out, key=lambda x: x["distance_m"])[:8]
+
+
 def load(lat: float, lng: float, municipality_ibge: str | None = None) -> dict:
     result = {
         "hydrology": {},
         "federal_conservation_units": [],
         "municipality_demographics": {},
+        "sgb_susceptibility": {},
+        "nearby_federal_roads": [],
         "query_errors": {},
         "queried_at": now(),
         "interpretation": (
@@ -165,6 +248,10 @@ def load(lat: float, lng: float, municipality_ibge: str | None = None) -> dict:
             jobs[
                 pool.submit(ibge_municipality_context, municipality_ibge)
             ] = ("ibge", "municipality")
+            jobs[
+                pool.submit(sgb_municipality_context, municipality_ibge)
+            ] = ("sgb", "susceptibility")
+        jobs[pool.submit(dnit_near_point, lat, lng)] = ("dnit", "roads")
         for future in as_completed(jobs):
             group, key = jobs[future]
             try:
@@ -175,6 +262,10 @@ def load(lat: float, lng: float, municipality_ibge: str | None = None) -> dict:
                     result["federal_conservation_units"] = value
                 elif group == "ibge":
                     result["municipality_demographics"] = value
+                elif group == "sgb":
+                    result["sgb_susceptibility"] = value
+                elif group == "dnit":
+                    result["nearby_federal_roads"] = value
             except Exception as exc:
                 result["query_errors"][f"{group}_{key}"] = type(exc).__name__
     return result
@@ -232,6 +323,33 @@ def report_values(context: dict) -> list[dict]:
         out.append({
             "label":"Limite do contexto demográfico",
             "value":demo.get("interpretation"),
+        })
+
+    sgb=(context or {}).get("sgb_susceptibility") or {}
+    if str(sgb.get("carta_suscet") or "").strip().lower()=="sim":
+        out.extend([
+            {"label":"Carta municipal de suscetibilidade (SGB)","value":"Disponível"},
+            {"label":"Ano de execução da carta do SGB","value":sgb.get("ano_execucao")},
+            {"label":"Ano de publicação da carta do SGB","value":sgb.get("ano_public")},
+            {"label":"Área municipal mapeada pelo SGB","value":sgb.get("area_mapeada"),"unit":"km²"},
+            {"label":"SGB · área de alta suscetibilidade a movimentos de massa","value":sgb.get("mov_massa_alta"),"unit":"km²"},
+            {"label":"SGB · área de alta suscetibilidade a inundação","value":sgb.get("inundacao_alta"),"unit":"km²"},
+            {"label":"Limite da carta do SGB","value":"Os valores acima são síntese municipal da cartografia de suscetibilidade e não classificam este lote individualmente."},
+        ])
+    for road in (context or {}).get("nearby_federal_roads") or []:
+        p=road.get("properties") or {}
+        br=p.get("vl_br")
+        out.extend([
+            {"label":"Rodovia do SNV próxima","value":("BR-"+str(br).zfill(3)) if br else p.get("nm_tipo_tr")},
+            {"label":"Distância aproximada ao eixo do SNV","value":road.get("distance_m"),"unit":"m"},
+            {"label":"Jurisdição publicada no SNV","value":p.get("ds_jurisdi")},
+            {"label":"Trecho SNV","value":" → ".join(x for x in [p.get("ds_local_i"),p.get("ds_local_f")] if x)},
+            {"label":"Versão SNV","value":p.get("versao_snv")},
+        ])
+    if (context or {}).get("nearby_federal_roads"):
+        out.append({
+            "label":"Limite do contexto rodoviário federal",
+            "value":"Proximidade ao eixo do SNV não comprova acesso direto, alinhamento, faixa de domínio ou restrição específica no terreno.",
         })
 
     for uc in (context or {}).get("federal_conservation_units") or []:
