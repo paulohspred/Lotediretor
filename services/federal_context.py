@@ -19,6 +19,8 @@ from pyproj import Transformer
 from shapely.geometry import Point, shape
 from shapely.ops import transform as shapely_transform
 
+import ibge_sector
+
 ANA_BASE = "https://www.snirh.gov.br/arcgis/rest/services/INDE/Camadas/MapServer"
 ICMBIO_WFS = "https://geoservicos.inde.gov.br/geoserver/ICMBio/ows"
 IBGE_AGGREGATES = "https://servicodados.ibge.gov.br/api/v3/agregados"
@@ -878,6 +880,7 @@ def load(
         "sigef_parcels": [],
         "indigenous_territories": [],
         "municipality_demographics": {},
+        "census_sector": {},
         "municipality_finance": {},
         "municipality_transfers": {},
         "sgb_susceptibility": {},
@@ -938,6 +941,14 @@ def load(
             ] = ("ibge", "municipality")
             jobs[
                 pool.submit(
+                    ibge_sector.lookup,
+                    municipality_ibge,
+                    lat,
+                    lng,
+                )
+            ] = ("ibge", "census_sector")
+            jobs[
+                pool.submit(
                     siconfi_municipality_context,
                     municipality_ibge,
                 )
@@ -960,8 +971,10 @@ def load(
                     result["indigenous_territories"] = value
                 elif group == "incra":
                     result["sigef_parcels"] = value
-                elif group == "ibge":
+                elif group == "ibge" and key == "municipality":
                     result["municipality_demographics"] = value
+                elif group == "ibge" and key == "census_sector":
+                    result["census_sector"] = value
                 elif group == "siconfi":
                     result["municipality_finance"] = value
                 elif group == "dnit":
@@ -986,6 +999,7 @@ def load(
 
 def territorial_report_values(context: dict) -> list[dict]:
     out = []
+    out.extend(ibge_sector.report_values((context or {}).get("census_sector") or {}))
     hyd = (context or {}).get("hydrology") or {}
     labels = {
         "macro": "Macrorregião hidrográfica (ANA/IBGE)",
