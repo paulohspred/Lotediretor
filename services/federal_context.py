@@ -621,6 +621,9 @@ def load(
         jobs[pool.submit(funai_at_point, lat, lng)] = (
             "funai", "territories"
         )
+        jobs[pool.submit(incra_sigef_at_point, lat, lng)] = (
+            "incra", "sigef"
+        )
         jobs[pool.submit(sgb_risk_at_point, lat, lng)] = (
             "sgb", "risk"
         )
@@ -662,6 +665,8 @@ def load(
                     result["federal_conservation_units"] = value
                 elif group == "funai":
                     result["indigenous_territories"] = value
+                elif group == "incra":
+                    result["sigef_parcels"] = value
                 elif group == "ibge":
                     result["municipality_demographics"] = value
                 elif group == "siconfi":
@@ -969,6 +974,55 @@ def environment_report_values(context: dict) -> list[dict]:
     return [
         item
         for item in out
+        if item.get("value") not in (None, "")
+    ]
+
+
+def registry_report_values(context: dict) -> list[dict]:
+    out = []
+    for item in (context or {}).get("sigef_parcels") or []:
+        out.extend([
+            {
+                "label": "Parcela certificada no SIGEF",
+                "value": item.get("parcela_codigo") or item.get("codigo_imovel"),
+            },
+            {
+                "label": "Situação informada no SIGEF",
+                "value": item.get("situacao_informada") or item.get("status"),
+            },
+            {
+                "label": "Área informada no SIGEF",
+                "value": item.get("area_hectares"),
+                "unit": "ha",
+            },
+            {
+                "label": "Natureza da parcela SIGEF",
+                "value": item.get("natureza"),
+            },
+            {
+                "label": "CNS informado no SIGEF",
+                "value": item.get("registro_cns"),
+            },
+            {
+                "label": "Matrícula informada no SIGEF",
+                "value": item.get("registro_matricula"),
+            },
+            {
+                "label": "Data de aprovação no SIGEF",
+                "value": _date_text(item.get("data_aprovacao")),
+            },
+        ])
+    if (context or {}).get("sigef_parcels"):
+        out.append({
+            "label": "Limite da referência SIGEF",
+            "value": (
+                "A certificação SIGEF é referência fundiária rural e não "
+                "substitui certidão registral atual, pesquisa de ônus, cadeia "
+                "dominial ou confirmação de titularidade."
+            ),
+        })
+    return [
+        item for item in out
         if item.get("value") not in (None, "")
     ]
 
