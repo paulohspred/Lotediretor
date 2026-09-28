@@ -330,6 +330,8 @@ def vals(s,p,c):
                 ])
         out.extend(federal_context.environment_report_values(c.get("federal") or {}))
         return out or [{"label":"Risco/patrimônio","value":"Sem incidência nas camadas consultadas."}]
+    if s=="registry_due_diligence":
+        return federal_context.registry_report_values(c.get("federal") or {})
     if s=="planning_buildability":return [{"label":"Zoneamento Lei 11.181","value":z.get("cd_zoneamento_perimetro")},{"label":"Descrição do zoneamento","value":z.get("tx_zoneamento_perimetro")},{"label":"Fonte do zoneamento","value":"Mapa oficial de zoneamento da Prefeitura de Belo Horizonte"}]
     if s=="infrastructure_utilities":
         out=municipality_utilities.report_values(c.get("utilities") or {})
