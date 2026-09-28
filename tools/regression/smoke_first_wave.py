@@ -84,6 +84,14 @@ def main() -> int:
 
         federal = ctx.get("federal") or {}
         federal_errors = federal.get("query_errors") or {}
+        mapbiomas = federal.get("land_cover_history") or {}
+        mapbiomas_samples = mapbiomas.get("samples") or []
+        if not mapbiomas.get("available") or not any(
+            item.get("year") == 2025 and item.get("class_id") is not None
+            for item in mapbiomas_samples
+        ):
+            fail(errors, f"{name}: MapBiomas history missing")
+
         micro = ((federal.get("hydrology") or {}).get("micro") or {}).get("DMI_NM")
         demo = federal.get("municipality_demographics") or {}
         population = (((demo.get("population") or {}).get("93") or {}).get("value"))
