@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import gzip
 import json
+import math
 import threading
 import time
 import urllib.parse
@@ -29,6 +30,11 @@ IBGE_AGGREGATES = "https://servicodados.ibge.gov.br/api/v3/agregados"
 SICONFI_RREO = "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo"
 SICONFI_ENTES = "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/entes"
 TRANSFERE_ESPECIAIS = "https://api-publica.transferegov.gestao.gov.br/especiais"
+OVERPASS_URL = "https://overpass-api.de/api/interpreter"
+_OVERPASS_CACHE = {}
+_OVERPASS_CACHE_TTL = 12 * 3600
+_OVERPASS_LOCK = threading.Lock()
+_OVERPASS_LAST_REQUEST = 0.0
 MAPBIOMAS_TIF = (
     "https://storage.googleapis.com/mapbiomas-public/initiatives/brasil/"
     "collection11/lulc/coverage/brazil_coverage/"
@@ -868,6 +874,170 @@ def sgb_risk_at_point(lat: float, lng: float) -> dict:
     }
 
 
+def _haversine_m(lat1: float, lng1: float, lat2: float, lng2: float) -> float:
+    radius = 6_371_008.8
+    p1 = math.radians(lat1)
+    p2 = math.radians(lat2)
+    dlat = math.radians(lat2 - lat1)
+    dlng = math.radians(lng2 - lng1)
+    a = (
+        math.sin(dlat / 2) ** 2
+        + math.cos(p1) * math.cos(p2) * math.sin(dlng / 2) ** 2
+    )
+    return radius * 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+
+
+def overpass_mobility_context(
+    parcel_geometry: dict | None,
+    lat: float,
+    lng: float,
+) -> dict:
+    global _OVERPASS_LAST_REQUEST
+
+    sample_lat = lat
+    sample_lng = lng
+    if parcel_geometry:
+        try:
+            p = shape(parcel_geometry).representative_point()
+            sample_lng, sample_lat = float(p.x), float(p.y)
+        except Exception:
+            pass
+
+    cache_key = (round(sample_lat, 4), round(sample_lng, 4))
+    cached = _OVERPASS_CACHE.get(cache_key)
+    if cached and time.time() - cached["cached_at"] < _OVERPASS_CACHE_TTL:
+        return cached["value"]
+
+    query = f"""[out:json][timeout:8];
+(
+  node(around:250,{sample_lat},{sample_lng})["highway"="crossing"];
+  node(around:300,{sample_lat},{sample_lng})["highway"="bus_stop"];
+  node(around:300,{sample_lat},{sample_lng})["public_transport"="platform"];
+  node(around:300,{sample_lat},{sample_lng})["amenity"="bicycle_parking"];
+  way(around:300,{sample_lat},{sample_lng})["highway"="cycleway"];
+  way(around:300,{sample_lat},{sample_lng})["cycleway"];
+);
+out center tags 120;"""
+
+    payload = urllib.parse.urlencode({"data": query}).encode("utf-8")
+    req = urllib.request.Request(
+        OVERPASS_URL,
+        data=payload,
+        headers={
+            "User-Agent": "LoteDiretor/1.0 (+https://lotediretor.com)",
+            "Accept": "application/json",
+            "Content-Type": "application/x-www-form-urlencoded",
+        },
+    )
+    with _OVERPASS_LOCK:
+        wait = 1.15 - (time.monotonic() - _OVERPASS_LAST_REQUEST)
+        if wait > 0:
+            time.sleep(wait)
+        with urllib.request.urlopen(req, timeout=15) as response:
+            raw = response.read(2_000_001)
+        _OVERPASS_LAST_REQUEST = time.monotonic()
+    if len(raw) > 2_000_000:
+        raise RuntimeError("overpass_response_too_large")
+    data = json.loads(raw)
+
+    counts = {
+        "pedestrian_crossings": 0,
+        "transit_stops_platforms": 0,
+        "cycle_infrastructure": 0,
+        "bicycle_parking": 0,
+    }
+    transit = []
+    cycle = []
+    seen_transit = set()
+    seen_cycle = set()
+    for element in data.get("elements") or []:
+        tags = element.get("tags") or {}
+        etype = element.get("type")
+        eid = element.get("id")
+        point_lat = element.get("lat")
+        point_lng = element.get("lon")
+        if point_lat is None or point_lng is None:
+            center = element.get("center") or {}
+            point_lat = center.get("lat")
+            point_lng = center.get("lon")
+        distance = None
+        if point_lat is not None and point_lng is not None:
+            distance = round(
+                _haversine_m(
+                    sample_lat,
+                    sample_lng,
+                    float(point_lat),
+                    float(point_lng),
+                ),
+                1,
+            )
+
+        if tags.get("highway") == "crossing":
+            counts["pedestrian_crossings"] += 1
+        if (
+            tags.get("highway") == "bus_stop"
+            or tags.get("public_transport") == "platform"
+        ):
+            key = (etype, eid)
+            if key not in seen_transit:
+                seen_transit.add(key)
+                counts["transit_stops_platforms"] += 1
+                transit.append({
+                    "name": tags.get("name") or tags.get("description"),
+                    "network": tags.get("network"),
+                    "routes": tags.get("route_ref"),
+                    "distance_m": distance,
+                })
+        if tags.get("amenity") == "bicycle_parking":
+            counts["bicycle_parking"] += 1
+        if (
+            tags.get("highway") == "cycleway"
+            or tags.get("cycleway") not in (None, "", "no")
+        ):
+            key = (etype, eid)
+            if key not in seen_cycle:
+                seen_cycle.add(key)
+                counts["cycle_infrastructure"] += 1
+                cycle.append({
+                    "name": tags.get("name"),
+                    "surface": tags.get("surface"),
+                    "cycleway": tags.get("cycleway"),
+                    "distance_m": distance,
+                })
+
+    transit.sort(
+        key=lambda item: (
+            item.get("distance_m") is None,
+            item.get("distance_m") or 9e9,
+        )
+    )
+    cycle.sort(
+        key=lambda item: (
+            item.get("distance_m") is None,
+            item.get("distance_m") or 9e9,
+        )
+    )
+    value = {
+        "available": True,
+        "counts": counts,
+        "nearest_transit": transit[:5],
+        "nearest_cycle_infrastructure": cycle[:5],
+        "radius_m": 300,
+        "source": "OpenStreetMap contributors · Overpass API",
+        "queried_at": now(),
+        "interpretation": (
+            "Dados colaborativos do OpenStreetMap usados apenas como contexto "
+            "complementar de mobilidade. Cobertura, atualização e completude "
+            "variam; camadas oficiais municipais prevalecem quando disponíveis."
+        ),
+    }
+    _OVERPASS_CACHE[cache_key] = {
+        "cached_at": time.time(),
+        "value": value,
+    }
+    return value
+
+
 def dnit_near_parcel(
     parcel_geometry: dict | None,
     lat: float,
@@ -951,6 +1121,7 @@ def load(
             "flood_susceptibility": [],
         },
         "federal_roads": [],
+        "osm_mobility": {},
         "land_cover_history": {},
         "query_errors": {},
         "queried_at": now(),
@@ -986,6 +1157,14 @@ def load(
                     lng,
                 )
             ] = ("dnit", "roads")
+            jobs[
+                pool.submit(
+                    overpass_mobility_context,
+                    parcel_geometry,
+                    lat,
+                    lng,
+                )
+            ] = ("overpass", "mobility")
             jobs[
                 pool.submit(
                     mapbiomas_history,
@@ -1041,6 +1220,8 @@ def load(
                     result["municipality_finance"] = value
                 elif group == "dnit":
                     result["federal_roads"] = value
+                elif group == "overpass":
+                    result["osm_mobility"] = value
                 elif group == "mapbiomas":
                     result["land_cover_history"] = value
                 elif group == "sgb" and key == "risk":
@@ -1537,6 +1718,62 @@ def transport_report_values(context: dict) -> list[dict]:
                 "alinhamento, faixa de domínio ou restrição específica "
                 "no terreno."
             ),
+        })
+    osm = (context or {}).get("osm_mobility") or {}
+    if osm.get("available"):
+        counts = osm.get("counts") or {}
+        out.extend([
+            {
+                "label": (
+                    "Travessias de pedestres mapeadas no OpenStreetMap "
+                    "no entorno"
+                ),
+                "value": counts.get("pedestrian_crossings"),
+            },
+            {
+                "label": (
+                    "Paradas/plataformas de transporte mapeadas no "
+                    "OpenStreetMap no entorno"
+                ),
+                "value": counts.get("transit_stops_platforms"),
+            },
+            {
+                "label": (
+                    "Infraestruturas cicloviárias mapeadas no "
+                    "OpenStreetMap no entorno"
+                ),
+                "value": counts.get("cycle_infrastructure"),
+            },
+            {
+                "label": (
+                    "Estacionamentos de bicicleta mapeados no "
+                    "OpenStreetMap no entorno"
+                ),
+                "value": counts.get("bicycle_parking"),
+            },
+        ])
+        for index, item in enumerate(
+            osm.get("nearest_transit") or [],
+            start=1,
+        ):
+            out.extend([
+                {
+                    "label": f"Transporte próximo (OSM) #{index}",
+                    "value": item.get("name"),
+                },
+                {
+                    "label": f"Distância aproximada ao transporte #{index}",
+                    "value": item.get("distance_m"),
+                    "unit": "m",
+                },
+                {
+                    "label": f"Rede/operador informado #{index}",
+                    "value": item.get("network"),
+                },
+            ])
+        out.append({
+            "label": "Limite do contexto OpenStreetMap",
+            "value": osm.get("interpretation"),
         })
     return [
         item
