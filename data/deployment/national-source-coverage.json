@@ -104,16 +104,16 @@
     {
       "key": "siconfi",
       "source_id": "br-siconfi-api",
-      "status": "REGISTERED_MUNICIPAL_CONTEXT_PENDING",
-      "runtime_use": "Municipal finance/capacity context.",
-      "parcel_rule": "Revenue/debt are municipality-level context, not parcel economics."
+      "status": "VERIFIED_MUNICIPAL_CONTEXT_NOT_IN_PARCEL_REPORT",
+      "runtime_use": "Current SICONFI API verified at /ords/cdwhprd/siconfi/tt/. Candidate for a separate municipality-finance panel with the documented 1 request/second limit.",
+      "parcel_rule": "Revenue, expenditure, debt and fiscal-capacity data are municipality-level context and must not be rendered as parcel economics."
     },
     {
       "key": "transferegov",
       "source_id": "br-transferegov-public-works",
-      "status": "REGISTERED_PUBLIC_WORKS_CONTEXT",
-      "runtime_use": "Federal transfers/agreements and infrastructure investment context.",
-      "parcel_rule": "Needs defensible geometry before attaching a project to a parcel."
+      "status": "VERIFIED_2026_PORTAL_CONTEXT",
+      "runtime_use": "Current portal is api-publica.transferegov.gestao.gov.br. Public APIs currently cover Gestão de Parcerias and Transferências Especiais; the TransfereGov Obras API is scheduled for 2027.",
+      "parcel_rule": "Do not use retired repository endpoints. Do not attach a transfer/project to a parcel without defensible official geometry; ObrasGov remains the current public-works source."
     },
     {
       "key": "overpass_osm",
