@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import maplibregl from "maplibre-gl";
+import * as maplibregl from "maplibre-gl";
 
 export function ExplorerMap() {
   const container = useRef<HTMLDivElement | null>(null);
