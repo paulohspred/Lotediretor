@@ -150,29 +150,56 @@ export function ExplorerMap({
         const lid = mapLayerId(spec.id);
 
         if (!map.getSource(sid)) {
-          map.addSource(sid, {
-            type: "raster",
-            tiles: spec.tiles,
-            tileSize: 256,
-            minzoom: spec.minZoom ?? 0,
-            maxzoom: spec.maxZoom ?? 22,
-            attribution: spec.attribution,
-          });
+          if (spec.sourceType === "vector") {
+            map.addSource(sid, {
+              type: "vector",
+              tiles: spec.tiles,
+              minzoom: spec.minZoom ?? 0,
+              maxzoom: spec.maxZoom ?? 22,
+              attribution: spec.attribution,
+            });
+          } else {
+            map.addSource(sid, {
+              type: "raster",
+              tiles: spec.tiles,
+              tileSize: 256,
+              minzoom: spec.minZoom ?? 0,
+              maxzoom: spec.maxZoom ?? 22,
+              attribution: spec.attribution,
+            });
+          }
         }
 
         if (!map.getLayer(lid)) {
-          map.addLayer(
-            {
-              id: lid,
-              type: "raster",
-              source: sid,
-              paint: {
-                "raster-opacity": spec.opacity,
-                "raster-fade-duration": 0,
+          if (spec.sourceType === "vector") {
+            map.addLayer(
+              {
+                id: lid,
+                type: "line",
+                source: sid,
+                "source-layer": spec.sourceLayer,
+                paint: {
+                  "line-color": spec.lineColor ?? "#356854",
+                  "line-width": spec.lineWidth ?? 1,
+                  "line-opacity": spec.opacity,
+                },
               },
-            },
-            map.getLayer(SELECTED_FILL) ? SELECTED_FILL : undefined,
-          );
+              map.getLayer(SELECTED_FILL) ? SELECTED_FILL : undefined,
+            );
+          } else {
+            map.addLayer(
+              {
+                id: lid,
+                type: "raster",
+                source: sid,
+                paint: {
+                  "raster-opacity": spec.opacity,
+                  "raster-fade-duration": 0,
+                },
+              },
+              map.getLayer(SELECTED_FILL) ? SELECTED_FILL : undefined,
+            );
+          }
         }
       }
 
