@@ -48,6 +48,64 @@ function numberValue(value: unknown): number | null {
   return typeof value === "number" && Number.isFinite(value) ? value : null;
 }
 
+function primaryReference(
+  properties: JsonObject,
+  municipalityIbge: string,
+): { label: string; value: string | null } {
+  if (municipalityIbge === "3550308") {
+    return {
+      label: "Inscrição fiscal",
+      value: text(properties.sql_reference),
+    };
+  }
+  if (municipalityIbge === "2611606") {
+    return {
+      label: "Inscrição fiscal",
+      value: text(properties.dsqfl) ?? text(properties.sql_reference),
+    };
+  }
+  if (municipalityIbge === "3304557") {
+    if (text(properties.inscricao_imobiliaria)) {
+      return {
+        label: "Inscrição imobiliária",
+        value: text(properties.inscricao_imobiliaria),
+      };
+    }
+    if (text(properties.rgi)) {
+      return {
+        label: "Referência cadastral RGI",
+        value: text(properties.rgi),
+      };
+    }
+    if (text(properties.matricula)) {
+      return {
+        label: "Matrícula cadastral",
+        value: text(properties.matricula),
+      };
+    }
+    return {
+      label: "Referência cadastral",
+      value: text(properties.sql_reference),
+    };
+  }
+  if (municipalityIbge === "3106200") {
+    return {
+      label: "Identificação cadastral do lote",
+      value: text(properties.ctm_number) ?? text(properties.sql_reference),
+    };
+  }
+  if (municipalityIbge === "2507507") {
+    return {
+      label: "Código cartográfico",
+      value: text(properties.cartographic_code) ?? text(properties.sql_reference),
+    };
+  }
+  return {
+    label: "Referência cadastral",
+    value: text(properties.sql_reference),
+  };
+}
+
 function humanValues(value: unknown): HumanValue[] {
   if (!Array.isArray(value)) return [];
   return value
@@ -177,12 +235,13 @@ export class ParcelEngineService {
         const lng = numberValue(point.lng);
         if (lat === null || lng === null) return null;
 
+        const primary = primaryReference(
+          props,
+          input.municipality_ibge,
+        );
         const fiscalReference =
-          text(props.sql_reference) ??
-          text(props.dsqfl) ??
-          text(props.inscricao_imobiliaria) ??
-          text(props.ctm_number) ??
-          text(props.cartographic_code);
+          primary.value ??
+          text(props.matricula);
         const secondaryReference =
           text(props.cib) ??
           text(props.rgi) ??
@@ -204,10 +263,15 @@ export class ParcelEngineService {
 
         return {
           kind: "parcel",
-          display_name: address ? `${address} · ${reference}` : reference,
+          display_name: address
+            ? `${address} · ${primary.label} ${fiscalReference ?? ""}`.trim()
+            : `${primary.label} ${fiscalReference ?? ""}`.trim(),
           lat,
           lng,
-          fiscal_registration: fiscalReference,
+          primary_reference: {
+            label: primary.label,
+            value: fiscalReference,
+          },
           secondary_reference: secondaryReference,
         };
       })
@@ -222,6 +286,7 @@ export class ParcelEngineService {
     const properties = object(feature.properties);
     const report = object(raw.report);
     const persistence = object(raw.persistence);
+    const primary = primaryReference(properties, input.municipality_ibge);
     const sections = Array.isArray(report.sections) ? report.sections : [];
 
     const dossierSections = sections
@@ -246,7 +311,12 @@ export class ParcelEngineService {
           complement: text(properties.complement),
         },
         identifiers: {
-          fiscal_registration: text(properties.sql_reference),
+          primary,
+          fiscal_registration:
+            input.municipality_ibge === "3550308" ||
+            input.municipality_ibge === "2611606"
+              ? primary.value
+              : null,
           real_estate_code: text(properties.cib),
         },
         land_area_m2: numberValue(properties.land_area_m2),
