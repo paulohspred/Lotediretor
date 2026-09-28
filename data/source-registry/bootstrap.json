@@ -1366,10 +1366,11 @@
         "environment"
       ],
       "source_type": "portal_download_map",
-      "discovery_url": "https://www.car.gov.br/publico/imoveis/index",
+      "discovery_url": "https://geoserver.car.gov.br/geoserver/sicar/wfs?service=WFS&version=2.0.0&request=GetCapabilities",
       "access_class": "PUBLIC_QUERY_ONLY",
-      "verification_status": "PUBLIC_PORTAL_NO_CAR_WFS_AT_LISTED_ENDPOINT_2026",
-      "notes": "O GeoServer público em sistemas.florestal.gov.br respondeu em 2026, porém o catálogo WFS exposto lista camadas SNIF/CNFP e não imóveis CAR/APP/Reserva Legal. Não integrar CAR parcelar a partir desse endpoint sem camada oficial adequada."
+      "verification_status": "LIVE_PUBLIC_PROPERTY_GEOMETRY_2026",
+      "notes": "Official public SICAR workspace exposes one rural-property layer per UF (sicar_imoveis_uf). LoteDiretor queries only non-personal public fields: CAR code, public status, creation date, declared area, condition, UF, municipality, IBGE municipality code, fiscal modules and property type. CAR is declaratory and does not prove ownership/title or final environmental regularity. APP/RL/use-restricted geometries remain outside runtime until an official public layer or authorized connector is verified.",
+      "base_url": "https://geoserver.car.gov.br/geoserver/sicar/wfs"
     },
     {
       "id": "br-sinisa",
