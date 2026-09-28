@@ -649,8 +649,9 @@
         "spreadsheets"
       ],
       "access_class": "PUBLIC_QUERY_ONLY",
-      "verification_status": "VERIFIED_DOWNLOAD_LICENSE_REVIEW",
-      "notes": "SNV possui base georreferenciada em Shapefile/KML e atributos por rodovia/UF/trecho. Versionar cada edição; não assumir que notícia antiga seja versão corrente."
+      "verification_status": "LIVE_WFS_PROPERTY_CONTEXT_2026",
+      "notes": "WFS oficial via INDE. LoteDiretor consulta DNIT:snv_202507a em bbox do terreno e calcula distância geométrica aproximada ao lote. Trecho próximo não prova faixa de domínio, acesso ou restrição legal específica.",
+      "base_url": "https://geoservicos.inde.gov.br/geoserver/DNIT/ows"
     },
     {
       "id": "br-embrapa-geoinfo",
@@ -862,8 +863,8 @@
       "source_type": "WFS_WMS_download",
       "base_url": "https://geoservicos.inde.gov.br/geoserver/ICMBio/ows",
       "access_class": "OPEN_REUSABLE",
-      "verification_status": "VERIFIED",
-      "notes": "WFS/WMS oficial via INDE e downloads SHP/KML/XLSX para UCs, cavernas, áreas embargadas, autos de infração e PANs."
+      "verification_status": "LIVE_PROPERTY_CONTEXT_2026",
+      "notes": "WFS/WMS oficial via INDE. LoteDiretor consulta limiteucsfederais_a no ponto/lote como complemento federal; ausência de UC federal não exclui proteção estadual, municipal, APP ou outras restrições."
     },
     {
       "id": "br-imprensa-nacional-dou",
@@ -1292,8 +1293,8 @@
       "source_type": "ArcGIS_REST",
       "base_url": "https://geoportal.sgb.gov.br/server/rest/services",
       "access_class": "PUBLIC_QUERY_ONLY",
-      "verification_status": "VERIFIED_ENDPOINT_LICENSE_PER_SERVICE",
-      "notes": "ArcGIS REST oficial; pasta Hosted inclui Base_Suscet, aquíferos, Base_IBGE_Siagas e outras camadas. Priorizar metadados, cobertura municipal e licença por serviço."
+      "verification_status": "LIVE_PROPERTY_CONTEXT_2026",
+      "notes": "ArcGIS REST oficial operacional. LoteDiretor usa gestaoterritorial/risco e gestaoterritorial/inundacao como complemento federal parcelar; Base_Suscet_v2 é tratada apenas como cobertura/metadado municipal, não como risco do lote."
     },
     {
       "id": "br-sgb-geosgb",
@@ -5149,6 +5150,64 @@
       "access_class": "OPEN_REUSABLE",
       "verification_status": "LIVE_SEARCH_FALLBACK_2026",
       "notes": "CEP V2 inclui endereço e coordenadas. A própria documentação alerta que coordenadas podem derivar do OpenStreetMap; usar para busca/localização, não como limite cadastral."
+    },
+    {
+      "id": "pe-recife-sedec-risk-sectors",
+      "authority": "Prefeitura do Recife / Defesa Civil",
+      "scope": "2611606",
+      "domain": [
+        "risk",
+        "geological_risk",
+        "civil_defense"
+      ],
+      "source_type": "ArcGIS_FeatureServer",
+      "base_url": "https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Hosted/Setores_Risco_SEDEC/FeatureServer/0",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "LIVE_PROPERTY_RESOLVER_2026",
+      "notes": "Setores oficiais de risco consultados por interseção pontual. Grau/setor não substitui vistoria geotécnica atual."
+    },
+    {
+      "id": "pe-recife-landslide-susceptibility",
+      "authority": "Prefeitura do Recife",
+      "scope": "2611606",
+      "domain": [
+        "risk",
+        "landslide_susceptibility"
+      ],
+      "source_type": "ArcGIS_FeatureServer",
+      "base_url": "https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Hosted/Suscebilidade_Deslizamento/FeatureServer/0",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "LIVE_PROPERTY_RESOLVER_2026",
+      "notes": "Carta de suscetibilidade a deslizamento; suscetibilidade não equivale a laudo de risco específico do terreno."
+    },
+    {
+      "id": "pe-recife-flood-2026",
+      "authority": "Prefeitura do Recife",
+      "scope": "2611606",
+      "domain": [
+        "risk",
+        "flooding"
+      ],
+      "source_type": "ArcGIS_FeatureServer",
+      "base_url": "https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Hosted/Poligonos_Alagamentos_2026_5/FeatureServer/0",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "LIVE_PROPERTY_RESOLVER_2026",
+      "notes": "Polígonos municipais de alagamento 2026 consultados espacialmente."
+    },
+    {
+      "id": "pe-recife-flooded-lots-2026",
+      "authority": "Prefeitura do Recife",
+      "scope": "2611606",
+      "domain": [
+        "risk",
+        "flooding",
+        "parcel"
+      ],
+      "source_type": "ArcGIS_FeatureServer",
+      "base_url": "https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Hosted/Lotes_Areas_Alagadas_2026_V1/FeatureServer/0",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "LIVE_EXACT_PARCEL_MATCH_2026",
+      "notes": "Consulta por inscrição fiscal do lote; somente campos públicos não pessoais são expostos."
     }
   ],
   "as_of": "2026-09-28"
