@@ -1,0 +1,28 @@
+listen_addresses: 127.0.0.1:3002
+cache_size_mb: 256
+cache_expiry: 1h
+preferred_encoding: gzip
+
+postgres:
+  connection_string: "postgresql:///lotediretor?host=/var/run/postgresql"
+  auto_bounds: calc
+  auto_publish: false
+  tables:
+    ibge_censo2022_setores:
+      schema: ld_stage
+      table: ibge_censo2022_setores
+      srid: 4674
+      geometry_column: geom
+      geometry_type: MULTIPOLYGON
+    jp_lotes:
+      schema: ld_stage
+      table: jp_lotes
+      srid: 4674
+      geometry_column: geom
+      geometry_type: MULTIPOLYGON
+    jp_curvas_nivel_2022:
+      schema: ld_stage
+      table: jp_curvas_nivel_2022
+      srid: 4674
+      geometry_column: geom
+      geometry_type: MULTILINESTRING
