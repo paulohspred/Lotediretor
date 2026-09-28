@@ -352,6 +352,7 @@ export class ParcelEngineService {
         const feature = object(match.feature);
         const props = object(feature.properties);
         const point = object(match.representative_point);
+        const matchedBy = object(match.match);
         const lat = numberValue(point.lat);
         const lng = numberValue(point.lng);
         if (lat === null || lng === null) return null;
@@ -392,6 +393,15 @@ export class ParcelEngineService {
             value: fiscalReference,
           },
           secondary_reference: secondaryReference,
+          matched_by: text(matchedBy.label)
+            ? {
+                type: text(matchedBy.type),
+                label: text(matchedBy.label),
+                value: text(matchedBy.value),
+                registry_office: text(matchedBy.registry_office),
+                caveat: text(matchedBy.caveat),
+              }
+            : null,
         };
       })
       .filter((item) => item !== null);
