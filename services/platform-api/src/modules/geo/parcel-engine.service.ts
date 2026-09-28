@@ -20,6 +20,11 @@ export interface ParcelResolveInput {
   analysis_date?: string;
 }
 
+export interface ParcelSearchInput {
+  municipality_ibge: string;
+  q: string;
+}
+
 type JsonObject = Record<string, unknown>;
 
 type HumanValue = {
@@ -112,6 +117,103 @@ export class ParcelEngineService {
       });
     }
     return body;
+  }
+
+  async search(input: ParcelSearchInput): Promise<JsonObject> {
+    const slug = MUNICIPALITY_SLUG[input.municipality_ibge];
+    const query = input.q?.trim() ?? "";
+    if (!slug) {
+      throw new BadRequestException({
+        code: "UNSUPPORTED_MUNICIPALITY",
+        message: "Município ainda não habilitado no Parcel Resolver.",
+      });
+    }
+    if (query.length < 3 || query.length > 80) {
+      throw new BadRequestException({
+        code: "INVALID_PARCEL_QUERY",
+        message: "Informe uma referência cadastral válida.",
+      });
+    }
+
+    let response: Response;
+    try {
+      const params = new URLSearchParams({ q: query });
+      response = await fetch(
+        `${this.engineBase}/v1/${slug}/search?${params}`,
+        {
+          headers: { Accept: "application/json" },
+          signal: AbortSignal.timeout(30_000),
+        },
+      );
+    } catch {
+      throw new BadGatewayException({
+        code: "PARCEL_SEARCH_UNAVAILABLE",
+        message: "Busca cadastral temporariamente indisponível.",
+        retryable: true,
+      });
+    }
+
+    if (response.status === 400) {
+      return { results: [] };
+    }
+
+    const raw = object(await response.json().catch(() => ({})));
+    if (!response.ok) {
+      throw new BadGatewayException({
+        code: "PARCEL_SEARCH_ERROR",
+        message: "Falha na busca cadastral.",
+        retryable: response.status >= 500,
+      });
+    }
+
+    const matches = Array.isArray(raw.matches) ? raw.matches : [];
+    const results = matches
+      .map((match) => object(match))
+      .map((match) => {
+        const feature = object(match.feature);
+        const props = object(feature.properties);
+        const point = object(match.representative_point);
+        const lat = numberValue(point.lat);
+        const lng = numberValue(point.lng);
+        if (lat === null || lng === null) return null;
+
+        const fiscalReference =
+          text(props.sql_reference) ??
+          text(props.dsqfl) ??
+          text(props.inscricao_imobiliaria) ??
+          text(props.ctm_number) ??
+          text(props.cartographic_code);
+        const secondaryReference =
+          text(props.cib) ??
+          text(props.rgi) ??
+          text(props.seqimovel);
+        const street =
+          text(props.street) ??
+          text(props.street_name) ??
+          text(props.logradouro);
+        const number = text(props.number);
+
+        const address = street
+          ? `${street}${number ? `, ${number}` : ""}`
+          : null;
+        const reference = fiscalReference
+          ? `Cadastro ${fiscalReference}`
+          : secondaryReference
+            ? `Referência ${secondaryReference}`
+            : "Lote cadastral";
+
+        return {
+          kind: "parcel",
+          display_name: address ? `${address} · ${reference}` : reference,
+          lat,
+          lng,
+          fiscal_registration: fiscalReference,
+          secondary_reference: secondaryReference,
+        };
+      })
+      .filter((item) => item !== null);
+
+    return { results };
   }
 
   async resolve(input: ParcelResolveInput): Promise<JsonObject> {
