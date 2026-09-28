@@ -35,6 +35,7 @@ import rio_property
 import bh_property
 import joao_pessoa_property
 import postgis_store
+import analysis_evidence
 import federal_context
 
 HOST = "127.0.0.1"
@@ -2769,6 +2770,24 @@ class Handler(BaseHTTPRequestHandler):
             return self.send_json(200, {"ok": True, "service": "parcel-click"})
 
         params = urllib.parse.parse_qs(parsed.query)
+
+        evidence_match = re.fullmatch(
+            r"/v1/analysis/([0-9a-fA-F-]{36})/evidence",
+            parsed.path,
+        )
+        if evidence_match:
+            try:
+                evidence = analysis_evidence.get_analysis_evidence(
+                    evidence_match.group(1)
+                )
+            except ValueError as exc:
+                return self.send_json(400, {"error": str(exc)})
+            except Exception as exc:
+                print(f"analysis evidence error: {exc!r}", flush=True)
+                return self.send_json(502, {"error": "evidence_unavailable"})
+            if evidence is None:
+                return self.send_json(404, {"error": "analysis_run_not_found"})
+            return self.send_json(200, evidence)
 
         if parsed.path == "/v1/cep":
             raw_cep = re.sub(r"\D", "", params.get("cep", [""])[0] or "")
