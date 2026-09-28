@@ -1,7 +1,6 @@
 {
-  "schema_version": "0.1.0",
-  "as_of": "2026-09-24",
-  "migration": "database/migrations/001_initial_postgis.sql",
+  "schema_version": "0.2.0",
+  "as_of": "2026-09-28",
   "spatial_reference": {
     "canonical_geometry_srid": 4674,
     "name": "SIRGAS 2000",
@@ -57,6 +56,18 @@
       "purpose": "Public-safe read-model foundation only; HTTP API comes later.",
       "views": [
         "public_assertion"
+      ],
+      "tables": [
+        "property_dossier_cache"
+      ]
+    },
+    "ld_analysis": {
+      "purpose": "Immutable reproducible analysis artifacts linking frozen inputs, snapshots, findings and report snapshots.",
+      "tables": [
+        "analysis_run",
+        "analysis_input",
+        "finding",
+        "report_snapshot"
       ]
     }
   },
@@ -73,7 +84,10 @@
     "Utility status distinguishes provider territory/network context from technical availability.",
     "Heritage status distinguishes tombed, pending, surrounding area, protected area and archaeological status.",
     "Temporal fields are append/version oriented; new snapshots/versions must not silently overwrite history.",
-    "Raw bytes belong in object storage; PostgreSQL stores manifest/hash/object key and normalized records."
+    "Raw bytes belong in object storage; PostgreSQL stores manifest/hash/object key and normalized records.",
+    "Analysis Runs are sealed append-only artifacts; after COMPLETED the database rejects changes and additional linked inputs/findings/report snapshots.",
+    "An Analysis Run records lineage_status explicitly; AGGREGATED_RUNTIME_SNAPSHOT must not be presented as complete per-source snapshot lineage.",
+    "The mutable property dossier cache is a latest read model and is not historical evidence."
   ],
   "private_data_boundary": {
     "excluded_from_public_schema": [
@@ -89,6 +103,12 @@
     "spec": "data/property-dossier/report-spec.json",
     "assertions": "ld_evidence.assertion",
     "unknowns": "ld_evidence.unknown",
-    "source_provenance": "ld_catalog.source + ld_catalog.snapshot + ld_catalog.normalized_record"
-  }
+    "source_provenance": "ld_catalog.source + ld_catalog.snapshot + ld_catalog.normalized_record",
+    "analysis_runs": "ld_analysis.analysis_run + ld_analysis.analysis_input + ld_analysis.finding + ld_analysis.report_snapshot"
+  },
+  "migrations": [
+    "database/migrations/001_initial_postgis.sql",
+    "database/migrations/002_property_dossier_cache.sql",
+    "database/migrations/003_analysis_run.sql"
+  ]
 }
