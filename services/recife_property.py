@@ -21,6 +21,14 @@ ROAD="https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Cttu_An%C3%A1lis
 ROAD_F=["FID","CLOGRACODI","NLOGRACONC","NLGPAVOFIC","NLGPAVRESU","INDPAV","CT","NMPERIMETR","NMTPVIA","Metragem"]
 ROAD_ATLAS="https://esigportal2.recife.pe.gov.br/arcgis/rest/services/ATLAS/Serv_Mapas_ATLAS_2015/MapServer/34"
 ROAD_ATLAS_F=["OBJECTID_1","CLOGRACODI","NLOGRACONC","NLGPAVOFIC","NLGPAVRESU","INDPAV","CATEGORIA_FUNCIONAL"]
+RISK_SEDEC="https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Hosted/Setores_Risco_SEDEC/FeatureServer/0"
+RISK_SEDEC_F=["fid","id","cod_setor","bairro","localidade","risco","regional","edificacoe","area","perimeter","hectares"]
+SLIDE_SUSC="https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Hosted/Suscebilidade_Deslizamento/FeatureServer/0"
+SLIDE_SUSC_F=["fid","geometria","município","uf","processo","classe","obs","fonte"]
+FLOOD_2026="https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Hosted/Poligonos_Alagamentos_2026_5/FeatureServer/0"
+FLOOD_2026_F=["objectid","id","comunidade","rpa","qtd_registros"]
+FLOODED_LOTS_2026="https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Hosted/Lotes_Areas_Alagadas_2026_V1/FeatureServer/0"
+FLOODED_LOTS_2026_F=["objectid","situacaoimovel","distrito","setor","quadra","face","lote","seqimovel","dsqfl","nmendcomp","tlotesulat"]
 SMUP_BASE="https://esigportal2.recife.pe.gov.br/arcgis/rest/services/MeioAmbiente/MA_UnidadesProtegidasSMUP/MapServer"
 BF=["fid","nome","area_em_ha","codigo"]
 NF=["objectid","subbacia","bacia","codsub","decreto"]
@@ -135,9 +143,27 @@ def context(lat,lng,parcel):
     transport={"street_segments":[],"functional_class":[]}
     try:transport["functional_class"]=query_near(ROAD_ATLAS,ROAD_ATLAS_F,lat,lng,60,20)
     except Exception as e:errors["transport_functional_class"]=type(e).__name__
+    risk_sector=[];slide_susc=[];flood_poly=[];flooded_lot=[]
+    try:risk_sector=query(RISK_SEDEC,RISK_SEDEC_F,lat=lat,lng=lng,geometry=False,count=20)
+    except Exception as e:errors["risk_sector"]=type(e).__name__
+    try:slide_susc=query(SLIDE_SUSC,SLIDE_SUSC_F,lat=lat,lng=lng,geometry=False,count=20)
+    except Exception as e:errors["landslide_susceptibility"]=type(e).__name__
+    try:flood_poly=query(FLOOD_2026,FLOOD_2026_F,lat=lat,lng=lng,geometry=False,count=20)
+    except Exception as e:errors["flood_2026"]=type(e).__name__
+    if p.get("dsqfl"):
+        try:flooded_lot=query(FLOODED_LOTS_2026,FLOODED_LOTS_2026_F,where="dsqfl='"+str(p.get("dsqfl")).replace("'","")+"'",geometry=False,count=20)
+        except Exception as e:errors["flooded_lot_2026"]=type(e).__name__
     return {"planning":{"zoning":{"properties":{"cd_zoneamento_perimetro":z.get("ZONA"),"tx_zoneamento_perimetro":z.get("ZONA2") or z.get("ZONA"),"macrozone":z.get("MACROZONA"),"ca_min":z.get("VLCOEFMIN"),"ca_basic":z.get("VLCOEFBAS"),"ca_max":z.get("VLCOEFMAX"),"considerations":z.get("NMCONSIDERAC")}},"special_regimes":{k:v for k,v in layers.items() if k!="zoning" and v}},
     "federal":federal,
-    "buildings":buildings,"terrain":{"available":False,"reason":"numeric_mdt_not_exposed_by_current_public_raster_service"},"environment":envctx,"risk":{"geological":[],"hydrological":[]},
+    "buildings":buildings,"terrain":{"available":False,"reason":"numeric_mdt_not_exposed_by_current_public_raster_service"},"environment":envctx,
+    "risk":{
+        "geological":risk_sector+slide_susc,
+        "hydrological":flood_poly+flooded_lot,
+        "risk_sectors":risk_sector,
+        "landslide_susceptibility":slide_susc,
+        "flood_polygons_2026":flood_poly,
+        "flooded_lots_2026":flooded_lot
+    },
     "heritage":{"assets":layers.get("iep") or [],"buffers":{"ZEPH":layers.get("zeph") or [],"IPAV":layers.get("ipav") or [],"UCN":layers.get("ucn") or []}},
     "utilities":municipality_utilities.load("2611606"),"transport":transport,"licensing":{"housing_permits_exact_sql":permits,"impact_spatial_incidence":[],"environment_spatial_incidence":[],"match_method":"EXACT_DSQFL"},
     "fiscal":{"pgv":{"found":False},"iptu":{"found":bool(iptu_record),"latest":iptu_latest,"source_record":iptu_record},"itbi":{"available":True,"count":len(tx),"coverage_years":[2026] if (ix.get("coverage") or {}).get("itbi_2026") else [],"registry_references":[],"transactions":tx,"match_method":"OFFICIAL_POINT_INSIDE_PARCEL"}},
@@ -235,6 +261,33 @@ def vals(s,p,c):
     if s=="environment_risk_heritage":
         out=[]
         env=c.get("environment") or {}
+        risk=c.get("risk") or {}
+        for item in risk.get("risk_sectors") or []:
+            r=item.get("properties") or {}
+            out.extend([
+                {"label":"Setor de risco da Defesa Civil","value":r.get("risco")},
+                {"label":"Localidade do setor de risco","value":r.get("localidade")},
+                {"label":"Bairro do setor de risco","value":r.get("bairro")}
+            ])
+        for item in risk.get("landslide_susceptibility") or []:
+            r=item.get("properties") or {}
+            out.extend([
+                {"label":"Suscetibilidade a deslizamento","value":r.get("classe")},
+                {"label":"Processo mapeado","value":r.get("processo")},
+                {"label":"Fonte da carta de suscetibilidade","value":r.get("fonte")}
+            ])
+        for item in risk.get("flood_polygons_2026") or []:
+            r=item.get("properties") or {}
+            out.extend([
+                {"label":"Área de alagamento mapeada em 2026","value":r.get("comunidade") or "Incidência identificada"},
+                {"label":"Registros associados ao polígono de alagamento","value":r.get("qtd_registros")}
+            ])
+        for item in risk.get("flooded_lots_2026") or []:
+            r=item.get("properties") or {}
+            out.extend([
+                {"label":"Lote incluído na base municipal de áreas alagadas 2026","value":"Incidência identificada"},
+                {"label":"Endereço na base de alagamento","value":r.get("nmendcomp")}
+            ])
         for item in env.get("basin") or []:
             r=item.get("properties") or {}
             out.extend([
