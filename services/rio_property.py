@@ -319,10 +319,11 @@ def vals(s,p,c):
         return out
     if s=="terrain_visual":
         t=c.get("terrain") or {}
+        history=federal_context.historical_report_values(c.get("federal") or {})
         if not t.get("available"):
-            return [{"label":"Topografia","value":"MDT LiDAR 2019 indisponível nesta consulta."}]
+            return [{"label":"Topografia","value":"MDT LiDAR 2019 indisponível nesta consulta."}]+history
         src=t.get("source") or {}
-        return [
+        out=[
             {"label":"Cota no ponto consultado","value":t.get("clicked_elevation_m"),"unit":"m"},
             {"label":"Cota mínima amostrada","value":t.get("min_sampled_elevation_m"),"unit":"m"},
             {"label":"Cota máxima amostrada","value":t.get("max_sampled_elevation_m"),"unit":"m"},
@@ -333,6 +334,8 @@ def vals(s,p,c):
             {"label":"Ano do modelo de terreno","value":2019},
             {"label":"Qualidade","value":"Triagem topográfica com modelo oficial de terreno derivado de levantamento a laser; não substitui levantamento planialtimétrico executivo."}
         ]
+        out.extend(history)
+        return out
     return []
 
 def report(parcel,ctx):
