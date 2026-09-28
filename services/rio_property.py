@@ -293,6 +293,7 @@ def vals(s,p,c):
         out=[]
         for r in reg.get("references") or []:out.extend([{"label":"Matrícula cadastral publicada","value":r.get("registry_number")},{"label":"Fonte registral","value":r.get("source")},{"label":"Data de verificação cadastral","value":r.get("verification_date")}])
         out.append({"label":"Ressalva","value":reg.get("interpretation")})
+        out.extend(federal_context.registry_report_values(c.get("federal") or {}))
         return out
     if s=="infrastructure_utilities":
         out=municipality_utilities.report_values(c.get("utilities") or {})
