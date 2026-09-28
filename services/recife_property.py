@@ -6,6 +6,7 @@ from pathlib import Path
 
 import recife_index
 import municipality_utilities
+import federal_context
 
 ROOT=Path("/srv/lotediretor/app")
 PARCEL="https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Planejamento/BASES_BAIRRO_FACEQUADRA_LOGRADOURO_LOTE/FeatureServer/3"
@@ -99,6 +100,7 @@ def point(lat,lng):
     return public(fs[0]) if fs else None
 
 def context(lat,lng,parcel):
+    federal=federal_context.load(lat,lng)
     layers={};errors={}
     for k,(i,fields) in ZLAYERS.items():
         try:layers[k]=query(f"{ZBASE}/{i}",fields,lat=lat,lng=lng,geometry=False)
@@ -134,6 +136,7 @@ def context(lat,lng,parcel):
     try:transport["functional_class"]=query_near(ROAD_ATLAS,ROAD_ATLAS_F,lat,lng,60,20)
     except Exception as e:errors["transport_functional_class"]=type(e).__name__
     return {"planning":{"zoning":{"properties":{"cd_zoneamento_perimetro":z.get("ZONA"),"tx_zoneamento_perimetro":z.get("ZONA2") or z.get("ZONA"),"macrozone":z.get("MACROZONA"),"ca_min":z.get("VLCOEFMIN"),"ca_basic":z.get("VLCOEFBAS"),"ca_max":z.get("VLCOEFMAX"),"considerations":z.get("NMCONSIDERAC")}},"special_regimes":{k:v for k,v in layers.items() if k!="zoning" and v}},
+    "federal":federal,
     "buildings":buildings,"terrain":{"available":False,"reason":"numeric_mdt_not_exposed_by_current_public_raster_service"},"environment":envctx,"risk":{"geological":[],"hydrological":[]},
     "heritage":{"assets":layers.get("iep") or [],"buffers":{"ZEPH":layers.get("zeph") or [],"IPAV":layers.get("ipav") or [],"UCN":layers.get("ucn") or []}},
     "utilities":municipality_utilities.load("2611606"),"transport":transport,"licensing":{"housing_permits_exact_sql":permits,"impact_spatial_incidence":[],"environment_spatial_incidence":[],"match_method":"EXACT_DSQFL"},
