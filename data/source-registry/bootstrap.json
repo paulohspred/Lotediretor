@@ -1442,10 +1442,10 @@
         "geocoded_projects"
       ],
       "source_type": "public_directory_CSV_ZIP",
-      "base_url": "https://api-publica.transferegov.gestao.gov.br",
+      "base_url": "https://api-publica.transferegov.gestao.gov.br/especiais",
       "access_class": "PUBLIC_QUERY_ONLY",
-      "verification_status": "VERIFIED_CURRENT_PORTAL_2026",
-      "notes": "Novo portal público de APIs do Transferegov.br. Em setembro de 2026 há APIs públicas para Gestão de Parcerias e Transferências Especiais e nova área de downloads de Discricionárias e Legais. O endpoint antigo repositorio.dados.gov.br/seges/detru/ foi anunciado para desligamento em 31/08/2026. API do módulo de Obras do Transferegov está prevista para 2027; para obras usar ObrasGov.",
+      "verification_status": "LIVE_MUNICIPAL_CONTEXT_2026",
+      "notes": "LoteDiretor usa a API pública de Transferências Especiais de 2026 somente como contexto municipal, resolvida pelo CNPJ institucional do ente. São agregados quantidade de planos e valores de investimento/custeio. Nenhum plano é vinculado ao lote sem geometria oficial. A API específica de Obras do TransfereGov permanece prevista para 2027; obras continuam no ObrasGov.",
       "discovery_url": "https://www.gov.br/transferegov/pt-br/ferramentas-gestao/api-de-dados-abertos-transferegov.br"
     },
     {
