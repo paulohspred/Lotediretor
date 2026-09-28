@@ -1,4 +1,4 @@
-import { Body, Controller, Module, Post } from "@nestjs/common";
+import { Body, Controller, HttpCode, Module, Post } from "@nestjs/common";
 import {
   ParcelEngineService,
   ParcelResolveInput,
@@ -9,6 +9,7 @@ class ParcelController {
   constructor(private readonly engine: ParcelEngineService) {}
 
   @Post("/parcel/resolve")
+  @HttpCode(200)
   resolve(@Body() body: ParcelResolveInput) {
     return this.engine.resolve(body);
   }
