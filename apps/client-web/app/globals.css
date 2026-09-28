@@ -91,3 +91,7 @@ h1{font-size:22px}h2{font-size:16px}
 .layer-check strong{font-size:11px;font-weight:700}
 .layer-check small{font-size:10px;line-height:1.35;color:var(--muted)}
 .explorer-panel{scrollbar-gutter:stable}
+
+.map-mode{display:flex;gap:4px}
+.map-mode button{padding:5px 9px;border-radius:var(--radius-pill);font-size:11px;background:var(--surface)}
+.map-mode button.active{background:var(--brand-deep);border-color:var(--brand-deep);color:#fff;font-weight:700}
