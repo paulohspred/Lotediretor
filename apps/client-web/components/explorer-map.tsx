@@ -15,7 +15,7 @@ export function ExplorerMap() {
       center: [-46.6333, -23.5505],
       zoom: 11.5,
       maxZoom: 22,
-      attributionControl: true,
+      attributionControl: { compact: true },
     });
 
     map.addControl(
