@@ -63,6 +63,15 @@ type ParcelPayload = {
     title?: string;
     sections?: DossierSection[];
   };
+  analysis?: {
+    run_id?: string | null;
+    audit_available?: boolean;
+    lineage_status?: string | null;
+    municipality_ibge?: string;
+    lat?: number;
+    lng?: number;
+    analysis_date?: string | null;
+  };
 };
 
 type AddressResult = {
@@ -459,6 +468,28 @@ export function ExplorerShell() {
                       </div>
                     )}
                 </div>
+
+                {payload?.analysis?.audit_available && (
+                  <div className="audit-card">
+                    <div>
+                      <span className="audit-dot" aria-hidden="true" />
+                      <strong>Análise registrada e imutável</strong>
+                    </div>
+                    <p>
+                      {payload.analysis.lineage_status ||
+                        "Snapshot de análise registrado."}
+                    </p>
+                    <details>
+                      <summary>Detalhes de auditoria</summary>
+                      <dl>
+                        <dt>Identificador da execução</dt>
+                        <dd>{payload.analysis.run_id}</dd>
+                        <dt>Município analisado</dt>
+                        <dd>{city.name} · {city.uf}</dd>
+                      </dl>
+                    </details>
+                  </div>
+                )}
 
                 {sections.length > 0 && (
                   <>
