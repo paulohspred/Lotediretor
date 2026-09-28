@@ -144,6 +144,7 @@ header{height:56px;background:var(--nav);color:#fff;border-bottom:4px solid var(
       <label class="layer-toggle"><input type="checkbox" data-zlayer="federalRoads"><span>Rodovias federais<small>Sistema Nacional de Viação publicado pelo DNIT</small></span></label>
       <label class="layer-toggle"><input type="checkbox" data-zlayer="federalIndigenous"><span>Terras indígenas<small>Poligonais oficiais publicadas pela FUNAI</small></span></label>
       <label class="layer-toggle"><input type="checkbox" data-zlayer="federalRural"><span>Parcelas rurais certificadas<small>Referência pública do Geoportal INCRA/SIGEF</small></span></label>
+      <label class="layer-toggle"><input type="checkbox" data-zlayer="federalCar"><span>Cadastro Ambiental Rural<small>Imóveis declarados no SICAR; não representa domínio</small></span></label>
     </div>
 
   </aside>
@@ -655,13 +656,25 @@ const federalRuralWms=L.tileLayer.wms("https://geoportal.incra.gov.br/geoserver/
   opacity:.36,attribution:"Parcelas certificadas · Geoportal INCRA/SIGEF"
 }).setZIndex(327);
 
+function sicarLayer(layer){
+  return L.tileLayer.wms("https://geoserver.car.gov.br/geoserver/sicar/wms",{
+    layers:layer,format:"image/png",transparent:true,version:"1.1.1",
+    opacity:.30,attribution:"Cadastro Ambiental Rural · SICAR"
+  }).setZIndex(326);
+}
+const sicarSpWms=sicarLayer("sicar:sicar_imoveis_sp");
+const sicarPeWms=sicarLayer("sicar:sicar_imoveis_pe");
+const sicarRjWms=sicarLayer("sicar:sicar_imoveis_rj");
+const sicarMgWms=sicarLayer("sicar:sicar_imoveis_mg");
+const sicarPbWms=sicarLayer("sicar:sicar_imoveis_pb");
+
 
 const cityLayerMap={
-  "3550308":{parcel:spParcelWms,zoning:spZoningWms,heritage:spHeritageWms,geoRisk:spGeoRiskWms,hydroRisk:spHydroRiskWms,hillshade:spHillshadeWms,slope:spSlopeWms,ortho:spOrtho2020Wms,roads:spRoadsWms},
-  "2611606":{parcel:recifeParcelOverlay,zoning:recifeZoningOverlay,buildings:recifeBuildingOverlay,slope:recifeSlopeTiles,roads:recifeRoadOverlay,ortho:recifeOrtho2018Overlay,geoRisk:recifeGeoRiskOverlay,hydroRisk:recifeHydroRiskOverlay},
-  "3304557":{parcel:rioParcelOverlay,zoning:rioZoningOverlay,buildings:rioBuildingsOverlay,hydroRisk:rioHydroRiskOverlay,heritage:rioHeritageOverlay,environment:rioEnvironmentOverlay,coastal:rioProtectionOverlay,terrain:rioTerrainOverlay,roads:rioRoadsOverlay,ortho:rioOrtho2025},
-  "3106200":{parcel:bhParcelWms,zoning:bhZoningWms,environment:bhEnvironmentWms,roads:bhRoadsWms,drainage:bhDrainageWms,buildings:bhBuildingsWms,terrain:bhTerrainWms,ortho:bhOrtho2015Wms},
-  "2507507":{parcel:jpParcelWms,zoning:jpZoningWms,heritage:jpHeritageWms,environment:jpEnvironmentWms,hydroRisk:jpSusceptibilityWms,coastal:jpCoastalWms,roads:jpRoadHierarchyWms,buildings:jpBuildingsWms,terrain:jpTerrainWms,gas:jpGasWms,ortho:jpOrthoWms}
+  "3550308":{parcel:spParcelWms,zoning:spZoningWms,heritage:spHeritageWms,geoRisk:spGeoRiskWms,hydroRisk:spHydroRiskWms,hillshade:spHillshadeWms,slope:spSlopeWms,ortho:spOrtho2020Wms,roads:spRoadsWms,federalCar:sicarSpWms},
+  "2611606":{parcel:recifeParcelOverlay,zoning:recifeZoningOverlay,buildings:recifeBuildingOverlay,slope:recifeSlopeTiles,roads:recifeRoadOverlay,ortho:recifeOrtho2018Overlay,geoRisk:recifeGeoRiskOverlay,hydroRisk:recifeHydroRiskOverlay,federalCar:sicarPeWms},
+  "3304557":{parcel:rioParcelOverlay,zoning:rioZoningOverlay,buildings:rioBuildingsOverlay,hydroRisk:rioHydroRiskOverlay,heritage:rioHeritageOverlay,environment:rioEnvironmentOverlay,coastal:rioProtectionOverlay,terrain:rioTerrainOverlay,roads:rioRoadsOverlay,ortho:rioOrtho2025,federalCar:sicarRjWms},
+  "3106200":{parcel:bhParcelWms,zoning:bhZoningWms,environment:bhEnvironmentWms,roads:bhRoadsWms,drainage:bhDrainageWms,buildings:bhBuildingsWms,terrain:bhTerrainWms,ortho:bhOrtho2015Wms,federalCar:sicarMgWms},
+  "2507507":{parcel:jpParcelWms,zoning:jpZoningWms,heritage:jpHeritageWms,environment:jpEnvironmentWms,hydroRisk:jpSusceptibilityWms,coastal:jpCoastalWms,roads:jpRoadHierarchyWms,buildings:jpBuildingsWms,terrain:jpTerrainWms,gas:jpGasWms,ortho:jpOrthoWms,federalCar:sicarPbWms}
 };
 Object.values(cityLayerMap).forEach(layers=>{
   layers.federalEnvironment=federalUcWms;
@@ -728,7 +741,7 @@ const layerLabelsByCity={
     ortho:["Ortofoto 2021","Aerofotogrametria municipal"]
   }
 };
-const allThematicLayers=[spParcelWms,spZoningWms,spHeritageWms,spGeoRiskWms,spHydroRiskWms,spHillshadeWms,spSlopeWms,spOrtho2020Wms,spRoadsWms,recifeParcelOverlay,recifeZoningOverlay,recifeBuildingOverlay,recifeSlopeTiles,recifeRoadOverlay,recifeOrtho2018Overlay,recifeGeoRiskOverlay,recifeHydroRiskOverlay,rioParcelOverlay,rioZoningOverlay,rioBuildingsOverlay,rioHydroRiskOverlay,rioHeritageOverlay,rioEnvironmentOverlay,rioProtectionOverlay,rioTerrainOverlay,rioRoadsOverlay,rioOrtho2025,bhParcelWms,bhZoningWms,bhEnvironmentWms,bhRoadsWms,bhDrainageWms,bhBuildingsWms,bhTerrainWms,bhOrtho2015Wms,jpParcelWms,jpZoningWms,jpHeritageWms,jpEnvironmentWms,jpSusceptibilityWms,jpCoastalWms,jpRoadHierarchyWms,jpBuildingsWms,jpTerrainWms,jpGasWms,jpOrthoWms,federalUcWms,federalRiskGroup,federalRoadsWms,federalFunaiWms,federalRuralWms];
+const allThematicLayers=[spParcelWms,spZoningWms,spHeritageWms,spGeoRiskWms,spHydroRiskWms,spHillshadeWms,spSlopeWms,spOrtho2020Wms,spRoadsWms,recifeParcelOverlay,recifeZoningOverlay,recifeBuildingOverlay,recifeSlopeTiles,recifeRoadOverlay,recifeOrtho2018Overlay,recifeGeoRiskOverlay,recifeHydroRiskOverlay,rioParcelOverlay,rioZoningOverlay,rioBuildingsOverlay,rioHydroRiskOverlay,rioHeritageOverlay,rioEnvironmentOverlay,rioProtectionOverlay,rioTerrainOverlay,rioRoadsOverlay,rioOrtho2025,bhParcelWms,bhZoningWms,bhEnvironmentWms,bhRoadsWms,bhDrainageWms,bhBuildingsWms,bhTerrainWms,bhOrtho2015Wms,jpParcelWms,jpZoningWms,jpHeritageWms,jpEnvironmentWms,jpSusceptibilityWms,jpCoastalWms,jpRoadHierarchyWms,jpBuildingsWms,jpTerrainWms,jpGasWms,jpOrthoWms,federalUcWms,federalRiskGroup,federalRoadsWms,federalFunaiWms,federalRuralWms,sicarSpWms,sicarPeWms,sicarRjWms,sicarMgWms,sicarPbWms];
 function activeCityLayers(){const city=cities[Number(select.value)];return cityLayerMap[city.ibge]||{}}
 function syncCityLayers(){
   allThematicLayers.forEach(layer=>{if(map.hasLayer(layer))map.removeLayer(layer)});
