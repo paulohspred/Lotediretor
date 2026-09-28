@@ -1085,11 +1085,12 @@
         "historical_series"
       ],
       "source_type": "open_data_catalog",
-      "discovery_url": "https://brasil.mapbiomas.org/termos-de-uso/",
+      "discovery_url": "https://brasil.mapbiomas.org/iniciativas-e-produtos/cobertura-e-uso-da-terra/cobertura-30m/cobertura/",
       "license": "CC BY",
       "access_class": "OPEN_REUSABLE",
-      "verification_status": "VERIFIED",
-      "notes": "Dados públicos, abertos e gratuitos sob CC BY com citação da coleção/versão e data de acesso. Excelente para histórico ambiental e uso/cobertura, não para limite cadastral."
+      "verification_status": "LIVE_POINT_HISTORY_2026",
+      "notes": "Coleção 11, resolução 30 m. LoteDiretor amostra o ponto representativo do lote nos marcos 1985, 2000, 2010, 2020 e 2025 diretamente nos GeoTIFFs públicos oficiais via HTTP range/rasterio. O pixel não representa levantamento do lote inteiro nem uso jurídico/licenciado.",
+      "base_url": "https://storage.googleapis.com/mapbiomas-public/initiatives/brasil/collection11/lulc/coverage/brazil_coverage/"
     },
     {
       "id": "br-obrasgov-api",
