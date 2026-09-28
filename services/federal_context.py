@@ -12,6 +12,8 @@ import threading
 import time
 import urllib.parse
 import urllib.request
+
+import psycopg2
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timezone
 
@@ -21,6 +23,7 @@ from shapely.ops import transform as shapely_transform
 
 import ibge_sector
 
+DB_DSN = "dbname=lotediretor user=sentinelx host=/var/run/postgresql"
 ANA_BASE = "https://www.snirh.gov.br/arcgis/rest/services/INDE/Camadas/MapServer"
 ICMBIO_WFS = "https://geoservicos.inde.gov.br/geoserver/ICMBio/ows"
 IBGE_AGGREGATES = "https://servicodados.ibge.gov.br/api/v3/agregados"
@@ -460,6 +463,66 @@ def _ibge_aggregate(
             "territorial_level": (place.get("nivel") or {}).get("nome"),
         }
     return out
+
+
+def ibge_census_sector_at_point(
+    municipality_ibge: str,
+    lat: float,
+    lng: float,
+) -> dict:
+    with psycopg2.connect(DB_DSN) as conn, conn.cursor() as cur:
+        cur.execute(
+            """
+            SELECT
+                cd_setor, situacao, area_km2,
+                cd_dist, nm_dist, cd_subdist, nm_subdist,
+                cd_bairro, nm_bairro,
+                v0001, v0002, v0003, v0004, v0005, v0006, v0007
+            FROM ld_stage.ibge_censo2022_setores
+            WHERE cd_mun=%s
+              AND ST_Covers(
+                    geom,
+                    ST_SetSRID(ST_MakePoint(%s,%s),4674)
+                  )
+            ORDER BY ST_Area(geom)
+            LIMIT 1
+            """,
+            (municipality_ibge, lng, lat),
+        )
+        row = cur.fetchone()
+        if not row:
+            return {}
+        cols = [d.name for d in cur.description]
+    data = dict(zip(cols, row))
+    return {
+        "census_year": 2022,
+        "sector_code": data.get("cd_setor"),
+        "situation": data.get("situacao"),
+        "area_km2": data.get("area_km2"),
+        "district_code": data.get("cd_dist"),
+        "district_name": data.get("nm_dist"),
+        "subdistrict_code": data.get("cd_subdist"),
+        "subdistrict_name": data.get("nm_subdist"),
+        "neighborhood_code": data.get("cd_bairro"),
+        "neighborhood_name": data.get("nm_bairro"),
+        "population": data.get("v0001"),
+        "households_total": data.get("v0002"),
+        "private_households_total": data.get("v0003"),
+        "collective_households_total": data.get("v0004"),
+        "average_residents_occupied_private_household": data.get("v0005"),
+        "imputed_occupied_private_households_pct": data.get("v0006"),
+        "occupied_private_households": data.get("v0007"),
+        "source": (
+            "IBGE Censo Demográfico 2022 · malha de setores censitários "
+            "com atributos"
+        ),
+        "interpretation": (
+            "Os indicadores descrevem o setor censitário que contém o ponto "
+            "do terreno. Não são atributos exclusivos do lote e não devem ser "
+            "interpretados como renda, composição familiar ou condição dos "
+            "ocupantes deste imóvel."
+        ),
+    }
 
 
 def ibge_municipality_context(municipality_ibge: str) -> dict:
@@ -941,6 +1004,14 @@ def load(
             ] = ("ibge", "municipality")
             jobs[
                 pool.submit(
+                    ibge_census_sector_at_point,
+                    municipality_ibge,
+                    lat,
+                    lng,
+                )
+            ] = ("ibge", "sector")
+            jobs[
+                pool.submit(
                     ibge_sector.lookup,
                     municipality_ibge,
                     lat,
@@ -1029,6 +1100,63 @@ def territorial_report_values(context: dict) -> list[dict]:
                     "value": row.get(code_keys[level]),
                 },
             ])
+
+    sector = (context or {}).get("census_sector") or {}
+    if sector.get("sector_code"):
+        out.extend([
+            {
+                "label": "Setor censitário 2022",
+                "value": sector.get("sector_code"),
+            },
+            {
+                "label": "Situação do setor censitário",
+                "value": sector.get("situation"),
+            },
+            {
+                "label": "Distrito do setor censitário",
+                "value": sector.get("district_name"),
+            },
+            {
+                "label": "Subdistrito do setor censitário",
+                "value": sector.get("subdistrict_name"),
+            },
+            {
+                "label": "Bairro do setor censitário",
+                "value": sector.get("neighborhood_name"),
+            },
+            {
+                "label": "População do setor censitário (Censo 2022)",
+                "value": sector.get("population"),
+                "unit": "pessoas",
+            },
+            {
+                "label": "Domicílios no setor censitário (Censo 2022)",
+                "value": sector.get("households_total"),
+                "unit": "domicílios",
+            },
+            {
+                "label": (
+                    "Domicílios particulares ocupados no setor "
+                    "(Censo 2022)"
+                ),
+                "value": sector.get("occupied_private_households"),
+                "unit": "domicílios",
+            },
+            {
+                "label": (
+                    "Média de moradores por domicílio particular ocupado "
+                    "no setor"
+                ),
+                "value": sector.get(
+                    "average_residents_occupied_private_household"
+                ),
+                "unit": "pessoas",
+            },
+            {
+                "label": "Limite do contexto censitário",
+                "value": sector.get("interpretation"),
+            },
+        ])
 
     demo = (context or {}).get("municipality_demographics") or {}
     pop = demo.get("population") or {}
