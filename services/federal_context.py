@@ -320,7 +320,7 @@ def load(lat: float, lng: float, municipality_ibge: str | None = None) -> dict:
     return result
 
 
-def report_values(context: dict) -> list[dict]:
+def territorial_report_values(context: dict) -> list[dict]:
     out = []
     hyd = (context or {}).get("hydrology") or {}
     labels = {
@@ -333,88 +333,57 @@ def report_values(context: dict) -> list[dict]:
     for level in ("macro", "meso", "micro"):
         row = hyd.get(level) or {}
         if row.get(name_keys[level]):
-            out.append({
-                "label": labels[level],
-                "value": row.get(name_keys[level]),
-            })
-            out.append({
-                "label": labels[level] + " · código",
-                "value": row.get(code_keys[level]),
-            })
-    demo=(context or {}).get("municipality_demographics") or {}
-    pop=demo.get("population") or {}
-    hh=demo.get("households") or {}
-    if (pop.get("93") or {}).get("value") is not None:
-        out.append({
-            "label":"Contexto municipal · população residente (Censo 2022)",
-            "value":(pop.get("93") or {}).get("value"),
-            "unit":"pessoas",
-        })
-    if (pop.get("614") or {}).get("value") is not None:
-        out.append({
-            "label":"Contexto municipal · densidade demográfica (Censo 2022)",
-            "value":(pop.get("614") or {}).get("value"),
-            "unit":"hab./km²",
-        })
-    if (hh.get("381") or {}).get("value") is not None:
-        out.append({
-            "label":"Contexto municipal · domicílios permanentes ocupados (Censo 2022)",
-            "value":(hh.get("381") or {}).get("value"),
-            "unit":"domicílios",
-        })
-    if (hh.get("5930") or {}).get("value") is not None:
-        out.append({
-            "label":"Contexto municipal · média de moradores por domicílio (Censo 2022)",
-            "value":(hh.get("5930") or {}).get("value"),
-            "unit":"pessoas",
-        })
+            out.extend([
+                {"label": labels[level], "value": row.get(name_keys[level])},
+                {"label": labels[level] + " · código", "value": row.get(code_keys[level])},
+            ])
+    demo = (context or {}).get("municipality_demographics") or {}
+    pop = demo.get("population") or {}
+    hh = demo.get("households") or {}
+    values = [
+        ("Contexto municipal · população residente (Censo 2022)", (pop.get("93") or {}).get("value"), "pessoas"),
+        ("Contexto municipal · densidade demográfica (Censo 2022)", (pop.get("614") or {}).get("value"), "hab./km²"),
+        ("Contexto municipal · domicílios permanentes ocupados (Censo 2022)", (hh.get("381") or {}).get("value"), "domicílios"),
+        ("Contexto municipal · média de moradores por domicílio (Censo 2022)", (hh.get("5930") or {}).get("value"), "pessoas"),
+    ]
+    for label, value, unit in values:
+        if value is not None:
+            out.append({"label": label, "value": value, "unit": unit})
     if demo.get("interpretation"):
-        out.append({
-            "label":"Limite do contexto demográfico",
-            "value":demo.get("interpretation"),
-        })
+        out.append({"label": "Limite do contexto demográfico", "value": demo.get("interpretation")})
+    out.append({
+        "label": "Limite da divisão hidrográfica",
+        "value": "A divisão hidrográfica informa em qual região/bacia o terreno está inserido; não representa risco de inundação.",
+    })
+    return [x for x in out if x.get("value") not in (None, "")]
 
-    sgb=(context or {}).get("sgb_susceptibility") or {}
-    if str(sgb.get("carta_suscet") or "").strip().lower()=="sim":
-        out.extend([
-            {"label":"Carta municipal de suscetibilidade (SGB)","value":"Disponível"},
-            {"label":"Ano de execução da carta do SGB","value":sgb.get("ano_execucao")},
-            {"label":"Ano de publicação da carta do SGB","value":sgb.get("ano_public")},
-            {"label":"Área municipal mapeada pelo SGB","value":sgb.get("area_mapeada"),"unit":"km²"},
-            {"label":"SGB · área de alta suscetibilidade a movimentos de massa","value":sgb.get("mov_massa_alta"),"unit":"km²"},
-            {"label":"SGB · área de alta suscetibilidade a inundação","value":sgb.get("inundacao_alta"),"unit":"km²"},
-            {"label":"Limite da carta do SGB","value":"Os valores acima são síntese municipal da cartografia de suscetibilidade e não classificam este lote individualmente."},
-        ])
-    for road in (context or {}).get("nearby_federal_roads") or []:
-        p=road.get("properties") or {}
-        br=p.get("vl_br")
-        out.extend([
-            {"label":"Rodovia do SNV próxima","value":("BR-"+str(br).zfill(3)) if br else p.get("nm_tipo_tr")},
-            {"label":"Distância aproximada ao eixo do SNV","value":road.get("distance_m"),"unit":"m"},
-            {"label":"Jurisdição publicada no SNV","value":p.get("ds_jurisdi")},
-            {"label":"Trecho SNV","value":" → ".join(x for x in [p.get("ds_local_i"),p.get("ds_local_f")] if x)},
-            {"label":"Versão SNV","value":p.get("versao_snv")},
-        ])
-    if (context or {}).get("nearby_federal_roads"):
-        out.append({
-            "label":"Limite do contexto rodoviário federal",
-            "value":"Proximidade ao eixo do SNV não comprova acesso direto, alinhamento, faixa de domínio ou restrição específica no terreno.",
-        })
 
+def environment_report_values(context: dict) -> list[dict]:
+    out = []
+    sgb = (context or {}).get("sgb_susceptibility") or {}
+    if str(sgb.get("carta_suscet") or "").strip().lower() == "sim":
+        out.extend([
+            {"label": "Carta municipal de suscetibilidade (SGB)", "value": "Disponível"},
+            {"label": "Ano de execução da carta do SGB", "value": sgb.get("ano_execucao")},
+            {"label": "Ano de publicação da carta do SGB", "value": sgb.get("ano_public")},
+            {"label": "Área municipal mapeada pelo SGB", "value": sgb.get("area_mapeada"), "unit": "km²"},
+            {"label": "SGB · área de alta suscetibilidade a movimentos de massa", "value": sgb.get("mov_massa_alta"), "unit": "km²"},
+            {"label": "SGB · área de alta suscetibilidade a inundação", "value": sgb.get("inundacao_alta"), "unit": "km²"},
+            {"label": "Limite da carta do SGB", "value": "Os valores são síntese municipal da cartografia de suscetibilidade e não classificam este lote individualmente."},
+        ])
     for ti in (context or {}).get("indigenous_territories") or []:
         out.extend([
-            {"label":"Terra indígena federal","value":ti.get("terrai_nome")},
-            {"label":"Fase da terra indígena","value":ti.get("fase_ti")},
-            {"label":"Modalidade da terra indígena","value":ti.get("modalidade_ti")},
-            {"label":"Área publicada pela FUNAI","value":ti.get("superficie_perimetro_ha"),"unit":"ha"},
-            {"label":"Atualização FUNAI","value":ti.get("data_atualizacao")},
+            {"label": "Terra indígena federal", "value": ti.get("terrai_nome")},
+            {"label": "Fase da terra indígena", "value": ti.get("fase_ti")},
+            {"label": "Modalidade da terra indígena", "value": ti.get("modalidade_ti")},
+            {"label": "Área publicada pela FUNAI", "value": ti.get("superficie_perimetro_ha"), "unit": "ha"},
+            {"label": "Atualização FUNAI", "value": ti.get("data_atualizacao")},
         ])
     if (context or {}).get("indigenous_territories"):
         out.append({
-            "label":"Limite da incidência FUNAI",
-            "value":"A incidência territorial é baseada na geometria pública da FUNAI e requer leitura jurídica própria; não identifica titularidade privada do imóvel.",
+            "label": "Limite da incidência FUNAI",
+            "value": "A incidência territorial é baseada na geometria pública da FUNAI e requer leitura jurídica própria; não identifica titularidade privada do imóvel.",
         })
-
     for uc in (context or {}).get("federal_conservation_units") or []:
         out.extend([
             {"label": "Unidade de conservação federal", "value": uc.get("nomeuc")},
@@ -424,7 +393,35 @@ def report_values(context: dict) -> list[dict]:
         ])
     if out:
         out.append({
-            "label": "Limite do contexto federal",
-            "value": (context or {}).get("interpretation"),
+            "label": "Limite do contexto ambiental federal",
+            "value": "Ausência de incidência federal não exclui proteção estadual, municipal, APP, tombamento ou outras restrições.",
         })
     return [x for x in out if x.get("value") not in (None, "")]
+
+
+def transport_report_values(context: dict) -> list[dict]:
+    out = []
+    for road in (context or {}).get("nearby_federal_roads") or []:
+        p = road.get("properties") or {}
+        br = p.get("vl_br")
+        out.extend([
+            {"label": "Rodovia do SNV próxima", "value": ("BR-" + str(br).zfill(3)) if br else p.get("nm_tipo_tr")},
+            {"label": "Distância aproximada ao eixo do SNV", "value": road.get("distance_m"), "unit": "m"},
+            {"label": "Jurisdição publicada no SNV", "value": p.get("ds_jurisdi")},
+            {"label": "Trecho SNV", "value": " → ".join(x for x in [p.get("ds_local_i"), p.get("ds_local_f")] if x)},
+            {"label": "Versão SNV", "value": p.get("versao_snv")},
+        ])
+    if (context or {}).get("nearby_federal_roads"):
+        out.append({
+            "label": "Limite do contexto rodoviário federal",
+            "value": "Proximidade ao eixo do SNV não comprova acesso direto, alinhamento, faixa de domínio ou restrição específica no terreno.",
+        })
+    return [x for x in out if x.get("value") not in (None, "")]
+
+
+def report_values(context: dict) -> list[dict]:
+    return (
+        territorial_report_values(context)
+        + environment_report_values(context)
+        + transport_report_values(context)
+    )
