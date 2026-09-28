@@ -12,6 +12,7 @@ from pathlib import Path
 
 import psycopg2
 import municipality_utilities
+import federal_context
 from psycopg2.extras import RealDictCursor
 from shapely.geometry import shape, Point, LineString
 
@@ -422,6 +423,7 @@ def planning_at_point(lat: float, lng: float) -> tuple[dict, dict]:
     return out, errors
 
 def context(parcel: dict, lat: float, lng: float) -> dict:
+    federal=federal_context.load(lat,lng)
     planning, planning_errors = planning_at_point(lat, lng)
     spatial = {}
     spatial_errors = {}
@@ -459,6 +461,7 @@ def context(parcel: dict, lat: float, lng: float) -> dict:
                 "GeoServer oficial do Filipeia; a base não é espelhada."
             ),
         },
+        "federal": federal,
         "buildings": spatial.get("buildings") or [],
         "terrain": terrain_for_parcel(parcel),
         "environment": {
@@ -575,6 +578,7 @@ def vals(section_id: str, parcel: dict, ctx: dict) -> list[dict]:
             ])
         for item in ((ctx.get("heritage") or {}).get("buffers") or {}).get("Centro Histórico") or []:
             out.append({"label":"Centro Histórico","value":"Terreno intersecta a poligonal publicada."})
+        out.extend(federal_context.report_values(ctx.get("federal") or {}))
         return out or [{"label":"Incidências ambientais, de suscetibilidade e patrimônio","value":"Nenhuma incidência nas camadas oficiais consultadas para este terreno."}]
     if section_id == "planning_buildability":
         zoning=((ctx.get("planning") or {}).get("zoning") or {}).get("properties") or {}
