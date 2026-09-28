@@ -6,6 +6,7 @@ sources. All calls use closed public-field allowlists and fail soft.
 """
 from __future__ import annotations
 
+import gzip
 import json
 import urllib.parse
 import urllib.request
@@ -45,13 +46,22 @@ def _get_json(url: str, limit: int = 2_000_000) -> dict:
         headers={
             "User-Agent": "LoteDiretor/1.0 (+https://lotediretor.com)",
             "Accept": "application/json, application/geo+json",
+            "Accept-Encoding": "gzip",
         },
     )
     with urllib.request.urlopen(req, timeout=20) as response:
         raw = response.read(limit + 1)
+        encoding = (response.headers.get("Content-Encoding") or "").lower()
+        charset = response.headers.get_content_charset() or "utf-8"
     if len(raw) > limit:
         raise RuntimeError("federal_context_response_too_large")
-    return json.loads(raw)
+    if encoding == "gzip" or raw[:2] == b"\x1f\x8b":
+        raw = gzip.decompress(raw)
+    try:
+        text = raw.decode(charset)
+    except UnicodeDecodeError:
+        text = raw.decode("utf-8", errors="strict")
+    return json.loads(text)
 
 
 def ana_region(level: str, lat: float, lng: float) -> dict:
@@ -231,17 +241,16 @@ def funai_at_point(lat: float, lng: float) -> list[dict]:
         "reestudo_ti", "faixa_fronteira", "dominio_uniao",
         "data_atualizacao",
     ]
+    delta = 0.00001
     params = {
         "service": "WFS",
-        "version": "2.0.0",
+        "version": "1.1.0",
         "request": "GetFeature",
-        "typeNames": "Funai:tis_poligonais",
+        "typeName": "Funai:tis_poligonais",
         "srsName": "EPSG:4326",
-        "count": "20",
-        "propertyName": ",".join(fields),
-        "cql_filter": (
-            f"INTERSECTS(the_geom,SRID=4326;POINT({lng} {lat}))"
-        ),
+        "maxFeatures": "20",
+        "bbox": f"{lng-delta},{lat-delta},{lng+delta},{lat+delta},EPSG:4326",
+        "propertyName": ",".join(["the_geom", *fields]),
         "outputFormat": "application/json",
     }
     data = _get_json(FUNAI_WFS + "?" + urllib.parse.urlencode(params))
