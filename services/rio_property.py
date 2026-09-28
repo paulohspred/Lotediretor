@@ -7,6 +7,7 @@ from shapely.geometry import shape, LineString, mapping
 from datetime import datetime,timezone
 from pathlib import Path
 import municipality_utilities
+import federal_context
 
 ROOT=Path("/srv/lotediretor/app")
 PARCEL="https://pgeo3.rio.rj.gov.br/arcgis/rest/services/CadParcel/IMOVEIS_TERRITORIAIS/FeatureServer/0"
@@ -207,6 +208,7 @@ def point(lat,lng):
     return public(fs[0]) if fs else None
 
 def context(lat,lng,parcel):
+    federal=federal_context.load(lat,lng)
     errors={}
     try:z=(query(ZBASE+"/0",ZF,lat=lat,lng=lng,geometry=False,count=10) or [{}])[0].get("properties") or {}
     except Exception as e:z={};errors["zoning"]=type(e).__name__
@@ -233,6 +235,7 @@ def context(lat,lng,parcel):
     except Exception as e:terrain={"available":False,"reason":"mdt_unavailable"};errors["terrain"]=type(e).__name__
     return {"planning":{"zoning":{"properties":{"cd_zoneamento_perimetro":z.get("sigla") or z.get("zona"),"tx_zoneamento_perimetro":" ".join(x for x in [z.get("zona"),z.get("subzona")] if x),"macrozone":m.get("macrozona"),"legislation":z.get("legislacao"),"ap":z.get("ap"),"ca_basic":z.get("cab"),"ca_max":z.get("cam"),"occupancy":z.get("to_"),"min_lot_area_m2":z.get("lote_min"),"min_frontage_m":z.get("testada_min"),"max_height_setback":z.get("gab_afast"),"max_height_no_setback":z.get("gab_n_afast"),"front_setback":z.get("afast_fron"),"ics":z.get("ics"),"observations":z.get("obs")}},"special_regimes":{}},
     "registry":{"available":bool(refs),"references":refs,"interpretation":"Matrícula/RGI são referências públicas da camada cadastral territorial da PCRJ; não substituem certidão atualizada."},
+    "federal":federal,
     "buildings":buildings,"terrain":terrain,"transport":{"roads":roads},"environment":{"app":app,"ape":ape},"risk":{"geological":[],"hydrological":risk},"heritage":{"assets":apac,"buffers":{}},"utilities":municipality_utilities.load("3304557"),"licensing":{"housing_permits_exact_sql":[],"impact_spatial_incidence":[],"environment_spatial_incidence":[]},
     "fiscal":{"pgv":{"found":False},"iptu":{"found":False,"latest":{}},"itbi":{"available":False,"count":0,"registry_references":[],"transactions":[]}},
     "query_errors":errors,"queried_at":now(),"source":"Prefeitura da Cidade do Rio de Janeiro / Data.Rio"}
@@ -282,6 +285,7 @@ def vals(s,p,c):
                 {"label":"Legislação da proteção cultural","value":r.get("legislacao")},
                 {"label":"Órgão responsável pela proteção cultural","value":r.get("orgao")}
             ])
+        out.extend(federal_context.report_values(c.get("federal") or {}))
         return out or [{"label":"Risco/patrimônio","value":"Sem incidência nas camadas consultadas."}]
     if s=="registry_due_diligence":
         out=[]
