@@ -208,6 +208,22 @@
       "verification_status": "VERIFIED"
     },
     {
+      "id": "br-ana-snirh-inde",
+      "authority": "Agência Nacional de Águas e Saneamento Básico / IBGE",
+      "scope": "BR",
+      "domain": [
+        "hydrology",
+        "water_security",
+        "water_supply",
+        "hydrographic_divisions"
+      ],
+      "source_type": "ArcGIS_REST_WMS",
+      "base_url": "https://www.snirh.gov.br/arcgis/rest/services/INDE/Camadas/MapServer",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "LIVE_PROPERTY_CONTEXT_2026",
+      "notes": "Consulta pontual integrada para macro/meso/microrregião hidrográfica. Bacia/divisão hidrográfica não é risco de inundação."
+    },
+    {
       "id": "br-anac-aerodromes",
       "authority": "ANAC",
       "scope": "BR",
@@ -461,6 +477,22 @@
       "verification_status": "VERIFIED",
       "update_frequency": "monthly",
       "notes": "Mais de 4.000 séries mensais sobre fontes de recursos, crédito, imóveis financiados e índices do mercado imobiliário, com detalhamento estadual em seções relevantes. Contexto financeiro/mercado, não avaliação individual do imóvel."
+    },
+    {
+      "id": "br-brasilapi-cep-v2",
+      "authority": "BrasilAPI / múltiplos provedores de CEP",
+      "scope": "BR",
+      "domain": [
+        "address",
+        "postal_code",
+        "geocoding"
+      ],
+      "source_type": "open_REST_API",
+      "base_url": "https://brasilapi.com.br/api/cep/v2",
+      "discovery_url": "https://brasilapi.com.br/docs",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "LIVE_SEARCH_FALLBACK_2026",
+      "notes": "CEP V2 inclui endereço e coordenadas. A própria documentação alerta que coordenadas podem derivar do OpenStreetMap; usar para busca/localização, não como limite cadastral."
     },
     {
       "id": "br-caixa-sinapi",
@@ -818,6 +850,73 @@
       "notes": "Sinaflor integra informações de imóveis rurais (Sicar/ADA), autorizações de exploração/supressão e origem de produtos florestais. Painéis/dados abertos podem ser usados; operações de empreendedor/RT/órgão são autenticadas."
     },
     {
+      "id": "br-ibge-agregados-api",
+      "authority": "IBGE",
+      "scope": "BR",
+      "domain": [
+        "demography",
+        "census",
+        "housing",
+        "income",
+        "sanitation"
+      ],
+      "source_type": "open_REST_API",
+      "base_url": "https://servicodados.ibge.gov.br/api/v3/agregados",
+      "discovery_url": "https://servicodados.ibge.gov.br/api/docs/agregados?versao=v3",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED_API_DOCUMENTED",
+      "notes": "API de Agregados/SIDRA. Usar sempre com nível territorial e período explicitados; dado municipal/setorial é contexto territorial e não atributo do lote."
+    },
+    {
+      "id": "br-ibge-bcim-geoservices",
+      "authority": "IBGE",
+      "scope": "BR",
+      "domain": [
+        "roads",
+        "hydrography",
+        "toponymy",
+        "regional_cartography"
+      ],
+      "source_type": "WFS_WMS",
+      "base_url": "https://geoservicos.ibge.gov.br/geoserver/ows",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED_LIVE_2026",
+      "notes": "Cartografia contínua/regional. Escala insuficiente para substituir cartografia municipal de lote, alinhamento ou rede urbana detalhada."
+    },
+    {
+      "id": "br-ibge-censo2022-geoservices",
+      "authority": "IBGE",
+      "scope": "BR",
+      "domain": [
+        "census",
+        "demography",
+        "housing",
+        "urban_environment"
+      ],
+      "source_type": "WFS_WMS",
+      "base_url": "https://geoservicoscenso2022.ibge.gov.br/geoserver/censo2022/ows",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED_LIVE_2026",
+      "notes": "GeoServer oficial Censo 2022 com resultados SIDRA espacializados. Preservar nível territorial e definição do indicador."
+    },
+    {
+      "id": "br-ibge-censo2022-sector-mesh",
+      "authority": "IBGE",
+      "scope": "BR",
+      "domain": [
+        "census",
+        "demography",
+        "census_sector",
+        "housing"
+      ],
+      "source_type": "official_GeoPackage_materialized_PostGIS",
+      "base_url": "https://ftp.ibge.gov.br/Censos/Censo_Demografico_2022/Agregados_por_Setores_Censitarios/malha_com_atributos/setores/gpkg/UF/",
+      "discovery_url": "https://ftp.ibge.gov.br/Censos/Censo_Demografico_2022/Agregados_por_Setores_Censitarios/",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "LIVE_LOCAL_PROPERTY_CONTEXT_2026",
+      "notes": "Official 2022 census-sector mesh with attributes. First-wave municipalities are materialized locally in PostGIS and queried by point-in-polygon. Exposed fields are limited to sector identity, situation, area, district/subdistrict/neighborhood and V0001-V0007. Sector values are territorial context, not parcel or household-specific facts."
+    },
+    {
       "id": "br-ibge-cnefe",
       "authority": "IBGE",
       "scope": "BR",
@@ -850,6 +949,21 @@
       "access_class": "OPEN_REUSABLE",
       "verification_status": "VERIFIED",
       "notes": "Diretórios HTTP públicos com malhas municipais, setores censitários, bairros/distritos/subdistritos, RBMC e outros produtos. O próprio índice declara que os arquivos são públicos."
+    },
+    {
+      "id": "br-ibge-malhas-api",
+      "authority": "IBGE",
+      "scope": "BR",
+      "domain": [
+        "administrative_boundaries",
+        "census_geography"
+      ],
+      "source_type": "open_REST_GEOJSON_API",
+      "base_url": "https://servicodados.ibge.gov.br/api/v3/malhas",
+      "discovery_url": "https://servicodados.ibge.gov.br/api/docs/malhas?versao=v3",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED_API_DOCUMENTED",
+      "notes": "Malhas administrativas oficiais para município/distrito/subdistrito e outros recortes suportados. Não usar escala regional como limite cadastral de lote."
     },
     {
       "id": "br-icmbio-geoservices",
@@ -1129,6 +1243,21 @@
       "notes": "Canal oficial nacional de serviços do Registro de Imóveis. Certidões/matrículas e pesquisas devem ser obtidas pelos fluxos oficiais; não criar mirror público de dados registrais pessoais."
     },
     {
+      "id": "br-onr-saec",
+      "authority": "Operador Nacional do Sistema de Registro Eletrônico de Imóveis / SAEC",
+      "scope": "BR",
+      "domain": [
+        "registry",
+        "certificates",
+        "property_registration"
+      ],
+      "source_type": "authenticated_web_service",
+      "base_url": "https://registradores.onr.org.br/",
+      "access_class": "PRIVATE_AUTHORIZED",
+      "verification_status": "AUTHENTICATED_PRIVATE_ON_DEMAND",
+      "notes": "Certidões, matrícula atualizada e demais atos registrais dependem de fluxo legítimo/autorizado. LoteDiretor não indexa proprietários nem contorna autenticação."
+    },
+    {
       "id": "br-onr-technical-interoperability",
       "authority": "Operador Nacional do Sistema de Registro Eletrônico de Imóveis (ONR)",
       "scope": "BR",
@@ -1373,6 +1502,22 @@
       "base_url": "https://geoserver.car.gov.br/geoserver/sicar/wfs"
     },
     {
+      "id": "br-siconfi-api",
+      "authority": "Tesouro Nacional",
+      "scope": "BR",
+      "domain": [
+        "municipal_finance",
+        "public_budget",
+        "fiscal_capacity"
+      ],
+      "source_type": "open_REST_API",
+      "base_url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/",
+      "discovery_url": "https://apidatalake.tesouro.gov.br/docs/siconfi/",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "LIVE_MUNICIPAL_CONTEXT_2026",
+      "notes": "API pública atual do Tesouro sem autenticação. LoteDiretor usa RREO 2025/6 com cache municipal e throttle >=1 s entre chamadas, extraindo somente contas explícitas de IPTU realizado, ITBI realizado, RCL e RCL ajustada para limites de endividamento. Nunca tratar como atributo econômico do lote."
+    },
+    {
       "id": "br-sinisa",
       "authority": "Ministério das Cidades",
       "scope": "BR",
@@ -1417,6 +1562,21 @@
       "access_class": "PUBLIC_QUERY_ONLY",
       "verification_status": "VERIFIED_PUBLIC_RESULTS",
       "notes": "Resultados e planilhas dos módulos Gestão Municipal, Água, Esgoto, Resíduos e Águas Pluviais. Excelente para prestador/cobertura/indicadores, mas não substitui rede predial ou disponibilidade na testada."
+    },
+    {
+      "id": "br-sinter",
+      "authority": "Receita Federal do Brasil / Sinter",
+      "scope": "BR",
+      "domain": [
+        "cadastre",
+        "registry_interoperability",
+        "cnm"
+      ],
+      "source_type": "government_integration",
+      "discovery_url": "https://www.gov.br/receitafederal/pt-br/assuntos/sinter",
+      "access_class": "GOVERNMENT_AUTHORIZED",
+      "verification_status": "AUTHENTICATED_GOVERNMENT_INTEGRATION",
+      "notes": "Barramento/interoperabilidade cadastral destinado a integrações autorizadas. Não tratado como API pública anônima de consulta parcelar."
     },
     {
       "id": "br-spu-geoportal",
@@ -1779,6 +1939,26 @@
       "notes": "Dados abertos sob ODbL. Úteis para contexto viário, edificações e POIs como fallback/complemento. Preservar atribuição e analisar obrigações ODbL quando houver banco derivado."
     },
     {
+      "id": "global-osm-overpass",
+      "authority": "OpenStreetMap contributors / Overpass API",
+      "scope": "GLOBAL",
+      "domain": [
+        "mobility",
+        "poi",
+        "sidewalks",
+        "crossings",
+        "cycleways",
+        "transit",
+        "public_space"
+      ],
+      "source_type": "open_query_API",
+      "base_url": "https://overpass-api.de/api/interpreter",
+      "license": "ODbL 1.0",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "LIVE_COMPLEMENTARY_SOFT_FAIL_2026",
+      "notes": "Used as collaborative mobility context only: pedestrian crossings, transit stops/platforms, cycle infrastructure and bicycle parking in a small parcel-adjacent radius. Requests are serialized and cached for 12h. Municipal official layers prevail; Overpass failure never blocks the parcel dossier."
+    },
+    {
       "id": "global-overture-maps",
       "authority": "Overture Maps Foundation",
       "scope": "GLOBAL",
@@ -1956,6 +2136,84 @@
       "notes": "PBH documenta oficialmente WFS/WMS da IDE-BHGEO. WFS permite acesso à estrutura e dados das camadas; shapefiles são orientados via Portal de Dados Abertos. BHMap tinha mais de 330 camadas em maio/2026. Entre as camadas observadas via catálogo WFS estão LOTE_CTM, SQLV_LOTE_CTM, ENDERECO_POR_LOTE_CTM, EDIFICACAO e parâmetros da Lei 11.181/2019. Confirmar licença por dataset antes de redistribuir."
     },
     {
+      "id": "mg-belo-horizonte-cadastro-imobiliario-regionais",
+      "authority": "Prefeitura de Belo Horizonte / SMFA / PRODABEL",
+      "scope": "municipality",
+      "municipality_ibge": "3106200",
+      "domain": [
+        "iptu",
+        "cadastre",
+        "property_attributes",
+        "building",
+        "historical_tax_record"
+      ],
+      "source_type": "CKAN_multi_dataset_monthly",
+      "discovery_url": "https://dados.pbh.gov.br/dataset/?license_id=cc-by&organization=smfa&res_format=CSV&tags=IPTU&tags=cadastro+imobili%C3%A1rio",
+      "access_class": "OPEN_REUSABLE",
+      "license": "CC BY",
+      "verification_status": "VERIFIED",
+      "update_frequency": "monthly",
+      "notes": "Nove conjuntos regionais cobrem os imóveis ativos do Cadastro Tributário Imobiliário e publicam dados cadastrais em CSV/API, com dicionário de dados. Licença Creative Commons Attribution. Tratar como cadastro/IPTU-base; confirmar no schema quais valores tributários são por imóvel e não inferir o imposto lançado quando o campo não existir."
+    },
+    {
+      "id": "mg-belo-horizonte-copasa-provider",
+      "authority": "ARSAE-MG / Copasa",
+      "scope": "municipality",
+      "municipality_ibge": "3106200",
+      "domain": [
+        "water_supply",
+        "sewerage",
+        "utility_provider",
+        "service_territory",
+        "sanitation"
+      ],
+      "source_type": "official_regulatory_provider_profile",
+      "discovery_url": "https://arsae.mg.gov.br/panoramas/belo_horizonte_copasa.pdf",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PROVIDER_SERVICE_TERRITORY",
+      "notes": "Panorama regulatório ARSAE-MG identifica Copasa como prestadora de abastecimento de água e esgotamento sanitário em Belo Horizonte, com contrato informado até 30/04/2034 no documento regulatório. Usar como resolvedor; rede/disponibilidade exige fonte técnica atual."
+    },
+    {
+      "id": "mg-belo-horizonte-dom",
+      "authority": "Prefeitura de Belo Horizonte / Secretaria-Geral",
+      "scope": "municipality",
+      "municipality_ibge": "3106200",
+      "domain": [
+        "official_gazette",
+        "legal_publication",
+        "municipal_acts",
+        "historical_law",
+        "public_documents"
+      ],
+      "source_type": "official_public_search",
+      "portal_url": "https://dom-web.pbh.gov.br/",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PUBLIC_SEARCH_LICENSE_REVIEW",
+      "notes": "DOM oficial permite pesquisa por termo com busca avançada, período, edição e categoria, além de visualização de atos. A própria PBH orienta esse uso. Não foi identificada licença/API pública de reutilização em massa; tratar como consulta/evidência até revisão."
+    },
+    {
+      "id": "mg-belo-horizonte-heritage-open-data",
+      "authority": "Prefeitura de Belo Horizonte / Fundação Municipal de Cultura / PRODABEL",
+      "scope": "municipality",
+      "municipality_ibge": "3106200",
+      "domain": [
+        "heritage",
+        "protected_assets",
+        "pending_tombamento",
+        "protected_area",
+        "legal_restriction",
+        "heritage_buffer",
+        "historical_series"
+      ],
+      "source_type": "CKAN_heritage_datasets",
+      "portal_url": "https://dados.pbh.gov.br/dataset/?_tags_limit=0&res_format=CSV&tags=cultural&tags=patrim%C3%B4nio",
+      "access_class": "OPEN_REUSABLE",
+      "license": "CC BY",
+      "verification_status": "VERIFIED",
+      "update_frequency": "monthly",
+      "notes": "Portal publica sob CC BY Área de Proteção Cultural e bens culturais municipais, além de datasets específicos para bens IEPHA e IPHAN. 'Bem Cultural Imóvel' distingue tombado, processo de tombamento aberto e registros documentais. Preservar versão mensal e grau de proteção."
+    },
+    {
       "id": "mg-belo-horizonte-itbi",
       "authority": "Prefeitura de Belo Horizonte",
       "scope": "municipality",
@@ -2026,6 +2284,23 @@
       "notes": "Lei 11.181/2019 e regulamentos; BHMAP/GeoSiurbe complementam a geometria."
     },
     {
+      "id": "mg-belo-horizonte-processos-protocolos",
+      "authority": "Prefeitura de Belo Horizonte",
+      "scope": "municipality",
+      "municipality_ibge": "3106200",
+      "domain": [
+        "administrative_processes",
+        "public_documents",
+        "procedural_status",
+        "tax_processes"
+      ],
+      "source_type": "official_multi_system_protocol_query",
+      "portal_url": "https://prefeitura.pbh.gov.br/FAZENDa/sigede",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PUBLIC_QUERY_MULTIPLE_SYSTEMS",
+      "notes": "PBH mantém página oficial para consultar andamento por diferentes sistemas/protocolos (Portal de Serviços, IPTU, ITBI, OPUS, SIGESP etc.). É um resolvedor de consulta por processo/protocolo conhecido, não um bulk dataset."
+    },
+    {
       "id": "mg-belo-horizonte-projeto-edificacao-licenciado",
       "authority": "Prefeitura de Belo Horizonte",
       "scope": "municipality",
@@ -2046,6 +2321,96 @@
       "access_class": "PUBLIC_QUERY_ONLY",
       "verification_status": "VERIFIED_DATASET_LICENSE_REVIEW",
       "notes": "Dataset 'Projeto Edificação Licenciado' espacializa projetos de edificação, licenciamentos, regularizações e situação das baixas de construção. Licença deve ser confirmada no recurso antes de espelhamento."
+    },
+    {
+      "id": "mg-belo-horizonte-public-lighting",
+      "authority": "Prefeitura de Belo Horizonte / Sudecap / BHIP",
+      "scope": "municipality",
+      "municipality_ibge": "3106200",
+      "domain": [
+        "public_lighting",
+        "utility_provider",
+        "infrastructure",
+        "street_assets",
+        "smart_city"
+      ],
+      "source_type": "official_ppp_public_service",
+      "portal_url": "https://prefeitura.pbh.gov.br/sudecap/ilumina-bh",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PUBLIC_SERVICE",
+      "notes": "Programa Ilumina BH é executado pela Sudecap com a BHIP, concessionária responsável pela PPP da iluminação pública. A cidade informa parque modernizado em LED e telegestão; dados técnicos ponto a ponto não são presumidos como open data."
+    },
+    {
+      "id": "mg-belo-horizonte-risk-geologico",
+      "authority": "Prefeitura de Belo Horizonte / PRODABEL / URBEL",
+      "scope": "municipality",
+      "municipality_ibge": "3106200",
+      "domain": [
+        "risk",
+        "geotechnics",
+        "landslide",
+        "flood",
+        "historical_series"
+      ],
+      "source_type": "CKAN_dataset",
+      "discovery_url": "https://dados.pbh.gov.br/dataset/area-risco-geologico",
+      "access_class": "OPEN_REUSABLE",
+      "license": "CC BY",
+      "verification_status": "VERIFIED",
+      "update_frequency": "eventual",
+      "notes": "Camada oficial de Área de Risco Geológico, com risco geológico significativo e áreas de risco de inundação, publicada em JSON/CSV com dicionário. O mapeamento inclui base técnica histórica; usar data/metodologia como parte da evidência e complementar com vistorias PEAR mais recentes quando aplicável."
+    },
+    {
+      "id": "mg-belo-horizonte-zona-homogenea-iptu",
+      "authority": "Prefeitura de Belo Horizonte / SMFA / PRODABEL",
+      "scope": "municipality",
+      "municipality_ibge": "3106200",
+      "domain": [
+        "pgv",
+        "iptu",
+        "valuation",
+        "tax",
+        "historical_tax_record"
+      ],
+      "source_type": "CKAN_dataset",
+      "discovery_url": "https://dados.pbh.gov.br/dataset/zona-homogenea-iptu",
+      "access_class": "OPEN_REUSABLE",
+      "license": "CC BY",
+      "verification_status": "VERIFIED",
+      "update_frequency": "monthly",
+      "notes": "Zona Homogênea do IPTU é usada no cálculo do valor venal conforme Anexo V da Lei 9.795/2009. CSV com histórico de publicações e dicionário. Deve ser combinada com legislação/valores unitários vigentes, preservando versão temporal."
+    },
+    {
+      "id": "mg-cemig-distribuicao-provider",
+      "authority": "CEMIG Distribuição S.A. / ANEEL",
+      "scope": "MG_CONCESSION_AREA",
+      "domain": [
+        "electricity_distribution",
+        "utility_provider",
+        "service_territory",
+        "power_network_context"
+      ],
+      "source_type": "official_distribution_concession",
+      "discovery_url": "https://www.cemig.com.br/",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PROVIDER_SERVICE_TERRITORY",
+      "notes": "CEMIG Distribuição é concessionária de energia em Belo Horizonte, conforme concessão/área regulada. Usar para resolver prestador e combinar com BDGD/ANEEL para ativos técnicos."
+    },
+    {
+      "id": "mg-cemig-load-availability-map",
+      "authority": "CEMIG Distribuição",
+      "scope": "MG_CONCESSION_AREA",
+      "domain": [
+        "electricity_distribution",
+        "grid_capacity_context",
+        "utility_availability_context",
+        "power_network_context"
+      ],
+      "source_type": "official_interactive_map",
+      "portal_url": "https://www.cemig.com.br/geracao-distribuida/mapas-de-disponibilidade/",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PUBLIC_MAP",
+      "notes": "CEMIG publica mapa de disponibilidade de cargas, que indica regiões onde há capacidade de rede para atender novas cargas. É contexto preliminar e não substitui estudo/consulta formal de acesso ou orçamento de conexão."
     },
     {
       "id": "mg-contagem-geoprocessamento",
@@ -2357,6 +2722,40 @@
       "notes": "Lei 8.655/2008 localizada; validar revisão/consolidação vigente."
     },
     {
+      "id": "pb-energisa-paraiba-provider",
+      "authority": "Energisa Paraíba",
+      "scope": "PB_CONCESSION_AREA",
+      "domain": [
+        "electricity_distribution",
+        "utility_provider",
+        "service_territory",
+        "power_network_context"
+      ],
+      "source_type": "official_distribution_company",
+      "portal_url": "https://www.energisa.com.br/regioes/paraiba",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PROVIDER_SERVICE_TERRITORY",
+      "notes": "Energisa Paraíba opera distribuição na região de João Pessoa e publica investimentos/subestações na região metropolitana; serviços da companhia listam João Pessoa entre localidades da Energisa Paraíba. Combinar com BDGD/ANEEL para ativos."
+    },
+    {
+      "id": "pb-iphaep-protected-heritage",
+      "authority": "Governo da Paraíba / IPHAEP",
+      "scope": "state",
+      "domain": [
+        "heritage",
+        "protected_assets",
+        "historic_center",
+        "protected_area",
+        "legal_restriction",
+        "heritage_approval"
+      ],
+      "source_type": "official_heritage_portal_and_legal_rules",
+      "portal_url": "https://iphaep.pb.gov.br/municipios-com-centros-historicos-tombados",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PUBLIC_LEGAL_INFORMATION",
+      "notes": "IPHAEP identifica João Pessoa como centro histórico tombado pelo Decreto 9.484/1982. Orientação oficial informa que imóveis em Área de Preservação têm grau de classificação/preservação e intervenções dependem de aprovação técnica; para João Pessoa cita Decreto Estadual 25.138/2004. Geometria municipal complementar está no Filipeia."
+    },
+    {
       "id": "pb-joao-pessoa-building-permits",
       "authority": "Prefeitura de João Pessoa / SEPLAN",
       "scope": "municipality",
@@ -2372,6 +2771,80 @@
       "access_class": "AUTHENTICATED_PUBLIC",
       "verification_status": "VERIFIED_SERVICE_NOT_BULK_DATA",
       "notes": "Serviços incluem alvará de construção/ampliação/reforma/regularização, habite-se, demolição, remembramento/desmembramento, aprovação de loteamentos e certidões. Fluxos atuais usam Aprova Digital; tratar como aquisição/consulta documental, não bulk open data."
+    },
+    {
+      "id": "pb-joao-pessoa-cagepa-provider",
+      "authority": "Prefeitura de João Pessoa / CAGEPA",
+      "scope": "municipality",
+      "municipality_ibge": "2507507",
+      "domain": [
+        "water_supply",
+        "sewerage",
+        "utility_provider",
+        "service_territory",
+        "sanitation"
+      ],
+      "source_type": "official_municipal_concession_evidence",
+      "discovery_url": "https://www.joaopessoa.pb.gov.br/noticias/prefeito-e-governador-renovam-concessao-para-que-cagepa-opere-sistema-de-agua-e-esgoto-da-capital/",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PROVIDER_SERVICE_TERRITORY",
+      "notes": "Município renovou em 2023 por 30 anos a concessão para CAGEPA operar água e esgoto de João Pessoa. Plano Diretor municipal também identifica CAGEPA como responsável por captação, tratamento, distribuição de água e coleta/tratamento de esgoto."
+    },
+    {
+      "id": "pb-joao-pessoa-ctm-pgv-modernization",
+      "authority": "Prefeitura de João Pessoa / Programa João Pessoa Sustentável / SEREM / SEPLAN",
+      "scope": "municipality",
+      "municipality_ibge": "2507507",
+      "domain": [
+        "pgv",
+        "multifinalitary_cadastre",
+        "cadastre",
+        "building",
+        "valuation",
+        "infrastructure"
+      ],
+      "source_type": "official_program_documentation",
+      "discovery_url": "https://www.joaopessoa.pb.gov.br/joao-pessoa-sustentavel/joao-pessoa-sustentavel-avanca-no-desenvolvimento-urbano-com-economia-superior-a-us-40-milhoes/",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_EXISTENCE_ACCESS_PATH_PENDING",
+      "notes": "Documentação oficial confirma atualização da PGV, recadastramento imobiliário municipal e levantamento territorial/infraestrutura. A PGV modernizada e o cadastro existem operacionalmente, mas não foi confirmado um canal bulk reutilizável. Fonte serve para provenance/existência e direciona a busca por publicação oficial do produto."
+    },
+    {
+      "id": "pb-joao-pessoa-drainage-service",
+      "authority": "Prefeitura de João Pessoa / SEINFRA",
+      "scope": "municipality",
+      "municipality_ibge": "2507507",
+      "domain": [
+        "drainage",
+        "stormwater",
+        "infrastructure",
+        "utility_provider",
+        "maintenance"
+      ],
+      "source_type": "official_public_service",
+      "portal_url": "https://www.joaopessoa.pb.gov.br/noticias/seinfra-realiza-manutencao-na-malha-viaria-rede-de-drenagem-e-iluminacao-publica-em-38-bairros-da-capital/",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PUBLIC_SERVICE_TECHNICAL_DATA_PENDING",
+      "notes": "SEINFRA executa manutenção da rede de drenagem municipal. Serve para resolver a autoridade/operador do serviço; o inventário técnico georreferenciado da rede ainda precisa ser localizado/aprovado separadamente."
+    },
+    {
+      "id": "pb-joao-pessoa-ficha-cadastral-imovel",
+      "authority": "Prefeitura de João Pessoa / Secretaria da Receita Municipal",
+      "scope": "municipality",
+      "municipality_ibge": "2507507",
+      "domain": [
+        "cadastre",
+        "building",
+        "iptu",
+        "pgv",
+        "property_query",
+        "property_services"
+      ],
+      "source_type": "official_property_query_service",
+      "portal_url": "https://receita.joaopessoa.pb.gov.br/dsf_jpa_portal/inicial.do?acronym=COMPROVANTEINSCRICAOESITUACAOMUNICIPAL&evento=montaMenu",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_SERVICE_SCHEMA_REVIEW",
+      "notes": "Portal de Serviços municipal lista Ficha Cadastral Imóvel, Extrato/Guia e Certidão Financeira Imóvel. Usar como fluxo por imóvel e fonte de evidência; não presumir que todos os campos fiscais/prediais são públicos nem automatizar em massa antes de revisar parâmetros, CAPTCHA, termos e schema."
     },
     {
       "id": "pb-joao-pessoa-filipeia",
@@ -2398,6 +2871,98 @@
       "access_class": "PUBLIC_QUERY_ONLY",
       "verification_status": "VERIFIED_PUBLIC_DOWNLOAD_LICENSE_REVIEW",
       "notes": "Atlas Filipeia oficial publica lotes, quadras, logradouros e setores cartográficos em SHP/CSV; curvas de nível/hidrografia; MUB em DWG; aerofotogrametria 1976/1989/1998/2012/2021; mapas do zoneamento, macrozoneamento e restrições do Plano Diretor 2024. Também oferece dados do imóvel via localização cartográfica/ficha cadastral. Revisar licença/termos por recurso antes de espelhar."
+    },
+    {
+      "id": "pb-joao-pessoa-itbi-service",
+      "authority": "Prefeitura de João Pessoa / Secretaria da Receita Municipal",
+      "scope": "municipality",
+      "municipality_ibge": "2507507",
+      "domain": [
+        "itbi",
+        "transactions",
+        "property_services",
+        "tax"
+      ],
+      "source_type": "authenticated_online_tax_service",
+      "portal_url": "https://receita.joaopessoa.pb.gov.br/portal-serem",
+      "access_class": "AUTHENTICATED_PUBLIC",
+      "verification_status": "VERIFIED_SERVICE_NOT_BULK_DATA",
+      "notes": "Solicitação e emissão de ITBI são realizadas online no Portal do Contribuinte, com análise fiscal e guia/certidão. É fluxo transacional individual, não dataset público em massa; integrar somente por mecanismo autorizado e nunca reutilizar dados pessoais fora da finalidade."
+    },
+    {
+      "id": "pb-joao-pessoa-luos-166-169",
+      "authority": "Prefeitura de João Pessoa / Plano Diretor",
+      "scope": "João Pessoa/PB",
+      "source_type": "municipal_legislation",
+      "endpoint": "https://planodiretor.joaopessoa.pb.gov.br/legislacaovigente/",
+      "access_class": "OPEN_REUSABLE",
+      "license": null,
+      "temporal_coverage": "2024-current",
+      "notes": "Current municipal legislation index. LoteDiretor structures occupancy parameters from LC 169/2024's substitute Annex IV for LC 166/2024 and keeps the coastal-height exception explicit."
+    },
+    {
+      "id": "pb-joao-pessoa-official-gazette",
+      "authority": "Prefeitura de João Pessoa",
+      "scope": "municipality",
+      "municipality_ibge": "2507507",
+      "domain": [
+        "official_gazette",
+        "legal_publication",
+        "municipal_acts",
+        "historical_law",
+        "public_documents"
+      ],
+      "source_type": "official_public_archive",
+      "portal_url": "https://www.joaopessoa.pb.gov.br/doe-jp/",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PUBLIC_ARCHIVE_LICENSE_REVIEW",
+      "notes": "Arquivo oficial do Diário Oficial/Semanário apresenta listagem pública de edições, datas, suplementos e páginas individuais com acesso aos documentos. Licença/API de reutilização em massa não identificada; usar como consulta/snapshot documental até revisão."
+    },
+    {
+      "id": "pb-joao-pessoa-plano-diretor-164",
+      "authority": "Prefeitura de João Pessoa / Plano Diretor",
+      "scope": "João Pessoa/PB",
+      "source_type": "municipal_legislation",
+      "endpoint": "https://planodiretor.joaopessoa.pb.gov.br/legislacaovigente/",
+      "access_class": "OPEN_REUSABLE",
+      "license": null,
+      "temporal_coverage": "2024-current",
+      "notes": "Plano Diretor source for macrozone basic/max floor-area indices, including art. 50 values."
+    },
+    {
+      "id": "pb-joao-pessoa-processo-online",
+      "authority": "Prefeitura de João Pessoa",
+      "scope": "municipality",
+      "municipality_ibge": "2507507",
+      "domain": [
+        "administrative_processes",
+        "public_documents",
+        "procedural_status",
+        "licensing_process_context"
+      ],
+      "source_type": "official_process_query_with_captcha",
+      "portal_url": "https://www.joaopessoa.pb.gov.br/processoonline/acompanhar_processo.do",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_QUERY_WITH_CAPTCHA_NO_AUTOMATION",
+      "notes": "Processo On Line permite acompanhamento por número/identificação, com CAPTCHA. Não automatizar nem burlar CAPTCHA. Seplan também usa Aprova Digital e 1Doc para protocolos de licenciamento; integrar apenas por fluxo autorizado/documentado."
+    },
+    {
+      "id": "pb-joao-pessoa-public-lighting",
+      "authority": "Prefeitura de João Pessoa / SEINFRA",
+      "scope": "municipality",
+      "municipality_ibge": "2507507",
+      "domain": [
+        "public_lighting",
+        "utility_provider",
+        "infrastructure",
+        "street_assets",
+        "smart_city"
+      ],
+      "source_type": "official_public_service",
+      "portal_url": "https://www.joaopessoa.pb.gov.br/noticias/secretarias-e-orgaos/seinfra/cicero-lucena-entrega-iluminacao-em-led-em-mais-15-bairros-e-joao-pessoa-chega-a-48-localidades-contempladas/",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PUBLIC_SERVICE",
+      "notes": "SEINFRA mantém a iluminação pública e a Prefeitura informa modernização LED georreferenciada com monitoramento individual das luminárias. Não presumir acesso ao inventário técnico sem canal/documentação pública específica."
     },
     {
       "id": "pb-pbgas-network-map",
@@ -2430,6 +2995,17 @@
       "base_url": "https://server.pbgeo.pb.gov.br/server/rest/services",
       "access_class": "PUBLIC_QUERY_ONLY",
       "verification_status": "VERIFIED_ENDPOINT_LICENSE_REVIEW"
+    },
+    {
+      "id": "pb-tjpb-luos-adi-2026",
+      "authority": "Tribunal de Justiça da Paraíba",
+      "scope": "João Pessoa/PB",
+      "source_type": "judicial_status_reference",
+      "endpoint": "https://www.tjpb.jus.br/w/decis%C3%A3o-do-tjpb-mant%C3%A9m-proibi%C3%A7%C3%A3o-da-constru%C3%A7%C3%A3o-de-espig%C3%B5es-na-orla",
+      "access_class": "OPEN_REUSABLE",
+      "license": null,
+      "temporal_coverage": "2026-01-21",
+      "notes": "Public TJPB status reference: LUOS maintained except article 62. Used only to prevent presenting article 62 coastal-height values as current."
     },
     {
       "id": "pe-apac-arcgis",
@@ -2485,6 +3061,41 @@
       "notes": "Portal oficial exibe rede de distribuição de gás natural e distingue rede em baixa/alta pressão. Usar como contexto; ligação/capacidade e cadastro técnico devem ser confirmados com a concessionária."
     },
     {
+      "id": "pe-fundarpe-protected-heritage",
+      "authority": "Governo de Pernambuco / Secult-PE / Fundarpe",
+      "scope": "state",
+      "domain": [
+        "heritage",
+        "protected_assets",
+        "pending_tombamento",
+        "archaeology",
+        "heritage_buffer",
+        "legal_restriction",
+        "heritage_approval"
+      ],
+      "source_type": "official_heritage_portal_documents",
+      "portal_url": "https://www.cultura.pe.gov.br/pagina/patrimonio-cultural/acervo/processos-de-tombamento/",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_CURRENT_LISTS_DOCUMENTS_LICENSE_REVIEW",
+      "notes": "Portal oficial publica listas de bens tombados e processos de tombamento estaduais. A proteção provisória passa a existir após publicação do edital de tombamento no Diário Oficial, antes da homologação final. Documentos/listas podem ser usados como evidência jurídica; redistribuição em massa e geometria devem ser revistas separadamente."
+    },
+    {
+      "id": "pe-neoenergia-pernambuco-provider",
+      "authority": "Neoenergia Pernambuco",
+      "scope": "PE",
+      "domain": [
+        "electricity_distribution",
+        "utility_provider",
+        "service_territory",
+        "power_network_context"
+      ],
+      "source_type": "official_distribution_company",
+      "portal_url": "https://www.neoenergia.com/web/pernambuco",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PROVIDER_SERVICE_TERRITORY",
+      "notes": "Distribuidora de energia em Pernambuco; documentos operacionais oficiais incluem Recife na área de concessão. Usar como resolvedor de prestador e para contexto/consultas oficiais; ativos técnicos geoespaciais devem vir preferencialmente da BDGD/ANEEL ou de publicação expressamente licenciada."
+    },
+    {
       "id": "pe-recife-environment-restrictions",
       "authority": "Prefeitura do Recife / Secretaria de Meio Ambiente e Sustentabilidade",
       "scope": "municipality",
@@ -2502,6 +3113,28 @@
       "notes": "Pasta oficial de Meio Ambiente inclui camadas como Faixa Non Aedificandi 2026, derivada de rios/canais/cursos d'água, Plano de Drenagem e ortofotocarta. Catalogar restrições e metadados por serviço."
     },
     {
+      "id": "pe-recife-esig-buildings-3d",
+      "authority": "Prefeitura do Recife / ESIG",
+      "scope": "Recife/PE",
+      "source_type": "municipal_geospatial_service",
+      "endpoint": "https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Planejamento/BASES_BAIRRO_FACEQUADRA_LOGRADOURO_LOTE/FeatureServer/7",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "license": null,
+      "temporal_coverage": "current service",
+      "notes": "Official parcel-linked 3D building layer. LoteDiretor queries by exact DSQFL with a closed field allowlist and exposes geometry plus MDT/MDE/MDS elevation attributes as cartographic context."
+    },
+    {
+      "id": "pe-recife-esig-mdt-declividade-2_5m",
+      "authority": "Prefeitura do Recife / ESIG",
+      "scope": "Recife/PE",
+      "source_type": "municipal_raster_map_service",
+      "endpoint": "https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Hosted/RGB_MDT_2_5MTS_DECLIVIDADE_tif/MapServer",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "license": null,
+      "temporal_coverage": null,
+      "notes": "Official cached 2.5 m MDT-derived slope visualization is available as map tiles. ArcGIS identify did not return numeric raster values in validation, so LoteDiretor uses it only as visual slope context and does not infer parcel elevations from colors."
+    },
+    {
       "id": "pe-recife-financas-lotes",
       "authority": "Prefeitura do Recife",
       "scope": "municipality",
@@ -2517,6 +3150,54 @@
       "access_class": "PUBLIC_QUERY_ONLY",
       "verification_status": "VERIFIED_ENDPOINT_LICENSE_REVIEW",
       "notes": "Pasta pública Finanças expõe serviços de lotes, numeração, levantamentos e análises de localização."
+    },
+    {
+      "id": "pe-recife-flood-2026",
+      "authority": "Prefeitura do Recife",
+      "scope": "2611606",
+      "domain": [
+        "risk",
+        "flooding"
+      ],
+      "source_type": "ArcGIS_FeatureServer",
+      "base_url": "https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Hosted/Poligonos_Alagamentos_2026_5/FeatureServer/0",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "LIVE_PROPERTY_RESOLVER_2026",
+      "notes": "Polígonos municipais de alagamento 2026 consultados espacialmente."
+    },
+    {
+      "id": "pe-recife-flooded-lots-2026",
+      "authority": "Prefeitura do Recife",
+      "scope": "2611606",
+      "domain": [
+        "risk",
+        "flooding",
+        "parcel"
+      ],
+      "source_type": "ArcGIS_FeatureServer",
+      "base_url": "https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Hosted/Lotes_Areas_Alagadas_2026_V1/FeatureServer/0",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "LIVE_EXACT_PARCEL_MATCH_2026",
+      "notes": "Consulta por inscrição fiscal do lote; somente campos públicos não pessoais são expostos."
+    },
+    {
+      "id": "pe-recife-heritage-iep",
+      "authority": "Prefeitura do Recife / SEDUL / Diretoria de Preservação do Patrimônio Cultural",
+      "scope": "municipality",
+      "municipality_ibge": "2611606",
+      "domain": [
+        "heritage",
+        "protected_assets",
+        "legal_restriction",
+        "historical_building_presence"
+      ],
+      "source_type": "CKAN_dataset",
+      "discovery_url": "https://dados.recife.pe.gov.br/dataset/imoveis-especiais-de-preservacao-ieps",
+      "access_class": "OPEN_REUSABLE",
+      "license": "ODbL",
+      "verification_status": "VERIFIED",
+      "update_frequency": "annual",
+      "notes": "Relação oficial dos Imóveis Especiais de Preservação (IEPs), com GeoJSON/CSV/JSON. Campos observados incluem código IEP, ano de construção, logradouro, ano de tombamento, lei, bairro e regional. Complementar com ZEPH e IPHAN."
     },
     {
       "id": "pe-recife-iptu",
@@ -2563,6 +3244,20 @@
       "notes": "Relação de transações com recolhimento de ITBI, características do imóvel e informações da operação."
     },
     {
+      "id": "pe-recife-landslide-susceptibility",
+      "authority": "Prefeitura do Recife",
+      "scope": "2611606",
+      "domain": [
+        "risk",
+        "landslide_susceptibility"
+      ],
+      "source_type": "ArcGIS_FeatureServer",
+      "base_url": "https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Hosted/Suscebilidade_Deslizamento/FeatureServer/0",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "LIVE_PROPERTY_RESOLVER_2026",
+      "notes": "Carta de suscetibilidade a deslizamento; suscetibilidade não equivale a laudo de risco específico do terreno."
+    },
+    {
       "id": "pe-recife-licenciamento-urbanistico",
       "authority": "Prefeitura do Recife / SEDUL",
       "scope": "municipality",
@@ -2602,6 +3297,26 @@
       "notes": "Serviço oficial 2026 com bacias hidrográficas, rios/riachos e planejamento de limpeza de macrodrenagem. Revisar licença por item."
     },
     {
+      "id": "pe-recife-official-gazette-open-data",
+      "authority": "Prefeitura do Recife / Secretaria de Governo e Participação Social / EMPREL",
+      "scope": "municipality",
+      "municipality_ibge": "2611606",
+      "domain": [
+        "official_gazette",
+        "legal_publication",
+        "municipal_acts",
+        "historical_law",
+        "public_documents"
+      ],
+      "source_type": "CKAN_dataset",
+      "discovery_url": "https://dados.recife.pe.gov.br/dataset/diario-oficial",
+      "access_class": "OPEN_REUSABLE",
+      "license": "ODbL",
+      "verification_status": "VERIFIED",
+      "update_frequency": "monthly",
+      "notes": "Dataset oficial do Diário Oficial com recursos CSV/ZIP/JSON, dicionário e API CKAN. Série publicada desde 2004, com arquivos atuais no portal em 2025 e atualização de metadados em 2026. Usar para eventos legais/urbanísticos mantendo vínculo ao PDF/edição oficial."
+    },
+    {
       "id": "pe-recife-open-data",
       "authority": "Prefeitura do Recife",
       "scope": "municipality",
@@ -2622,6 +3337,23 @@
       "access_class": "OPEN_REUSABLE",
       "verification_status": "VERIFIED",
       "notes": "Portal possui séries históricas anuais de IPTU e ITBI e dados urbanísticos."
+    },
+    {
+      "id": "pe-recife-ortho-2013-2014",
+      "authority": "Prefeitura do Recife / SEMOC / SELCA / UIG",
+      "scope": "municipality",
+      "municipality_ibge": "2611606",
+      "domain": [
+        "imagery",
+        "orthophoto",
+        "historical_imagery",
+        "visual_reference"
+      ],
+      "source_type": "ArcGIS_MapServer_cached",
+      "service_url": "https://esigportal2.recife.pe.gov.br/arcgis/rest/services/MeioAmbiente/MA_Ortofoto2013_2014MapService/MapServer",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PUBLIC_SERVICE_LICENSE_REVIEW",
+      "notes": "Ortofoto oficial 2013/2014 publicada em serviço ArcGIS cacheado, EPSG:31985, níveis até escala 1:500. Copyright atribuído à Prefeitura do Recife/SEMOC/SELCA/UIG. Licença de reutilização/materialização não identificada; manter query/render-only até revisão."
     },
     {
       "id": "pe-recife-outorga-onerosa",
@@ -2657,6 +3389,74 @@
       "base_url": "https://esigportal2.recife.pe.gov.br/arcgis/rest/services/parcelamentosolo/BASES_PROD_PUPS_CONSULTA/MapServer",
       "access_class": "PUBLIC_QUERY_ONLY",
       "verification_status": "VERIFIED_ENDPOINT_LICENSE_REVIEW"
+    },
+    {
+      "id": "pe-recife-public-lighting",
+      "authority": "Prefeitura do Recife / EMLURB",
+      "scope": "municipality",
+      "municipality_ibge": "2611606",
+      "domain": [
+        "public_lighting",
+        "utility_provider",
+        "infrastructure",
+        "street_assets"
+      ],
+      "source_type": "official_public_service",
+      "portal_url": "https://emlurb.recife.pe.gov.br/iluminacao-publica-2",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PUBLIC_SERVICE",
+      "notes": "EMLURB é responsável por planejar, supervisionar, controlar, restaurar, manter e ampliar a iluminação pública do Recife e monitora os pontos luminosos. Inventário técnico/telegestão não é presumido como open data."
+    },
+    {
+      "id": "pe-recife-sedec-risk-sectors",
+      "authority": "Prefeitura do Recife / Defesa Civil",
+      "scope": "2611606",
+      "domain": [
+        "risk",
+        "geological_risk",
+        "civil_defense"
+      ],
+      "source_type": "ArcGIS_FeatureServer",
+      "base_url": "https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Hosted/Setores_Risco_SEDEC/FeatureServer/0",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "LIVE_PROPERTY_RESOLVER_2026",
+      "notes": "Setores oficiais de risco consultados por interseção pontual. Grau/setor não substitui vistoria geotécnica atual."
+    },
+    {
+      "id": "pe-recife-sei-public-search",
+      "authority": "Prefeitura do Recife",
+      "scope": "municipality",
+      "municipality_ibge": "2611606",
+      "domain": [
+        "administrative_processes",
+        "public_documents",
+        "licensing_process_context",
+        "procedural_status"
+      ],
+      "source_type": "official_public_process_search",
+      "portal_url": "https://portalsei.recife.pe.gov.br/",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PUBLIC_SEARCH",
+      "notes": "Portal SEI municipal oferece 'Pesquisar Processos' e validação de documentos. Automatização só deve usar interfaces públicas documentadas; não contornar autenticação nem indexar conteúdo restrito."
+    },
+    {
+      "id": "pe-recife-zeph",
+      "authority": "Prefeitura do Recife / SEDUL",
+      "scope": "municipality",
+      "municipality_ibge": "2611606",
+      "domain": [
+        "heritage",
+        "zeph",
+        "protected_area",
+        "urban_parameters",
+        "legal_restriction",
+        "heritage_buffer"
+      ],
+      "source_type": "ArcGIS_FeatureServer",
+      "service_url": "https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Planejamento/BASES_ZONEAMENTO_G_PD2020/FeatureServer/3",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PUBLIC_SERVICE_LICENSE_REVIEW",
+      "notes": "Camada oficial de Zona Especial de Preservação do Patrimônio Histórico-Cultural (ZEPH), vinculada ao Plano Diretor/legislação urbanística. Complementar com IEPs municipais e Fundarpe/IPHAN. Licença do serviço ArcGIS deve ser confirmada antes de espelhamento."
     },
     {
       "id": "pe-recife-zoning-arcgis",
@@ -2820,6 +3620,23 @@
       "notes": "GeoServer oficial com acesso anônimo, 34 workspaces e 144 camadas na data da pesquisa; licença precisa ser validada por camada."
     },
     {
+      "id": "rj-aguas-do-rio-provider",
+      "authority": "Águas do Rio / Aegea",
+      "scope": "RJ_SUBMUNICIPAL_AND_MULTI_MUNICIPAL",
+      "domain": [
+        "water_supply",
+        "sewerage",
+        "utility_provider",
+        "service_territory",
+        "sanitation"
+      ],
+      "source_type": "official_sanitation_concessionaire",
+      "portal_url": "https://www.aguasdorio.com.br/quem-somos/",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PROVIDER_SERVICE_TERRITORY",
+      "notes": "Águas do Rio informa responsabilidade por água e esgoto em 27 municípios e 124 bairros da capital; na cidade do Rio cobre principalmente zonas Norte, Sul e Centro. O resolvedor deve operar abaixo do nível municipal porque a capital possui outras concessionárias."
+    },
+    {
       "id": "rj-cedae-open-data",
       "authority": "CEDAE",
       "scope": "RJ",
@@ -2835,6 +3652,57 @@
       "access_class": "PUBLIC_QUERY_ONLY",
       "verification_status": "VERIFIED_OPEN_DATA_PORTAL_RESOURCES_TO_CATALOG",
       "notes": "CEDAE mantém página oficial de dados abertos. Atualmente atua principalmente na produção/upstream de água em grande parte da região atendida; concessionárias locais podem operar distribuição/esgoto downstream. Catalogar datasets individualmente e resolver prestador por município."
+    },
+    {
+      "id": "rj-igua-rio-provider",
+      "authority": "Iguá Rio",
+      "scope": "RJ_SUBMUNICIPAL_AND_MULTI_MUNICIPAL",
+      "domain": [
+        "water_supply",
+        "sewerage",
+        "utility_provider",
+        "service_territory",
+        "sanitation"
+      ],
+      "source_type": "official_sanitation_concessionaire",
+      "portal_url": "https://www.igua.com.br/rio-de-janeiro/informacoes-para-voce",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PROVIDER_SERVICE_TERRITORY",
+      "notes": "Na capital, Iguá opera distribuição de água e esgotamento na região da Barra/Jacarepaguá, atualmente descrita em 19 bairros/áreas; captação e tratamento de água permanecem com CEDAE. Praça Seca possui cobertura parcial. Resolver por bairro/polígono, não somente IBGE."
+    },
+    {
+      "id": "rj-inepac-protected-heritage",
+      "authority": "Governo do Estado do Rio de Janeiro / SECEC-RJ / INEPAC",
+      "scope": "state",
+      "domain": [
+        "heritage",
+        "protected_assets",
+        "pending_tombamento",
+        "heritage_approval",
+        "legal_restriction",
+        "official_acts"
+      ],
+      "source_type": "official_state_heritage_authority_and_acts",
+      "portal_url": "https://cultura.rj.gov.br/estrutura/",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_AUTHORITY_PUBLIC_ACTS_INVENTORY_CHANNEL_REVIEW",
+      "notes": "INEPAC é o órgão estadual responsável por identificar, cadastrar, inventariar, tombar, fiscalizar e manter arquivo dos bens protegidos e processos de tombamento. Atos recentes são publicados pela SECEC/Diário Oficial. O inventário/portal legado de bens deve ser tratado como consulta até haver interface atual e termos estáveis."
+    },
+    {
+      "id": "rj-light-distribuicao-provider",
+      "authority": "Light Serviços de Eletricidade S.A.",
+      "scope": "RJ_CONCESSION_AREA",
+      "domain": [
+        "electricity_distribution",
+        "utility_provider",
+        "service_territory",
+        "power_network_context"
+      ],
+      "source_type": "official_distribution_company",
+      "portal_url": "https://www.light.com.br/SitePages/page-distribuicao.aspx",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PROVIDER_SERVICE_TERRITORY",
+      "notes": "Light publica mapa da área de concessão e atende a Região Metropolitana do Rio, incluindo a capital. Usar como resolver de prestador; ativos técnicos devem ser reconciliados com BDGD/ANEEL."
     },
     {
       "id": "rj-naturgy-gas-network",
@@ -2923,25 +3791,6 @@
       "notes": "Índice de suscetibilidade física a inundações para suporte ao planejamento urbano, considerando impermeabilização, declividade, cota e proximidade de cursos d'água."
     },
     {
-      "id": "rj-rio-mdt-lidar-2019",
-      "authority": "Prefeitura do Rio de Janeiro / Instituto Pereira Passos",
-      "scope": "municipality",
-      "municipality_ibge": "3304557",
-      "domain": [
-        "terrain",
-        "elevation",
-        "lidar",
-        "topography"
-      ],
-      "source_type": "ArcGIS_MapServer",
-      "base_url": "https://pgeo3.rio.rj.gov.br/arcgis/rest/services/Cartografia/Modelo_Digital_de_Terreno__Lidar_2019__escala_1_10_000_/MapServer",
-      "license": "CC BY 4.0",
-      "access_class": "OPEN_REUSABLE",
-      "verification_status": "VERIFIED",
-      "temporal_coverage": "2019",
-      "notes": "Modelo Digital de Terreno derivado de levantamento LiDAR 2019, reamostrado para 5 m, escala 1:10.000. Integrado por identify pontual e amostras sobre o lote; não substitui levantamento planialtimétrico executivo."
-    },
-    {
       "id": "rj-rio-geopal",
       "authority": "Prefeitura do Rio de Janeiro / SMPU",
       "scope": "municipality",
@@ -2956,6 +3805,24 @@
       "access_class": "PUBLIC_QUERY_ONLY",
       "verification_status": "VERIFIED_PUBLIC_SERVICE_LICENSE_REVIEW",
       "notes": "Serviço oficial de consulta de Projetos Aprovados de Loteamento (PAL). ItemInfo não declara licença; usar como consulta/evidência até revisão."
+    },
+    {
+      "id": "rj-rio-heritage-protected-areas",
+      "authority": "Prefeitura do Rio de Janeiro / SMDU",
+      "scope": "municipality",
+      "municipality_ibge": "3304557",
+      "domain": [
+        "heritage",
+        "protected_area",
+        "archaeology",
+        "environmental_heritage",
+        "legal_restriction"
+      ],
+      "source_type": "ArcGIS_FeatureServer",
+      "service_url": "https://pgeo3.rio.rj.gov.br/arcgis/rest/services/Urbanismo/LBB_Areas_Protegidas/FeatureServer",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PUBLIC_SERVICE_LICENSE_REVIEW",
+      "notes": "Camada oficial 'Áreas Protegidas' contém polígonos de áreas protegidas e inclui ocorrências de interesse biológico/arqueológico e paisagístico. Deve ser classificada por tipo/ato antes de uso; não substituir APAC/tombamento específico nem inferir órgão aprovador sem campo ou ato oficial."
     },
     {
       "id": "rj-rio-hidrografia-drenagem",
@@ -3012,6 +3879,26 @@
       "notes": "Cadastro imobiliário/IPTU do ano vigente para imóveis residenciais, não residenciais e territoriais, por divisões administrativas e logradouros. Item metadata consultado declara CC BY 4.0."
     },
     {
+      "id": "rj-rio-irph-apac",
+      "authority": "Prefeitura do Rio de Janeiro / Instituto Rio Patrimônio da Humanidade (IRPH) / SMDU",
+      "scope": "municipality",
+      "municipality_ibge": "3304557",
+      "domain": [
+        "heritage",
+        "apac",
+        "protected_area",
+        "legal_restriction",
+        "heritage_approval",
+        "urban_planning"
+      ],
+      "source_type": "ArcGIS_FeatureServer_and_IRPH_legal_guides",
+      "service_url": "https://pgeo3.rio.rj.gov.br/arcgis/rest/services/Urbanismo/LBB_APAC/FeatureServer",
+      "portal_url": "https://irph.prefeitura.rio/area-de-protecao-do-ambiente-cultural-2/",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PUBLIC_GEOMETRY_LEGAL_GUIDES_LICENSE_REVIEW",
+      "notes": "Serviço oficial fornece geometrias das APACs; portal IRPH publica guias, mapas e atos/decretos por APAC. Usar geometria + ato jurídico para incidência. Licença de redistribuição do FeatureServer não está explícita."
+    },
+    {
       "id": "rj-rio-itbi",
       "authority": "Prefeitura do Rio de Janeiro / Secretaria Municipal de Fazenda / IPP",
       "scope": "municipality",
@@ -3029,6 +3916,79 @@
       "verification_status": "VERIFIED",
       "temporal_coverage": "2010+",
       "notes": "Transações por divisão administrativa/logradouro, mês/ano, imóveis territoriais/residenciais/não residenciais. Inclui médias de área, percentual transferido, valor da transação e valor total estimado. Metadados declaram CC BY 4.0 e explicitam supressão de casos de logradouro com apenas uma transação em certas tabelas."
+    },
+    {
+      "id": "rj-rio-licenses-habite-se",
+      "authority": "Prefeitura do Rio de Janeiro / SMDU / Gerência de Informações e Monitoramento",
+      "scope": "municipality",
+      "municipality_ibge": "3304557",
+      "domain": [
+        "building_permits",
+        "licensing",
+        "habite_se",
+        "building_history",
+        "urban_data"
+      ],
+      "source_type": "official_urban_information_reports_and_query",
+      "discovery_url": "https://desenvolvimentourbano.prefeitura.rio/informacoes-urbanisticas/",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_OFFICIAL_PUBLIC_DATA_TERMS_LIMITED",
+      "notes": "A área oficial de Informações Urbanas usa bases georreferenciadas e registros administrativos, especialmente licenciamento urbanístico, e publica links para 'Licenças e Habite-se' e relação mensal. O termo da página permite uso livre das análises e mapas com referência à fonte; isso não é tratado como licença irrestrita de todos os registros brutos. Usar relatórios/consulta como evidência e revisar cada recurso antes de materialização."
+    },
+    {
+      "id": "rj-rio-mais-saneamento-provider",
+      "authority": "Rio+Saneamento",
+      "scope": "RJ_SUBMUNICIPAL_AND_MULTI_MUNICIPAL",
+      "domain": [
+        "water_supply",
+        "sewerage",
+        "utility_provider",
+        "service_territory",
+        "sanitation"
+      ],
+      "source_type": "official_sanitation_concessionaire",
+      "portal_url": "https://www.riomaissaneamento.com.br/",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PROVIDER_SERVICE_TERRITORY",
+      "notes": "Rio+Saneamento atua em 18 municípios e 24 bairros da Zona Oeste da capital. O resolvedor deve usar território submunicipal; não assumir que 'Rio de Janeiro/RJ' identifica um único prestador de saneamento."
+    },
+    {
+      "id": "rj-rio-mdt-lidar-2019",
+      "authority": "Prefeitura do Rio de Janeiro / Instituto Pereira Passos",
+      "scope": "municipality",
+      "municipality_ibge": "3304557",
+      "domain": [
+        "terrain",
+        "elevation",
+        "lidar",
+        "topography"
+      ],
+      "source_type": "ArcGIS_MapServer",
+      "base_url": "https://pgeo3.rio.rj.gov.br/arcgis/rest/services/Cartografia/Modelo_Digital_de_Terreno__Lidar_2019__escala_1_10_000_/MapServer",
+      "license": "CC BY 4.0",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED",
+      "temporal_coverage": "2019",
+      "notes": "Modelo Digital de Terreno derivado de levantamento LiDAR 2019, reamostrado para 5 m, escala 1:10.000. Integrado por identify pontual e amostras sobre o lote; não substitui levantamento planialtimétrico executivo."
+    },
+    {
+      "id": "rj-rio-official-gazette-doweb",
+      "authority": "Prefeitura do Rio de Janeiro / Imprensa Oficial",
+      "scope": "municipality",
+      "municipality_ibge": "3304557",
+      "domain": [
+        "official_gazette",
+        "legal_publication",
+        "municipal_acts",
+        "historical_law",
+        "public_documents"
+      ],
+      "source_type": "official_public_search_and_json_endpoint",
+      "portal_url": "https://doweb.rio.rj.gov.br/",
+      "service_url": "https://doweb.rio.rj.gov.br/apifront/portal/edicoes/edicoes_from_data/",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PUBLIC_SEARCH_ENDPOINT_LICENSE_REVIEW",
+      "notes": "D.O. Rio permite busca pública por edição/data/palavra, download da edição completa e consulta de autenticidade. Endpoint público JSON de edições foi confirmado. Licença de redistribuição não localizada; manter consulta/snapshot de metadados e documentos oficiais, sem presumir open data."
     },
     {
       "id": "rj-rio-pgeo3",
@@ -3065,6 +4025,58 @@
       "access_class": "OPEN_REUSABLE",
       "verification_status": "VERIFIED",
       "notes": "Plano Diretor: Lei Complementar 270/2024. Localizar endpoint oficial consolidado e anexos no próximo ciclo."
+    },
+    {
+      "id": "rj-rio-processos-administrativos",
+      "authority": "Prefeitura do Rio de Janeiro",
+      "scope": "municipality",
+      "municipality_ibge": "3304557",
+      "domain": [
+        "administrative_processes",
+        "public_documents",
+        "procedural_status",
+        "historical_process_systems"
+      ],
+      "source_type": "official_multi_system_process_query",
+      "portal_url": "https://transparencia.prefeitura.rio/consulta-a-processos/",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PUBLIC_NUMBER_QUERY",
+      "notes": "Consulta oficial orienta: SEI!RIO para processos autuados a partir de 05/12/2025; Processo.Rio e SICOP permanecem para processos legados. Consulta pública usa número do processo e pode exigir código de verificação. Resolver sistema por data/identificador e nunca contornar CAPTCHA."
+    },
+    {
+      "id": "rj-rio-public-lighting",
+      "authority": "Prefeitura do Rio de Janeiro / RioLuz",
+      "scope": "municipality",
+      "municipality_ibge": "3304557",
+      "domain": [
+        "public_lighting",
+        "utility_provider",
+        "infrastructure",
+        "street_assets"
+      ],
+      "source_type": "official_public_service",
+      "portal_url": "https://rioluz.prefeitura.rio/iluminacao-publica/",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PUBLIC_SERVICE",
+      "notes": "RioLuz é responsável por gerir, planejar, manter e modernizar a iluminação pública municipal. Há relatórios de modernização por mês/ano; inventário técnico por ponto exige revisão específica."
+    },
+    {
+      "id": "rj-rio-urban-uses-activities",
+      "authority": "Prefeitura do Rio de Janeiro / SMDU",
+      "scope": "municipality",
+      "municipality_ibge": "3304557",
+      "domain": [
+        "zoning",
+        "urban_parameters",
+        "land_use",
+        "legal_rules",
+        "urban_planning"
+      ],
+      "source_type": "ArcGIS_MapServer_tables",
+      "service_url": "https://pgeo3.rio.rj.gov.br/arcgis/rest/services/Urbanismo/IU_Usos_e_atividades/MapServer",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PUBLIC_SERVICE_LICENSE_REVIEW",
+      "notes": "Serviço oficial espacializa atividades/usos permitidos com base inicialmente na LC 270/2024 e Decreto 56.561/2025, sendo atualizado conforme novas normas entram em vigor. Possui camada de áreas e tabelas de atividades/usos/relacionamentos; suporta JSON/GeoJSON/PBF. A própria descrição alerta que a camada isolada não contém a informação completa, exigindo resolver os códigos nas tabelas e preservar vigência normativa."
     },
     {
       "id": "rn-natal-plano-mapas",
@@ -3557,6 +4569,54 @@
       "notes": "Identifica concessionárias reguladas de energia, gás e saneamento por município e contratos/concessões correspondentes. Útil para resolver quem atende o imóvel antes de consultar mapas/serviços da concessionária."
     },
     {
+      "id": "sp-barueri-cadastro-imobiliario-online",
+      "authority": "Prefeitura Municipal de Barueri · Secretaria de Finanças",
+      "scope": "municipal",
+      "uf": "SP",
+      "domain": "cadastre",
+      "source_type": "HTML",
+      "base_url": "https://portal.barueri.sp.gov.br/secretarias/secretaria-de-financas/consulta-cadastral",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_OFFICIAL_2026",
+      "notes": "Consulta cadastral oficial do município. Portal institucional informa que o SIAT gerencia cadastro de imóveis, cálculo do IPTU e taxa de incêndio. Sem camada espacial aberta verificada até esta auditoria."
+    },
+    {
+      "id": "sp-barueri-iptu-online",
+      "authority": "Prefeitura Municipal de Barueri · Secretaria de Finanças",
+      "scope": "municipal",
+      "uf": "SP",
+      "domain": "fiscal",
+      "source_type": "HTML",
+      "base_url": "https://portal.barueri.sp.gov.br/cidadao/moradia/emissao-2-via-iptu",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_OFFICIAL_2026",
+      "notes": "Serviço oficial de emissão de 2ª via de IPTU. Não tratado como bulk/open dataset. Integração automatizada somente se houver contrato público reproduzível e permitido; arquivos fornecidos pelo usuário podem ser materializados localmente com proveniência."
+    },
+    {
+      "id": "sp-barueri-processos-urbanisticos",
+      "authority": "Prefeitura Municipal de Barueri · Secretaria de Planejamento e Urbanismo",
+      "scope": "municipal",
+      "uf": "SP",
+      "domain": "permits",
+      "source_type": "HTML",
+      "base_url": "https://portal.barueri.sp.gov.br/cidadao/moradia/consulta-processos-urbanisticos",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_OFFICIAL_2026",
+      "notes": "Consulta oficial de processos urbanísticos. Deve ser vinculada ao imóvel somente por identificador/endereçamento compatível; não inferir licença específica por mera proximidade textual."
+    },
+    {
+      "id": "sp-barueri-zoneamento-prc-2023",
+      "authority": "Prefeitura Municipal de Barueri · Secretaria de Planejamento e Urbanismo",
+      "scope": "municipal",
+      "uf": "SP",
+      "domain": "planning",
+      "source_type": "PDF",
+      "base_url": "https://portal.barueri.sp.gov.br/cidadao/moradia/mapa-zoneamento",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_OFFICIAL_2026",
+      "notes": "Página oficial da Lei de Parcelamento, Uso e Ocupação do Solo. Publica LC 565/2023 e PRC_COMPLETA_2023. A PRC oficial é PDF vetorial AutoCAD, escala 1:5.000, SIRGAS 2000 / UTM; não é GeoPDF georreferenciado, portanto ainda não é usada para point-in-polygon automático."
+    },
+    {
       "id": "sp-campinas-spatial-data",
       "authority": "Prefeitura de Campinas",
       "scope": "municipality",
@@ -3593,6 +4653,25 @@
       "notes": "Mapa informa onde há rede/tubulação; construtoras/profissionais podem solicitar desenhos/croquis e orientação técnica. A própria Comgás alerta que consulta não substitui cadastro técnico em campo e que dados devem ser revalidados se a obra atrasar. Não espelhar a rede sem autorização."
     },
     {
+      "id": "sp-condephaat-protected-heritage",
+      "authority": "Governo do Estado de São Paulo / Secretaria da Cultura / CONDEPHAAT",
+      "scope": "state",
+      "domain": [
+        "heritage",
+        "protected_assets",
+        "pending_tombamento",
+        "heritage_buffer",
+        "archaeology",
+        "legal_restriction",
+        "heritage_approval"
+      ],
+      "source_type": "official_heritage_portal_and_state_gis",
+      "portal_url": "https://www.cultura.sp.gov.br/sec_cultura/CONDEPHAAT/Bens_Protegidos",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PUBLIC_PORTAL_GIS_TERMS_REVIEW",
+      "notes": "CONDEPHAAT mantém portal de bens protegidos, CEDOC/SISEP e mapa/IDE-SP. GeoSampa municipal também integra bens estaduais e áreas envoltórias, com links às resoluções. Usar o portal estadual como autoridade jurídica e GeoSampa/IDE-SP como geometria quando aplicável; materialização de geodados estaduais requer revisão dos termos do IDE-SP."
+    },
+    {
       "id": "sp-datageo",
       "authority": "Sistema Ambiental Paulista / SEMIL",
       "scope": "state",
@@ -3612,6 +4691,22 @@
       "access_class": "PUBLIC_QUERY_ONLY",
       "verification_status": "VERIFIED_ENDPOINT_LICENSE_PER_LAYER",
       "notes": "GeoServer público com WFS/WMS/WCS/WMTS/CSW; metadados frequentemente oferecem download Shapefile e lineage detalhado. Servidor se identifica com texto padrão/antigo, portanto autoridade deve ser confirmada pelo catálogo/metadados por camada."
+    },
+    {
+      "id": "sp-enel-distribuicao-provider",
+      "authority": "Enel Distribuição São Paulo",
+      "scope": "SP_CONCESSION_AREA",
+      "domain": [
+        "electricity_distribution",
+        "utility_provider",
+        "service_territory",
+        "power_network_context"
+      ],
+      "source_type": "official_distribution_company",
+      "portal_url": "https://www.enel.com.br/pt-saopaulo/cidades-atendidas-pela-enel-distribuicao.html",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PROVIDER_SERVICE_TERRITORY",
+      "notes": "Enel Distribuição São Paulo atende 24 municípios da Região Metropolitana de São Paulo, incluindo a capital. Usar para resolver prestador; ativos técnicos normalizados devem vir prioritariamente da BDGD/ANEEL. Presença da distribuidora não prova capacidade disponível no lote."
     },
     {
       "id": "sp-geosampa-cultural-heritage",
@@ -3710,6 +4805,23 @@
       "access_class": "PUBLIC_QUERY_ONLY",
       "verification_status": "VERIFIED_PORTAL_SERVER_ENDPOINT_DISCOVERY",
       "notes": "Portal ArcGIS Enterprise oficial identifica a própria Prefeitura e referencia o servidor REST local. Enumerar serviços públicos e classificar licença/campos no próximo ciclo."
+    },
+    {
+      "id": "sp-sabesp-provider",
+      "authority": "ARSESP / Sabesp",
+      "scope": "SP",
+      "domain": [
+        "water_supply",
+        "sewerage",
+        "utility_provider",
+        "service_territory",
+        "sanitation"
+      ],
+      "source_type": "official_regulatory_provider_registry",
+      "portal_url": "https://www.arsesp.sp.gov.br/SitePages/saneamento/municipios-conveniados-saneamento.aspx",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PROVIDER_SERVICE_TERRITORY",
+      "notes": "ARSESP confirma que a Sabesp presta água/esgoto na Capital Paulista entre os municípios regulados. Resolver prestador pelo município; confirmação de rede/disponibilidade na testada exige fonte técnica específica da prestadora."
     },
     {
       "id": "sp-santo-andre-siga",
@@ -3814,6 +4926,63 @@
       "notes": "GeoSanja oferece WMS/WFS/WCS, metadados e exportação/download em shapefile/KML/DWG-DXF conforme camada. A documentação pública menciona imóveis, endereço, zoneamento e inscrição imobiliária em consultas. Login existe para funções restritas da equipe e não deve ser contornado."
     },
     {
+      "id": "sp-sao-paulo-buildings-2d-geosampa",
+      "authority": "Prefeitura de São Paulo / SMUL / GEOINFO",
+      "scope": "municipality",
+      "municipality_ibge": "3550308",
+      "domain": [
+        "buildings",
+        "building_footprint",
+        "cartography",
+        "historical_building_presence"
+      ],
+      "source_type": "GeoSampa_vector_dataset",
+      "metadata_url": "https://metadados.geosampa.prefeitura.sp.gov.br/geonetwork/srv/resources/datasets/bcf69ef1-2f9e-42c2-b7ec-e808f89e8116",
+      "access_class": "OPEN_REUSABLE",
+      "license": "CC BY-SA 4.0",
+      "verification_status": "VERIFIED_OPEN_GEODATA_LICENSED",
+      "update_frequency": "not planned",
+      "notes": "Edificações 2D são polígonos oriundos de restituição fotogramétrica do MDC, baseados principalmente no recobrimento de 2004. Útil como footprint/cartografia histórica, mas não tratar como geometria predial atual sem reconciliação com cadastro fiscal, licenciamento e imagens mais recentes."
+    },
+    {
+      "id": "sp-sao-paulo-diario-oficial-api",
+      "authority": "Prefeitura de São Paulo / Secretaria Municipal de Gestão",
+      "scope": "municipality",
+      "municipality_ibge": "3550308",
+      "domain": [
+        "official_gazette",
+        "legal_publication",
+        "municipal_acts",
+        "historical_law"
+      ],
+      "source_type": "documented_API",
+      "developer_url": "https://www.apilib.prefeitura.sp.gov.br/store/apis/info?name=Diario_Oficial&provider=admin&version=v1",
+      "service_url": "https://gateway.apilib.prefeitura.sp.gov.br/sg/dom/v1",
+      "access_class": "AUTHENTICATED_PUBLIC",
+      "verification_status": "VERIFIED_DOCUMENTED_API_TOKEN_REQUIRED",
+      "notes": "API oficial publicada para dados do Diário Oficial da Cidade de São Paulo. O portal documenta endpoint e Swagger, mas exige token/subscrição; não testar ou contornar sem credencial legítima. Útil para alterações legais, editais, licenciamento, desapropriação e atos urbanísticos."
+    },
+    {
+      "id": "sp-sao-paulo-drainage-geosampa",
+      "authority": "Prefeitura de São Paulo / SIURB / FCTH",
+      "scope": "municipality",
+      "municipality_ibge": "3550308",
+      "domain": [
+        "drainage",
+        "stormwater",
+        "hydrology",
+        "infrastructure",
+        "flood"
+      ],
+      "source_type": "GeoSampa_vector_dataset",
+      "metadata_url": "https://metadados.geosampa.prefeitura.sp.gov.br/geonetwork/srv/resources/datasets/a3a68cba-d571-4667-8d56-024c1197a069",
+      "access_class": "OPEN_REUSABLE",
+      "license": "CC BY-SA 4.0 for PMSP-produced geospatial layers",
+      "verification_status": "VERIFIED_OPEN_GEODATA_LICENSED",
+      "update_frequency": "as needed",
+      "notes": "Rede de Drenagem vetorial produzida no contexto dos Cadernos de Bacias/Plano Diretor de Drenagem, com complementação e verificação de campo e atualização do traçado da rede. Usar como infraestrutura pluvial oficial com data e cobertura explícitas."
+    },
+    {
       "id": "sp-sao-paulo-geosampa-wfs",
       "authority": "Prefeitura de São Paulo",
       "scope": "municipality",
@@ -3856,6 +5025,24 @@
       "notes": "WMS oficial do GeoSampa. A licença CC BY-SA 4.0 aplica-se às camadas geoespaciais produzidas pelos órgãos da PMSP; conteúdo de terceiros deve ser revisto por camada."
     },
     {
+      "id": "sp-sao-paulo-habite-se-cedi",
+      "authority": "Prefeitura de São Paulo / Secretaria Municipal de Urbanismo e Licenciamento",
+      "scope": "municipality",
+      "municipality_ibge": "3550308",
+      "domain": [
+        "habite_se",
+        "building_regularization",
+        "building_history",
+        "licensing",
+        "property_documents"
+      ],
+      "source_type": "official_query_and_document_service",
+      "discovery_url": "https://www.prefeitura.sp.gov.br/web/licenciamento/w/servicos/365484",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_SERVICE_NOT_BULK_DATA",
+      "notes": "Certificado de Conclusão (antigo Habite-se) atesta conclusão de obra licenciada. Fluxos atuais dependem do sistema de origem do alvará (Aprova Digital/SLCe/SLC). CEDI também mantém histórico/regularidade de edificações. Tratar como consulta/documento por imóvel, não como bulk open data."
+    },
+    {
       "id": "sp-sao-paulo-iptu-cadastro-fiscal",
       "authority": "Prefeitura de São Paulo / Secretaria Municipal da Fazenda",
       "scope": "municipality",
@@ -3878,6 +5065,28 @@
       "notes": "Cadastro imobiliário fiscal IPTU em dados abertos/licença livre via GeoSampa. Base inclui SQL/endereço e atributos como área construída e área do terreno; aplicação deve seguir minimização de dados pessoais conforme orientação PGM/LGPD."
     },
     {
+      "id": "sp-sao-paulo-itbi-transactions",
+      "authority": "Prefeitura de São Paulo / Secretaria Municipal da Fazenda",
+      "scope": "municipality",
+      "municipality_ibge": "3550308",
+      "domain": [
+        "itbi",
+        "transactions",
+        "property_attributes",
+        "historical_series"
+      ],
+      "source_type": "official_public_download",
+      "discovery_url": "https://www2.prefeitura.sp.gov.br/web/fazenda/w/acesso_a_informacao/31501",
+      "formats": [
+        "XLSX",
+        "ODS"
+      ],
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PUBLIC_DOWNLOAD_MATERIALIZED_PRIVACY_SAFE",
+      "update_frequency": "monthly current-year file; annual historical files",
+      "notes": "Official public ITBI-IV transaction series is available as annual XLSX/ODS and has been materialized for 2006-2026 into a SQL-keyed privacy-safe index. Fields include transaction date/nature/values, VVR/base, financing, registry office/matrícula, SQL status, frontage, ideal fraction, land/built area, IPTU use/pattern and ACC. Buyer/seller names and CPF/CNPJ are intentionally not materialized. Historical matrícula/cartório are references from DTI and do not replace current registry certificates."
+    },
+    {
       "id": "sp-sao-paulo-licenciamento-geosampa",
       "authority": "Prefeitura de São Paulo / SMUL",
       "scope": "municipality",
@@ -3896,6 +5105,29 @@
       "license": "CC BY-SA 4.0"
     },
     {
+      "id": "sp-sao-paulo-lidar-terrain",
+      "authority": "Prefeitura de São Paulo / SMUL / GEOINFO",
+      "scope": "municipality",
+      "municipality_ibge": "3550308",
+      "domain": [
+        "terrain",
+        "lidar",
+        "elevation",
+        "surface_model",
+        "topography"
+      ],
+      "source_type": "GeoSampa_metadata_and_download",
+      "discovery_url": "https://metadados.geosampa.prefeitura.sp.gov.br/geonetwork/geoprodam/search?orgName=Coordenadoria+de+Produ%C3%A7%C3%A3o+e+An%C3%A1lise+da+Informa%C3%A7%C3%A3o+%E2%80%93+GEOINFO",
+      "formats": [
+        "LAZ",
+        "raster/grid metadata"
+      ],
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PUBLIC_GEODATA_LICENSED_SCHEMA_REVIEW",
+      "notes": "GeoSampa documenta MDT/MDS e LiDAR 2017/2020 produzidos para a PMSP. Em 2020 há nuvem LiDAR de ~10 pts/m² e produtos de 0,50 m, PEC-PCD Classe A. Licença geral do GeoSampa para geodados produzidos pela PMSP: CC BY-SA 4.0. Antes de baixar artefatos pesados, enumerar índice/tiles, formatos, CRS, hashes e política de object storage.",
+      "license": "CC BY-SA 4.0 for PMSP-produced GeoSampa geospatial data"
+    },
+    {
       "id": "sp-sao-paulo-pde-law",
       "authority": "Prefeitura de São Paulo / Câmara Municipal",
       "scope": "municipality",
@@ -3909,6 +5141,119 @@
       "access_class": "OPEN_REUSABLE",
       "verification_status": "VERIFIED",
       "notes": "PDE Lei 16.050/2014 com revisão intermediária pela Lei 17.975/2023 e anexos/mapas. Versionar alterações."
+    },
+    {
+      "id": "sp-sao-paulo-pgv-2026",
+      "authority": "Prefeitura de São Paulo / Catálogo de Legislação Municipal",
+      "scope": "municipality",
+      "municipality_ibge": "3550308",
+      "domain": [
+        "pgv",
+        "valuation",
+        "iptu",
+        "tax",
+        "law",
+        "historical_tax_record"
+      ],
+      "source_type": "official_law_with_annexes",
+      "discovery_url": "https://legislacao.prefeitura.sp.gov.br/lei-18330-de-11-de-novembro-de-2025",
+      "access_class": "OPEN_REUSABLE",
+      "verification_status": "VERIFIED_OFFICIAL_LAW_EFFECTIVE_2026",
+      "update_frequency": "by legal amendment",
+      "notes": "Lei 18.330/2025 atualiza a Planta Genérica de Valores a partir de 01/01/2026. O art. 1º remete ao Anexo I (valores unitários de m² de construção) e Anexo II (listagem de valores unitários de m² de terreno). Normalizar com vigência temporal e manter vínculo ao texto/anexos oficiais."
+    },
+    {
+      "id": "sp-sao-paulo-processos-administrativos",
+      "authority": "Prefeitura de São Paulo / Secretaria Municipal de Gestão / Arquivo Público Municipal",
+      "scope": "municipality",
+      "municipality_ibge": "3550308",
+      "domain": [
+        "administrative_processes",
+        "public_documents",
+        "procedural_status",
+        "licensing_process_context"
+      ],
+      "source_type": "official_public_process_portal",
+      "portal_url": "https://processos.prefeitura.sp.gov.br/Forms/Principal.aspx",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PUBLIC_NUMBER_QUERY",
+      "notes": "Portal centraliza processos administrativos municipais e permite consulta por número de localização/andamento, comunique-se e despachos. O portal também oferece pesquisa por CPF/CNPJ, mas o LoteDiretor NÃO deve usar esse eixo para descoberta de pessoas. Vincular processo somente quando número/relação com imóvel já for conhecida."
+    },
+    {
+      "id": "sp-sao-paulo-public-lighting",
+      "authority": "Prefeitura de São Paulo / SP Regula / ILUME",
+      "scope": "municipality",
+      "municipality_ibge": "3550308",
+      "domain": [
+        "public_lighting",
+        "utility_provider",
+        "infrastructure",
+        "street_assets"
+      ],
+      "source_type": "official_public_service",
+      "portal_url": "https://prefeitura.sp.gov.br/web/spregula/iluminacao_publica/",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PUBLIC_SERVICE",
+      "notes": "SP Regula/ILUME gerem e regulam serviços de iluminação pública e o GeoSampa referencia pontos modernizados com LED. Identifica responsável e fluxo de serviço; inventário técnico reutilizável de luminárias deve ser validado separadamente."
+    },
+    {
+      "id": "sp-sao-paulo-risk-geosampa",
+      "authority": "Prefeitura de São Paulo / Defesa Civil / SMUL-GEOINFO",
+      "scope": "municipality",
+      "municipality_ibge": "3550308",
+      "domain": [
+        "risk",
+        "flood",
+        "landslide",
+        "geotechnics",
+        "historical_series",
+        "disaster"
+      ],
+      "source_type": "GeoSampa_vector_and_reports",
+      "metadata_url": "https://metadados.geosampa.prefeitura.sp.gov.br/geonetwork/srv/search?topicCat=geoscientificInformation",
+      "access_class": "OPEN_REUSABLE",
+      "license": "CC BY-SA 4.0 for PMSP-produced geospatial layers",
+      "verification_status": "VERIFIED_OPEN_GEODATA_LICENSED",
+      "notes": "Catálogo GeoSampa inclui risco geológico, risco hidrológico, manchas/ocorrências de inundação e alagamento. Ocorrências possuem série histórica desde 2013 até a atualidade. Relatórios completos por área/setor podem existir em PDF. Preservar metodologia, data e nível de precisão."
+    },
+    {
+      "id": "sp-sao-paulo-urban-parameters-geosampa",
+      "authority": "Prefeitura de São Paulo / SMUL / SP Urbanismo",
+      "scope": "municipality",
+      "municipality_ibge": "3550308",
+      "domain": [
+        "urban_parameters",
+        "zoning",
+        "legal_rules",
+        "development_rights",
+        "urban_planning"
+      ],
+      "source_type": "GeoSampa_legal_geospatial_catalog",
+      "metadata_url": "https://metadados.geosampa.prefeitura.sp.gov.br/geonetwork/geoprodam/search?keyword=planejamento+urbano",
+      "access_class": "OPEN_REUSABLE",
+      "license": "CC BY-SA 4.0 for PMSP-produced geospatial layers",
+      "verification_status": "VERIFIED_CATALOG_MULTIPLE_LEGAL_INSTRUMENTS",
+      "notes": "GeoSampa publica camadas e dicionários de parâmetros urbanísticos vinculados a instrumentos legais, inclusive PIUs/OUCs. Há datasets com CA máximo, gabarito, cota-parte, quadro/mapa e links para lei/anexos. Não assumir que uma única camada cobre toda a cidade: o normalizador deve resolver regra por instrumento, perímetro e vigência."
+    },
+    {
+      "id": "sp-sao-paulo-water-sewer-geoconvias",
+      "authority": "Prefeitura de São Paulo / antigo CONVIAS-SIURB",
+      "scope": "municipality",
+      "municipality_ibge": "3550308",
+      "domain": [
+        "water_supply",
+        "sewerage",
+        "utilities",
+        "infrastructure",
+        "historical_network_works"
+      ],
+      "source_type": "GeoSampa_vector_dataset",
+      "metadata_url": "https://metadados.geosampa.prefeitura.sp.gov.br/geonetwork/srv/resources/datasets/a986702e-b25f-404c-a1fc-90b5ec91ec34",
+      "access_class": "OPEN_REUSABLE",
+      "license": "CC BY-SA 4.0 for PMSP-produced geospatial layers",
+      "verification_status": "VERIFIED_OPEN_GEODATA_LIMITED_COVERAGE",
+      "update_frequency": "not planned",
+      "notes": "Camada 'Água e Esgoto' do antigo GeoConvias registra As Built de obras/serviços pontuais de implantação, instalação e manutenção. A própria PMSP informa que NÃO corresponde ao cadastro completo das redes existentes. Usar apenas como evidência histórica/local de intervenções, nunca como prova de disponibilidade na testada."
     },
     {
       "id": "sp-sorocaba-geospatial-downloads",
@@ -3963,1303 +5308,6 @@
       "access_class": "PUBLIC_QUERY_ONLY",
       "verification_status": "VERIFIED_QUERY_PRIVACY_CONTROLS",
       "notes": "Consulta de IPTU e Planta de Valores por CCI. Consulta de CCI usa CPF/CNPJ como controle de acesso e não deve ser automatizada para descoberta de imóveis. Resolve Palmas documenta revisão cadastral, alvará/habite-se e vínculo com matrícula/cadastro municipal."
-    },
-    {
-      "id": "sp-sao-paulo-itbi-transactions",
-      "authority": "Prefeitura de São Paulo / Secretaria Municipal da Fazenda",
-      "scope": "municipality",
-      "municipality_ibge": "3550308",
-      "domain": [
-        "itbi",
-        "transactions",
-        "property_attributes",
-        "historical_series"
-      ],
-      "source_type": "official_public_download",
-      "discovery_url": "https://www2.prefeitura.sp.gov.br/web/fazenda/w/acesso_a_informacao/31501",
-      "formats": [
-        "XLSX",
-        "ODS"
-      ],
-      "access_class": "PUBLIC_QUERY_ONLY",
-      "verification_status": "VERIFIED_PUBLIC_DOWNLOAD_MATERIALIZED_PRIVACY_SAFE",
-      "update_frequency": "monthly current-year file; annual historical files",
-      "notes": "Official public ITBI-IV transaction series is available as annual XLSX/ODS and has been materialized for 2006-2026 into a SQL-keyed privacy-safe index. Fields include transaction date/nature/values, VVR/base, financing, registry office/matrícula, SQL status, frontage, ideal fraction, land/built area, IPTU use/pattern and ACC. Buyer/seller names and CPF/CNPJ are intentionally not materialized. Historical matrícula/cartório are references from DTI and do not replace current registry certificates."
-    },
-    {
-      "id": "sp-sao-paulo-habite-se-cedi",
-      "authority": "Prefeitura de São Paulo / Secretaria Municipal de Urbanismo e Licenciamento",
-      "scope": "municipality",
-      "municipality_ibge": "3550308",
-      "domain": [
-        "habite_se",
-        "building_regularization",
-        "building_history",
-        "licensing",
-        "property_documents"
-      ],
-      "source_type": "official_query_and_document_service",
-      "discovery_url": "https://www.prefeitura.sp.gov.br/web/licenciamento/w/servicos/365484",
-      "access_class": "PUBLIC_QUERY_ONLY",
-      "verification_status": "VERIFIED_SERVICE_NOT_BULK_DATA",
-      "notes": "Certificado de Conclusão (antigo Habite-se) atesta conclusão de obra licenciada. Fluxos atuais dependem do sistema de origem do alvará (Aprova Digital/SLCe/SLC). CEDI também mantém histórico/regularidade de edificações. Tratar como consulta/documento por imóvel, não como bulk open data."
-    },
-    {
-      "id": "sp-sao-paulo-diario-oficial-api",
-      "authority": "Prefeitura de São Paulo / Secretaria Municipal de Gestão",
-      "scope": "municipality",
-      "municipality_ibge": "3550308",
-      "domain": [
-        "official_gazette",
-        "legal_publication",
-        "municipal_acts",
-        "historical_law"
-      ],
-      "source_type": "documented_API",
-      "developer_url": "https://www.apilib.prefeitura.sp.gov.br/store/apis/info?name=Diario_Oficial&provider=admin&version=v1",
-      "service_url": "https://gateway.apilib.prefeitura.sp.gov.br/sg/dom/v1",
-      "access_class": "AUTHENTICATED_PUBLIC",
-      "verification_status": "VERIFIED_DOCUMENTED_API_TOKEN_REQUIRED",
-      "notes": "API oficial publicada para dados do Diário Oficial da Cidade de São Paulo. O portal documenta endpoint e Swagger, mas exige token/subscrição; não testar ou contornar sem credencial legítima. Útil para alterações legais, editais, licenciamento, desapropriação e atos urbanísticos."
-    },
-    {
-      "id": "sp-sao-paulo-lidar-terrain",
-      "authority": "Prefeitura de São Paulo / SMUL / GEOINFO",
-      "scope": "municipality",
-      "municipality_ibge": "3550308",
-      "domain": [
-        "terrain",
-        "lidar",
-        "elevation",
-        "surface_model",
-        "topography"
-      ],
-      "source_type": "GeoSampa_metadata_and_download",
-      "discovery_url": "https://metadados.geosampa.prefeitura.sp.gov.br/geonetwork/geoprodam/search?orgName=Coordenadoria+de+Produ%C3%A7%C3%A3o+e+An%C3%A1lise+da+Informa%C3%A7%C3%A3o+%E2%80%93+GEOINFO",
-      "formats": [
-        "LAZ",
-        "raster/grid metadata"
-      ],
-      "access_class": "PUBLIC_QUERY_ONLY",
-      "verification_status": "VERIFIED_PUBLIC_GEODATA_LICENSED_SCHEMA_REVIEW",
-      "notes": "GeoSampa documenta MDT/MDS e LiDAR 2017/2020 produzidos para a PMSP. Em 2020 há nuvem LiDAR de ~10 pts/m² e produtos de 0,50 m, PEC-PCD Classe A. Licença geral do GeoSampa para geodados produzidos pela PMSP: CC BY-SA 4.0. Antes de baixar artefatos pesados, enumerar índice/tiles, formatos, CRS, hashes e política de object storage.",
-      "license": "CC BY-SA 4.0 for PMSP-produced GeoSampa geospatial data"
-    },
-    {
-      "id": "sp-sao-paulo-buildings-2d-geosampa",
-      "authority": "Prefeitura de São Paulo / SMUL / GEOINFO",
-      "scope": "municipality",
-      "municipality_ibge": "3550308",
-      "domain": [
-        "buildings",
-        "building_footprint",
-        "cartography",
-        "historical_building_presence"
-      ],
-      "source_type": "GeoSampa_vector_dataset",
-      "metadata_url": "https://metadados.geosampa.prefeitura.sp.gov.br/geonetwork/srv/resources/datasets/bcf69ef1-2f9e-42c2-b7ec-e808f89e8116",
-      "access_class": "OPEN_REUSABLE",
-      "license": "CC BY-SA 4.0",
-      "verification_status": "VERIFIED_OPEN_GEODATA_LICENSED",
-      "update_frequency": "not planned",
-      "notes": "Edificações 2D são polígonos oriundos de restituição fotogramétrica do MDC, baseados principalmente no recobrimento de 2004. Útil como footprint/cartografia histórica, mas não tratar como geometria predial atual sem reconciliação com cadastro fiscal, licenciamento e imagens mais recentes."
-    },
-    {
-      "id": "sp-sao-paulo-risk-geosampa",
-      "authority": "Prefeitura de São Paulo / Defesa Civil / SMUL-GEOINFO",
-      "scope": "municipality",
-      "municipality_ibge": "3550308",
-      "domain": [
-        "risk",
-        "flood",
-        "landslide",
-        "geotechnics",
-        "historical_series",
-        "disaster"
-      ],
-      "source_type": "GeoSampa_vector_and_reports",
-      "metadata_url": "https://metadados.geosampa.prefeitura.sp.gov.br/geonetwork/srv/search?topicCat=geoscientificInformation",
-      "access_class": "OPEN_REUSABLE",
-      "license": "CC BY-SA 4.0 for PMSP-produced geospatial layers",
-      "verification_status": "VERIFIED_OPEN_GEODATA_LICENSED",
-      "notes": "Catálogo GeoSampa inclui risco geológico, risco hidrológico, manchas/ocorrências de inundação e alagamento. Ocorrências possuem série histórica desde 2013 até a atualidade. Relatórios completos por área/setor podem existir em PDF. Preservar metodologia, data e nível de precisão."
-    },
-    {
-      "id": "sp-sao-paulo-drainage-geosampa",
-      "authority": "Prefeitura de São Paulo / SIURB / FCTH",
-      "scope": "municipality",
-      "municipality_ibge": "3550308",
-      "domain": [
-        "drainage",
-        "stormwater",
-        "hydrology",
-        "infrastructure",
-        "flood"
-      ],
-      "source_type": "GeoSampa_vector_dataset",
-      "metadata_url": "https://metadados.geosampa.prefeitura.sp.gov.br/geonetwork/srv/resources/datasets/a3a68cba-d571-4667-8d56-024c1197a069",
-      "access_class": "OPEN_REUSABLE",
-      "license": "CC BY-SA 4.0 for PMSP-produced geospatial layers",
-      "verification_status": "VERIFIED_OPEN_GEODATA_LICENSED",
-      "update_frequency": "as needed",
-      "notes": "Rede de Drenagem vetorial produzida no contexto dos Cadernos de Bacias/Plano Diretor de Drenagem, com complementação e verificação de campo e atualização do traçado da rede. Usar como infraestrutura pluvial oficial com data e cobertura explícitas."
-    },
-    {
-      "id": "sp-sao-paulo-water-sewer-geoconvias",
-      "authority": "Prefeitura de São Paulo / antigo CONVIAS-SIURB",
-      "scope": "municipality",
-      "municipality_ibge": "3550308",
-      "domain": [
-        "water_supply",
-        "sewerage",
-        "utilities",
-        "infrastructure",
-        "historical_network_works"
-      ],
-      "source_type": "GeoSampa_vector_dataset",
-      "metadata_url": "https://metadados.geosampa.prefeitura.sp.gov.br/geonetwork/srv/resources/datasets/a986702e-b25f-404c-a1fc-90b5ec91ec34",
-      "access_class": "OPEN_REUSABLE",
-      "license": "CC BY-SA 4.0 for PMSP-produced geospatial layers",
-      "verification_status": "VERIFIED_OPEN_GEODATA_LIMITED_COVERAGE",
-      "update_frequency": "not planned",
-      "notes": "Camada 'Água e Esgoto' do antigo GeoConvias registra As Built de obras/serviços pontuais de implantação, instalação e manutenção. A própria PMSP informa que NÃO corresponde ao cadastro completo das redes existentes. Usar apenas como evidência histórica/local de intervenções, nunca como prova de disponibilidade na testada."
-    },
-    {
-      "id": "sp-sao-paulo-urban-parameters-geosampa",
-      "authority": "Prefeitura de São Paulo / SMUL / SP Urbanismo",
-      "scope": "municipality",
-      "municipality_ibge": "3550308",
-      "domain": [
-        "urban_parameters",
-        "zoning",
-        "legal_rules",
-        "development_rights",
-        "urban_planning"
-      ],
-      "source_type": "GeoSampa_legal_geospatial_catalog",
-      "metadata_url": "https://metadados.geosampa.prefeitura.sp.gov.br/geonetwork/geoprodam/search?keyword=planejamento+urbano",
-      "access_class": "OPEN_REUSABLE",
-      "license": "CC BY-SA 4.0 for PMSP-produced geospatial layers",
-      "verification_status": "VERIFIED_CATALOG_MULTIPLE_LEGAL_INSTRUMENTS",
-      "notes": "GeoSampa publica camadas e dicionários de parâmetros urbanísticos vinculados a instrumentos legais, inclusive PIUs/OUCs. Há datasets com CA máximo, gabarito, cota-parte, quadro/mapa e links para lei/anexos. Não assumir que uma única camada cobre toda a cidade: o normalizador deve resolver regra por instrumento, perímetro e vigência."
-    },
-    {
-      "id": "sp-sao-paulo-pgv-2026",
-      "authority": "Prefeitura de São Paulo / Catálogo de Legislação Municipal",
-      "scope": "municipality",
-      "municipality_ibge": "3550308",
-      "domain": [
-        "pgv",
-        "valuation",
-        "iptu",
-        "tax",
-        "law",
-        "historical_tax_record"
-      ],
-      "source_type": "official_law_with_annexes",
-      "discovery_url": "https://legislacao.prefeitura.sp.gov.br/lei-18330-de-11-de-novembro-de-2025",
-      "access_class": "OPEN_REUSABLE",
-      "verification_status": "VERIFIED_OFFICIAL_LAW_EFFECTIVE_2026",
-      "update_frequency": "by legal amendment",
-      "notes": "Lei 18.330/2025 atualiza a Planta Genérica de Valores a partir de 01/01/2026. O art. 1º remete ao Anexo I (valores unitários de m² de construção) e Anexo II (listagem de valores unitários de m² de terreno). Normalizar com vigência temporal e manter vínculo ao texto/anexos oficiais."
-    },
-    {
-      "id": "pe-recife-official-gazette-open-data",
-      "authority": "Prefeitura do Recife / Secretaria de Governo e Participação Social / EMPREL",
-      "scope": "municipality",
-      "municipality_ibge": "2611606",
-      "domain": [
-        "official_gazette",
-        "legal_publication",
-        "municipal_acts",
-        "historical_law",
-        "public_documents"
-      ],
-      "source_type": "CKAN_dataset",
-      "discovery_url": "https://dados.recife.pe.gov.br/dataset/diario-oficial",
-      "access_class": "OPEN_REUSABLE",
-      "license": "ODbL",
-      "verification_status": "VERIFIED",
-      "update_frequency": "monthly",
-      "notes": "Dataset oficial do Diário Oficial com recursos CSV/ZIP/JSON, dicionário e API CKAN. Série publicada desde 2004, com arquivos atuais no portal em 2025 e atualização de metadados em 2026. Usar para eventos legais/urbanísticos mantendo vínculo ao PDF/edição oficial."
-    },
-    {
-      "id": "pe-recife-heritage-iep",
-      "authority": "Prefeitura do Recife / SEDUL / Diretoria de Preservação do Patrimônio Cultural",
-      "scope": "municipality",
-      "municipality_ibge": "2611606",
-      "domain": [
-        "heritage",
-        "protected_assets",
-        "legal_restriction",
-        "historical_building_presence"
-      ],
-      "source_type": "CKAN_dataset",
-      "discovery_url": "https://dados.recife.pe.gov.br/dataset/imoveis-especiais-de-preservacao-ieps",
-      "access_class": "OPEN_REUSABLE",
-      "license": "ODbL",
-      "verification_status": "VERIFIED",
-      "update_frequency": "annual",
-      "notes": "Relação oficial dos Imóveis Especiais de Preservação (IEPs), com GeoJSON/CSV/JSON. Campos observados incluem código IEP, ano de construção, logradouro, ano de tombamento, lei, bairro e regional. Complementar com ZEPH e IPHAN."
-    },
-    {
-      "id": "pe-recife-ortho-2013-2014",
-      "authority": "Prefeitura do Recife / SEMOC / SELCA / UIG",
-      "scope": "municipality",
-      "municipality_ibge": "2611606",
-      "domain": [
-        "imagery",
-        "orthophoto",
-        "historical_imagery",
-        "visual_reference"
-      ],
-      "source_type": "ArcGIS_MapServer_cached",
-      "service_url": "https://esigportal2.recife.pe.gov.br/arcgis/rest/services/MeioAmbiente/MA_Ortofoto2013_2014MapService/MapServer",
-      "access_class": "PUBLIC_QUERY_ONLY",
-      "verification_status": "VERIFIED_PUBLIC_SERVICE_LICENSE_REVIEW",
-      "notes": "Ortofoto oficial 2013/2014 publicada em serviço ArcGIS cacheado, EPSG:31985, níveis até escala 1:500. Copyright atribuído à Prefeitura do Recife/SEMOC/SELCA/UIG. Licença de reutilização/materialização não identificada; manter query/render-only até revisão."
-    },
-    {
-      "id": "pe-recife-sei-public-search",
-      "authority": "Prefeitura do Recife",
-      "scope": "municipality",
-      "municipality_ibge": "2611606",
-      "domain": [
-        "administrative_processes",
-        "public_documents",
-        "licensing_process_context",
-        "procedural_status"
-      ],
-      "source_type": "official_public_process_search",
-      "portal_url": "https://portalsei.recife.pe.gov.br/",
-      "access_class": "PUBLIC_QUERY_ONLY",
-      "verification_status": "VERIFIED_PUBLIC_SEARCH",
-      "notes": "Portal SEI municipal oferece 'Pesquisar Processos' e validação de documentos. Automatização só deve usar interfaces públicas documentadas; não contornar autenticação nem indexar conteúdo restrito."
-    },
-    {
-      "id": "pe-neoenergia-pernambuco-provider",
-      "authority": "Neoenergia Pernambuco",
-      "scope": "PE",
-      "domain": [
-        "electricity_distribution",
-        "utility_provider",
-        "service_territory",
-        "power_network_context"
-      ],
-      "source_type": "official_distribution_company",
-      "portal_url": "https://www.neoenergia.com/web/pernambuco",
-      "access_class": "PUBLIC_QUERY_ONLY",
-      "verification_status": "VERIFIED_PROVIDER_SERVICE_TERRITORY",
-      "notes": "Distribuidora de energia em Pernambuco; documentos operacionais oficiais incluem Recife na área de concessão. Usar como resolvedor de prestador e para contexto/consultas oficiais; ativos técnicos geoespaciais devem vir preferencialmente da BDGD/ANEEL ou de publicação expressamente licenciada."
-    },
-    {
-      "id": "rj-rio-licenses-habite-se",
-      "authority": "Prefeitura do Rio de Janeiro / SMDU / Gerência de Informações e Monitoramento",
-      "scope": "municipality",
-      "municipality_ibge": "3304557",
-      "domain": [
-        "building_permits",
-        "licensing",
-        "habite_se",
-        "building_history",
-        "urban_data"
-      ],
-      "source_type": "official_urban_information_reports_and_query",
-      "discovery_url": "https://desenvolvimentourbano.prefeitura.rio/informacoes-urbanisticas/",
-      "access_class": "PUBLIC_QUERY_ONLY",
-      "verification_status": "VERIFIED_OFFICIAL_PUBLIC_DATA_TERMS_LIMITED",
-      "notes": "A área oficial de Informações Urbanas usa bases georreferenciadas e registros administrativos, especialmente licenciamento urbanístico, e publica links para 'Licenças e Habite-se' e relação mensal. O termo da página permite uso livre das análises e mapas com referência à fonte; isso não é tratado como licença irrestrita de todos os registros brutos. Usar relatórios/consulta como evidência e revisar cada recurso antes de materialização."
-    },
-    {
-      "id": "rj-rio-official-gazette-doweb",
-      "authority": "Prefeitura do Rio de Janeiro / Imprensa Oficial",
-      "scope": "municipality",
-      "municipality_ibge": "3304557",
-      "domain": [
-        "official_gazette",
-        "legal_publication",
-        "municipal_acts",
-        "historical_law",
-        "public_documents"
-      ],
-      "source_type": "official_public_search_and_json_endpoint",
-      "portal_url": "https://doweb.rio.rj.gov.br/",
-      "service_url": "https://doweb.rio.rj.gov.br/apifront/portal/edicoes/edicoes_from_data/",
-      "access_class": "PUBLIC_QUERY_ONLY",
-      "verification_status": "VERIFIED_PUBLIC_SEARCH_ENDPOINT_LICENSE_REVIEW",
-      "notes": "D.O. Rio permite busca pública por edição/data/palavra, download da edição completa e consulta de autenticidade. Endpoint público JSON de edições foi confirmado. Licença de redistribuição não localizada; manter consulta/snapshot de metadados e documentos oficiais, sem presumir open data."
-    },
-    {
-      "id": "rj-rio-urban-uses-activities",
-      "authority": "Prefeitura do Rio de Janeiro / SMDU",
-      "scope": "municipality",
-      "municipality_ibge": "3304557",
-      "domain": [
-        "zoning",
-        "urban_parameters",
-        "land_use",
-        "legal_rules",
-        "urban_planning"
-      ],
-      "source_type": "ArcGIS_MapServer_tables",
-      "service_url": "https://pgeo3.rio.rj.gov.br/arcgis/rest/services/Urbanismo/IU_Usos_e_atividades/MapServer",
-      "access_class": "PUBLIC_QUERY_ONLY",
-      "verification_status": "VERIFIED_PUBLIC_SERVICE_LICENSE_REVIEW",
-      "notes": "Serviço oficial espacializa atividades/usos permitidos com base inicialmente na LC 270/2024 e Decreto 56.561/2025, sendo atualizado conforme novas normas entram em vigor. Possui camada de áreas e tabelas de atividades/usos/relacionamentos; suporta JSON/GeoJSON/PBF. A própria descrição alerta que a camada isolada não contém a informação completa, exigindo resolver os códigos nas tabelas e preservar vigência normativa."
-    },
-    {
-      "id": "mg-belo-horizonte-cadastro-imobiliario-regionais",
-      "authority": "Prefeitura de Belo Horizonte / SMFA / PRODABEL",
-      "scope": "municipality",
-      "municipality_ibge": "3106200",
-      "domain": [
-        "iptu",
-        "cadastre",
-        "property_attributes",
-        "building",
-        "historical_tax_record"
-      ],
-      "source_type": "CKAN_multi_dataset_monthly",
-      "discovery_url": "https://dados.pbh.gov.br/dataset/?license_id=cc-by&organization=smfa&res_format=CSV&tags=IPTU&tags=cadastro+imobili%C3%A1rio",
-      "access_class": "OPEN_REUSABLE",
-      "license": "CC BY",
-      "verification_status": "VERIFIED",
-      "update_frequency": "monthly",
-      "notes": "Nove conjuntos regionais cobrem os imóveis ativos do Cadastro Tributário Imobiliário e publicam dados cadastrais em CSV/API, com dicionário de dados. Licença Creative Commons Attribution. Tratar como cadastro/IPTU-base; confirmar no schema quais valores tributários são por imóvel e não inferir o imposto lançado quando o campo não existir."
-    },
-    {
-      "id": "mg-belo-horizonte-zona-homogenea-iptu",
-      "authority": "Prefeitura de Belo Horizonte / SMFA / PRODABEL",
-      "scope": "municipality",
-      "municipality_ibge": "3106200",
-      "domain": [
-        "pgv",
-        "iptu",
-        "valuation",
-        "tax",
-        "historical_tax_record"
-      ],
-      "source_type": "CKAN_dataset",
-      "discovery_url": "https://dados.pbh.gov.br/dataset/zona-homogenea-iptu",
-      "access_class": "OPEN_REUSABLE",
-      "license": "CC BY",
-      "verification_status": "VERIFIED",
-      "update_frequency": "monthly",
-      "notes": "Zona Homogênea do IPTU é usada no cálculo do valor venal conforme Anexo V da Lei 9.795/2009. CSV com histórico de publicações e dicionário. Deve ser combinada com legislação/valores unitários vigentes, preservando versão temporal."
-    },
-    {
-      "id": "mg-belo-horizonte-risk-geologico",
-      "authority": "Prefeitura de Belo Horizonte / PRODABEL / URBEL",
-      "scope": "municipality",
-      "municipality_ibge": "3106200",
-      "domain": [
-        "risk",
-        "geotechnics",
-        "landslide",
-        "flood",
-        "historical_series"
-      ],
-      "source_type": "CKAN_dataset",
-      "discovery_url": "https://dados.pbh.gov.br/dataset/area-risco-geologico",
-      "access_class": "OPEN_REUSABLE",
-      "license": "CC BY",
-      "verification_status": "VERIFIED",
-      "update_frequency": "eventual",
-      "notes": "Camada oficial de Área de Risco Geológico, com risco geológico significativo e áreas de risco de inundação, publicada em JSON/CSV com dicionário. O mapeamento inclui base técnica histórica; usar data/metodologia como parte da evidência e complementar com vistorias PEAR mais recentes quando aplicável."
-    },
-    {
-      "id": "mg-belo-horizonte-dom",
-      "authority": "Prefeitura de Belo Horizonte / Secretaria-Geral",
-      "scope": "municipality",
-      "municipality_ibge": "3106200",
-      "domain": [
-        "official_gazette",
-        "legal_publication",
-        "municipal_acts",
-        "historical_law",
-        "public_documents"
-      ],
-      "source_type": "official_public_search",
-      "portal_url": "https://dom-web.pbh.gov.br/",
-      "access_class": "PUBLIC_QUERY_ONLY",
-      "verification_status": "VERIFIED_PUBLIC_SEARCH_LICENSE_REVIEW",
-      "notes": "DOM oficial permite pesquisa por termo com busca avançada, período, edição e categoria, além de visualização de atos. A própria PBH orienta esse uso. Não foi identificada licença/API pública de reutilização em massa; tratar como consulta/evidência até revisão."
-    },
-    {
-      "id": "pb-joao-pessoa-ficha-cadastral-imovel",
-      "authority": "Prefeitura de João Pessoa / Secretaria da Receita Municipal",
-      "scope": "municipality",
-      "municipality_ibge": "2507507",
-      "domain": [
-        "cadastre",
-        "building",
-        "iptu",
-        "pgv",
-        "property_query",
-        "property_services"
-      ],
-      "source_type": "official_property_query_service",
-      "portal_url": "https://receita.joaopessoa.pb.gov.br/dsf_jpa_portal/inicial.do?acronym=COMPROVANTEINSCRICAOESITUACAOMUNICIPAL&evento=montaMenu",
-      "access_class": "PUBLIC_QUERY_ONLY",
-      "verification_status": "VERIFIED_SERVICE_SCHEMA_REVIEW",
-      "notes": "Portal de Serviços municipal lista Ficha Cadastral Imóvel, Extrato/Guia e Certidão Financeira Imóvel. Usar como fluxo por imóvel e fonte de evidência; não presumir que todos os campos fiscais/prediais são públicos nem automatizar em massa antes de revisar parâmetros, CAPTCHA, termos e schema."
-    },
-    {
-      "id": "pb-joao-pessoa-itbi-service",
-      "authority": "Prefeitura de João Pessoa / Secretaria da Receita Municipal",
-      "scope": "municipality",
-      "municipality_ibge": "2507507",
-      "domain": [
-        "itbi",
-        "transactions",
-        "property_services",
-        "tax"
-      ],
-      "source_type": "authenticated_online_tax_service",
-      "portal_url": "https://receita.joaopessoa.pb.gov.br/portal-serem",
-      "access_class": "AUTHENTICATED_PUBLIC",
-      "verification_status": "VERIFIED_SERVICE_NOT_BULK_DATA",
-      "notes": "Solicitação e emissão de ITBI são realizadas online no Portal do Contribuinte, com análise fiscal e guia/certidão. É fluxo transacional individual, não dataset público em massa; integrar somente por mecanismo autorizado e nunca reutilizar dados pessoais fora da finalidade."
-    },
-    {
-      "id": "pb-joao-pessoa-ctm-pgv-modernization",
-      "authority": "Prefeitura de João Pessoa / Programa João Pessoa Sustentável / SEREM / SEPLAN",
-      "scope": "municipality",
-      "municipality_ibge": "2507507",
-      "domain": [
-        "pgv",
-        "multifinalitary_cadastre",
-        "cadastre",
-        "building",
-        "valuation",
-        "infrastructure"
-      ],
-      "source_type": "official_program_documentation",
-      "discovery_url": "https://www.joaopessoa.pb.gov.br/joao-pessoa-sustentavel/joao-pessoa-sustentavel-avanca-no-desenvolvimento-urbano-com-economia-superior-a-us-40-milhoes/",
-      "access_class": "PUBLIC_QUERY_ONLY",
-      "verification_status": "VERIFIED_EXISTENCE_ACCESS_PATH_PENDING",
-      "notes": "Documentação oficial confirma atualização da PGV, recadastramento imobiliário municipal e levantamento territorial/infraestrutura. A PGV modernizada e o cadastro existem operacionalmente, mas não foi confirmado um canal bulk reutilizável. Fonte serve para provenance/existência e direciona a busca por publicação oficial do produto."
-    },
-    {
-      "id": "pb-joao-pessoa-official-gazette",
-      "authority": "Prefeitura de João Pessoa",
-      "scope": "municipality",
-      "municipality_ibge": "2507507",
-      "domain": [
-        "official_gazette",
-        "legal_publication",
-        "municipal_acts",
-        "historical_law",
-        "public_documents"
-      ],
-      "source_type": "official_public_archive",
-      "portal_url": "https://www.joaopessoa.pb.gov.br/doe-jp/",
-      "access_class": "PUBLIC_QUERY_ONLY",
-      "verification_status": "VERIFIED_PUBLIC_ARCHIVE_LICENSE_REVIEW",
-      "notes": "Arquivo oficial do Diário Oficial/Semanário apresenta listagem pública de edições, datas, suplementos e páginas individuais com acesso aos documentos. Licença/API de reutilização em massa não identificada; usar como consulta/snapshot documental até revisão."
-    },
-    {
-      "id": "sp-enel-distribuicao-provider",
-      "authority": "Enel Distribuição São Paulo",
-      "scope": "SP_CONCESSION_AREA",
-      "domain": [
-        "electricity_distribution",
-        "utility_provider",
-        "service_territory",
-        "power_network_context"
-      ],
-      "source_type": "official_distribution_company",
-      "portal_url": "https://www.enel.com.br/pt-saopaulo/cidades-atendidas-pela-enel-distribuicao.html",
-      "access_class": "PUBLIC_QUERY_ONLY",
-      "verification_status": "VERIFIED_PROVIDER_SERVICE_TERRITORY",
-      "notes": "Enel Distribuição São Paulo atende 24 municípios da Região Metropolitana de São Paulo, incluindo a capital. Usar para resolver prestador; ativos técnicos normalizados devem vir prioritariamente da BDGD/ANEEL. Presença da distribuidora não prova capacidade disponível no lote."
-    },
-    {
-      "id": "sp-sabesp-provider",
-      "authority": "ARSESP / Sabesp",
-      "scope": "SP",
-      "domain": [
-        "water_supply",
-        "sewerage",
-        "utility_provider",
-        "service_territory",
-        "sanitation"
-      ],
-      "source_type": "official_regulatory_provider_registry",
-      "portal_url": "https://www.arsesp.sp.gov.br/SitePages/saneamento/municipios-conveniados-saneamento.aspx",
-      "access_class": "PUBLIC_QUERY_ONLY",
-      "verification_status": "VERIFIED_PROVIDER_SERVICE_TERRITORY",
-      "notes": "ARSESP confirma que a Sabesp presta água/esgoto na Capital Paulista entre os municípios regulados. Resolver prestador pelo município; confirmação de rede/disponibilidade na testada exige fonte técnica específica da prestadora."
-    },
-    {
-      "id": "sp-sao-paulo-public-lighting",
-      "authority": "Prefeitura de São Paulo / SP Regula / ILUME",
-      "scope": "municipality",
-      "municipality_ibge": "3550308",
-      "domain": [
-        "public_lighting",
-        "utility_provider",
-        "infrastructure",
-        "street_assets"
-      ],
-      "source_type": "official_public_service",
-      "portal_url": "https://prefeitura.sp.gov.br/web/spregula/iluminacao_publica/",
-      "access_class": "PUBLIC_QUERY_ONLY",
-      "verification_status": "VERIFIED_PUBLIC_SERVICE",
-      "notes": "SP Regula/ILUME gerem e regulam serviços de iluminação pública e o GeoSampa referencia pontos modernizados com LED. Identifica responsável e fluxo de serviço; inventário técnico reutilizável de luminárias deve ser validado separadamente."
-    },
-    {
-      "id": "pe-recife-public-lighting",
-      "authority": "Prefeitura do Recife / EMLURB",
-      "scope": "municipality",
-      "municipality_ibge": "2611606",
-      "domain": [
-        "public_lighting",
-        "utility_provider",
-        "infrastructure",
-        "street_assets"
-      ],
-      "source_type": "official_public_service",
-      "portal_url": "https://emlurb.recife.pe.gov.br/iluminacao-publica-2",
-      "access_class": "PUBLIC_QUERY_ONLY",
-      "verification_status": "VERIFIED_PUBLIC_SERVICE",
-      "notes": "EMLURB é responsável por planejar, supervisionar, controlar, restaurar, manter e ampliar a iluminação pública do Recife e monitora os pontos luminosos. Inventário técnico/telegestão não é presumido como open data."
-    },
-    {
-      "id": "rj-light-distribuicao-provider",
-      "authority": "Light Serviços de Eletricidade S.A.",
-      "scope": "RJ_CONCESSION_AREA",
-      "domain": [
-        "electricity_distribution",
-        "utility_provider",
-        "service_territory",
-        "power_network_context"
-      ],
-      "source_type": "official_distribution_company",
-      "portal_url": "https://www.light.com.br/SitePages/page-distribuicao.aspx",
-      "access_class": "PUBLIC_QUERY_ONLY",
-      "verification_status": "VERIFIED_PROVIDER_SERVICE_TERRITORY",
-      "notes": "Light publica mapa da área de concessão e atende a Região Metropolitana do Rio, incluindo a capital. Usar como resolver de prestador; ativos técnicos devem ser reconciliados com BDGD/ANEEL."
-    },
-    {
-      "id": "rj-aguas-do-rio-provider",
-      "authority": "Águas do Rio / Aegea",
-      "scope": "RJ_SUBMUNICIPAL_AND_MULTI_MUNICIPAL",
-      "domain": [
-        "water_supply",
-        "sewerage",
-        "utility_provider",
-        "service_territory",
-        "sanitation"
-      ],
-      "source_type": "official_sanitation_concessionaire",
-      "portal_url": "https://www.aguasdorio.com.br/quem-somos/",
-      "access_class": "PUBLIC_QUERY_ONLY",
-      "verification_status": "VERIFIED_PROVIDER_SERVICE_TERRITORY",
-      "notes": "Águas do Rio informa responsabilidade por água e esgoto em 27 municípios e 124 bairros da capital; na cidade do Rio cobre principalmente zonas Norte, Sul e Centro. O resolvedor deve operar abaixo do nível municipal porque a capital possui outras concessionárias."
-    },
-    {
-      "id": "rj-igua-rio-provider",
-      "authority": "Iguá Rio",
-      "scope": "RJ_SUBMUNICIPAL_AND_MULTI_MUNICIPAL",
-      "domain": [
-        "water_supply",
-        "sewerage",
-        "utility_provider",
-        "service_territory",
-        "sanitation"
-      ],
-      "source_type": "official_sanitation_concessionaire",
-      "portal_url": "https://www.igua.com.br/rio-de-janeiro/informacoes-para-voce",
-      "access_class": "PUBLIC_QUERY_ONLY",
-      "verification_status": "VERIFIED_PROVIDER_SERVICE_TERRITORY",
-      "notes": "Na capital, Iguá opera distribuição de água e esgotamento na região da Barra/Jacarepaguá, atualmente descrita em 19 bairros/áreas; captação e tratamento de água permanecem com CEDAE. Praça Seca possui cobertura parcial. Resolver por bairro/polígono, não somente IBGE."
-    },
-    {
-      "id": "rj-rio-mais-saneamento-provider",
-      "authority": "Rio+Saneamento",
-      "scope": "RJ_SUBMUNICIPAL_AND_MULTI_MUNICIPAL",
-      "domain": [
-        "water_supply",
-        "sewerage",
-        "utility_provider",
-        "service_territory",
-        "sanitation"
-      ],
-      "source_type": "official_sanitation_concessionaire",
-      "portal_url": "https://www.riomaissaneamento.com.br/",
-      "access_class": "PUBLIC_QUERY_ONLY",
-      "verification_status": "VERIFIED_PROVIDER_SERVICE_TERRITORY",
-      "notes": "Rio+Saneamento atua em 18 municípios e 24 bairros da Zona Oeste da capital. O resolvedor deve usar território submunicipal; não assumir que 'Rio de Janeiro/RJ' identifica um único prestador de saneamento."
-    },
-    {
-      "id": "rj-rio-public-lighting",
-      "authority": "Prefeitura do Rio de Janeiro / RioLuz",
-      "scope": "municipality",
-      "municipality_ibge": "3304557",
-      "domain": [
-        "public_lighting",
-        "utility_provider",
-        "infrastructure",
-        "street_assets"
-      ],
-      "source_type": "official_public_service",
-      "portal_url": "https://rioluz.prefeitura.rio/iluminacao-publica/",
-      "access_class": "PUBLIC_QUERY_ONLY",
-      "verification_status": "VERIFIED_PUBLIC_SERVICE",
-      "notes": "RioLuz é responsável por gerir, planejar, manter e modernizar a iluminação pública municipal. Há relatórios de modernização por mês/ano; inventário técnico por ponto exige revisão específica."
-    },
-    {
-      "id": "mg-cemig-distribuicao-provider",
-      "authority": "CEMIG Distribuição S.A. / ANEEL",
-      "scope": "MG_CONCESSION_AREA",
-      "domain": [
-        "electricity_distribution",
-        "utility_provider",
-        "service_territory",
-        "power_network_context"
-      ],
-      "source_type": "official_distribution_concession",
-      "discovery_url": "https://www.cemig.com.br/",
-      "access_class": "PUBLIC_QUERY_ONLY",
-      "verification_status": "VERIFIED_PROVIDER_SERVICE_TERRITORY",
-      "notes": "CEMIG Distribuição é concessionária de energia em Belo Horizonte, conforme concessão/área regulada. Usar para resolver prestador e combinar com BDGD/ANEEL para ativos técnicos."
-    },
-    {
-      "id": "mg-cemig-load-availability-map",
-      "authority": "CEMIG Distribuição",
-      "scope": "MG_CONCESSION_AREA",
-      "domain": [
-        "electricity_distribution",
-        "grid_capacity_context",
-        "utility_availability_context",
-        "power_network_context"
-      ],
-      "source_type": "official_interactive_map",
-      "portal_url": "https://www.cemig.com.br/geracao-distribuida/mapas-de-disponibilidade/",
-      "access_class": "PUBLIC_QUERY_ONLY",
-      "verification_status": "VERIFIED_PUBLIC_MAP",
-      "notes": "CEMIG publica mapa de disponibilidade de cargas, que indica regiões onde há capacidade de rede para atender novas cargas. É contexto preliminar e não substitui estudo/consulta formal de acesso ou orçamento de conexão."
-    },
-    {
-      "id": "mg-belo-horizonte-copasa-provider",
-      "authority": "ARSAE-MG / Copasa",
-      "scope": "municipality",
-      "municipality_ibge": "3106200",
-      "domain": [
-        "water_supply",
-        "sewerage",
-        "utility_provider",
-        "service_territory",
-        "sanitation"
-      ],
-      "source_type": "official_regulatory_provider_profile",
-      "discovery_url": "https://arsae.mg.gov.br/panoramas/belo_horizonte_copasa.pdf",
-      "access_class": "PUBLIC_QUERY_ONLY",
-      "verification_status": "VERIFIED_PROVIDER_SERVICE_TERRITORY",
-      "notes": "Panorama regulatório ARSAE-MG identifica Copasa como prestadora de abastecimento de água e esgotamento sanitário em Belo Horizonte, com contrato informado até 30/04/2034 no documento regulatório. Usar como resolvedor; rede/disponibilidade exige fonte técnica atual."
-    },
-    {
-      "id": "mg-belo-horizonte-public-lighting",
-      "authority": "Prefeitura de Belo Horizonte / Sudecap / BHIP",
-      "scope": "municipality",
-      "municipality_ibge": "3106200",
-      "domain": [
-        "public_lighting",
-        "utility_provider",
-        "infrastructure",
-        "street_assets",
-        "smart_city"
-      ],
-      "source_type": "official_ppp_public_service",
-      "portal_url": "https://prefeitura.pbh.gov.br/sudecap/ilumina-bh",
-      "access_class": "PUBLIC_QUERY_ONLY",
-      "verification_status": "VERIFIED_PUBLIC_SERVICE",
-      "notes": "Programa Ilumina BH é executado pela Sudecap com a BHIP, concessionária responsável pela PPP da iluminação pública. A cidade informa parque modernizado em LED e telegestão; dados técnicos ponto a ponto não são presumidos como open data."
-    },
-    {
-      "id": "pb-energisa-paraiba-provider",
-      "authority": "Energisa Paraíba",
-      "scope": "PB_CONCESSION_AREA",
-      "domain": [
-        "electricity_distribution",
-        "utility_provider",
-        "service_territory",
-        "power_network_context"
-      ],
-      "source_type": "official_distribution_company",
-      "portal_url": "https://www.energisa.com.br/regioes/paraiba",
-      "access_class": "PUBLIC_QUERY_ONLY",
-      "verification_status": "VERIFIED_PROVIDER_SERVICE_TERRITORY",
-      "notes": "Energisa Paraíba opera distribuição na região de João Pessoa e publica investimentos/subestações na região metropolitana; serviços da companhia listam João Pessoa entre localidades da Energisa Paraíba. Combinar com BDGD/ANEEL para ativos."
-    },
-    {
-      "id": "pb-joao-pessoa-cagepa-provider",
-      "authority": "Prefeitura de João Pessoa / CAGEPA",
-      "scope": "municipality",
-      "municipality_ibge": "2507507",
-      "domain": [
-        "water_supply",
-        "sewerage",
-        "utility_provider",
-        "service_territory",
-        "sanitation"
-      ],
-      "source_type": "official_municipal_concession_evidence",
-      "discovery_url": "https://www.joaopessoa.pb.gov.br/noticias/prefeito-e-governador-renovam-concessao-para-que-cagepa-opere-sistema-de-agua-e-esgoto-da-capital/",
-      "access_class": "PUBLIC_QUERY_ONLY",
-      "verification_status": "VERIFIED_PROVIDER_SERVICE_TERRITORY",
-      "notes": "Município renovou em 2023 por 30 anos a concessão para CAGEPA operar água e esgoto de João Pessoa. Plano Diretor municipal também identifica CAGEPA como responsável por captação, tratamento, distribuição de água e coleta/tratamento de esgoto."
-    },
-    {
-      "id": "pb-joao-pessoa-public-lighting",
-      "authority": "Prefeitura de João Pessoa / SEINFRA",
-      "scope": "municipality",
-      "municipality_ibge": "2507507",
-      "domain": [
-        "public_lighting",
-        "utility_provider",
-        "infrastructure",
-        "street_assets",
-        "smart_city"
-      ],
-      "source_type": "official_public_service",
-      "portal_url": "https://www.joaopessoa.pb.gov.br/noticias/secretarias-e-orgaos/seinfra/cicero-lucena-entrega-iluminacao-em-led-em-mais-15-bairros-e-joao-pessoa-chega-a-48-localidades-contempladas/",
-      "access_class": "PUBLIC_QUERY_ONLY",
-      "verification_status": "VERIFIED_PUBLIC_SERVICE",
-      "notes": "SEINFRA mantém a iluminação pública e a Prefeitura informa modernização LED georreferenciada com monitoramento individual das luminárias. Não presumir acesso ao inventário técnico sem canal/documentação pública específica."
-    },
-    {
-      "id": "pb-joao-pessoa-drainage-service",
-      "authority": "Prefeitura de João Pessoa / SEINFRA",
-      "scope": "municipality",
-      "municipality_ibge": "2507507",
-      "domain": [
-        "drainage",
-        "stormwater",
-        "infrastructure",
-        "utility_provider",
-        "maintenance"
-      ],
-      "source_type": "official_public_service",
-      "portal_url": "https://www.joaopessoa.pb.gov.br/noticias/seinfra-realiza-manutencao-na-malha-viaria-rede-de-drenagem-e-iluminacao-publica-em-38-bairros-da-capital/",
-      "access_class": "PUBLIC_QUERY_ONLY",
-      "verification_status": "VERIFIED_PUBLIC_SERVICE_TECHNICAL_DATA_PENDING",
-      "notes": "SEINFRA executa manutenção da rede de drenagem municipal. Serve para resolver a autoridade/operador do serviço; o inventário técnico georreferenciado da rede ainda precisa ser localizado/aprovado separadamente."
-    },
-    {
-      "id": "sp-sao-paulo-processos-administrativos",
-      "authority": "Prefeitura de São Paulo / Secretaria Municipal de Gestão / Arquivo Público Municipal",
-      "scope": "municipality",
-      "municipality_ibge": "3550308",
-      "domain": [
-        "administrative_processes",
-        "public_documents",
-        "procedural_status",
-        "licensing_process_context"
-      ],
-      "source_type": "official_public_process_portal",
-      "portal_url": "https://processos.prefeitura.sp.gov.br/Forms/Principal.aspx",
-      "access_class": "PUBLIC_QUERY_ONLY",
-      "verification_status": "VERIFIED_PUBLIC_NUMBER_QUERY",
-      "notes": "Portal centraliza processos administrativos municipais e permite consulta por número de localização/andamento, comunique-se e despachos. O portal também oferece pesquisa por CPF/CNPJ, mas o LoteDiretor NÃO deve usar esse eixo para descoberta de pessoas. Vincular processo somente quando número/relação com imóvel já for conhecida."
-    },
-    {
-      "id": "rj-rio-processos-administrativos",
-      "authority": "Prefeitura do Rio de Janeiro",
-      "scope": "municipality",
-      "municipality_ibge": "3304557",
-      "domain": [
-        "administrative_processes",
-        "public_documents",
-        "procedural_status",
-        "historical_process_systems"
-      ],
-      "source_type": "official_multi_system_process_query",
-      "portal_url": "https://transparencia.prefeitura.rio/consulta-a-processos/",
-      "access_class": "PUBLIC_QUERY_ONLY",
-      "verification_status": "VERIFIED_PUBLIC_NUMBER_QUERY",
-      "notes": "Consulta oficial orienta: SEI!RIO para processos autuados a partir de 05/12/2025; Processo.Rio e SICOP permanecem para processos legados. Consulta pública usa número do processo e pode exigir código de verificação. Resolver sistema por data/identificador e nunca contornar CAPTCHA."
-    },
-    {
-      "id": "mg-belo-horizonte-processos-protocolos",
-      "authority": "Prefeitura de Belo Horizonte",
-      "scope": "municipality",
-      "municipality_ibge": "3106200",
-      "domain": [
-        "administrative_processes",
-        "public_documents",
-        "procedural_status",
-        "tax_processes"
-      ],
-      "source_type": "official_multi_system_protocol_query",
-      "portal_url": "https://prefeitura.pbh.gov.br/FAZENDa/sigede",
-      "access_class": "PUBLIC_QUERY_ONLY",
-      "verification_status": "VERIFIED_PUBLIC_QUERY_MULTIPLE_SYSTEMS",
-      "notes": "PBH mantém página oficial para consultar andamento por diferentes sistemas/protocolos (Portal de Serviços, IPTU, ITBI, OPUS, SIGESP etc.). É um resolvedor de consulta por processo/protocolo conhecido, não um bulk dataset."
-    },
-    {
-      "id": "pb-joao-pessoa-processo-online",
-      "authority": "Prefeitura de João Pessoa",
-      "scope": "municipality",
-      "municipality_ibge": "2507507",
-      "domain": [
-        "administrative_processes",
-        "public_documents",
-        "procedural_status",
-        "licensing_process_context"
-      ],
-      "source_type": "official_process_query_with_captcha",
-      "portal_url": "https://www.joaopessoa.pb.gov.br/processoonline/acompanhar_processo.do",
-      "access_class": "PUBLIC_QUERY_ONLY",
-      "verification_status": "VERIFIED_QUERY_WITH_CAPTCHA_NO_AUTOMATION",
-      "notes": "Processo On Line permite acompanhamento por número/identificação, com CAPTCHA. Não automatizar nem burlar CAPTCHA. Seplan também usa Aprova Digital e 1Doc para protocolos de licenciamento; integrar apenas por fluxo autorizado/documentado."
-    },
-    {
-      "id": "sp-condephaat-protected-heritage",
-      "authority": "Governo do Estado de São Paulo / Secretaria da Cultura / CONDEPHAAT",
-      "scope": "state",
-      "domain": [
-        "heritage",
-        "protected_assets",
-        "pending_tombamento",
-        "heritage_buffer",
-        "archaeology",
-        "legal_restriction",
-        "heritage_approval"
-      ],
-      "source_type": "official_heritage_portal_and_state_gis",
-      "portal_url": "https://www.cultura.sp.gov.br/sec_cultura/CONDEPHAAT/Bens_Protegidos",
-      "access_class": "PUBLIC_QUERY_ONLY",
-      "verification_status": "VERIFIED_PUBLIC_PORTAL_GIS_TERMS_REVIEW",
-      "notes": "CONDEPHAAT mantém portal de bens protegidos, CEDOC/SISEP e mapa/IDE-SP. GeoSampa municipal também integra bens estaduais e áreas envoltórias, com links às resoluções. Usar o portal estadual como autoridade jurídica e GeoSampa/IDE-SP como geometria quando aplicável; materialização de geodados estaduais requer revisão dos termos do IDE-SP."
-    },
-    {
-      "id": "pe-fundarpe-protected-heritage",
-      "authority": "Governo de Pernambuco / Secult-PE / Fundarpe",
-      "scope": "state",
-      "domain": [
-        "heritage",
-        "protected_assets",
-        "pending_tombamento",
-        "archaeology",
-        "heritage_buffer",
-        "legal_restriction",
-        "heritage_approval"
-      ],
-      "source_type": "official_heritage_portal_documents",
-      "portal_url": "https://www.cultura.pe.gov.br/pagina/patrimonio-cultural/acervo/processos-de-tombamento/",
-      "access_class": "PUBLIC_QUERY_ONLY",
-      "verification_status": "VERIFIED_CURRENT_LISTS_DOCUMENTS_LICENSE_REVIEW",
-      "notes": "Portal oficial publica listas de bens tombados e processos de tombamento estaduais. A proteção provisória passa a existir após publicação do edital de tombamento no Diário Oficial, antes da homologação final. Documentos/listas podem ser usados como evidência jurídica; redistribuição em massa e geometria devem ser revistas separadamente."
-    },
-    {
-      "id": "pe-recife-zeph",
-      "authority": "Prefeitura do Recife / SEDUL",
-      "scope": "municipality",
-      "municipality_ibge": "2611606",
-      "domain": [
-        "heritage",
-        "zeph",
-        "protected_area",
-        "urban_parameters",
-        "legal_restriction",
-        "heritage_buffer"
-      ],
-      "source_type": "ArcGIS_FeatureServer",
-      "service_url": "https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Planejamento/BASES_ZONEAMENTO_G_PD2020/FeatureServer/3",
-      "access_class": "PUBLIC_QUERY_ONLY",
-      "verification_status": "VERIFIED_PUBLIC_SERVICE_LICENSE_REVIEW",
-      "notes": "Camada oficial de Zona Especial de Preservação do Patrimônio Histórico-Cultural (ZEPH), vinculada ao Plano Diretor/legislação urbanística. Complementar com IEPs municipais e Fundarpe/IPHAN. Licença do serviço ArcGIS deve ser confirmada antes de espelhamento."
-    },
-    {
-      "id": "rj-inepac-protected-heritage",
-      "authority": "Governo do Estado do Rio de Janeiro / SECEC-RJ / INEPAC",
-      "scope": "state",
-      "domain": [
-        "heritage",
-        "protected_assets",
-        "pending_tombamento",
-        "heritage_approval",
-        "legal_restriction",
-        "official_acts"
-      ],
-      "source_type": "official_state_heritage_authority_and_acts",
-      "portal_url": "https://cultura.rj.gov.br/estrutura/",
-      "access_class": "PUBLIC_QUERY_ONLY",
-      "verification_status": "VERIFIED_AUTHORITY_PUBLIC_ACTS_INVENTORY_CHANNEL_REVIEW",
-      "notes": "INEPAC é o órgão estadual responsável por identificar, cadastrar, inventariar, tombar, fiscalizar e manter arquivo dos bens protegidos e processos de tombamento. Atos recentes são publicados pela SECEC/Diário Oficial. O inventário/portal legado de bens deve ser tratado como consulta até haver interface atual e termos estáveis."
-    },
-    {
-      "id": "rj-rio-irph-apac",
-      "authority": "Prefeitura do Rio de Janeiro / Instituto Rio Patrimônio da Humanidade (IRPH) / SMDU",
-      "scope": "municipality",
-      "municipality_ibge": "3304557",
-      "domain": [
-        "heritage",
-        "apac",
-        "protected_area",
-        "legal_restriction",
-        "heritage_approval",
-        "urban_planning"
-      ],
-      "source_type": "ArcGIS_FeatureServer_and_IRPH_legal_guides",
-      "service_url": "https://pgeo3.rio.rj.gov.br/arcgis/rest/services/Urbanismo/LBB_APAC/FeatureServer",
-      "portal_url": "https://irph.prefeitura.rio/area-de-protecao-do-ambiente-cultural-2/",
-      "access_class": "PUBLIC_QUERY_ONLY",
-      "verification_status": "VERIFIED_PUBLIC_GEOMETRY_LEGAL_GUIDES_LICENSE_REVIEW",
-      "notes": "Serviço oficial fornece geometrias das APACs; portal IRPH publica guias, mapas e atos/decretos por APAC. Usar geometria + ato jurídico para incidência. Licença de redistribuição do FeatureServer não está explícita."
-    },
-    {
-      "id": "rj-rio-heritage-protected-areas",
-      "authority": "Prefeitura do Rio de Janeiro / SMDU",
-      "scope": "municipality",
-      "municipality_ibge": "3304557",
-      "domain": [
-        "heritage",
-        "protected_area",
-        "archaeology",
-        "environmental_heritage",
-        "legal_restriction"
-      ],
-      "source_type": "ArcGIS_FeatureServer",
-      "service_url": "https://pgeo3.rio.rj.gov.br/arcgis/rest/services/Urbanismo/LBB_Areas_Protegidas/FeatureServer",
-      "access_class": "PUBLIC_QUERY_ONLY",
-      "verification_status": "VERIFIED_PUBLIC_SERVICE_LICENSE_REVIEW",
-      "notes": "Camada oficial 'Áreas Protegidas' contém polígonos de áreas protegidas e inclui ocorrências de interesse biológico/arqueológico e paisagístico. Deve ser classificada por tipo/ato antes de uso; não substituir APAC/tombamento específico nem inferir órgão aprovador sem campo ou ato oficial."
-    },
-    {
-      "id": "mg-belo-horizonte-heritage-open-data",
-      "authority": "Prefeitura de Belo Horizonte / Fundação Municipal de Cultura / PRODABEL",
-      "scope": "municipality",
-      "municipality_ibge": "3106200",
-      "domain": [
-        "heritage",
-        "protected_assets",
-        "pending_tombamento",
-        "protected_area",
-        "legal_restriction",
-        "heritage_buffer",
-        "historical_series"
-      ],
-      "source_type": "CKAN_heritage_datasets",
-      "portal_url": "https://dados.pbh.gov.br/dataset/?_tags_limit=0&res_format=CSV&tags=cultural&tags=patrim%C3%B4nio",
-      "access_class": "OPEN_REUSABLE",
-      "license": "CC BY",
-      "verification_status": "VERIFIED",
-      "update_frequency": "monthly",
-      "notes": "Portal publica sob CC BY Área de Proteção Cultural e bens culturais municipais, além de datasets específicos para bens IEPHA e IPHAN. 'Bem Cultural Imóvel' distingue tombado, processo de tombamento aberto e registros documentais. Preservar versão mensal e grau de proteção."
-    },
-    {
-      "id": "pb-iphaep-protected-heritage",
-      "authority": "Governo da Paraíba / IPHAEP",
-      "scope": "state",
-      "domain": [
-        "heritage",
-        "protected_assets",
-        "historic_center",
-        "protected_area",
-        "legal_restriction",
-        "heritage_approval"
-      ],
-      "source_type": "official_heritage_portal_and_legal_rules",
-      "portal_url": "https://iphaep.pb.gov.br/municipios-com-centros-historicos-tombados",
-      "access_class": "PUBLIC_QUERY_ONLY",
-      "verification_status": "VERIFIED_PUBLIC_LEGAL_INFORMATION",
-      "notes": "IPHAEP identifica João Pessoa como centro histórico tombado pelo Decreto 9.484/1982. Orientação oficial informa que imóveis em Área de Preservação têm grau de classificação/preservação e intervenções dependem de aprovação técnica; para João Pessoa cita Decreto Estadual 25.138/2004. Geometria municipal complementar está no Filipeia."
-    },
-    {
-      "id": "pe-recife-esig-buildings-3d",
-      "authority": "Prefeitura do Recife / ESIG",
-      "scope": "Recife/PE",
-      "source_type": "municipal_geospatial_service",
-      "endpoint": "https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Planejamento/BASES_BAIRRO_FACEQUADRA_LOGRADOURO_LOTE/FeatureServer/7",
-      "access_class": "PUBLIC_QUERY_ONLY",
-      "license": null,
-      "temporal_coverage": "current service",
-      "notes": "Official parcel-linked 3D building layer. LoteDiretor queries by exact DSQFL with a closed field allowlist and exposes geometry plus MDT/MDE/MDS elevation attributes as cartographic context."
-    },
-    {
-      "id": "pe-recife-esig-mdt-declividade-2_5m",
-      "authority": "Prefeitura do Recife / ESIG",
-      "scope": "Recife/PE",
-      "source_type": "municipal_raster_map_service",
-      "endpoint": "https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Hosted/RGB_MDT_2_5MTS_DECLIVIDADE_tif/MapServer",
-      "access_class": "PUBLIC_QUERY_ONLY",
-      "license": null,
-      "temporal_coverage": null,
-      "notes": "Official cached 2.5 m MDT-derived slope visualization is available as map tiles. ArcGIS identify did not return numeric raster values in validation, so LoteDiretor uses it only as visual slope context and does not infer parcel elevations from colors."
-    },
-    {
-      "id": "pb-joao-pessoa-luos-166-169",
-      "authority": "Prefeitura de João Pessoa / Plano Diretor",
-      "scope": "João Pessoa/PB",
-      "source_type": "municipal_legislation",
-      "endpoint": "https://planodiretor.joaopessoa.pb.gov.br/legislacaovigente/",
-      "access_class": "OPEN_REUSABLE",
-      "license": null,
-      "temporal_coverage": "2024-current",
-      "notes": "Current municipal legislation index. LoteDiretor structures occupancy parameters from LC 169/2024's substitute Annex IV for LC 166/2024 and keeps the coastal-height exception explicit."
-    },
-    {
-      "id": "pb-joao-pessoa-plano-diretor-164",
-      "authority": "Prefeitura de João Pessoa / Plano Diretor",
-      "scope": "João Pessoa/PB",
-      "source_type": "municipal_legislation",
-      "endpoint": "https://planodiretor.joaopessoa.pb.gov.br/legislacaovigente/",
-      "access_class": "OPEN_REUSABLE",
-      "license": null,
-      "temporal_coverage": "2024-current",
-      "notes": "Plano Diretor source for macrozone basic/max floor-area indices, including art. 50 values."
-    },
-    {
-      "id": "pb-tjpb-luos-adi-2026",
-      "authority": "Tribunal de Justiça da Paraíba",
-      "scope": "João Pessoa/PB",
-      "source_type": "judicial_status_reference",
-      "endpoint": "https://www.tjpb.jus.br/w/decis%C3%A3o-do-tjpb-mant%C3%A9m-proibi%C3%A7%C3%A3o-da-constru%C3%A7%C3%A3o-de-espig%C3%B5es-na-orla",
-      "access_class": "OPEN_REUSABLE",
-      "license": null,
-      "temporal_coverage": "2026-01-21",
-      "notes": "Public TJPB status reference: LUOS maintained except article 62. Used only to prevent presenting article 62 coastal-height values as current."
-    },
-    {
-      "id": "br-ibge-agregados-api",
-      "authority": "IBGE",
-      "scope": "BR",
-      "domain": [
-        "demography",
-        "census",
-        "housing",
-        "income",
-        "sanitation"
-      ],
-      "source_type": "open_REST_API",
-      "base_url": "https://servicodados.ibge.gov.br/api/v3/agregados",
-      "discovery_url": "https://servicodados.ibge.gov.br/api/docs/agregados?versao=v3",
-      "access_class": "OPEN_REUSABLE",
-      "verification_status": "VERIFIED_API_DOCUMENTED",
-      "notes": "API de Agregados/SIDRA. Usar sempre com nível territorial e período explicitados; dado municipal/setorial é contexto territorial e não atributo do lote."
-    },
-    {
-      "id": "br-ibge-malhas-api",
-      "authority": "IBGE",
-      "scope": "BR",
-      "domain": [
-        "administrative_boundaries",
-        "census_geography"
-      ],
-      "source_type": "open_REST_GEOJSON_API",
-      "base_url": "https://servicodados.ibge.gov.br/api/v3/malhas",
-      "discovery_url": "https://servicodados.ibge.gov.br/api/docs/malhas?versao=v3",
-      "access_class": "OPEN_REUSABLE",
-      "verification_status": "VERIFIED_API_DOCUMENTED",
-      "notes": "Malhas administrativas oficiais para município/distrito/subdistrito e outros recortes suportados. Não usar escala regional como limite cadastral de lote."
-    },
-    {
-      "id": "br-ibge-censo2022-geoservices",
-      "authority": "IBGE",
-      "scope": "BR",
-      "domain": [
-        "census",
-        "demography",
-        "housing",
-        "urban_environment"
-      ],
-      "source_type": "WFS_WMS",
-      "base_url": "https://geoservicoscenso2022.ibge.gov.br/geoserver/censo2022/ows",
-      "access_class": "OPEN_REUSABLE",
-      "verification_status": "VERIFIED_LIVE_2026",
-      "notes": "GeoServer oficial Censo 2022 com resultados SIDRA espacializados. Preservar nível territorial e definição do indicador."
-    },
-    {
-      "id": "br-ibge-bcim-geoservices",
-      "authority": "IBGE",
-      "scope": "BR",
-      "domain": [
-        "roads",
-        "hydrography",
-        "toponymy",
-        "regional_cartography"
-      ],
-      "source_type": "WFS_WMS",
-      "base_url": "https://geoservicos.ibge.gov.br/geoserver/ows",
-      "access_class": "OPEN_REUSABLE",
-      "verification_status": "VERIFIED_LIVE_2026",
-      "notes": "Cartografia contínua/regional. Escala insuficiente para substituir cartografia municipal de lote, alinhamento ou rede urbana detalhada."
-    },
-    {
-      "id": "br-ana-snirh-inde",
-      "authority": "Agência Nacional de Águas e Saneamento Básico / IBGE",
-      "scope": "BR",
-      "domain": [
-        "hydrology",
-        "water_security",
-        "water_supply",
-        "hydrographic_divisions"
-      ],
-      "source_type": "ArcGIS_REST_WMS",
-      "base_url": "https://www.snirh.gov.br/arcgis/rest/services/INDE/Camadas/MapServer",
-      "access_class": "OPEN_REUSABLE",
-      "verification_status": "LIVE_PROPERTY_CONTEXT_2026",
-      "notes": "Consulta pontual integrada para macro/meso/microrregião hidrográfica. Bacia/divisão hidrográfica não é risco de inundação."
-    },
-    {
-      "id": "br-siconfi-api",
-      "authority": "Tesouro Nacional",
-      "scope": "BR",
-      "domain": [
-        "municipal_finance",
-        "public_budget",
-        "fiscal_capacity"
-      ],
-      "source_type": "open_REST_API",
-      "base_url": "https://apidatalake.tesouro.gov.br/ords/siconfi/tt/",
-      "discovery_url": "https://apidatalake.tesouro.gov.br/docs/siconfi/",
-      "access_class": "OPEN_REUSABLE",
-      "verification_status": "LIVE_MUNICIPAL_CONTEXT_2026",
-      "notes": "API pública atual do Tesouro sem autenticação. LoteDiretor usa RREO 2025/6 com cache municipal e throttle >=1 s entre chamadas, extraindo somente contas explícitas de IPTU realizado, ITBI realizado, RCL e RCL ajustada para limites de endividamento. Nunca tratar como atributo econômico do lote."
-    },
-    {
-      "id": "global-osm-overpass",
-      "authority": "OpenStreetMap contributors / Overpass API",
-      "scope": "GLOBAL",
-      "domain": [
-        "mobility",
-        "poi",
-        "sidewalks",
-        "crossings",
-        "cycleways",
-        "transit",
-        "public_space"
-      ],
-      "source_type": "open_query_API",
-      "base_url": "https://overpass-api.de/api/interpreter",
-      "license": "ODbL 1.0",
-      "access_class": "OPEN_REUSABLE",
-      "verification_status": "LIVE_COMPLEMENTARY_SOFT_FAIL_2026",
-      "notes": "Used as collaborative mobility context only: pedestrian crossings, transit stops/platforms, cycle infrastructure and bicycle parking in a small parcel-adjacent radius. Requests are serialized and cached for 12h. Municipal official layers prevail; Overpass failure never blocks the parcel dossier."
-    },
-    {
-      "id": "br-brasilapi-cep-v2",
-      "authority": "BrasilAPI / múltiplos provedores de CEP",
-      "scope": "BR",
-      "domain": [
-        "address",
-        "postal_code",
-        "geocoding"
-      ],
-      "source_type": "open_REST_API",
-      "base_url": "https://brasilapi.com.br/api/cep/v2",
-      "discovery_url": "https://brasilapi.com.br/docs",
-      "access_class": "OPEN_REUSABLE",
-      "verification_status": "LIVE_SEARCH_FALLBACK_2026",
-      "notes": "CEP V2 inclui endereço e coordenadas. A própria documentação alerta que coordenadas podem derivar do OpenStreetMap; usar para busca/localização, não como limite cadastral."
-    },
-    {
-      "id": "pe-recife-sedec-risk-sectors",
-      "authority": "Prefeitura do Recife / Defesa Civil",
-      "scope": "2611606",
-      "domain": [
-        "risk",
-        "geological_risk",
-        "civil_defense"
-      ],
-      "source_type": "ArcGIS_FeatureServer",
-      "base_url": "https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Hosted/Setores_Risco_SEDEC/FeatureServer/0",
-      "access_class": "PUBLIC_QUERY_ONLY",
-      "verification_status": "LIVE_PROPERTY_RESOLVER_2026",
-      "notes": "Setores oficiais de risco consultados por interseção pontual. Grau/setor não substitui vistoria geotécnica atual."
-    },
-    {
-      "id": "pe-recife-landslide-susceptibility",
-      "authority": "Prefeitura do Recife",
-      "scope": "2611606",
-      "domain": [
-        "risk",
-        "landslide_susceptibility"
-      ],
-      "source_type": "ArcGIS_FeatureServer",
-      "base_url": "https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Hosted/Suscebilidade_Deslizamento/FeatureServer/0",
-      "access_class": "PUBLIC_QUERY_ONLY",
-      "verification_status": "LIVE_PROPERTY_RESOLVER_2026",
-      "notes": "Carta de suscetibilidade a deslizamento; suscetibilidade não equivale a laudo de risco específico do terreno."
-    },
-    {
-      "id": "pe-recife-flood-2026",
-      "authority": "Prefeitura do Recife",
-      "scope": "2611606",
-      "domain": [
-        "risk",
-        "flooding"
-      ],
-      "source_type": "ArcGIS_FeatureServer",
-      "base_url": "https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Hosted/Poligonos_Alagamentos_2026_5/FeatureServer/0",
-      "access_class": "PUBLIC_QUERY_ONLY",
-      "verification_status": "LIVE_PROPERTY_RESOLVER_2026",
-      "notes": "Polígonos municipais de alagamento 2026 consultados espacialmente."
-    },
-    {
-      "id": "pe-recife-flooded-lots-2026",
-      "authority": "Prefeitura do Recife",
-      "scope": "2611606",
-      "domain": [
-        "risk",
-        "flooding",
-        "parcel"
-      ],
-      "source_type": "ArcGIS_FeatureServer",
-      "base_url": "https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Hosted/Lotes_Areas_Alagadas_2026_V1/FeatureServer/0",
-      "access_class": "PUBLIC_QUERY_ONLY",
-      "verification_status": "LIVE_EXACT_PARCEL_MATCH_2026",
-      "notes": "Consulta por inscrição fiscal do lote; somente campos públicos não pessoais são expostos."
-    },
-    {
-      "id": "br-onr-saec",
-      "authority": "Operador Nacional do Sistema de Registro Eletrônico de Imóveis / SAEC",
-      "scope": "BR",
-      "domain": [
-        "registry",
-        "certificates",
-        "property_registration"
-      ],
-      "source_type": "authenticated_web_service",
-      "base_url": "https://registradores.onr.org.br/",
-      "access_class": "PRIVATE_AUTHORIZED",
-      "verification_status": "AUTHENTICATED_PRIVATE_ON_DEMAND",
-      "notes": "Certidões, matrícula atualizada e demais atos registrais dependem de fluxo legítimo/autorizado. LoteDiretor não indexa proprietários nem contorna autenticação."
-    },
-    {
-      "id": "br-sinter",
-      "authority": "Receita Federal do Brasil / Sinter",
-      "scope": "BR",
-      "domain": [
-        "cadastre",
-        "registry_interoperability",
-        "cnm"
-      ],
-      "source_type": "government_integration",
-      "discovery_url": "https://www.gov.br/receitafederal/pt-br/assuntos/sinter",
-      "access_class": "GOVERNMENT_AUTHORIZED",
-      "verification_status": "AUTHENTICATED_GOVERNMENT_INTEGRATION",
-      "notes": "Barramento/interoperabilidade cadastral destinado a integrações autorizadas. Não tratado como API pública anônima de consulta parcelar."
-    },
-    {
-      "id": "br-ibge-censo2022-sector-mesh",
-      "authority": "IBGE",
-      "scope": "BR",
-      "domain": [
-        "census",
-        "demography",
-        "census_sector",
-        "housing"
-      ],
-      "source_type": "official_GeoPackage_materialized_PostGIS",
-      "base_url": "https://ftp.ibge.gov.br/Censos/Censo_Demografico_2022/Agregados_por_Setores_Censitarios/malha_com_atributos/setores/gpkg/UF/",
-      "discovery_url": "https://ftp.ibge.gov.br/Censos/Censo_Demografico_2022/Agregados_por_Setores_Censitarios/",
-      "access_class": "OPEN_REUSABLE",
-      "verification_status": "LIVE_LOCAL_PROPERTY_CONTEXT_2026",
-      "notes": "Official 2022 census-sector mesh with attributes. First-wave municipalities are materialized locally in PostGIS and queried by point-in-polygon. Exposed fields are limited to sector identity, situation, area, district/subdistrict/neighborhood and V0001-V0007. Sector values are territorial context, not parcel or household-specific facts."
     }
   ],
   "as_of": "2026-09-28"
