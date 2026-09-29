@@ -1,0 +1,62 @@
+{
+	email {$ACME_EMAIL}
+}
+
+(security) {
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+		X-Content-Type-Options nosniff
+		Referrer-Policy strict-origin-when-cross-origin
+		Permissions-Policy "camera=(), microphone=(), geolocation=(self), payment=()"
+		-Server
+	}
+	encode zstd gzip
+	log
+}
+
+{$APEX_HOST} {
+	redir https://{$SITE_HOST}{uri} permanent
+}
+
+{$SITE_HOST} {
+	import security
+	header {
+		X-Frame-Options DENY
+		Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
+	}
+	reverse_proxy site-web:3000
+}
+
+{$APP_HOST} {
+	import security
+	header {
+		X-Frame-Options DENY
+		# Map styles/tiles come from OpenFreeMap; add other tile hosts here.
+		Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data: https://tiles.openfreemap.org; connect-src 'self' https://tiles.openfreemap.org; worker-src 'self' blob:; frame-ancestors 'none'; base-uri 'self'; form-action 'self' https://{$AUTH_HOST}"
+	}
+	reverse_proxy client-web:3000 {
+		transport http {
+			read_timeout 130s
+		}
+	}
+}
+
+{$ADMIN_HOST} {
+	import security
+	@blocked not remote_ip {$ADMIN_ALLOWED_IPS}
+	respond @blocked "Forbidden" 403
+	header {
+		X-Frame-Options DENY
+		X-Robots-Tag "noindex, nofollow"
+		Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self' https://{$AUTH_HOST}"
+	}
+	reverse_proxy admin-web:3000
+}
+
+{$AUTH_HOST} {
+	import security
+	# The Keycloak admin console is not exposed publicly; use an SSH tunnel.
+	@admin_console path /admin /admin/*
+	respond @admin_console "Not found" 404
+	reverse_proxy keycloak:8080
+}

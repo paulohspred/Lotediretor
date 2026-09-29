@@ -8,6 +8,7 @@ allowlist. It never requests owner/person fields.
 from __future__ import annotations
 
 import hashlib
+import os
 import html
 import io
 import json
@@ -39,8 +40,8 @@ import analysis_evidence
 import federal_context
 import point_context
 
-HOST = "127.0.0.1"
-PORT = 8765
+HOST = os.environ.get("ENGINE_HOST", "127.0.0.1")
+PORT = int(os.environ.get("ENGINE_PORT", "8765"))
 WFS = "https://wfs.geosampa.prefeitura.sp.gov.br/geoserver/geoportal/ows"
 TYPE_NAME = "geoportal:lote_cidadao"
 FIELDS = [

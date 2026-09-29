@@ -1,0 +1,33 @@
+# Docker variant of martin.yaml (connection from DATABASE_URL).
+listen_addresses: 0.0.0.0:3000
+preferred_encoding: gzip
+
+postgres:
+  connection_string: ${DATABASE_URL}
+  auto_bounds: calc
+  auto_publish: false
+  tables:
+    ibge_censo2022_setores:
+      schema: ld_stage
+      table: ibge_censo2022_setores
+      srid: 4674
+      geometry_column: geom
+      geometry_type: MULTIPOLYGON
+    jp_lotes:
+      schema: ld_stage
+      table: jp_lotes
+      srid: 4674
+      geometry_column: geom
+      geometry_type: MULTIPOLYGON
+    jp_curvas_nivel_2022:
+      schema: ld_stage
+      table: jp_curvas_nivel_2022
+      srid: 4674
+      geometry_column: geom
+      geometry_type: MULTILINESTRING
+    barueri_risk_reference_points:
+      schema: ld_stage
+      table: barueri_risk_reference_points
+      srid: 4674
+      geometry_column: geom
+      geometry_type: POINT

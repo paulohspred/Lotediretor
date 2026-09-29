@@ -1,0 +1,246 @@
+# LoteDiretor Brasil — production stack (single host).
+#
+#   cp .env.example .env   # fill every value
+#   docker compose --env-file .env up -d --build
+#
+# Public surface is only Caddy (80/443). The API, engine, databases and Martin
+# live on internal networks; browsers reach the API exclusively through the
+# BFFs of the three Next.js apps. See docs/runbooks/phase-5-production.md.
+
+name: lotediretor
+
+x-app-env: &app-env
+  NODE_ENV: production
+  PLATFORM_API_URL: http://platform-api:3000
+  OIDC_ISSUER: https://${AUTH_HOST}/realms/lotediretor
+  DATABASE_URL: postgresql://${APP_DB_USER}:${APP_DB_PASSWORD}@postgres:5432/lotediretor
+
+services:
+  postgres:
+    image: postgis/postgis:17-3.5
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: lotediretor
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}
+      APP_DB_USER: ${APP_DB_USER:?set APP_DB_USER}
+      APP_DB_PASSWORD: ${APP_DB_PASSWORD:?set APP_DB_PASSWORD}
+      KEYCLOAK_DB_PASSWORD: ${KEYCLOAK_DB_PASSWORD:?set KEYCLOAK_DB_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./postgres/init.sh:/docker-entrypoint-initdb.d/20-lotediretor.sh:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d lotediretor"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks: [data]
+
+  # One-shot: apply pending migrations with the ledger runner, then exit.
+  migrate:
+    build:
+      context: ../..
+      dockerfile: deploy/production/docker/engine.Dockerfile
+    command: ["python3", "/srv/lotediretor/app/tools/db/migrate.py"]
+    environment:
+      LOTEDIRETOR_DB_DSN: postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/lotediretor
+      PGOPTIONS: "-c lotediretor.app_role=${APP_DB_USER}"
+    depends_on:
+      postgres: { condition: service_healthy }
+    restart: "no"
+    networks: [data]
+
+  # Data tooling (IBGE mesh, source registry, legal ingestion, municipal
+  # factory). Runs on demand with outbound internet:
+  #   docker compose --profile tools run --rm tools <command>
+  tools:
+    build:
+      context: ../..
+      dockerfile: deploy/production/docker/engine.Dockerfile
+    profiles: ["tools"]
+    working_dir: /srv/lotediretor/app
+    entrypoint: []
+    command: ["python3", "tools/db/migrate.py", "--status"]
+    environment:
+      LOTEDIRETOR_DB_DSN: postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/lotediretor
+      PGOPTIONS: "-c lotediretor.app_role=${APP_DB_USER}"
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+    volumes:
+      # Connector specs written by discover.py persist in the checkout.
+      - ../../data/connectors/municipal:/srv/lotediretor/app/data/connectors/municipal
+      - ${TOOLS_INBOX_DIR:-/srv/lotediretor/inbox}:/inbox:ro
+    depends_on:
+      postgres: { condition: service_healthy }
+    restart: "no"
+    networks: [data, egress]
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.4
+    restart: unless-stopped
+    command: ["start", "--import-realm"]
+    environment:
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: ${KEYCLOAK_DB_PASSWORD}
+      KC_HOSTNAME: https://${AUTH_HOST}
+      KC_PROXY_HEADERS: xforwarded
+      KC_HTTP_ENABLED: "true"
+      KC_HEALTH_ENABLED: "true"
+      KC_BOOTSTRAP_ADMIN_USERNAME: ${KEYCLOAK_ADMIN_USER:?set KEYCLOAK_ADMIN_USER}
+      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:?set KEYCLOAK_ADMIN_PASSWORD}
+      APP_HOST: ${APP_HOST}
+      ADMIN_HOST: ${ADMIN_HOST}
+      CLIENT_OIDC_SECRET: ${CLIENT_OIDC_SECRET:?set CLIENT_OIDC_SECRET}
+      ADMIN_OIDC_SECRET: ${ADMIN_OIDC_SECRET:?set ADMIN_OIDC_SECRET}
+    volumes:
+      - ./keycloak/realm-lotediretor.json:/opt/keycloak/data/import/realm-lotediretor.json:ro
+    depends_on:
+      postgres: { condition: service_healthy }
+    networks: [edge, data]
+
+  engine:
+    build:
+      context: ../..
+      dockerfile: deploy/production/docker/engine.Dockerfile
+    restart: unless-stopped
+    environment:
+      ENGINE_HOST: 0.0.0.0
+      LOTEDIRETOR_DB_DSN: postgresql://${APP_DB_USER}:${APP_DB_PASSWORD}@postgres:5432/lotediretor
+    volumes:
+      # City datasets materialized on the host (PGV, ITBI, IPTU indexes, terrain cache).
+      - ${ENGINE_DATA_DIR:-/srv/lotediretor/data}:/srv/lotediretor/data:ro
+      - engine_cache:/var/cache/lotediretor
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+    networks: [internal, data, egress]
+
+  platform-api:
+    build:
+      context: ../..
+      dockerfile: deploy/production/docker/platform-api.Dockerfile
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://${APP_DB_USER}:${APP_DB_PASSWORD}@postgres:5432/lotediretor
+      PARCEL_ENGINE_BASE_URL: http://engine:8765
+      OIDC_ISSUER: https://${AUTH_HOST}/realms/lotediretor
+      OIDC_AUDIENCE: lotediretor-api
+      # The API fetches JWKS from Keycloak over the internal network.
+      OIDC_JWKS_URL: http://keycloak:8080/realms/lotediretor/protocol/openid-connect/certs
+      TRUST_PROXY: loopback,uniquelocal
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      AI_MODEL: ${AI_MODEL:-claude-sonnet-5-5}
+      AI_MAX_QUESTIONS_PER_HOUR: ${AI_MAX_QUESTIONS_PER_HOUR:-30}
+      LEAD_HASH_SALT: ${LEAD_HASH_SALT:?set LEAD_HASH_SALT}
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+      engine: { condition: service_started }
+    networks: [internal, data, egress]
+
+  client-web:
+    build:
+      context: ../..
+      dockerfile: deploy/production/docker/node-app.Dockerfile
+      args: { APP_DIR: apps/client-web }
+    restart: unless-stopped
+    environment:
+      <<: *app-env
+      AUTH_APP: client
+      APP_BASE_URL: https://${APP_HOST}
+      OIDC_CLIENT_ID: lotediretor-client
+      OIDC_CLIENT_SECRET: ${CLIENT_OIDC_SECRET:?set CLIENT_OIDC_SECRET}
+      SESSION_SECRET: ${CLIENT_SESSION_SECRET:?set CLIENT_SESSION_SECRET}
+      MARTIN_URL: http://martin:3000
+      NEXT_PUBLIC_SITE_URL: https://${SITE_HOST}
+    depends_on: [platform-api, keycloak]
+    networks: [edge, internal, data]
+
+  admin-web:
+    build:
+      context: ../..
+      dockerfile: deploy/production/docker/node-app.Dockerfile
+      args: { APP_DIR: apps/admin-web }
+    restart: unless-stopped
+    environment:
+      <<: *app-env
+      AUTH_APP: admin
+      APP_BASE_URL: https://${ADMIN_HOST}
+      OIDC_CLIENT_ID: lotediretor-admin
+      OIDC_CLIENT_SECRET: ${ADMIN_OIDC_SECRET:?set ADMIN_OIDC_SECRET}
+      SESSION_SECRET: ${ADMIN_SESSION_SECRET:?set ADMIN_SESSION_SECRET}
+      SESSION_MAX_HOURS: "8"
+    depends_on: [platform-api, keycloak]
+    networks: [edge, internal, data]
+
+  site-web:
+    build:
+      context: ../..
+      dockerfile: deploy/production/docker/node-app.Dockerfile
+      args:
+        APP_DIR: apps/site-web
+        NEXT_PUBLIC_SITE_URL: https://${SITE_HOST}
+        NEXT_PUBLIC_APP_URL: https://${APP_HOST}
+        NEXT_PUBLIC_COMPANY_NAME: ${COMPANY_NAME:-}
+        NEXT_PUBLIC_COMPANY_CNPJ: ${COMPANY_CNPJ:-}
+        NEXT_PUBLIC_COMPANY_ADDRESS: ${COMPANY_ADDRESS:-}
+        NEXT_PUBLIC_DPO_EMAIL: ${DPO_EMAIL:-}
+        NEXT_PUBLIC_LEGAL_REVIEWED: ${LEGAL_REVIEWED:-false}
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PLATFORM_API_URL: http://platform-api:3000
+      NEXT_PUBLIC_SITE_URL: https://${SITE_HOST}
+    depends_on: [platform-api]
+    networks: [edge, internal]
+
+  # Optional vector tiles: enable with `--profile tiles` once the staged
+  # tables referenced in martin.docker.yaml have been loaded.
+  martin:
+    image: ghcr.io/maplibre/martin:v0.18.1
+    profiles: ["tiles"]
+    restart: unless-stopped
+    command: ["--config", "/config/martin.yaml"]
+    environment:
+      DATABASE_URL: postgresql://${APP_DB_USER}:${APP_DB_PASSWORD}@postgres:5432/lotediretor
+    volumes:
+      - ../martin/martin.docker.yaml:/config/martin.yaml:ro
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+    networks: [internal, data]
+
+  caddy:
+    image: caddy:2.10-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      SITE_HOST: ${SITE_HOST}
+      APEX_HOST: ${APEX_HOST}
+      APP_HOST: ${APP_HOST}
+      ADMIN_HOST: ${ADMIN_HOST}
+      AUTH_HOST: ${AUTH_HOST}
+      ACME_EMAIL: ${ACME_EMAIL:?set ACME_EMAIL}
+      ADMIN_ALLOWED_IPS: ${ADMIN_ALLOWED_IPS:-0.0.0.0/0 ::/0}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on: [site-web, client-web, admin-web, keycloak]
+    networks: [edge]
+
+volumes:
+  postgres_data:
+  engine_cache:
+  caddy_data:
+  caddy_config:
+
+networks:
+  edge:
+  internal:
+    internal: true
+  data:
+    internal: true
+  # Outbound internet for services that query public sources / the LLM.
+  egress:
