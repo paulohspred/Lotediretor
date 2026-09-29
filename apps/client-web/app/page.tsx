@@ -1,5 +1,5 @@
-import { ExplorerShell } from "@/components/explorer-shell";
+import { redirect } from "next/navigation";
 
-export default function HomePage() {
-  return <ExplorerShell />;
+export default function Home() {
+  redirect("/dashboard");
 }

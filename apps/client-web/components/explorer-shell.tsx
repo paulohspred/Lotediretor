@@ -18,15 +18,6 @@ import {
   type MapLayerCategory,
 } from "@/lib/map-layers";
 
-const rail = [
-  "Dashboard",
-  "Explorer",
-  "Imóveis",
-  "Empreendimentos",
-  "Análises",
-  "Relatórios",
-  "CRM",
-];
 
 type ParcelFeature = {
   type: "Feature";
@@ -190,7 +181,13 @@ function DossierView({
   );
 }
 
-export function ExplorerShell() {
+type ExplorerProps = {
+  /** Open a point on load, e.g. from "Meus imóveis". */
+  initialPoint?: { lat: number; lng: number } | null;
+  canSave?: boolean;
+};
+
+export function ExplorerShell({ initialPoint = null, canSave = false }: ExplorerProps) {
   const [city, setCity] = useState<CityOption>(CITIES[0]);
   const cityIbge = city.ibge;
   // Incremented only when the user explicitly picks a municipality, so the
@@ -224,6 +221,7 @@ export function ExplorerShell() {
   const [pointContext, setPointContext] = useState<PointContextPayload | null>(
     null,
   );
+  const [saveState, setSaveState] = useState<"idle" | "saving" | "saved" | "error">("idle");
   const [viewMode, setViewMode] = useState<"2d" | "3d">("2d");
 
   const parcel = payload?.parcel;
@@ -270,6 +268,39 @@ export function ExplorerShell() {
     return () => controller.abort();
   }, [cityIbge]);
 
+  useEffect(() => {
+    if (!initialPoint) return;
+    // Opening a saved property: resolve its municipality and dossier once.
+    void locateMunicipality(initialPoint.lat, initialPoint.lng);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  async function saveProperty() {
+    if (!focusPoint) return;
+    setSaveState("saving");
+    const address = [parcel?.address?.street, parcel?.address?.number]
+      .filter(Boolean)
+      .join(", ");
+    const reference = parcel?.identifiers?.primary?.value ?? null;
+    try {
+      const response = await fetch("/api/properties", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          ibge_code: city.ibge,
+          label: (address || reference || `Ponto em ${city.name}`).slice(0, 200),
+          lat: focusPoint.lat,
+          lng: focusPoint.lng,
+          parcel_reference: reference,
+          analysis_run_id: payload?.analysis?.run_id ?? null,
+        }),
+      });
+      setSaveState(response.ok ? "saved" : "error");
+    } catch {
+      setSaveState("error");
+    }
+  }
+
   function applyCity(next: CityOption, recenter: boolean) {
     if (next.ibge !== city.ibge) {
       setActiveLayerIds(defaultLayerIds(next.ibge));
@@ -284,6 +315,7 @@ export function ExplorerShell() {
     setBusy(true);
     setPayload(null);
     setPointContext(null);
+    setSaveState("idle");
     setActiveSectionId(null);
     setFocusPoint({ lat, lng });
     setStatus("Identificando o município…");
@@ -359,6 +391,7 @@ export function ExplorerShell() {
     setBusy(true);
     setSearchResults([]);
     setPointContext(null);
+    setSaveState("idle");
     setFocusPoint({ lat, lng });
     setStatus("Consultando cadastro, regras e contexto territorial…");
     try {
@@ -497,25 +530,7 @@ export function ExplorerShell() {
   const complement = parcel?.address?.complement ?? null;
 
   return (
-    <main className="app-shell">
-      <aside className="app-rail" aria-label="Navegação principal">
-        <div className="brand-mark">LD</div>
-        <nav>
-          {rail.map((item) => (
-            <button
-              className={item === "Explorer" ? "rail-item active" : "rail-item"}
-              key={item}
-              type="button"
-            >
-              {item}
-            </button>
-          ))}
-        </nav>
-        <button className="rail-item more" type="button">
-          Mais
-        </button>
-      </aside>
-
+    <div className="explorer-root">
       <section className="app-stage">
         <header className="app-head">
           <form className="global-search" onSubmit={searchProperty}>
@@ -552,8 +567,9 @@ export function ExplorerShell() {
                 </option>
               ))}
             </select>
-            <button type="button">Data-base: hoje</button>
-            <button type="button">Workspace</button>
+            <span className="head-chip" title="Análises usam a legislação vigente hoje">
+              Data-base: hoje
+            </span>
           </div>
         </header>
 
@@ -782,6 +798,22 @@ export function ExplorerShell() {
                     )}
                 </div>
 
+                {canSave && (
+                  <button
+                    type="button"
+                    className="primary-button"
+                    disabled={saveState === "saving" || saveState === "saved"}
+                    onClick={() => void saveProperty()}
+                  >
+                    {saveState === "saved"
+                      ? "Salvo em Meus imóveis"
+                      : saveState === "saving"
+                        ? "Salvando…"
+                        : saveState === "error"
+                          ? "Não foi possível salvar — tentar de novo"
+                          : "Salvar em Meus imóveis"}
+                  </button>
+                )}
                 {payload?.analysis?.audit_warning && (
                   <div className="audit-card audit-card--warning" role="alert">
                     <strong>{payload.analysis.audit_warning}</strong>
@@ -819,6 +851,6 @@ export function ExplorerShell() {
           </aside>
         </section>
       </section>
-    </main>
+    </div>
   );
 }

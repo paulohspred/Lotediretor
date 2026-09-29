@@ -1,8 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 
+import { requireSessionForBff } from "@/lib/auth/api";
+
 export const runtime = "nodejs";
 
 export async function POST(request: NextRequest) {
+  const denied = await requireSessionForBff();
+  if (denied) return denied;
   const payload = await request.json().catch(() => null);
   if (!payload || typeof payload !== "object") {
     return NextResponse.json(

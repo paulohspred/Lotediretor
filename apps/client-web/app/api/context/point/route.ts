@@ -1,11 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 
+import { requireSessionForBff } from "@/lib/auth/api";
+
 export const runtime = "nodejs";
 
 const PLATFORM_API_URL =
   process.env.PLATFORM_API_URL ?? "http://127.0.0.1:3000";
 
 export async function POST(request: NextRequest) {
+  const denied = await requireSessionForBff();
+  if (denied) return denied;
   const body = (await request.json().catch(() => null)) as {
     lat?: unknown;
     lng?: unknown;
