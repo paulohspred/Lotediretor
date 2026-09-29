@@ -87,6 +87,19 @@
         "urban_rule",
         "rule_review_event"
       ]
+    },
+    "ld_app": {
+      "purpose": "Tenancy: users by IdP subject, organizations, memberships, BFF sessions (encrypted tokens), RLS-protected tenant data, leads and append-only audit.",
+      "tables": [
+        "organization",
+        "app_user",
+        "membership",
+        "web_session",
+        "saved_property",
+        "activity_event",
+        "lead",
+        "audit_log"
+      ]
     }
   },
   "invariants": [
