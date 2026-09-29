@@ -34,6 +34,20 @@ const LOAD_META = `
   JOIN ld_catalog.snapshot sn ON sn.snapshot_id = l.snapshot_id
   JOIN ld_catalog.source src ON src.source_id = l.source_id`;
 
+const RESTRICTION_THEME_LABELS: Record<string, string> = {
+  INDIGENOUS_LAND: "Terra indígena",
+  CONSERVATION_UNIT: "Unidade de conservação",
+  MINING_PROCESS: "Processo minerário",
+  HYDROGRAPHY: "Hidrografia",
+  HYDROGRAPHIC_BASIN: "Bacia hidrográfica",
+  DEFORESTATION: "PRODES/DETER",
+  TRANSMISSION_LINE: "Linha de transmissão",
+  SUBSTATION: "Subestação",
+  CULTURAL_HERITAGE: "Patrimônio cultural",
+  GEOLOGY: "Geologia",
+  GEOLOGICAL_RISK: "Risco geológico",
+};
+
 function pct(ratio: number): string {
   return `${Math.round(ratio * 1000) / 10}%`.replace(".", ",");
 }
@@ -184,7 +198,11 @@ export class FactoryParcelService {
       [JSON.stringify(parcel.geometry)],
     );
     const restrictionItems = restrictionRows.map((r) => ({
-      label: [r.theme, r.label ?? r.upstream_key, r.category].filter(Boolean).join(" · "),
+      label: [
+        RESTRICTION_THEME_LABELS[r.theme] ?? r.theme,
+        r.label ?? r.upstream_key,
+        r.category,
+      ].filter(Boolean).join(" · "),
       value:
         `${r.intersects ? "Intersecta o lote" : `A ${Math.round(Number(r.distance_m) * 10) / 10} m do lote`}. ` +
         `Fonte: ${r.authority}. Carga: ${r.loaded_at ? dateBr(r.loaded_at) : "não informada"}` +
@@ -192,14 +210,27 @@ export class FactoryParcelService {
     }));
     const federalSections = (federal.sections as Array<Record<string, unknown>>)
       .filter((section) => section.id !== "restrictions");
-    if (restrictionItems.length > 0) {
-      federalSections.unshift({
-        id: "restrictions",
-        title: "Restrições nacionais",
-        type: "DETAIL",
-        items: restrictionItems,
+    if (restrictionItems.length === 0) {
+      const [state] = await this.db.query<{ active: number; unavailable: number }>(
+        `SELECT count(*) FILTER (WHERE status = 'ACTIVE')::int AS active,
+                count(*) FILTER (WHERE status <> 'ACTIVE')::int AS unavailable
+         FROM ld_core.restriction_layer`,
+      );
+      restrictionItems.push({
+        label: "Restrições nacionais",
+        value: Number(state?.unavailable ?? 0) > 0
+          ? "Sem conclusão completa: há camadas nacionais ainda não carregadas ou indisponíveis."
+          : Number(state?.active ?? 0) > 0
+            ? "Nenhuma feição das camadas nacionais ativas foi encontrada até 5 km do lote."
+            : "Camadas nacionais ainda não carregadas.",
       });
     }
+    federalSections.unshift({
+      id: "restrictions",
+      title: "Restrições nacionais",
+      type: "DETAIL",
+      items: restrictionItems,
+    });
 
     const declared = parcel.land_area_m2 === null ? null : Number(parcel.land_area_m2);
     const computed = Number(parcel.computed_area_m2);

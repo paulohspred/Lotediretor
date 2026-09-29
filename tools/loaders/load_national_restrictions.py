@@ -40,8 +40,10 @@ def sha256_file(path: Path) -> str:
     return h.hexdigest()
 
 
-def download(url: str, dest: Path) -> tuple[int, str | None, str]:
-    req = urllib.request.Request(url, headers={"User-Agent": "LoteDiretor/1.0 (+https://lotediretor.com)"})
+def download(url: str, dest: Path, headers: dict[str, str] | None = None) -> tuple[int, str | None, str]:
+    request_headers = {"User-Agent": "LoteDiretor/1.0 (+https://lotediretor.com)"}
+    request_headers.update(headers or {})
+    req = urllib.request.Request(url, headers=request_headers)
     with urllib.request.urlopen(req, timeout=180) as response, dest.open("wb") as out:
         shutil.copyfileobj(response, out)
         return response.status, response.headers.get("Content-Type"), response.geturl()
@@ -56,9 +58,11 @@ def download_arcgis(
     query_url = layer_url.rstrip("/") + "/query"
     offset = 0
     page = 1000
-    features: list[dict] = []
     page_hashes: list[str] = []
-    with raw_dest.open("wb") as raw_out:
+    total = 0
+    first_feature = True
+    with raw_dest.open("wb") as raw_out, normalized_dest.open("w", encoding="utf-8") as normalized:
+        normalized.write('{"type":"FeatureCollection","features":[')
         while True:
             params = urllib.parse.urlencode({
                 "where": "1=1",
@@ -80,20 +84,22 @@ def download_arcgis(
             raw_out.write(b"\n")
             body = json.loads(raw)
             rows = body.get("features") or []
-            features.extend(rows)
+            for feature in rows:
+                if not first_feature:
+                    normalized.write(",")
+                json.dump(feature, normalized, ensure_ascii=False, separators=(",", ":"))
+                first_feature = False
+            total += len(rows)
             if len(rows) < page:
                 break
             offset += len(rows)
             if offset > 5_000_000:
                 raise RuntimeError("arcgis_page_safety_limit")
-    normalized_dest.write_text(
-        json.dumps({"type": "FeatureCollection", "features": features}, ensure_ascii=False),
-        encoding="utf-8",
-    )
+        normalized.write("]}")
     return 200, "application/jsonl", query_url, {
         "page_sha256": page_hashes,
         "page_count": len(page_hashes),
-        "feature_count_raw": len(features),
+        "feature_count_raw": total,
         "raw_bundle_format": "newline-separated exact ArcGIS page responses",
     }
 
@@ -126,21 +132,41 @@ def ensure_layer_row(cur, cfg: dict) -> None:
 def record_snapshot(cur, cfg: dict, path: Path, requested: str, final_url: str,
                     http_status: int | None, content_type: str | None, manifest: dict) -> str:
     digest = sha256_file(path)
+    object_key = str(path) if cfg.get("retain_raw", True) else None
     cur.execute(
         """INSERT INTO ld_catalog.snapshot
              (source_id,captured_at,requested_url,final_url,http_status,content_type,
-              content_length,sha256,object_key,manifest)
-           VALUES (%s,now(),%s,%s,%s,%s,%s,%s,%s,%s)
-           ON CONFLICT (source_id,sha256) DO UPDATE SET manifest=EXCLUDED.manifest
+              content_length,sha256,object_key,source_updated_at,manifest)
+           VALUES (%s,now(),%s,%s,%s,%s,%s,%s,%s,%s,%s)
+           ON CONFLICT (source_id,sha256) DO UPDATE SET
+             source_updated_at=coalesce(EXCLUDED.source_updated_at, ld_catalog.snapshot.source_updated_at),
+             manifest=EXCLUDED.manifest
            RETURNING snapshot_id""",
         (cfg["source_id"], requested, final_url, http_status, content_type, path.stat().st_size,
-         digest, str(path), json.dumps(manifest)),
+         digest, object_key, cfg.get("source_updated_at"), json.dumps(manifest)),
     )
     return str(cur.fetchone()[0])
 
 
 def pg_ogr_dsn(dsn: str) -> str:
-    return "PG:" + dsn
+    if "://" not in dsn:
+        return "PG:" + dsn
+    parsed = urllib.parse.urlsplit(dsn)
+    query = dict(urllib.parse.parse_qsl(parsed.query))
+    values = {
+        "dbname": parsed.path.lstrip("/") or None,
+        "host": query.get("host") or parsed.hostname,
+        "port": query.get("port") or parsed.port,
+        "user": query.get("user") or parsed.username,
+        "password": parsed.password,
+        "sslmode": query.get("sslmode"),
+    }
+    def quote(value: object) -> str:
+        text = str(value).replace("\\", "\\\\").replace("'", "\\'")
+        return f"'{text}'"
+    return "PG:" + " ".join(
+        f"{key}={quote(value)}" for key, value in values.items() if value is not None
+    )
 
 
 def stage_file(dsn: str, cfg: dict, source: Path, table: str) -> None:
@@ -226,9 +252,9 @@ def promote(cur, cfg: dict, table: str, snapshot_id: str, captured_at: datetime)
     cur.execute(
         """UPDATE ld_core.restriction_layer
            SET status='ACTIVE', current_snapshot_id=%s, feature_count=%s,
-               loaded_at=%s, updated_at=now()
+               source_updated_at=%s, loaded_at=%s, updated_at=now()
            WHERE layer_key=%s""",
-        (snapshot_id, count, captured_at, cfg["layer_key"]),
+        (snapshot_id, count, cfg.get("source_updated_at"), captured_at, cfg["layer_key"]),
     )
     return count
 
@@ -271,7 +297,8 @@ def load_one(dsn: str, cfg: dict, supplied_file: Path | None = None) -> dict:
                 requested, raw, import_file, fields
             )
         else:
-            status, content_type, final_url = download(requested, raw)
+            headers = {"Referer": cfg["referer"]} if cfg.get("referer") else None
+            status, content_type, final_url = download(requested, raw, headers=headers)
     except (urllib.error.URLError, TimeoutError, OSError) as exc:
         with psycopg2.connect(dsn) as conn, conn.cursor() as cur:
             cur.execute(
@@ -291,6 +318,7 @@ def load_one(dsn: str, cfg: dict, supplied_file: Path | None = None) -> dict:
         "layer_key": cfg["layer_key"], "authority": cfg["authority"],
         "license": cfg.get("license"), "source_format": cfg["source_format"],
         "source_url": requested, "captured_at": stamp.isoformat(),
+        "source_updated_at": cfg.get("source_updated_at"),
         "lgpd_filter": "cpf/cnpj/proprietario/titular/owner attribute keys removed from normalized features",
     }
     if cfg["mode"] == "arcgis":
@@ -302,9 +330,9 @@ def load_one(dsn: str, cfg: dict, supplied_file: Path | None = None) -> dict:
             cur.execute(
                 """UPDATE ld_core.restriction_layer
                    SET status='NOT_AVAILABLE_SPATIAL', current_snapshot_id=%s, feature_count=0,
-                       loaded_at=%s, updated_at=now()
+                       source_updated_at=%s, loaded_at=%s, updated_at=now()
                    WHERE layer_key=%s""",
-                (snapshot_id, stamp, cfg["layer_key"]),
+                (snapshot_id, cfg.get("source_updated_at"), stamp, cfg["layer_key"]),
             )
             return {"layer_key": cfg["layer_key"], "status": "NOT_AVAILABLE_SPATIAL",
                     "snapshot_id": snapshot_id, "sha256": sha256_file(raw)}
@@ -326,6 +354,10 @@ def load_one(dsn: str, cfg: dict, supplied_file: Path | None = None) -> dict:
     finally:
         with psycopg2.connect(dsn) as conn, conn.cursor() as cur:
             cur.execute(sql.SQL("DROP TABLE IF EXISTS {}").format(sql.Identifier("ld_stage", table)))
+        if cfg.get("mode") == "arcgis" and import_file != raw:
+            import_file.unlink(missing_ok=True)
+        if not cfg.get("retain_raw", True):
+            raw.unlink(missing_ok=True)
 
 
 def main() -> int:

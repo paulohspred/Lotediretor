@@ -27,6 +27,23 @@ THEME_LABELS = {
     "GEOLOGICAL_RISK": "Risco geológico",
 }
 
+STATUS_LABELS = {
+    "NOT_LOADED": "não carregada",
+    "NOT_AVAILABLE_SPATIAL": "sem geometria reutilizável",
+    "SOURCE_UNAVAILABLE": "fonte indisponível",
+    "FAILED_VALIDATION": "falhou na validação",
+}
+
+
+def unavailable_labels(context: dict) -> list[str]:
+    out = []
+    for item in context.get("unavailable") or []:
+        theme = THEME_LABELS.get(item.get("theme"), item.get("layer_key", "Camada nacional"))
+        status = STATUS_LABELS.get(item.get("status"), str(item.get("status") or "indisponível").lower())
+        authority = item.get("authority")
+        out.append(f"{theme} · {authority} ({status})" if authority else f"{theme} ({status})")
+    return out
+
 
 def _date(value) -> str:
     if value is None:
@@ -111,13 +128,25 @@ def report_values(context: dict) -> list[dict]:
             }
         )
     if not out:
-        out.append(
-            {
-                "label": "Restrições nacionais",
-                "value": (
-                    "Nenhuma feição das camadas nacionais ativas foi encontrada "
-                    f"até {MAX_DISTANCE_M:.0f} m da área analisada."
-                ),
-            }
-        )
+        unavailable = context.get("unavailable") or []
+        if unavailable:
+            out.append(
+                {
+                    "label": "Restrições nacionais",
+                    "value": (
+                        "Sem conclusão completa: há camadas nacionais ainda não carregadas "
+                        "ou indisponíveis nesta consulta."
+                    ),
+                }
+            )
+        else:
+            out.append(
+                {
+                    "label": "Restrições nacionais",
+                    "value": (
+                        "Nenhuma feição das camadas nacionais ativas foi encontrada "
+                        f"até {MAX_DISTANCE_M:.0f} m da área analisada."
+                    ),
+                }
+            )
     return out

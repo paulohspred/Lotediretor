@@ -7,7 +7,7 @@
       "authority": "FUNAI",
       "source_url": "https://geoserver.funai.gov.br/geoserver/Funai/ows?maxFeatures=10000&outputFormat=SHAPE-ZIP&request=GetFeature&service=WFS&typeName=Funai%3Atis_poligonais&version=1.0.0",
       "source_format": "SHP-ZIP",
-      "license": "Reuso com atribuição conforme página oficial FUNAI",
+      "license": "Reprodução permitida com citação da fonte, conforme página oficial FUNAI",
       "mode": "download",
       "label_fields": [
         "terrai_nom"
@@ -21,12 +21,13 @@
         "gid",
         "terrai_cod",
         "terrai_nom",
+        "etnia_nome",
         "municipio_",
         "uf_sigla",
         "superficie",
         "fase_ti",
         "modalidade",
-        "reestudo_t",
+        "faixa_fron",
         "data_atual",
         "epsg"
       ],
@@ -34,7 +35,8 @@
         "terrai_cod",
         "gid"
       ],
-      "source_encoding": "ISO-8859-1"
+      "source_encoding": "ISO-8859-1",
+      "referer": "https://www.gov.br/funai/pt-br/atuacao/terras-indigenas/geoprocessamento-e-mapas"
     },
     {
       "layer_key": "cnuc_conservation_units",
@@ -54,65 +56,76 @@
       ],
       "min_features": 100,
       "attribute_allowlist": [
+        "gml_id",
+        "docleg_id",
         "uc_id",
         "cd_cnuc",
+        "wdpa_pid",
         "nome_uc",
-        "grupo",
-        "categoria",
+        "cria_ano",
+        "cria_ato",
+        "pl_manejo",
+        "ha_total",
         "esfera",
         "uf",
-        "situacao"
+        "municipio",
+        "org_gestor",
+        "grupo",
+        "categoria",
+        "cat_iucn",
+        "situacao",
+        "limite"
       ],
       "key_fields": [
+        "cd_cnuc",
         "uc_id",
-        "cd_cnuc"
+        "gml_id"
       ],
-      "layer_name": "cnuc_2025_08"
+      "layer_name": "cnuc_2025_08",
+      "source_updated_at": "2025-09-03T00:00:00Z"
     },
     {
       "layer_key": "anm_mining_processes",
       "source_id": "br-anm-sigmine-open-data",
       "theme": "MINING_PROCESS",
       "authority": "Agência Nacional de Mineração",
-      "source_url": "https://geo.anm.gov.br/arcgis/rest/services/SIGMINE/dados_anm/FeatureServer/0",
-      "source_format": "ArcGIS FeatureServer",
+      "source_url": "https://dadosabertos.anm.gov.br/SIGMINE/PROCESSOS_MINERARIOS/BRASIL.zip",
+      "source_format": "SHP-ZIP",
       "license": "Dados abertos ANM; atribuir Agência Nacional de Mineração",
-      "mode": "arcgis",
+      "mode": "download",
       "label_fields": [
-        "PROCESSO",
-        "DSProcesso"
+        "PROCESSO"
       ],
       "category_fields": [
-        "FASE",
-        "SUBS"
+        "FASE"
       ],
       "min_features": 1000,
       "attribute_allowlist": [
         "PROCESSO",
         "NUMERO",
         "ANO",
+        "AREA_HA",
+        "ID",
         "FASE",
+        "ULT_EVENTO",
         "SUBS",
         "USO",
-        "AREA_HA",
         "UF",
-        "ULT_EVENTO",
-        "ID",
-        "FID",
         "DSProcesso"
       ],
       "key_fields": [
-        "ID",
-        "FID",
-        "PROCESSO"
-      ]
+        "PROCESSO",
+        "ID"
+      ],
+      "retain_raw": false,
+      "notes": "A coluna NOME não é ingerida. O arquivo bruto só é hasheado para o snapshot e não é retido localmente."
     },
     {
       "layer_key": "ana_hydrography_bho2017",
       "source_id": "br-ana-snirh-inde",
       "theme": "HYDROGRAPHY",
       "authority": "Agência Nacional de Águas e Saneamento Básico",
-      "source_url": "https://portal1.snirh.gov.br/arcgis/rest/services/SPR/BHO2017_50K_TRECHODRENAGEM/MapServer/0",
+      "source_url": "https://www.snirh.gov.br/arcgis/rest/services/SPR/BHO2017_50K_TRECHODRENAGEM/FeatureServer/0",
       "source_format": "ArcGIS FeatureServer",
       "license": "Dados abertos ANA/SNIRH",
       "mode": "arcgis",
@@ -122,8 +135,7 @@
         "COCURSODAG"
       ],
       "category_fields": [
-        "DEDOMINIAL",
-        "DSVERSAO"
+        "DEDOMINIAL"
       ],
       "min_features": 1000,
       "attribute_allowlist": [
@@ -132,16 +144,17 @@
         "COTRECHO",
         "COCURSODAG",
         "COBACIA",
+        "NOGENERICO",
+        "NOESPECIF",
         "NORIOCOMP",
         "NOORIGINAL",
-        "NUSTRAHLER",
         "DEDOMINIAL",
         "DSVERSAO"
       ],
       "key_fields": [
-        "OBJECTID",
         "ID",
-        "COTRECHO"
+        "COTRECHO",
+        "OBJECTID"
       ]
     },
     {
@@ -149,7 +162,7 @@
       "source_id": "br-ana-snirh-inde",
       "theme": "HYDROGRAPHIC_BASIN",
       "authority": "Agência Nacional de Águas e Saneamento Básico",
-      "source_url": "https://portal1.snirh.gov.br/arcgis/rest/services/SPR/BHO2017_50K_AREADRENAGEM/MapServer/0",
+      "source_url": "https://www.snirh.gov.br/arcgis/rest/services/SPR/BHO2017_50K_AREADRENAGEM/FeatureServer/0",
       "source_format": "ArcGIS FeatureServer",
       "license": "Dados abertos ANA/SNIRH",
       "mode": "arcgis",
@@ -167,12 +180,13 @@
         "COTRECHO",
         "COCURSODAG",
         "COBACIA",
+        "NUORDEMCDA",
         "NUNIVOTTO",
         "DSVERSAO"
       ],
       "key_fields": [
-        "OBJECTID",
-        "IDBACIA"
+        "IDBACIA",
+        "OBJECTID"
       ]
     },
     {
@@ -206,7 +220,8 @@
       "source_format": "CSV",
       "license": "ODbL",
       "mode": "metadata_only",
-      "notes": "CSV oficial GCEM não será convertido em geometria sem coordenadas/traçado verificáveis."
+      "notes": "CSV oficial GCEM não será convertido em geometria sem coordenadas/traçado verificáveis.",
+      "source_updated_at": "2026-09-01T05:28:00Z"
     },
     {
       "layer_key": "aneel_substations",
@@ -217,7 +232,8 @@
       "source_format": "CSV",
       "license": "ODbL",
       "mode": "metadata_only",
-      "notes": "CSV oficial GCEM é snapshotado, mas não recebe geometria inventada."
+      "notes": "CSV oficial GCEM é snapshotado, mas não recebe geometria inventada.",
+      "source_updated_at": "2026-09-01T05:28:00Z"
     },
     {
       "layer_key": "iphan_protected_assets",
@@ -242,11 +258,16 @@
         "identificacao_bem",
         "co_iphan",
         "codigo_iphan",
+        "ds_natureza",
+        "ds_classificacao",
+        "ds_tipo_bem",
+        "id_protecao_bem",
         "ds_tipo_protecao",
         "ds_condicao_protecao",
         "dt_cadastro"
       ],
       "key_fields": [
+        "id_protecao_bem",
         "id_bem",
         "codigo_iphan"
       ]
@@ -261,8 +282,8 @@
       "license": "Dados públicos SGB; licença conforme metadado da camada",
       "mode": "arcgis",
       "label_fields": [
-        "num_setor",
-        "local"
+        "local",
+        "num_setor"
       ],
       "category_fields": [
         "grau_risco",
@@ -279,6 +300,7 @@
         "local",
         "tipolo_g1",
         "tipolo_e1",
+        "cobrade_01",
         "grau_vulne",
         "grau_risco",
         "num_edif",

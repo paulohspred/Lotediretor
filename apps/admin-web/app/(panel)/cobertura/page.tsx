@@ -27,6 +27,28 @@ type NationalLayer = {
   notes: string | null;
 };
 
+const STATUS_LABEL: Record<string, string> = {
+  ACTIVE: "Ativa",
+  NOT_LOADED: "Não carregada",
+  NOT_AVAILABLE_SPATIAL: "Sem geometria reutilizável",
+  SOURCE_UNAVAILABLE: "Fonte indisponível",
+  FAILED_VALIDATION: "Falhou na validação",
+};
+
+const THEME_LABEL: Record<string, string> = {
+  INDIGENOUS_LAND: "Terras indígenas",
+  CONSERVATION_UNIT: "Unidades de conservação",
+  MINING_PROCESS: "Processos minerários",
+  HYDROGRAPHY: "Hidrografia",
+  HYDROGRAPHIC_BASIN: "Bacias hidrográficas",
+  DEFORESTATION: "PRODES/DETER",
+  TRANSMISSION_LINE: "Linhas de transmissão",
+  SUBSTATION: "Subestações",
+  CULTURAL_HERITAGE: "Patrimônio cultural",
+  GEOLOGY: "Geologia",
+  GEOLOGICAL_RISK: "Risco geológico",
+};
+
 function date(value: string | null): string {
   return value ? new Date(value).toLocaleString("pt-BR") : "—";
 }
@@ -60,12 +82,12 @@ export default async function CoveragePage() {
               {data.national_layers.map((r) => (
                 <tr key={r.layer_key}>
                   <td>
-                    <strong>{r.theme}</strong>
+                    <strong>{THEME_LABEL[r.theme] ?? r.theme}</strong>
                     <br />
                     <small>{r.layer_key} · {r.source_format}</small>
                   </td>
                   <td>{r.authority}</td>
-                  <td>{r.status}</td>
+                  <td>{STATUS_LABEL[r.status] ?? r.status}</td>
                   <td>{r.feature_count}</td>
                   <td>{date(r.loaded_at)}</td>
                   <td>{date(r.source_updated_at)}</td>

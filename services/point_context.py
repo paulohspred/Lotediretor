@@ -85,10 +85,7 @@ def build(lat: float, lng: float, municipality_ibge: str) -> dict:
         if items:
             sections.append({"id": section_id, "title": title, "items": items})
     errors = context.get("query_errors") or {}
-    restriction_unavailable = [
-        f"{item.get('layer_key')} ({item.get('status')})"
-        for item in restrictions.get("unavailable") or []
-    ]
+    restriction_unavailable = restriction_context.unavailable_labels(restrictions)
     return {
         "found": True,
         "mode": "POINT_CONTEXT",

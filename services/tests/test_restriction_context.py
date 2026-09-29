@@ -4,6 +4,13 @@ import restriction_context
 
 
 class RestrictionReportTest(unittest.TestCase):
+    def test_unavailable_layers_do_not_claim_absence(self):
+        values = restriction_context.report_values({
+            "hits": [],
+            "unavailable": [{"layer_key": "inpe_prodes", "status": "NOT_LOADED"}],
+        })
+        self.assertIn("Sem conclusão completa", values[0]["value"])
+
     def test_report_includes_source_and_dates(self):
         values = restriction_context.report_values({
             "hits": [{

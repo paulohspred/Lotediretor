@@ -167,7 +167,11 @@ test("factory municipality resolves parcels from PostGIS", { skip }, async () =>
   assert.match(zoning.items[0].label, /ZR1/);
   const provenance = body.dossier.sections.find((s) => s.id === "provenance");
   assert.ok(provenance.items.some((i) => /Parâmetros urbanísticos/.test(i.label)));
-  // Personal fields present in the upstream file never reach the API.
+  const restrictions = body.dossier.sections.find((s) => s.id === "restrictions");
+  assert.ok(restrictions);
+  assert.ok(restrictions.items.some((i) => /Unidade de conservação/.test(i.label)));
+  assert.ok(restrictions.items.some((i) => /Fonte: Fixture/.test(i.value)));
+  // Personal fields present in the upstream files never reach the API.
   assert.doesNotMatch(JSON.stringify(body), /PROPRIET/);
 });
 
