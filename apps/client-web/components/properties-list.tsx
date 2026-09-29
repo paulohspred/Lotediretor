@@ -134,6 +134,9 @@ export function PropertiesList() {
                 </td>
                 <td className="row-actions">
                   <Link href={`/explorer?lat=${p.lat}&lng=${p.lng}`}>Abrir</Link>
+                  <a href={`/api/reports/properties/${p.saved_property_id}`} download>
+                    Baixar relatório
+                  </a>
                   <button
                     type="button"
                     className="link-button danger"

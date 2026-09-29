@@ -14,6 +14,7 @@ import { LegalModule } from "./modules/legal/legal.module.js";
 import { AiModule } from "./modules/ai/cidades.module.js";
 import { AdminModule } from "./modules/admin/admin.module.js";
 import { PublicModule } from "./modules/public/public.module.js";
+import { ReportModule } from "./modules/reports/report.module.js";
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { PublicModule } from "./modules/public/public.module.js";
     AdminModule,
     PublicModule,
     GeoModule,
+    ReportModule,
   ],
 })
 export class AppModule {}
