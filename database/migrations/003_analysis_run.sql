@@ -196,14 +196,33 @@ $ld$;
 
 REVOKE ALL ON FUNCTION ld_analysis.complete_run(uuid) FROM PUBLIC;
 
-GRANT USAGE ON SCHEMA ld_analysis TO sentinelx;
-GRANT SELECT, INSERT ON
-    ld_analysis.analysis_run,
-    ld_analysis.analysis_input,
-    ld_analysis.finding,
-    ld_analysis.report_snapshot
-TO sentinelx;
-GRANT EXECUTE ON FUNCTION ld_analysis.complete_run(uuid) TO sentinelx;
+-- Grants go to the runtime role only when it exists, so the migration also
+-- applies on fresh databases (CI, new environments). The role name is
+-- configurable with: SET lotediretor.app_role = '<role>';
+DO $grants$
+DECLARE
+    app_role text := coalesce(
+        nullif(current_setting('lotediretor.app_role', true), ''),
+        'sentinelx'
+    );
+BEGIN
+    IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = app_role) THEN
+        EXECUTE format('GRANT USAGE ON SCHEMA ld_analysis TO %I', app_role);
+        EXECUTE format(
+            'GRANT SELECT, INSERT ON ld_analysis.analysis_run, '
+            'ld_analysis.analysis_input, ld_analysis.finding, '
+            'ld_analysis.report_snapshot TO %I',
+            app_role
+        );
+        EXECUTE format(
+            'GRANT EXECUTE ON FUNCTION ld_analysis.complete_run(uuid) TO %I',
+            app_role
+        );
+    ELSE
+        RAISE NOTICE 'role % does not exist; skipping runtime grants', app_role;
+    END IF;
+END;
+$grants$;
 
 COMMENT ON TABLE ld_analysis.analysis_run IS
     'Immutable completed analysis artifact. Freezes the input, engine state, rules/calculations/findings and privacy-filtered result used for a reproducible dossier.';

@@ -1,4 +1,4 @@
-name: Product Surface
+name: CI
 
 on:
   push:
@@ -9,47 +9,123 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  validate:
+  data-contracts:
+    name: Data contracts & source registry
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - name: Compile all Python
+        run: python -m compileall -q services tools
+      - name: Source registry schema
+        run: python tools/discovery/validate_registry.py
+      - name: Source registry references
+        run: python tools/regression/check_source_registry.py
+      - name: Report readiness is derived from the matrix
+        run: python tools/discovery/build_report_readiness.py --check
+      - name: Report spec
+        run: python tools/discovery/validate_report_spec.py
+      - name: Database schema contract
+        run: python tools/discovery/validate_database_schema.py
+      - name: Candidate queue
+        run: python tools/discovery/validate_candidate_queue.py
+      - name: Heritage resolver
+        run: python tools/discovery/validate_heritage_resolver.py
+      - name: Public event resolver
+        run: python tools/discovery/validate_public_event_resolver.py
+      - name: Utility resolver
+        run: python tools/discovery/validate_utility_resolver.py
 
-      - name: Set up Node
-        uses: actions/setup-node@v4
+  database:
+    name: Migrations apply on PostGIS
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgis/postgis:17-3.5
+        env:
+          POSTGRES_PASSWORD: ci
+          POSTGRES_DB: lotediretor
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U postgres" --health-interval 5s
+          --health-timeout 5s --health-retries 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
-          node-version: "20"
-
-      - name: Validate JSON contracts
+          python-version: "3.12"
+      - name: Apply migrations with the ledger runner (run twice = idempotent)
+        env:
+          LOTEDIRETOR_DB_DSN: postgresql://postgres:ci@localhost:5432/lotediretor
         run: |
-          python - <<'PY'
-          import json
-          json.load(open("data/deployment/professional-completion-matrix.json", encoding="utf-8"))
-          json.load(open("data/source-registry/bootstrap.json", encoding="utf-8"))
-          json.load(open("data/property-dossier/report-spec.json", encoding="utf-8"))
-          print("JSON contracts OK")
-          PY
+          python3 tools/db/migrate.py
+          python3 tools/db/migrate.py
+          python3 tools/db/migrate.py --status
 
-      - name: Compile Python services
-        run: |
-          python -m py_compile             services/demo_parcel_api.py             services/recife_property.py             services/rio_property.py             services/bh_property.py             services/joao_pessoa_property.py             services/municipality_utilities.py             tools/regression/smoke_first_wave.py             tools/regression/audit_frontend.py
+  platform-api:
+    name: Platform API (NestJS)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: services/platform-api
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: services/platform-api/package-lock.json
+      - run: npm ci --no-audit --no-fund
+      - run: npm run typecheck
+      - run: npm test
 
-      - name: Check frontend JavaScript
+  client-web:
+    name: Client web (Next.js)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/client-web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: apps/client-web/package-lock.json
+      - run: npm ci --no-audit --no-fund
+      - run: npx tsc --noEmit
+      - run: npm run lint
+      - run: npm run build
+        env:
+          NEXT_TELEMETRY_DISABLED: "1"
+
+  legacy-static-client:
+    name: Legacy static client (until migrated)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Syntax-check inline JavaScript
         run: |
           python - <<'PY'
           from pathlib import Path
-          s=Path("public/lotediretor/index.html").read_text(encoding="utf-8")
-          start=s.index("<script>")+len("<script>")
-          end=s.rindex("</script>")
+          s = Path("public/lotediretor/index.html").read_text(encoding="utf-8")
+          start = s.index("<script>") + len("<script>")
+          end = s.rindex("</script>")
           Path("/tmp/lotediretor-ui.js").write_text(s[start:end], encoding="utf-8")
           PY
           node --check /tmp/lotediretor-ui.js
-
       - name: Audit user-facing surface
         run: python tools/regression/audit_frontend.py

@@ -15,11 +15,11 @@ fi
 export PATH="$NODE_BIN:$PATH"
 
 cd "$ROOT/apps/client-web"
-npm install --no-audit --no-fund
+npm ci --no-audit --no-fund
 npm run build
 
 cd "$ROOT/services/platform-api"
-npm install --no-audit --no-fund
+npm ci --no-audit --no-fund
 npm run build
 
 for unit in   lotediretor-martin-v2.service   lotediretor-platform-api-v2.service   lotediretor-client-web-v2.service; do

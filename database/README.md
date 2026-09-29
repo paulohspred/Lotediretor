@@ -104,3 +104,19 @@ python tools/discovery/validate_database_schema.py
 
 Essa validação não substitui aplicar a migration em PostgreSQL/PostGIS numa
 etapa de integração. Deploy de banco continua fora desta fase.
+
+## Aplicar migrations
+
+Use sempre o runner com ledger (`ld_meta.schema_migration`), que aplica cada
+arquivo uma única vez e recusa migrations já aplicadas que foram editadas:
+
+```bash
+export LOTEDIRETOR_DB_DSN="postgresql:///lotediretor?host=/var/run/postgresql"
+python3 tools/db/migrate.py --status   # ver pendentes
+python3 tools/db/migrate.py            # aplicar pendentes
+```
+
+Banco de produção criado antes do runner (migrations 001–003 aplicadas à mão):
+rode **uma vez** `python3 tools/db/migrate.py --baseline 003` para registrá-las
+sem reexecutar. As permissões de runtime vão para o papel definido em
+`SET lotediretor.app_role` (padrão `sentinelx`) somente se ele existir.
