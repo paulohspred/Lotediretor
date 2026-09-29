@@ -72,11 +72,34 @@ jobs:
   platform-api:
     name: Platform API (NestJS)
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgis/postgis:17-3.5
+        env:
+          POSTGRES_PASSWORD: ci
+          POSTGRES_DB: lotediretor
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U postgres" --health-interval 5s
+          --health-timeout 5s --health-retries 20
+    env:
+      LOTEDIRETOR_DB_DSN: postgresql://postgres:ci@localhost:5432/lotediretor
+      TEST_DATABASE_URL: postgresql://postgres:ci@localhost:5432/lotediretor
     defaults:
       run:
         working-directory: services/platform-api
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Prepare database (migrations, sample IBGE mesh, source registry)
+        working-directory: .
+        run: |
+          python3 tools/db/migrate.py
+          psql "$LOTEDIRETOR_DB_DSN" -v ON_ERROR_STOP=1 -q -f database/fixtures/ibge_municipios_sample.sql
+          psql "$LOTEDIRETOR_DB_DSN" -v ON_ERROR_STOP=1 -q -v mesh_edition=fixture -v snapshot_id= -v min_count=4 -f database/loaders/promote_ibge_municipalities.sql
+          python3 tools/loaders/load_source_registry.py
       - uses: actions/setup-node@v4
         with:
           node-version: "22"

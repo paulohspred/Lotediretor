@@ -150,4 +150,28 @@ COMMENT ON TABLE ld_core.municipality IS
 COMMENT ON COLUMN ld_catalog.source.coverage_level IS
     'Territorial reach of the source: NATIONAL applies to every municipality, STATE to its UF, MUNICIPAL/SUBMUNICIPAL to municipality_ibge.';
 
+-- Read-only runtime access for the API role, when it exists (see 003).
+DO $grants$
+DECLARE
+    app_role text := coalesce(
+        nullif(current_setting('lotediretor.app_role', true), ''),
+        'sentinelx'
+    );
+BEGIN
+    IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = app_role) THEN
+        EXECUTE format('GRANT USAGE ON SCHEMA ld_core, ld_catalog, ld_api TO %I', app_role);
+        EXECUTE format('GRANT SELECT ON ld_core.state, ld_core.municipality TO %I', app_role);
+        EXECUTE format('GRANT SELECT ON ld_catalog.source TO %I', app_role);
+        EXECUTE format('GRANT SELECT ON ld_api.municipality_source TO %I', app_role);
+        EXECUTE format(
+            'GRANT EXECUTE ON FUNCTION ld_api.resolve_municipality(double precision, double precision), '
+            'ld_api.search_key(text) TO %I',
+            app_role
+        );
+    ELSE
+        RAISE NOTICE 'role % does not exist; skipping runtime grants', app_role;
+    END IF;
+END;
+$grants$;
+
 COMMIT;

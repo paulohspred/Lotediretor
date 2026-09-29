@@ -96,3 +96,17 @@ test("failed persistence surfaces an audit warning", async () => {
   assert.equal(out.parcel.identifiers.primary.value, "001.002.0003-4");
   assert.match(lastUrl, /lat=-23.5&lng=-46.6/);
 });
+
+test("prototype keys are not treated as supported municipalities", async () => {
+  const svc = await service();
+  for (const key of ["constructor", "__proto__", "toString"]) {
+    await assert.rejects(
+      svc.resolve({ municipality_ibge: key, lat: -23.5, lng: -46.6 }),
+      (err) => err.getResponse().code === "UNSUPPORTED_MUNICIPALITY",
+    );
+    await assert.rejects(
+      svc.search({ municipality_ibge: key, q: "rua teste" }),
+      (err) => err.getResponse().code === "UNSUPPORTED_MUNICIPALITY",
+    );
+  }
+});

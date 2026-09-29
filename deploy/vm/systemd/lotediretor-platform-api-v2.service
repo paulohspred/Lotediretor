@@ -1,6 +1,6 @@
 [Unit]
 Description=LoteDiretor Platform API v2
-After=network.target lotediretor-parcel-api.service
+After=network.target postgresql.service lotediretor-parcel-api.service
 Requires=lotediretor-parcel-api.service
 
 [Service]
@@ -12,6 +12,7 @@ Environment=NODE_ENV=production
 Environment=PORT=3000
 Environment=HOST=127.0.0.1
 Environment=PARCEL_ENGINE_BASE_URL=http://127.0.0.1:8765
+Environment=DATABASE_URL=postgresql://sentinelx@/lotediretor?host=/var/run/postgresql
 Environment=PATH=/opt/lotediretor/node22/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 ExecStart=/opt/lotediretor/node22/bin/node dist/main.js
 Restart=on-failure

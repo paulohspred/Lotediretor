@@ -4,14 +4,10 @@ import {
   Injectable,
   NotFoundException,
 } from "@nestjs/common";
-
-const MUNICIPALITY_SLUG: Record<string, string> = {
-  "3550308": "sp",
-  "2611606": "recife",
-  "3304557": "rio",
-  "3106200": "bh",
-  "2507507": "jp",
-};
+import {
+  PARCEL_ENGINE_SLUG,
+  parcelResolverAvailable,
+} from "../territory/capabilities.js";
 
 export interface ParcelResolveInput {
   municipality_ibge: string;
@@ -252,7 +248,9 @@ export class ParcelEngineService {
     process.env.PARCEL_ENGINE_BASE_URL ?? "http://127.0.0.1:8765";
 
   private async resolveRaw(input: ParcelResolveInput): Promise<JsonObject> {
-    const slug = MUNICIPALITY_SLUG[input.municipality_ibge];
+    const slug = parcelResolverAvailable(input.municipality_ibge)
+      ? PARCEL_ENGINE_SLUG[input.municipality_ibge]
+      : undefined;
     if (!slug) {
       throw new BadRequestException({
         code: "UNSUPPORTED_MUNICIPALITY",
@@ -337,7 +335,9 @@ export class ParcelEngineService {
   }
 
   async search(input: ParcelSearchInput): Promise<JsonObject> {
-    const slug = MUNICIPALITY_SLUG[input.municipality_ibge];
+    const slug = parcelResolverAvailable(input.municipality_ibge)
+      ? PARCEL_ENGINE_SLUG[input.municipality_ibge]
+      : undefined;
     const query = input.q?.trim() ?? "";
     if (!slug) {
       throw new BadRequestException({

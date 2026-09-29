@@ -5,7 +5,9 @@ import {
   MercuriusDriverConfig,
 } from "@nestjs/mercurius";
 import { CoreModule } from "./modules/core/core.module.js";
+import { DatabaseModule } from "./modules/database/database.module.js";
 import { GeoModule } from "./modules/geo/geo.module.js";
+import { TerritoryModule } from "./modules/territory/territory.module.js";
 
 @Module({
   imports: [
@@ -15,7 +17,9 @@ import { GeoModule } from "./modules/geo/geo.module.js";
       path: "/graphql",
       graphiql: process.env.NODE_ENV !== "production",
     }),
+    DatabaseModule,
     CoreModule,
+    TerritoryModule,
     GeoModule,
   ],
 })
