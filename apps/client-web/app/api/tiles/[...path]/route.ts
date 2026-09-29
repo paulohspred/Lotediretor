@@ -7,6 +7,7 @@ const ALLOWED = new Set([
   "ibge_censo2022_setores",
   "jp_lotes",
   "jp_curvas_nivel_2022",
+  "barueri_risk_reference_points",
 ]);
 
 export async function GET(
