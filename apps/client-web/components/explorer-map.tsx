@@ -19,6 +19,8 @@ type Props = {
   focusPoint?: { lat: number; lng: number } | null;
   activeLayerIds: string[];
   viewMode: "2d" | "3d";
+  /** Changes only on explicit municipality selection. */
+  recenterNonce?: number;
 };
 
 const SELECTED_SOURCE = "selected-parcel";
@@ -43,6 +45,7 @@ export function ExplorerMap({
   focusPoint,
   activeLayerIds,
   viewMode,
+  recenterNonce = 0,
 }: Props) {
   const container = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
@@ -83,15 +86,27 @@ export function ExplorerMap({
     };
   }, []);
 
+  const cityRef = useRef(city);
+  useEffect(() => {
+    cityRef.current = city;
+  }, [city]);
+
   useEffect(() => {
     const map = mapRef.current;
-    if (!map) return;
-    map.flyTo({
-      center: city.center,
-      zoom: city.zoom,
-      duration: 700,
-    });
-  }, [city]);
+    if (!map || recenterNonce === 0) return;
+    const target = cityRef.current;
+    if (target.bbox) {
+      map.fitBounds(
+        [
+          [target.bbox[0], target.bbox[1]],
+          [target.bbox[2], target.bbox[3]],
+        ],
+        { padding: 40, duration: 700, maxZoom: 15 },
+      );
+    } else {
+      map.flyTo({ center: target.center, zoom: target.zoom, duration: 700 });
+    }
+  }, [recenterNonce]);
 
   useEffect(() => {
     const map = mapRef.current;

@@ -5,6 +5,8 @@ export type CityOption = {
   center: [number, number];
   zoom: number;
   parcelSupported?: boolean;
+  /** [minLng, minLat, maxLng, maxLat] from the IBGE mesh, when known. */
+  bbox?: [number, number, number, number];
   officialZoningUrl?: string;
   officialIptuUrl?: string;
   officialCadastreUrl?: string;
@@ -44,4 +46,42 @@ export function findCity(ibge: string): CityOption | undefined {
  */
 export function cityByIbge(ibge: string): CityOption {
   return findCity(ibge) ?? CITIES[0];
+}
+
+/** Municipality as returned by the platform API (/municipalities). */
+export type ApiMunicipality = {
+  ibge_code: string;
+  name: string;
+  uf: string;
+  bbox: [number, number, number, number] | null;
+  capabilities: { parcel_resolver: boolean; federal_context: boolean };
+};
+
+function zoomForBbox(bbox: [number, number, number, number]): number {
+  const span = Math.max(bbox[2] - bbox[0], bbox[3] - bbox[1], 0.01);
+  // ~360° at zoom 0; leave margin so the whole municipality is visible.
+  return Math.max(4, Math.min(14, Math.log2(360 / span) - 0.6));
+}
+
+/**
+ * Any of the ~5,570 IBGE municipalities as a map/city option. Curated cities
+ * keep their hand-tuned view and official links; the parcel capability always
+ * comes from the API so UI and backend cannot disagree.
+ */
+export function cityFromMunicipality(m: ApiMunicipality): CityOption {
+  const curated = findCity(m.ibge_code);
+  const bbox = m.bbox ?? undefined;
+  const center: [number, number] = bbox
+    ? [(bbox[0] + bbox[2]) / 2, (bbox[1] + bbox[3]) / 2]
+    : curated?.center ?? [-51.9, -14.2];
+  return {
+    ...curated,
+    ibge: m.ibge_code,
+    name: m.name,
+    uf: m.uf,
+    center: curated?.center ?? center,
+    zoom: curated?.zoom ?? (bbox ? zoomForBbox(bbox) : 4),
+    bbox,
+    parcelSupported: m.capabilities.parcel_resolver,
+  };
 }

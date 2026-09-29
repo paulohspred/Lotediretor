@@ -1,9 +1,16 @@
 "use client";
 
-import { FormEvent, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useState } from "react";
 import type { Geometry } from "geojson";
 import { ExplorerMap } from "./explorer-map";
-import { CITIES, cityByIbge } from "@/lib/cities";
+import {
+  CITIES,
+  cityFromMunicipality,
+  type ApiMunicipality,
+  type CityOption,
+} from "@/lib/cities";
+import { MunicipalityPicker } from "./municipality-picker";
+import { CoverageCard, type Coverage } from "./coverage-card";
 import {
   CATEGORY_LABELS,
   defaultLayerIds,
@@ -134,8 +141,24 @@ function formatItemValue(item: DossierItem): string {
 }
 
 export function ExplorerShell() {
-  const [cityIbge, setCityIbge] = useState(CITIES[0].ibge);
-  const city = useMemo(() => cityByIbge(cityIbge), [cityIbge]);
+  const [city, setCity] = useState<CityOption>(CITIES[0]);
+  const cityIbge = city.ibge;
+  // Incremented only when the user explicitly picks a municipality, so the
+  // map recenters on selection but not when a click auto-resolves the city.
+  const [recenterNonce, setRecenterNonce] = useState(0);
+  // Coverage of the municipality currently shown; "loading" is derived from
+  // the IBGE code mismatch, so no state is set synchronously in effects.
+  const [coverageResult, setCoverageResult] = useState<{
+    ibge: string;
+    data: Coverage | null;
+  } | null>(null);
+  const coverageState: "loading" | "ready" | "error" =
+    coverageResult?.ibge !== cityIbge
+      ? "loading"
+      : coverageResult.data
+        ? "ready"
+        : "error";
+  const coverage = coverageState === "ready" ? coverageResult!.data : null;
   const [query, setQuery] = useState("");
   const [activeLayerIds, setActiveLayerIds] = useState<string[]>(() =>
     defaultLayerIds(CITIES[0].ibge),
@@ -175,13 +198,89 @@ export function ExplorerShell() {
     sections[0] ??
     null;
 
-  async function resolveParcel(lat: number, lng: number) {
-    if (city.parcelSupported === false) {
-      setPayload(null);
-      setFocusPoint({ lat, lng });
-      setStatus(
-        "Barueri localizado. A geometria cadastral será ativada quando a base oficial de lotes/IPTU for importada.",
+  useEffect(() => {
+    const controller = new AbortController();
+    fetch(`/api/municipalities/${cityIbge}/coverage`, {
+      signal: controller.signal,
+    })
+      .then(async (response) => {
+        if (!response.ok) throw new Error("coverage");
+        return (await response.json()) as Coverage;
+      })
+      .then((data) => setCoverageResult({ ibge: cityIbge, data }))
+      .catch((error: Error) => {
+        if (error.name !== "AbortError") {
+          setCoverageResult({ ibge: cityIbge, data: null });
+        }
+      });
+    return () => controller.abort();
+  }, [cityIbge]);
+
+  function applyCity(next: CityOption, recenter: boolean) {
+    if (next.ibge !== city.ibge) {
+      setActiveLayerIds(defaultLayerIds(next.ibge));
+    }
+    setCity(next);
+    if (recenter) setRecenterNonce((n) => n + 1);
+  }
+
+  // Resolve which municipality contains the point (any of the ~5,570), switch
+  // to it, and open the parcel dossier when that municipality supports it.
+  async function locateMunicipality(lat: number, lng: number) {
+    setBusy(true);
+    setPayload(null);
+    setActiveSectionId(null);
+    setFocusPoint({ lat, lng });
+    setStatus("Identificando o município…");
+    try {
+      const response = await fetch(
+        `/api/municipalities/resolve?${new URLSearchParams({
+          lat: String(lat),
+          lng: String(lng),
+        })}`,
       );
+      const body = (await response.json()) as ApiMunicipality & {
+        code?: string;
+        message?: string;
+      };
+      if (response.status === 404) {
+        setStatus("Este ponto está fora do território brasileiro.");
+        return;
+      }
+      if (!response.ok) {
+        throw new Error(body.message || "Não foi possível identificar o município.");
+      }
+      const next = cityFromMunicipality(body);
+      applyCity(next, false);
+      if (next.parcelSupported) {
+        setBusy(false);
+        // No relocation from here: prevents a loop if the parcel engine and
+        // the IBGE mesh disagree near a border.
+        await resolveParcel(lat, lng, next, false);
+        return;
+      }
+      setStatus(
+        `${next.name} · ${next.uf}: lotes cadastrais ainda não disponíveis. Veja abaixo as fontes catalogadas para o município.`,
+      );
+    } catch (error) {
+      setStatus(
+        error instanceof Error
+          ? error.message
+          : "Não foi possível identificar o município.",
+      );
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function resolveParcel(
+    lat: number,
+    lng: number,
+    target: CityOption = city,
+    allowRelocate = true,
+  ) {
+    if (target.parcelSupported === false) {
+      await locateMunicipality(lat, lng);
       return;
     }
     setBusy(true);
@@ -193,14 +292,20 @@ export function ExplorerShell() {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
-          municipality_ibge: city.ibge,
+          municipality_ibge: target.ibge,
           lat,
           lng,
         }),
       });
       const body = (await response.json()) as ParcelPayload & {
+        code?: string;
         message?: string;
       };
+      if (body.code === "POINT_OUTSIDE_MUNICIPALITY" && allowRelocate) {
+        setBusy(false);
+        await locateMunicipality(lat, lng);
+        return;
+      }
       if (!response.ok) {
         throw new Error(body.message || "Falha ao analisar o terreno.");
       }
@@ -290,15 +395,18 @@ export function ExplorerShell() {
     }
   }
 
-  function changeCity(nextIbge: string) {
-    setCityIbge(nextIbge);
+  function selectCity(next: CityOption) {
+    applyCity(next, true);
     setPayload(null);
     setSearchResults([]);
     setFocusPoint(null);
     setActiveSectionId(null);
     setQuery("");
-    setActiveLayerIds(defaultLayerIds(nextIbge));
-    setStatus("Selecione um terreno no mapa ou busque um endereço.");
+    setStatus(
+      next.parcelSupported === false
+        ? `${next.name} · ${next.uf}: clique no mapa para analisar o contexto do ponto.`
+        : "Selecione um terreno no mapa ou busque um endereço.",
+    );
   }
 
   const primaryReference = parcel?.identifiers?.primary ?? null;
@@ -348,11 +456,21 @@ export function ExplorerShell() {
             </button>
           </form>
           <div className="head-actions">
+            <MunicipalityPicker
+              currentLabel={`${city.name} · ${city.uf}`}
+              onSelect={(m) => selectCity(cityFromMunicipality(m))}
+            />
             <select
-              aria-label="Município"
-              value={cityIbge}
-              onChange={(event) => changeCity(event.target.value)}
+              aria-label="Cidades com lotes cadastrais"
+              value={CITIES.some((c) => c.ibge === cityIbge) ? cityIbge : ""}
+              onChange={(event) => {
+                const next = CITIES.find((c) => c.ibge === event.target.value);
+                if (next) selectCity(next);
+              }}
             >
+              <option value="" disabled>
+                Atalhos
+              </option>
               {CITIES.map((item) => (
                 <option key={item.ibge} value={item.ibge}>
                   {item.name} · {item.uf}
@@ -387,7 +505,7 @@ export function ExplorerShell() {
                       } else {
                         setStatus(
                           city.parcelSupported === false
-                            ? "Endereço localizado em Barueri. Cadastro/IPTU e lote serão ligados à base oficial importada."
+                            ? `Endereço localizado em ${city.name}. Clique no mapa para analisar o ponto.`
                             : "Rua localizada. Clique no terreno desejado para abrir a ficha.",
                         );
                       }
@@ -411,6 +529,8 @@ export function ExplorerShell() {
                 ))}
               </div>
             )}
+
+            <CoverageCard state={coverageState} coverage={coverage} />
 
             <div className="panel-card layer-panel">
               <h2>Camadas</h2>
@@ -484,14 +604,8 @@ export function ExplorerShell() {
               focusPoint={focusPoint}
               activeLayerIds={activeLayerIds}
               viewMode={viewMode}
+              recenterNonce={recenterNonce}
               onPick={({ lat, lng }) => {
-                if (city.parcelSupported === false) {
-                  setFocusPoint({ lat, lng });
-                  setStatus(
-                    "Ponto localizado em Barueri. A ficha cadastral depende da base oficial de lotes/IPTU.",
-                  );
-                  return;
-                }
                 void resolveParcel(lat, lng);
               }}
             />

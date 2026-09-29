@@ -11,6 +11,24 @@ function norm(value: unknown): string {
     .toLowerCase();
 }
 
+async function municipalityFromApi(
+  ibge: string,
+): Promise<{ name: string; uf: string } | undefined> {
+  if (!/^\d{7}$/.test(ibge)) return undefined;
+  const base = process.env.PLATFORM_API_URL ?? "http://127.0.0.1:3000";
+  try {
+    const response = await fetch(`${base}/municipalities/${ibge}`, {
+      signal: AbortSignal.timeout(5_000),
+      next: { revalidate: 86400 },
+    });
+    if (!response.ok) return undefined;
+    const body = (await response.json()) as { name?: string; uf?: string };
+    return body.name && body.uf ? { name: body.name, uf: body.uf } : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
 export async function GET(request: NextRequest) {
   const q = request.nextUrl.searchParams.get("q")?.trim() ?? "";
   const ibge = request.nextUrl.searchParams.get("ibge") ?? "3550308";
@@ -18,7 +36,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ results: [] });
   }
 
-  const city = findCity(ibge);
+  const city = findCity(ibge) ?? (await municipalityFromApi(ibge));
   if (!city) {
     return NextResponse.json(
       { results: [], warning: "Município não atendido." },

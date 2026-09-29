@@ -116,3 +116,22 @@ h1{font-size:22px}h2{font-size:16px}
   color: #78350f;
 }
 .audit-card--warning strong{color:#78350f}
+.municipality-trigger{min-width:190px;text-align:left}
+.municipality-picker{position:relative;min-width:260px}
+.municipality-picker input{width:100%;height:36px;padding:0 10px;border:1px solid var(--border);border-radius:var(--radius-sm);font:inherit}
+.municipality-options{position:absolute;z-index:30;top:40px;left:0;right:0;margin:0;padding:4px;list-style:none;background:#fff;border:1px solid var(--border);border-radius:var(--radius-sm);box-shadow:0 8px 24px rgba(17,24,39,.12);max-height:320px;overflow:auto}
+.municipality-options:empty{display:none}
+.municipality-options li{display:flex;justify-content:space-between;gap:8px;padding:8px 10px;border-radius:6px;cursor:pointer;font-size:13px}
+.municipality-options li.active,.municipality-options li:hover{background:#F4FAF7}
+.municipality-options small{color:var(--brand-moss);font-weight:600}
+.municipality-options .municipality-message{cursor:default;color:#6B7280}
+.coverage-levels{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:0 0 8px;padding:0;list-style:none}
+.coverage-levels li{display:grid;padding:8px;border:1px solid var(--border);border-radius:var(--radius-sm);text-align:center}
+.coverage-levels strong{font-size:18px;color:var(--brand-deep)}
+.coverage-levels span{font-size:11px;color:#6B7280}
+.coverage-ok{color:var(--brand-deep);font-size:12px}
+.coverage-gap{color:#92400E;font-size:12px}
+.coverage-sources{margin:6px 0 0;padding:0;list-style:none;display:grid;gap:6px}
+.coverage-sources li{display:grid;font-size:12px}
+.coverage-sources small{color:#6B7280}
+.coverage-disclaimer{font-size:11px}
