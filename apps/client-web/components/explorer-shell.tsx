@@ -87,6 +87,14 @@ type ParcelPayload = {
   };
 };
 
+type PointContextPayload = {
+  municipality?: { name: string; uf: string };
+  dossier?: { title?: string; sections?: DossierSection[] };
+  analysis_area?: { note?: string };
+  unavailable_sources?: string[];
+  disclaimer?: string;
+};
+
 type SearchResult = {
   kind: "address" | "parcel";
   display_name?: string;
@@ -140,6 +148,48 @@ function formatItemValue(item: DossierItem): string {
   return `${text}${item.unit ? ` ${item.unit}` : ""}`;
 }
 
+function DossierView({
+  sections,
+  activeSection,
+  onSelect,
+}: {
+  sections: DossierSection[];
+  activeSection: DossierSection | null;
+  onSelect: (id: string) => void;
+}) {
+  if (sections.length === 0) return null;
+  return (
+    <>
+      <label className="section-picker">
+        <span>Seção do dossiê</span>
+        <select
+          value={activeSection?.id ?? ""}
+          onChange={(event) => onSelect(event.target.value)}
+        >
+          {sections.map((section) => (
+            <option key={section.id} value={section.id}>
+              {section.title}
+            </option>
+          ))}
+        </select>
+      </label>
+      {activeSection && (
+        <section className="dossier-section">
+          <h3>{activeSection.title}</h3>
+          <dl>
+            {activeSection.items.map((item, index) => (
+              <div className="dossier-row" key={`${item.label}-${index}`}>
+                <dt>{item.label}</dt>
+                <dd>{formatItemValue(item)}</dd>
+              </div>
+            ))}
+          </dl>
+        </section>
+      )}
+    </>
+  );
+}
+
 export function ExplorerShell() {
   const [city, setCity] = useState<CityOption>(CITIES[0]);
   const cityIbge = city.ibge;
@@ -171,6 +221,9 @@ export function ExplorerShell() {
     "Selecione um terreno no mapa ou busque um endereço.",
   );
   const [busy, setBusy] = useState(false);
+  const [pointContext, setPointContext] = useState<PointContextPayload | null>(
+    null,
+  );
   const [viewMode, setViewMode] = useState<"2d" | "3d">("2d");
 
   const parcel = payload?.parcel;
@@ -179,7 +232,8 @@ export function ExplorerShell() {
     ? { type: "Feature", geometry, properties: {} }
     : null;
 
-  const sections = payload?.dossier?.sections ?? [];
+  const sections =
+    payload?.dossier?.sections ?? pointContext?.dossier?.sections ?? [];
   const availableLayers = useMemo(
     () => layersForCity(cityIbge),
     [cityIbge],
@@ -229,6 +283,7 @@ export function ExplorerShell() {
   async function locateMunicipality(lat: number, lng: number) {
     setBusy(true);
     setPayload(null);
+    setPointContext(null);
     setActiveSectionId(null);
     setFocusPoint({ lat, lng });
     setStatus("Identificando o município…");
@@ -260,7 +315,25 @@ export function ExplorerShell() {
         return;
       }
       setStatus(
-        `${next.name} · ${next.uf}: lotes cadastrais ainda não disponíveis. Veja abaixo as fontes catalogadas para o município.`,
+        `${next.name} · ${next.uf}: consultando contexto federal e estadual do ponto…`,
+      );
+      const contextResponse = await fetch("/api/context/point", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ lat, lng }),
+      });
+      const contextBody = (await contextResponse.json()) as PointContextPayload & {
+        message?: string;
+      };
+      if (!contextResponse.ok) {
+        throw new Error(
+          contextBody.message || "Contexto territorial indisponível.",
+        );
+      }
+      setPointContext(contextBody);
+      setActiveSectionId(contextBody.dossier?.sections?.[0]?.id ?? null);
+      setStatus(
+        `${next.name} · ${next.uf}: lotes cadastrais ainda não disponíveis. Exibindo o contexto do ponto.`,
       );
     } catch (error) {
       setStatus(
@@ -285,6 +358,7 @@ export function ExplorerShell() {
     }
     setBusy(true);
     setSearchResults([]);
+    setPointContext(null);
     setFocusPoint({ lat, lng });
     setStatus("Consultando cadastro, regras e contexto territorial…");
     try {
@@ -398,6 +472,7 @@ export function ExplorerShell() {
   function selectCity(next: CityOption) {
     applyCity(next, true);
     setPayload(null);
+    setPointContext(null);
     setSearchResults([]);
     setFocusPoint(null);
     setActiveSectionId(null);
@@ -641,7 +716,30 @@ export function ExplorerShell() {
             <div className="eyebrow">Ficha do imóvel</div>
             <h2>{street || "Análise territorial"}</h2>
 
-            {!parcel ? (
+            {!parcel && pointContext ? (
+              <div className="property-sheet">
+                <div className="sheet-address">
+                  <strong>{pointContext.dossier?.title}</strong>
+                  {pointContext.analysis_area?.note && (
+                    <span>{pointContext.analysis_area.note}</span>
+                  )}
+                </div>
+                <DossierView
+                  sections={sections}
+                  activeSection={activeSection}
+                  onSelect={setActiveSectionId}
+                />
+                {(pointContext.unavailable_sources?.length ?? 0) > 0 && (
+                  <div className="audit-card audit-card--warning">
+                    <strong>Fontes que não responderam nesta consulta</strong>
+                    <p>{pointContext.unavailable_sources!.join(" · ")}</p>
+                  </div>
+                )}
+                {pointContext.disclaimer && (
+                  <p className="muted">{pointContext.disclaimer}</p>
+                )}
+              </div>
+            ) : !parcel ? (
               <div className="empty-state">
                 A ficha aparecerá aqui após selecionar um terreno.
               </div>
@@ -711,42 +809,11 @@ export function ExplorerShell() {
                   </div>
                 )}
 
-                {sections.length > 0 && (
-                  <>
-                    <label className="section-picker">
-                      <span>Seção do dossiê</span>
-                      <select
-                        value={activeSection?.id ?? ""}
-                        onChange={(event) =>
-                          setActiveSectionId(event.target.value)
-                        }
-                      >
-                        {sections.map((section) => (
-                          <option key={section.id} value={section.id}>
-                            {section.title}
-                          </option>
-                        ))}
-                      </select>
-                    </label>
-
-                    {activeSection && (
-                      <section className="dossier-section">
-                        <h3>{activeSection.title}</h3>
-                        <dl>
-                          {activeSection.items.map((item, index) => (
-                            <div
-                              className="dossier-row"
-                              key={`${item.label}-${index}`}
-                            >
-                              <dt>{item.label}</dt>
-                              <dd>{formatItemValue(item)}</dd>
-                            </div>
-                          ))}
-                        </dl>
-                      </section>
-                    )}
-                  </>
-                )}
+                <DossierView
+                  sections={sections}
+                  activeSection={activeSection}
+                  onSelect={setActiveSectionId}
+                />
               </div>
             )}
           </aside>

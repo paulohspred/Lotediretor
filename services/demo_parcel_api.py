@@ -37,6 +37,7 @@ import joao_pessoa_property
 import postgis_store
 import analysis_evidence
 import federal_context
+import point_context
 
 HOST = "127.0.0.1"
 PORT = 8765
@@ -2963,6 +2964,18 @@ class Handler(BaseHTTPRequestHandler):
             if evidence is None:
                 return self.send_json(404, {"error": "analysis_run_not_found"})
             return self.send_json(200, evidence)
+
+        if parsed.path == "/v1/point-context":
+            try:
+                lat = float(params.get("lat", [""])[0])
+                lng = float(params.get("lng", [""])[0])
+                ibge = params.get("municipality_ibge", [""])[0]
+                return self.send_json(200, point_context.build(lat, lng, ibge))
+            except ValueError as exc:
+                return self.send_json(400, {"error": str(exc)})
+            except Exception as exc:
+                print(f"point context error: {exc!r}", flush=True)
+                return self.send_json(502, {"error": "upstream_unavailable"})
 
         if parsed.path == "/v1/cep":
             raw_cep = re.sub(r"\D", "", params.get("cep", [""])[0] or "")

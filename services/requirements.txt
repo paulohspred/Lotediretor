@@ -1,0 +1,7 @@
+# Python territorial engine (services/*.py). Pin ranges; lock per deploy.
+numpy>=1.26,<3
+scipy>=1.11,<2
+shapely>=2.0,<3
+pyproj>=3.6,<4
+laspy>=2.5,<3
+psycopg2-binary>=2.9,<3

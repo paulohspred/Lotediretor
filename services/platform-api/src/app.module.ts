@@ -8,6 +8,7 @@ import { CoreModule } from "./modules/core/core.module.js";
 import { DatabaseModule } from "./modules/database/database.module.js";
 import { GeoModule } from "./modules/geo/geo.module.js";
 import { TerritoryModule } from "./modules/territory/territory.module.js";
+import { PointContextModule } from "./modules/context/point-context.module.js";
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { TerritoryModule } from "./modules/territory/territory.module.js";
     DatabaseModule,
     CoreModule,
     TerritoryModule,
+    PointContextModule,
     GeoModule,
   ],
 })

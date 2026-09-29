@@ -223,7 +223,7 @@ function friendlyDisplayValue(value: unknown): unknown {
     );
 }
 
-function humanValues(value: unknown): HumanValue[] {
+export function humanValues(value: unknown): HumanValue[] {
   if (!Array.isArray(value)) return [];
   return value
     .map((item) => object(item))

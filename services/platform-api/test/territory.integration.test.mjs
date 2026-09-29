@@ -3,14 +3,31 @@
 // the source registry. Skipped unless TEST_DATABASE_URL is set.
 import { test, before, after } from "node:test";
 import assert from "node:assert/strict";
+import http from "node:http";
 
 const DB = process.env.TEST_DATABASE_URL;
 const skip = DB ? false : "TEST_DATABASE_URL not set";
 let app;
 let base;
+let engine;
+const engineCalls = [];
 
 before(async () => {
   if (!DB) return;
+  engine = http.createServer((req, res) => {
+    const url = new URL(req.url, "http://x");
+    engineCalls.push(Object.fromEntries(url.searchParams));
+    res.writeHead(200, { "content-type": "application/json" });
+    res.end(JSON.stringify({
+      found: true,
+      sections: [{ id: "territorial", title: "Contexto territorial",
+        items: [{ label: "Macrorregião hidrográfica (ANA/IBGE)", value: "Paraná" }] }],
+      unavailable_sources: ["INCRA · SIGEF"],
+      analysis_area: { kind: "POINT_BUFFER", half_side_m: 25 },
+    }));
+  });
+  await new Promise((r) => engine.listen(0, "127.0.0.1", r));
+  process.env.PARCEL_ENGINE_BASE_URL = `http://127.0.0.1:${engine.address().port}`;
   process.env.DATABASE_URL = DB;
   await import("reflect-metadata");
   const { NestFactory } = await import("@nestjs/core");
@@ -25,6 +42,7 @@ before(async () => {
 
 after(async () => {
   await app?.close();
+  engine?.close();
 });
 
 async function get(path) {
@@ -103,4 +121,32 @@ test("a municipality with no catalogued local source says so", { skip }, async (
   assert.equal(body.summary.by_level.MUNICIPAL, 0);
   assert.equal(body.summary.municipal_sources_catalogued, false);
   assert.ok(body.summary.total_sources > 0);
+});
+
+async function post(path, body) {
+  const response = await fetch(`${base}${path}`, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  return { status: response.status, body: await response.json() };
+}
+
+test("point context resolves the municipality server-side", { skip }, async () => {
+  const { status, body } = await post("/context/point", { lat: -22.25, lng: -45.7 });
+  assert.equal(status, 200);
+  assert.equal(body.municipality.ibge_code, "3159605");
+  assert.equal(engineCalls.at(-1).municipality_ibge, "3159605");
+  assert.equal(body.dossier.sections[0].items[0].value, "Paraná");
+  assert.deepEqual(body.unavailable_sources, ["INCRA · SIGEF"]);
+  assert.match(body.disclaimer, /Não identifica o lote/);
+});
+
+test("point context outside Brazil never reaches the engine", { skip }, async () => {
+  const before = engineCalls.length;
+  const { status, body } = await post("/context/point", { lat: -20, lng: -30 });
+  assert.equal(status, 404);
+  assert.equal(body.code, "MUNICIPALITY_NOT_FOUND");
+  assert.equal(engineCalls.length, before);
+  assert.equal((await post("/context/point", { lat: "x", lng: 1 })).status, 400);
 });
