@@ -36,6 +36,8 @@ jobs:
         run: python tools/discovery/build_report_readiness.py --check
       - name: Report spec
         run: python tools/discovery/validate_report_spec.py
+      - name: Vendored auth library identical in client and admin apps
+        run: bash tools/dev/check-vendored-auth.sh
       - name: Database schema contract
         run: python tools/discovery/validate_database_schema.py
       - name: Candidate queue
@@ -165,6 +167,26 @@ jobs:
         env:
           NEXT_TELEMETRY_DISABLED: "1"
 
+  admin-web:
+    name: Admin web (Next.js)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/admin-web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: apps/admin-web/package-lock.json
+      - run: npm ci --no-audit --no-fund
+      - run: npx tsc --noEmit
+      - run: npm run lint
+      - run: npm run build
+        env:
+          NEXT_TELEMETRY_DISABLED: "1"
+
   legacy-static-client:
     name: Legacy static client (until migrated)
     runs-on: ubuntu-latest
@@ -190,7 +212,7 @@ jobs:
         run: python tools/regression/audit_frontend.py
 
   e2e:
-    name: E2E login flow (BFF + API + fake OIDC)
+    name: E2E client + admin (BFF + API + fake OIDC)
     runs-on: ubuntu-latest
     services:
       postgres:
@@ -220,12 +242,21 @@ jobs:
           python3 tools/db/migrate.py
           psql "$LOTEDIRETOR_DB_DSN" -v ON_ERROR_STOP=1 -q -f database/fixtures/ibge_municipios_sample.sql
           psql "$LOTEDIRETOR_DB_DSN" -v ON_ERROR_STOP=1 -q -v mesh_edition=fixture -v snapshot_id= -v min_count=4 -f database/loaders/promote_ibge_municipalities.sql
+          pip install -r services/requirements.txt
+          python3 tools/loaders/load_source_registry.py
+          python3 tools/legal/seed_catalog.py
       - name: Build platform API
         working-directory: services/platform-api
         run: npm ci --no-audit --no-fund && npm run build
       - name: Build client web
         working-directory: apps/client-web
         run: npm ci --no-audit --no-fund && npm run build
-      - name: Run E2E
+      - name: Build admin web
+        working-directory: apps/admin-web
+        run: npm ci --no-audit --no-fund && npm run build
+      - name: Run client E2E
         working-directory: apps/client-web
+        run: npm run test:e2e
+      - name: Run admin E2E
+        working-directory: apps/admin-web
         run: npm run test:e2e
