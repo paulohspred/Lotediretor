@@ -15,6 +15,7 @@ import {
 } from "./parcel-engine.service.js";
 import { FactoryParcelService } from "./factory-parcel.service.js";
 import { PointContextModule } from "../context/point-context.module.js";
+import { LegalModule } from "../legal/legal.module.js";
 
 @Controller()
 class ParcelController {
@@ -42,7 +43,7 @@ class ParcelController {
 }
 
 @Module({
-  imports: [PointContextModule],
+  imports: [PointContextModule, LegalModule],
   controllers: [ParcelController],
   providers: [ParcelEngineService, FactoryParcelService],
   exports: [ParcelEngineService],

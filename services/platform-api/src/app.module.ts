@@ -9,6 +9,7 @@ import { DatabaseModule } from "./modules/database/database.module.js";
 import { GeoModule } from "./modules/geo/geo.module.js";
 import { TerritoryModule } from "./modules/territory/territory.module.js";
 import { PointContextModule } from "./modules/context/point-context.module.js";
+import { LegalModule } from "./modules/legal/legal.module.js";
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { PointContextModule } from "./modules/context/point-context.module.js";
     CoreModule,
     TerritoryModule,
     PointContextModule,
+    LegalModule,
     GeoModule,
   ],
 })

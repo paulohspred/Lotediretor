@@ -166,7 +166,7 @@ test("factory municipality resolves parcels from PostGIS", { skip }, async () =>
   const zoning = body.dossier.sections.find((s) => s.id === "zoning");
   assert.match(zoning.items[0].label, /ZR1/);
   const provenance = body.dossier.sections.find((s) => s.id === "provenance");
-  assert.ok(provenance.items.some((i) => /Fase 4/.test(i.value)));
+  assert.ok(provenance.items.some((i) => /Parâmetros urbanísticos/.test(i.label)));
   // Personal fields present in the upstream file never reach the API.
   assert.doesNotMatch(JSON.stringify(body), /PROPRIET/);
 });
@@ -181,4 +181,34 @@ test("factory municipality: empty point and parcel search", { skip }, async () =
   assert.equal(search.status, 200);
   assert.ok(search.body.results.length > 0);
   assert.equal(search.body.results[0].kind, "parcel");
+});
+
+test("legal search, documents and rules respect review status", { skip }, async () => {
+  const search = await get("/legal/search?q=recuos%20alvenaria&ibge=3505708");
+  assert.equal(search.status, 200);
+  assert.ok(search.body.results.length > 0);
+  assert.match(search.body.results[0].document_title, /565/);
+
+  const docs = await get("/legal/documents?ibge=3505708");
+  assert.ok(docs.body.documents.some((d) => d.text_versions > 0));
+
+  const strict = await get("/legal/rules?ibge=3505708&zone=A-11");
+  for (const rule of strict.body.rules) assert.notEqual(rule.status, "CANDIDATE");
+  const loose = await get("/legal/rules?ibge=3505708&zone=A-11&include_candidates=true");
+  assert.ok(loose.body.rules.length > strict.body.rules.length);
+  assert.ok(loose.body.rules.every((r) => r.provision_path && r.evidence_excerpt));
+
+  assert.equal((await get("/legal/rules?ibge=3505708&zone=A-11&date=31/12/2020")).status, 400);
+  assert.equal((await get("/legal/search?q=ab&ibge=3505708")).status, 400);
+});
+
+test("factory dossier shows zone parameters flagged by review status", { skip }, async () => {
+  const { body } = await post("/parcel/resolve", {
+    municipality_ibge: "3159605", lat: -22.2595, lng: -45.7095,
+  });
+  const params = body.dossier.sections.find((s) => s.id === "urban_parameters");
+  assert.ok(params, "urban_parameters section present");
+  assert.match(params.title, /ZR1/);
+  assert.ok(params.items.some((i) => /Aguardando revisão/.test(i.label)));
+  assert.ok(params.items.some((i) => /Não use para decisão/.test(i.value)));
 });

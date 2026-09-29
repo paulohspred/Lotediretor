@@ -75,6 +75,18 @@
         "finding",
         "report_snapshot"
       ]
+    },
+    "ld_legal": {
+      "purpose": "Versioned legal documents, provisions, zone aliases and reviewed urban rules with evidence.",
+      "tables": [
+        "document",
+        "document_version",
+        "relation",
+        "provision",
+        "zone_alias",
+        "urban_rule",
+        "rule_review_event"
+      ]
     }
   },
   "invariants": [

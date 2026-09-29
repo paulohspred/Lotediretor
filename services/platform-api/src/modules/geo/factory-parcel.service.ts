@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
 import { Database } from "../database/database.module.js";
 import { PointContextService } from "../context/point-context.module.js";
+import { LegalService } from "../legal/legal.module.js";
 
 type ParcelRow = {
   upstream_key: string;
@@ -51,6 +52,7 @@ export class FactoryParcelService {
   constructor(
     private readonly db: Database,
     private readonly pointContext: PointContextService,
+    private readonly legal: LegalService,
   ) {}
 
   async hasParcels(ibge: string): Promise<boolean> {
@@ -182,6 +184,10 @@ export class FactoryParcelService {
         }))
       : [{ label: "Zoneamento", value: "Nenhuma zona da camada municipal intersecta o lote" }];
 
+    const parameters = zones[0]
+      ? await this.legal.zoneParameterSection(ibge, zones[0].zone_code)
+      : null;
+
     const provenance = [
       {
         label: "Lote · fonte",
@@ -196,7 +202,13 @@ export class FactoryParcelService {
         : []),
       {
         label: "Parâmetros urbanísticos (CA, TO, recuos)",
-        value: "Pendentes: dependem do motor jurídico municipal (Fase 4)",
+        value: !parameters
+          ? "Sem zona identificada: parâmetros não aplicáveis"
+          : parameters.confirmed > 0
+            ? `${parameters.confirmed} parâmetro(s) conferido(s) por profissional`
+            : parameters.candidates > 0
+              ? "Somente parâmetros extraídos automaticamente, aguardando revisão"
+              : "Legislação da zona ainda não estruturada",
       },
     ];
 
@@ -224,6 +236,7 @@ export class FactoryParcelService {
         sections: [
           { id: "identity", title: "Identificação cadastral", order: 1, type: "DETAIL", items: identity },
           { id: "zoning", title: "Zoneamento municipal", order: 2, type: "DETAIL", items: zoning },
+          ...(parameters ? [parameters.section] : []),
           ...federal.sections.map((s, i) => ({ ...(s as object), order: 10 + i })),
           { id: "provenance", title: "Fontes e limitações", order: 99, type: "DETAIL", items: provenance },
         ],
