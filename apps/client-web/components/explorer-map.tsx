@@ -248,18 +248,34 @@ export function ExplorerMap({
 
         if (!map.getLayer(lid)) {
           if (spec.sourceType === "vector") {
+            const vectorLayer =
+              spec.renderType === "circle"
+                ? ({
+                    id: lid,
+                    type: "circle",
+                    source: sid,
+                    "source-layer": spec.sourceLayer,
+                    paint: {
+                      "circle-color": spec.lineColor ?? "#356854",
+                      "circle-radius": spec.circleRadius ?? 4,
+                      "circle-opacity": spec.opacity,
+                      "circle-stroke-width": 1,
+                      "circle-stroke-color": "#ffffff",
+                    },
+                  } as maplibregl.CircleLayerSpecification)
+                : ({
+                    id: lid,
+                    type: "line",
+                    source: sid,
+                    "source-layer": spec.sourceLayer,
+                    paint: {
+                      "line-color": spec.lineColor ?? "#356854",
+                      "line-width": spec.lineWidth ?? 1,
+                      "line-opacity": spec.opacity,
+                    },
+                  } as maplibregl.LineLayerSpecification);
             map.addLayer(
-              {
-                id: lid,
-                type: "line",
-                source: sid,
-                "source-layer": spec.sourceLayer,
-                paint: {
-                  "line-color": spec.lineColor ?? "#356854",
-                  "line-width": spec.lineWidth ?? 1,
-                  "line-opacity": spec.opacity,
-                },
-              },
+              vectorLayer,
               map.getLayer(SELECTED_FILL) ? SELECTED_FILL : undefined,
             );
           } else {
