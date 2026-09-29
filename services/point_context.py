@@ -11,6 +11,7 @@ import re
 
 import federal_context
 import restriction_context
+import rural_context
 
 BUFFER_HALF_SIDE_M = 25.0
 # Brazil's extent with margin (continental + oceanic islands).
@@ -18,6 +19,7 @@ BRAZIL_BOUNDS = (-74.5, -34.5, -28.0, 6.0)  # min_lng, min_lat, max_lng, max_lat
 _IBGE = re.compile(r"^[0-9]{7}$")
 
 SECTIONS = (
+    ("rural", "Contexto rural", rural_context.report_values),
     ("restrictions", "Restrições nacionais",
      restriction_context.report_values),
     ("territorial", "Contexto territorial e socioeconômico",
@@ -79,9 +81,14 @@ def build(lat: float, lng: float, municipality_ibge: str) -> dict:
         restrictions = restriction_context.query_geometry(area)
     except Exception:
         restrictions = {"hits": [], "unavailable": [{"layer_key": "national_restrictions", "status": "SOURCE_UNAVAILABLE"}]}
+    try:
+        rural = rural_context.load(lng, lat)
+    except Exception:
+        rural = {"sigef": None, "car": None, "restrictions": [], "warnings": []}
     sections = []
     for section_id, title, fn in SECTIONS:
-        items = fn(restrictions if section_id == "restrictions" else context)
+        section_context = rural if section_id == "rural" else restrictions if section_id == "restrictions" else context
+        items = fn(section_context)
         if items:
             sections.append({"id": section_id, "title": title, "items": items})
     errors = context.get("query_errors") or {}
