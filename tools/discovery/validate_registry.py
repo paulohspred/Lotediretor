@@ -9,6 +9,9 @@ import sys
 from pathlib import Path
 from urllib.parse import urlparse
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from registry_coverage import CoverageError, derive_coverage  # noqa: E402
+
 ACCESS_CLASSES = {
     "OPEN_REUSABLE",
     "PUBLIC_QUERY_ONLY",
@@ -69,6 +72,11 @@ def validate_source_registry(path: Path) -> tuple[list[str], list[str]]:
 
         if not isinstance(source.get("domain"), list):
             errors.append(f"{prefix}: domain must be an array")
+
+        try:
+            derive_coverage(source)
+        except CoverageError as exc:
+            errors.append(f"{prefix}: territorial coverage: {exc}")
 
         url_fields = []
         for key, value in source.items():

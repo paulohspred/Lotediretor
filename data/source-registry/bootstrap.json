@@ -2756,7 +2756,8 @@
       "portal_url": "https://iphaep.pb.gov.br/municipios-com-centros-historicos-tombados",
       "access_class": "PUBLIC_QUERY_ONLY",
       "verification_status": "VERIFIED_PUBLIC_LEGAL_INFORMATION",
-      "notes": "IPHAEP identifica João Pessoa como centro histórico tombado pelo Decreto 9.484/1982. Orientação oficial informa que imóveis em Área de Preservação têm grau de classificação/preservação e intervenções dependem de aprovação técnica; para João Pessoa cita Decreto Estadual 25.138/2004. Geometria municipal complementar está no Filipeia."
+      "notes": "IPHAEP identifica João Pessoa como centro histórico tombado pelo Decreto 9.484/1982. Orientação oficial informa que imóveis em Área de Preservação têm grau de classificação/preservação e intervenções dependem de aprovação técnica; para João Pessoa cita Decreto Estadual 25.138/2004. Geometria municipal complementar está no Filipeia.",
+      "uf": "PB"
     },
     {
       "id": "pb-joao-pessoa-building-permits",
@@ -2907,7 +2908,9 @@
         "zoning"
       ],
       "verification_status": "VERIFIED_ENDPOINT_LICENSE_REVIEW",
-      "base_url": "https://planodiretor.joaopessoa.pb.gov.br/legislacaovigente/"
+      "base_url": "https://planodiretor.joaopessoa.pb.gov.br/legislacaovigente/",
+      "municipality_ibge": "2507507",
+      "uf": "PB"
     },
     {
       "id": "pb-joao-pessoa-official-gazette",
@@ -2942,7 +2945,9 @@
         "zoning"
       ],
       "verification_status": "VERIFIED_ENDPOINT_LICENSE_REVIEW",
-      "base_url": "https://planodiretor.joaopessoa.pb.gov.br/legislacaovigente/"
+      "base_url": "https://planodiretor.joaopessoa.pb.gov.br/legislacaovigente/",
+      "municipality_ibge": "2507507",
+      "uf": "PB"
     },
     {
       "id": "pb-joao-pessoa-processo-online",
@@ -3025,7 +3030,9 @@
         "legal_status"
       ],
       "verification_status": "VERIFIED_ENDPOINT_LICENSE_REVIEW",
-      "base_url": "https://www.tjpb.jus.br/w/decis%C3%A3o-do-tjpb-mant%C3%A9m-proibi%C3%A7%C3%A3o-da-constru%C3%A7%C3%A3o-de-espig%C3%B5es-na-orla"
+      "base_url": "https://www.tjpb.jus.br/w/decis%C3%A3o-do-tjpb-mant%C3%A9m-proibi%C3%A7%C3%A3o-da-constru%C3%A7%C3%A3o-de-espig%C3%B5es-na-orla",
+      "municipality_ibge": "2507507",
+      "uf": "PB"
     },
     {
       "id": "pe-apac-arcgis",
@@ -3097,7 +3104,8 @@
       "portal_url": "https://www.cultura.pe.gov.br/pagina/patrimonio-cultural/acervo/processos-de-tombamento/",
       "access_class": "PUBLIC_QUERY_ONLY",
       "verification_status": "VERIFIED_CURRENT_LISTS_DOCUMENTS_LICENSE_REVIEW",
-      "notes": "Portal oficial publica listas de bens tombados e processos de tombamento estaduais. A proteção provisória passa a existir após publicação do edital de tombamento no Diário Oficial, antes da homologação final. Documentos/listas podem ser usados como evidência jurídica; redistribuição em massa e geometria devem ser revistas separadamente."
+      "notes": "Portal oficial publica listas de bens tombados e processos de tombamento estaduais. A proteção provisória passa a existir após publicação do edital de tombamento no Diário Oficial, antes da homologação final. Documentos/listas podem ser usados como evidência jurídica; redistribuição em massa e geometria devem ser revistas separadamente.",
+      "uf": "PE"
     },
     {
       "id": "pe-neoenergia-pernambuco-provider",
@@ -3146,7 +3154,9 @@
         "geospatial"
       ],
       "verification_status": "VERIFIED_ENDPOINT_LICENSE_REVIEW",
-      "base_url": "https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Planejamento/BASES_BAIRRO_FACEQUADRA_LOGRADOURO_LOTE/FeatureServer/7"
+      "base_url": "https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Planejamento/BASES_BAIRRO_FACEQUADRA_LOGRADOURO_LOTE/FeatureServer/7",
+      "municipality_ibge": "2611606",
+      "uf": "PE"
     },
     {
       "id": "pe-recife-esig-mdt-declividade-2_5m",
@@ -3162,7 +3172,9 @@
         "geospatial"
       ],
       "verification_status": "VERIFIED_ENDPOINT_LICENSE_REVIEW",
-      "base_url": "https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Hosted/RGB_MDT_2_5MTS_DECLIVIDADE_tif/MapServer"
+      "base_url": "https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Hosted/RGB_MDT_2_5MTS_DECLIVIDADE_tif/MapServer",
+      "municipality_ibge": "2611606",
+      "uf": "PE"
     },
     {
       "id": "pe-recife-financas-lotes",
@@ -3716,7 +3728,8 @@
       "portal_url": "https://cultura.rj.gov.br/estrutura/",
       "access_class": "PUBLIC_QUERY_ONLY",
       "verification_status": "VERIFIED_AUTHORITY_PUBLIC_ACTS_INVENTORY_CHANNEL_REVIEW",
-      "notes": "INEPAC é o órgão estadual responsável por identificar, cadastrar, inventariar, tombar, fiscalizar e manter arquivo dos bens protegidos e processos de tombamento. Atos recentes são publicados pela SECEC/Diário Oficial. O inventário/portal legado de bens deve ser tratado como consulta até haver interface atual e termos estáveis."
+      "notes": "INEPAC é o órgão estadual responsável por identificar, cadastrar, inventariar, tombar, fiscalizar e manter arquivo dos bens protegidos e processos de tombamento. Atos recentes são publicados pela SECEC/Diário Oficial. O inventário/portal legado de bens deve ser tratado como consulta até haver interface atual e termos estáveis.",
+      "uf": "RJ"
     },
     {
       "id": "rj-light-distribuicao-provider",
@@ -4611,7 +4624,8 @@
       "access_class": "PUBLIC_QUERY_ONLY",
       "verification_status": "VERIFIED_LIVE_FORM_2026_09_28",
       "notes": "Consulta cadastral oficial. Endpoint real resolvido no iframe municipal. O formulário exige dados do contribuinte/inscrição e CAPTCHA; não automatizar nem contornar CAPTCHA. Não há camada espacial aberta de lotes verificada.",
-      "integration_class": "PUBLIC_QUERY_ONLY"
+      "integration_class": "PUBLIC_QUERY_ONLY",
+      "municipality_ibge": "3505708"
     },
     {
       "id": "sp-barueri-iptu-online",
@@ -4626,7 +4640,8 @@
       "access_class": "PUBLIC_QUERY_ONLY",
       "verification_status": "VERIFIED_LIVE_FORM_2026_09_28",
       "notes": "Emissão oficial de 2ª via do IPTU por número de inscrição do imóvel. É consulta transacional, não bulk/open dataset e não prova geometria cadastral. Não fazer scraping agressivo.",
-      "integration_class": "PUBLIC_QUERY_ONLY"
+      "integration_class": "PUBLIC_QUERY_ONLY",
+      "municipality_ibge": "3505708"
     },
     {
       "id": "sp-barueri-processos-urbanisticos",
@@ -4641,7 +4656,8 @@
       "access_class": "PUBLIC_QUERY_ONLY",
       "verification_status": "VERIFIED_LIVE_CAPTCHA_2026_09_28",
       "notes": "Consulta oficial legada de processos urbanísticos por protocolo e CPF/CNPJ com CAPTCHA. Não automatizar CAPTCHA. Não associar alvará/licença a lote por texto/endereço sem identificador documental compatível.",
-      "integration_class": "PUBLIC_QUERY_ONLY"
+      "integration_class": "PUBLIC_QUERY_ONLY",
+      "municipality_ibge": "3505708"
     },
     {
       "id": "sp-barueri-zoneamento-prc-2023",
@@ -4656,7 +4672,8 @@
       "access_class": "PUBLIC_QUERY_ONLY",
       "verification_status": "VERIFIED_OFFICIAL_VECTOR_PDF_NON_GEOPDF_2026_09_28",
       "notes": "LC 565/2023 e PRC_COMPLETA_2023 oficiais. PRC é PDF vetorial com conteúdo CAD e referência SIRGAS 2000 / UTM, mas não GeoPDF pronto. Não fazer point-in-polygon nem encaixe visual sem transformação espacial verificável.",
-      "integration_class": "DOWNLOADABLE_DATASET"
+      "integration_class": "DOWNLOADABLE_DATASET",
+      "municipality_ibge": "3505708"
     },
     {
       "id": "sp-campinas-spatial-data",
@@ -4711,7 +4728,8 @@
       "portal_url": "https://www.cultura.sp.gov.br/sec_cultura/CONDEPHAAT/Bens_Protegidos",
       "access_class": "PUBLIC_QUERY_ONLY",
       "verification_status": "VERIFIED_PUBLIC_PORTAL_GIS_TERMS_REVIEW",
-      "notes": "CONDEPHAAT mantém portal de bens protegidos, CEDOC/SISEP e mapa/IDE-SP. GeoSampa municipal também integra bens estaduais e áreas envoltórias, com links às resoluções. Usar o portal estadual como autoridade jurídica e GeoSampa/IDE-SP como geometria quando aplicável; materialização de geodados estaduais requer revisão dos termos do IDE-SP."
+      "notes": "CONDEPHAAT mantém portal de bens protegidos, CEDOC/SISEP e mapa/IDE-SP. GeoSampa municipal também integra bens estaduais e áreas envoltórias, com links às resoluções. Usar o portal estadual como autoridade jurídica e GeoSampa/IDE-SP como geometria quando aplicável; materialização de geodados estaduais requer revisão dos termos do IDE-SP.",
+      "uf": "SP"
     },
     {
       "id": "sp-datageo",

@@ -25,7 +25,9 @@
         "subject_relation",
         "address",
         "parcel_geometry_version",
-        "building"
+        "building",
+        "state",
+        "municipality"
       ]
     },
     "ld_evidence": {
@@ -55,7 +57,8 @@
     "ld_api": {
       "purpose": "Public-safe read-model foundation only; HTTP API comes later.",
       "views": [
-        "public_assertion"
+        "public_assertion",
+        "municipality_source"
       ],
       "tables": [
         "property_dossier_cache"
