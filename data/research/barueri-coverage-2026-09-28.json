@@ -1,0 +1,195 @@
+{
+  "municipality": "Barueri",
+  "municipality_ibge": "3505708",
+  "audited_at": "2026-09-28",
+  "parcel_geometry_status": "NO_OFFICIAL_OPEN_PARCEL_GEOMETRY_VERIFIED",
+  "coverage": [
+    {
+      "tema": "Cadastro/IPTU",
+      "fonte": "Cadastro imobiliário online",
+      "endpoint": "https://servicos.barueri.sp.gov.br/emissaocertidao/certidaocadastral.aspx",
+      "tipo": "PUBLIC_QUERY_ONLY",
+      "cobertura": "Consulta cadastral individual",
+      "status": "LIVE, CAPTCHA",
+      "integrado": false,
+      "proximo_passo": "Aguardar arquivo/export oficial ou fornecido pelo usuário",
+      "limitacao": "Sem bulk e sem geometria cadastral aberta verificada"
+    },
+    {
+      "tema": "Cadastro/IPTU",
+      "fonte": "2ª via IPTU",
+      "endpoint": "https://www.barueri.sp.gov.br/sistemas/2via/?tipo=1",
+      "tipo": "PUBLIC_QUERY_ONLY",
+      "cobertura": "Inscrição do imóvel / exercício atual",
+      "status": "LIVE",
+      "integrado": false,
+      "proximo_passo": "Usar somente consulta manual/documental; materializar arquivo autorizado",
+      "limitacao": "Formulário, não dataset espacial"
+    },
+    {
+      "tema": "Valor venal",
+      "fonte": "Certidão de Valor Venal",
+      "endpoint": "https://servicos.barueri.sp.gov.br/emissaocertidao/CertidaoVenal.aspx",
+      "tipo": "PUBLIC_QUERY_ONLY",
+      "cobertura": "Inscrição + exercício",
+      "status": "LIVE, CAPTCHA",
+      "integrado": false,
+      "proximo_passo": "Somente evidência documental fornecida/consultada legitimamente",
+      "limitacao": "CAPTCHA; sem bulk"
+    },
+    {
+      "tema": "Zoneamento",
+      "fonte": "LC 565/2023 + PRC_COMPLETA_2023",
+      "endpoint": "https://portal.barueri.sp.gov.br/cidadao/moradia/mapa-zoneamento",
+      "tipo": "DOWNLOADABLE_DATASET",
+      "cobertura": "Município",
+      "status": "Documento oficial vetorial; não GeoPDF",
+      "integrado": "referência",
+      "proximo_passo": "Recuperar transformação espacial verificável antes de extrair polígonos",
+      "limitacao": "Proibido georreferenciar no olho"
+    },
+    {
+      "tema": "Licenciamento",
+      "fonte": "Aprova Digital Barueri",
+      "endpoint": "https://barueri.aprova.com.br/",
+      "tipo": "AUTHENTICATED_PRIVATE",
+      "cobertura": "Alvarás, Habite-se, certidões, parcelamento e fiscalização",
+      "status": "LIVE",
+      "integrado": false,
+      "proximo_passo": "Manter link/registro; integrar apenas fluxo autorizado autenticado",
+      "limitacao": "Conta/autenticação; não inferir licença por endereço"
+    },
+    {
+      "tema": "Processos urbanísticos",
+      "fonte": "Consulta legada SPU",
+      "endpoint": "https://www.barueri.sp.gov.br/sistemas/processoEngenharia/",
+      "tipo": "PUBLIC_QUERY_ONLY",
+      "cobertura": "Protocolo + CPF/CNPJ",
+      "status": "LIVE, CAPTCHA",
+      "integrado": false,
+      "proximo_passo": "Consulta manual quando houver protocolo/documento",
+      "limitacao": "CAPTCHA e identificadores pessoais"
+    },
+    {
+      "tema": "Meio ambiente",
+      "fonte": "Indicadores ambientais municipais",
+      "endpoint": "https://portal.barueri.sp.gov.br/cidadao/secretaria-recursos-naturais-meio-ambiente/indicadores",
+      "tipo": "PUBLIC_QUERY_ONLY",
+      "cobertura": "Água, esgoto, arborização, drenagem, licenciamento e outros",
+      "status": "LIVE",
+      "integrado": "contexto",
+      "proximo_passo": "Auditar datasets exportáveis por painel",
+      "limitacao": "Indicadores agregados não provam incidência/capacidade no lote"
+    },
+    {
+      "tema": "Meio ambiente",
+      "fonte": "Relatórios de licenciamento e APP",
+      "endpoint": "https://portal.barueri.sp.gov.br/cidadao/secretaria-recursos-naturais-meio-ambiente/relatorio-licenciamento",
+      "tipo": "PUBLIC_QUERY_ONLY",
+      "cobertura": "Publicações de licenças e vegetação/APP",
+      "status": "LIVE",
+      "integrado": false,
+      "proximo_passo": "Indexar documentos somente com chaves documentais seguras",
+      "limitacao": "Não associar por texto/endereço isolado"
+    },
+    {
+      "tema": "Mobilidade",
+      "fonte": "Plano de Mobilidade Urbana",
+      "endpoint": "https://portal.barueri.sp.gov.br/secretarias/mobilidade-urbana/plano-mobilidade-",
+      "tipo": "DOWNLOADABLE_DATASET",
+      "cobertura": "Produtos, mapas e vetores KMZ",
+      "status": "DOWNLOAD disponível",
+      "integrado": false,
+      "proximo_passo": "Baixar e auditar KMZ por camada/CRS/data",
+      "limitacao": "Plano de mobilidade não é cadastro parcelar"
+    },
+    {
+      "tema": "Lotes espaciais",
+      "fonte": "Pesquisa em portais oficiais/ArcGIS/GeoServer",
+      "endpoint": null,
+      "tipo": "NOT_SUITABLE_FOR_PARCEL",
+      "cobertura": "Barueri",
+      "status": "NÃO ENCONTRADO nesta auditoria",
+      "integrado": false,
+      "proximo_passo": "Usar materializador quando houver SHP/GPKG/GeoJSON/GDB/DXF/DWG/PDF transformável",
+      "limitacao": "Não inventar geometria cadastral"
+    },
+    {
+      "tema": "Contexto nacional",
+      "fonte": "IBGE Censo 2022 / malhas",
+      "endpoint": "registry:br-ibge-censo2022-sector-mesh",
+      "tipo": "DOWNLOADABLE_DATASET",
+      "cobertura": "Barueri e Brasil",
+      "status": "já materializado nacionalmente",
+      "integrado": true,
+      "proximo_passo": "Manter como contexto, não como lote",
+      "limitacao": "Setor censitário não é parcela"
+    },
+    {
+      "tema": "Contexto rural",
+      "fonte": "SICAR",
+      "endpoint": "registry:br-sicar-car",
+      "tipo": "LIVE_WFS",
+      "cobertura": "SP / rural",
+      "status": "já registrado",
+      "integrado": "contexto",
+      "proximo_passo": "Usar apenas campos públicos não pessoais",
+      "limitacao": "CAR é declaratório e não prova domínio"
+    },
+    {
+      "tema": "Contexto rural",
+      "fonte": "SIGEF público/privado",
+      "endpoint": "registry:br-incra-sigef",
+      "tipo": "AUTHENTICATED_PRIVATE",
+      "cobertura": "Brasil",
+      "status": "misto",
+      "integrado": "contexto",
+      "proximo_passo": "Manter atos completos fora do conector público",
+      "limitacao": "Não inferir propriedade"
+    },
+    {
+      "tema": "Finanças/obras",
+      "fonte": "SICONFI / TransfereGov / ObrasGov / PNCP",
+      "endpoint": "registry:br-siconfi-api; registry:br-transferegov-public-works; registry:br-obrasgov-api; registry:br-pncp-open-api",
+      "tipo": "LIVE_API",
+      "cobertura": "Município/entes públicos",
+      "status": "já registrados",
+      "integrado": "contexto",
+      "proximo_passo": "Filtrar Barueri por código/CNPJ oficial quando necessário",
+      "limitacao": "Obra/contrato não deve ser ligado ao lote só por texto/endereço"
+    },
+    {
+      "tema": "Infraestrutura federal",
+      "fonte": "DNIT SNV",
+      "endpoint": "registry:br-dnit-snv",
+      "tipo": "LIVE_WFS",
+      "cobertura": "Brasil",
+      "status": "já registrado",
+      "integrado": "contexto",
+      "proximo_passo": "Usar distância/incidência geométrica com caveat",
+      "limitacao": "Proximidade não prova acesso/faixa de domínio"
+    },
+    {
+      "tema": "Risco geológico/hidrológico",
+      "fonte": "Plano Municipal de Adaptação e Resiliência Climática 2025",
+      "endpoint": "https://portal.barueri.sp.gov.br/arquivos/sites/sm/2025/Plano_de_Adaptacao_e_Resiliencia_Climatica_rev1.pdf",
+      "tipo": "DOWNLOADABLE_DATASET",
+      "cobertura": "248 setores com coordenadas UTM publicadas",
+      "status": "MATERIALIZADO EM POSTGIS COMO PONTOS DE REFERÊNCIA",
+      "integrado": true,
+      "proximo_passo": "Obter banco georreferenciado original do Instituto Geológico para polígonos dos setores",
+      "limitacao": "Ponto UTM publicado não representa a extensão do setor; área m² é atributo, não geometria"
+    },
+    {
+      "tema": "Infraestrutura/gestão territorial",
+      "fonte": "GeoPixel Cidades · WMS municipal",
+      "endpoint": "https://barueri.geopixel.com.br/geoserver-barueri/barueri/wms",
+      "tipo": "LIVE_WMS",
+      "cobertura": "Eixos de logradouros, faixa de dutos, obras, TIC Oeste e licenciamento",
+      "status": "LIVE · allowlist validada; WFS desativado",
+      "integrado": true,
+      "proximo_passo": "Reavaliar camadas cadastrais quando bbox/metadados e acesso vetorial forem confiáveis",
+      "limitacao": "WMS é visual; não usar para point-in-polygon. Algumas camadas publicadas têm bbox incoerente e foram rejeitadas."
+    }
+  ]
+}
