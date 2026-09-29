@@ -1,0 +1,314 @@
+{
+  "authority": "Prefeitura Municipal de Barueri",
+  "law": "Lei Complementar nº 565, de 11 de dezembro de 2023",
+  "source_url": "https://portal.barueri.sp.gov.br/arquivos/sites/spcu/2024/Lei_Complementar_565_2023_juridico.pdf",
+  "source_scope": "LEGAL_TEXT_NOT_SPATIAL_RESOLUTION",
+  "as_of": "2026-09-28",
+  "groups": {
+    "SER": {
+      "article": 35,
+      "sectors": [
+        "A-04",
+        "A-11",
+        "B-13",
+        "B-15",
+        "C-23"
+      ],
+      "rule_text": "Os lotes situados nos “SER” terão área mínima de 360,00m2 (trezentos e sessenta metros quadrados), frente mínima de 12,00m (doze metros), ficando sujeitos, quanto ao seu uso e ocupação, às seguintes condições: I - categoria de usos permitidos: a) residência unifamiliar; b) comércio local e prestação de serviços, quando previsto no loteamento; II - coeficiente de aproveitamento: a) residência unifamiliar: 1. mínimo = 0,1 (um décimo); 2. básico = 1,0 (um); 3. máximo = 1,1 (um inteiro e um décimo); b) comércio local e prestação de serviços: 1. mínimo = 0,1 (um décimo); 2. básico = 1,5 (um inteiro e cinco décimos); 3. máximo = 2,0 (dois); III - taxa de ocupação: a) residência unifamiliar: 1. 55% (cinquenta e cinco por cento), para construção principal com um ou mais pavimentos; 2. 45% (quarenta e cinco por cento) mais 26.7% (vinte e seis por cento e setenta centésimos) da área da construção principal para edícula ou demais blocos, nos demais casos; b) comércio local e prestação de serviços: 80% (oitenta por cento); IV - recuos: a) residência unifamiliar: 1. de frente = 5,00m (cinco metros); 2. laterais = 1,50m (um metro e meio) em ambos os lados; 16 16 3. de fundo = 3,00m (três metros). b) comércio local e prestação de serviços= sem restrições.: 1. de frente = 5,00m (cinco metros); 2. laterais = sem restrições; 3. de fundo = sem restrições. §1 Todos os recuos serão contados a partir da alvenaria. §2 Os beirais laterais não poderão exceder a 1/3 (um terço) dos recuos laterais observados pela construção principal. §3 No caso da existência de garagem, será o permitido encostar sua construção em uma das divisas laterais, desde que: a) obedecido o recuo frontal mínimo de 5,00m (cinco metros); b) a ocupação não exceda a uma extensão de 7,00m (sete metros); c) nenhuma construção seja efetuada sobre ela; d) sua altura não ultrapasse a 3,00m (três metros), incluindo o ponto mais alto do telhado."
+    },
+    "SRE": {
+      "article": 38,
+      "sectors": [
+        "C-22"
+      ],
+      "rule_text": "Os lotes situados nos SRE terão área mínima de 450,00m2 (quatrocentos e cinquenta metros quadrados), frente mínima de 12,00m (doze metros), ficando sujeitos, quanto ao seu uso e ocupação, às seguintes condições: I - categorias de usos permitidos: a) residência unifamiliar, constituída de uma unidade principal por lote; b) comércio local e prestação de serviços, quando previsto no loteamento; c) residência plurifamiliar vertical com no máximo 5 (cinco) pavimentos acima do nível médio da guia; d) comércio e prestação de serviços; e) mista (residencial/ comercial e ou serviços). II - coeficiente de aproveitamento: a) residência unifamiliar: 1. mínimo = 0,1 (um décimo); 2. básico = 1,0 (um); 3. máximo = 1,1 (um inteiro e um décimo). b) comércio local e prestação de serviços: 1. mínimo = 0,1 (um décimo); 2. básico = 1,5 (um inteiro e cinco décimos); 3. máximo = 2,00 (dois inteiros). c) residência plurifamiliar, comércio e prestação de serviços e mista: 1. mínimo = 0,1 (um décimo); 2. básico = 1,5 (um inteiro e cinco décimos); 3. máximo = 2,00 (dois inteiros). III - taxa de ocupação: 18 18 a) residência unifamiliar = 55% (cinquenta e cinco por cento); b) comércio local = 70% (setenta por cento); c) residência plurifamiliar, comércio e prestação de serviços e mista: 20% (vinte por cento). IV - recuos: a) residência: 1. de frente: 6,00m (seis metros); 2. laterais: 2,00m (dois metros) em ambos os lados; 3. de fundo: 3,00m (três metros). b) comércio local e prestação de serviços: 1. de frente: 5,00m (cinco metros); 2. laterais: 0 (zero) ou, no mínimo, 2,00m (dois metros); 3. de fundo: 3,00m (três metros). c) residência plurifamiliar, comércio e prestação de serviços e mista: 1. de frente: 1.1. será calculado pela fórmula h/6 (altura do prédio dividido por seis), com o mínimo de 5,00m (cinco metros); 1.2. nos lotes de esquina, o recuo correspondente à via de menor importância ou via de acesso secundário ao prédio será calculado pela fórmula h/10 (altura do prédio dividido por dez), com o mínimo de 4,00m (quatro metros). 2. laterais: serão calculados pela fórmula h/8 (altura do prédio dividido por oito), com o mínimo de 2,00 m (dois metros) em ambos os lados; 3. de fundo: será calculado pela fórmula h/10 (altura do prédio dividido por dez), com o mínimo de 3,00m (três metros), salvo se esse recuo coincidir com via pública, quando então será igual ao recuo de frente; 4. entre prédios: será calculado pela fórmula h/6 (altura do prédio dividido por seis), da menor altura, com o mínimo de 4,00m (quatro metros). §1 Os subsolos dos prédios residenciais plurifamiliares, prédios comerciais ou mistos, destinados exclusivamente a estacionamento de carros e respectivas dependências, como vestiários e instalações sanitárias, sem aproveitamento para qualquer atividade de permanência humana, observarão os seguintes recuos: I - frontal: 5,00m (cinco metros), para lotes de meio de quadra, e 4,00m (quatro metros), para o recuo correspondente a via pública de menor importância, nos lotes de esquina, exceto nos loteamentos sujeitos a normas contratuais/conveniais, nos quais deverá prevalecer o de maior restrição; II - laterais e fundos: inexigíveis. §2 Os subsolos poderão aflorar, no máximo, 7,00 m (sete metros) do perfil natural do terreno ao ponto mais alto do telhado, desconsiderado o muro de fechamento ou guarda-corpo. 19 19 §3 As fachadas dos subsolos, afloradas acima de 1,20m (um metro e vinte centímetros) do nível médio das guias, deverão receber tratamento arquitetônico adequado em observância à estética urbana, consistente no seguinte: I - no mínimo 50% (cinquenta por cento) da fachada, no sentido horizontal e vertical deverá ser aterrado em forma de talude e ajardinado. II - o restante do afloramento deverá receber tratamento arquitetônico adequado, tanto no aspecto estético, quanto funcional. §4 Os sobressolos dos prédios residenciais plurifamiliares, prédios comerciais ou mistos, destinados exclusivamente a estacionamento de carros e respectivas dependências, tais como hall de entrada, vestiários e instalações sanitárias, sem aproveitamento para qualquer atividade de permanência humana, observarão os seguintes recuos: I - frontal: 5,00m (cinco metros), para lotes de meio de quadra e 4,00m (quatro metros), para o recuo correspondente a via pública de menor importância, nos lotes de esquina; II - laterais: 2,00m (dois metros); III - fundos: 3,00m (três metros). §5 Os sobressolos poderão aflorar, no máximo 7,00m (sete metros) do perfil médio da guia, não sendo considerados na altura do prédio."
+    },
+    "SRM": {
+      "article": 41,
+      "sectors": [
+        "C-13"
+      ],
+      "rule_text": "Os lotes situados nos SRM terão área mínima de 1.000,00m2 (mil metros quadrados), frente mínima de 20,00m (vinte metros), ficando sujeitos, quanto ao seu uso e ocupação, às seguintes condições: I - categorias de usos permitidos: a) residência unifamiliar; b) comércio local e prestação de serviços, quando previsto em loteamento; c) residência plurifamiliar vertical com no mínimo 5 (cinco) pavimentos acima do nível médio da guia; d) uso misto (residencial/comercial ou prestação de serviços) II - coeficiente de aproveitamento: a) residência unifamiliar: 1. mínimo = 0,1 (um décimo); 2. básico = 1,0 (um); 3. máximo = 1,1 (um inteiro e um décimo). b) comércio e prestação de serviços: 1. mínimo = 0,1 (um décimo); 2. básico = 1,5 (um inteiro e cinco décimos); 3. máximo = 2,00 (dois). c) residência plurifamiliar, edifício comercial e prestação de serviços e mista: 1. mínimo = 0,1 (um décimo); 2. básico = 4,0 (quatro); 3. máximo = 5,00 (cinco) III - taxa de ocupação: a) residência = 45% (quarenta e cinco por cento), mais 15% (quinze por cento) da taxa de ocupação para edícula; b) comércio e uso misto = 60% (setenta por cento); c) residência plurifamiliar = 50% (cinquenta por cento). IV - recuos: a) residência unifamiliar: 1. de frente = 5,00m (cinco metros); 2. laterais = 1,50m (um metro e meio) em ambos os lados; 3. de fundo = 3,00m (três metros). b) comércio e prestação de serviços: 1. de frente = 5,00m (cinco metros); 2. laterais = 0 (zero) ou, no mínimo, de 2,00m (dois metros); 3. de fundo = 3,00m (três metros). c) residência plurifamiliar, edifício comercial e prestação de serviços e mista: 1. de frente: 1.1. será calculado pela fórmula h/6 (altura do prédio dividido por seis), com o mínimo de 15,00m (quinze metros); 21 21 1.2. nos lotes de esquina, o recuo correspondente à via de menor importância ou via de acesso secundário ao prédio será calculado pela fórmula h/10 (altura do prédio dividido por dez), com o mínimo de 10,00m (dez metros), obedecida sempre, a taxa de ocupação máxima. 2. laterais: serão calculados pela fórmula h/8 (altura do prédio dividido por oito), com o mínimo de 3,00 m (três metros) em ambos os lados; 3. de fundo: será calculado pela fórmula h/10 (altura do prédio dividido por dez), com o mínimo de 5,00m (cinco metros), salvo se esse recuo coincidir com via pública, quando então será igual ao recuo de frente; 4. entre prédios: será calculado pela fórmula h/6 (altura do prédio dividido por seis), da menor altura, com o mínimo de 4,00m (quatro metros). §1 Os subsolos dos prédios de uso plurifamiliar, comercial ou mistos, destinados exclusivamente a estacionamento de carros e respectivas dependências, como vestiários e instalações sanitárias, sem aproveitamento para qualquer atividade de permanência humana, observarão os seguintes recuos: I - frontal: 15,00m (quinze metros), para os lotes de meio de quadra e 7,00m (sete metros), para o recuo correspondente a via pública de menor importância, nos lotes de esquina, salvo restrição maior decorrente de normas contratuais e conveniais; II - laterais e fundos: inexigíveis. §2º Os subsolos poderão aflorar, no máximo, 7,00 m (sete metros) do perfil natural do terreno ao ponto mais alto do telhado, desconsiderado o muro de fechamento ou guarda-corpo. §3ºAs fachadas dos subsolos, afloradas acima de 1,20m (um metro e vinte centímetros) do nível médio das guias, deverão receber tratamento arquitetônico adequado em observância à estética urbana, consistente no seguinte: I - no mínimo 50% (cinquenta por cento) da fachada, no sentido horizontal e vertical deverá ser aterrado em forma de talude e ajardinado. II - o restante do afloramento deverá receber tratamento arquitetônico adequado, tanto no aspecto estético, quanto funcional. §4 Os sobressolos dos prédios residenciais plurifamiliares, prédios comerciais ou mistos, destinados exclusivamente a estacionamento de carros e respectivas dependências, tais como hall de entrada, vestiários e instalações sanitárias, sem aproveitamento para qualquer atividade de permanência humana, observarão os seguintes recuos: I - frontal: 15,00m (quinze metros), para lotes de meio de quadra e 10,00m (dez metros), para o recuo correspondente a via pública de menor importância, nos lotes de esquina; II - laterais: 3,00m (três metros); 22 22 III - fundos: 5,00m (cinco metros). §5 Os sobressolos poderão aflorar, no máximo 7,00m (sete metros) do perfil médio da guia, não sendo considerados na altura do prédio."
+    },
+    "SRA": {
+      "article": 44,
+      "sectors": [
+        "A-01",
+        "A-03",
+        "A-24",
+        "B-05",
+        "B-07",
+        "B-11",
+        "B-14",
+        "C-03",
+        "C-10",
+        "C-11",
+        "C-15",
+        "C-33",
+        "C-35",
+        "C-36",
+        "C-37",
+        "D-06",
+        "D-11",
+        "D-14",
+        "D-15"
+      ],
+      "rule_text": "Os lotes situados nos SRA terão área mínima de: I - para aprovação de loteamento e desmembramento: a) lote de meio de quadra = 125,00m² (cento e vinte e cinco metros quadrados), frente mínima de 5,00m (cinco metros); b) lote de esquina ou lote com mais de uma frente = 175,00m² (cento e setenta e cinco metros quadrados), frente mínima de 7,00m (sete metros). II - para desdobro de lote pertencente a loteamento aprovado até o ano de 2001 = 125,00m² (cento e vinte e cinco metros quadrados), frente mínima de 5,00m (cinco metros)."
+    },
+    "SRR": {
+      "article": 47,
+      "sectors": [
+        "A-07",
+        "A-17",
+        "B-20",
+        "C-06",
+        "C-09",
+        "C-31",
+        "D-02"
+      ],
+      "rule_text": "Os lotes situados nos SRR terão área mínima de 250,00m2 (duzentos e cinquenta metros quadrados), frente mínima de 10,00m (dez metros), ficando sujeitos, quanto ao seu uso e ocupação, às condições constantes nesta seção."
+    },
+    "SCH": {
+      "article": 50,
+      "sectors": [
+        "B-16",
+        "B-17",
+        "C-41"
+      ],
+      "rule_text": "As áreas situadas no Setor de Uso Conjunto Habitacional para Fim Social (SCH) ficam sujeitas, quanto ao seu uso e ocupação, às seguintes restrições: I - categoria de uso permitido: conjunto habitacional de interesse social; II - coeficiente de aproveitamento: a) mínimo = 0,1 (um décimo); b) básico = 2,0 (dois); c) máximo = 3,0 (três). III - taxa de ocupação: 29,41% (vinte e nove por cento e quarenta e um centésimos); IV - recuos mínimos: a) de frente: 1. para vias e logradouros oficiais e para vias de circulação interna do empreendimento com 9,00m (nove metros de largura) = 10,00m (dez metros); 2. sem restrições para vias de circulação interna do empreendimento com largura inferior a 9,00m (nove metros). b) laterais: 1,50m (um metro e meio) para construções até 2(dois) pavimentos e 5,00m (cinco metros) para construções com mais de 2 (dois) pavimentos em ambos os lados; c) fundos: 3,00m (três metros) para construções até 2 (dois) pavimentos e 6,00m (seis metros) para construções com mais de 2 (dois) pavimentos. Parágrafo único. Fica, ainda, permitida ao operador do sistema de saneamento básico a instalação dos equipamentos necessários aos serviços: I - de captação, tratamento e distribuição de água; II - de coleta, afastamento, tratamento e disposição final de esgotos; III - não abrangidos pelos incisos I e II deste artigo, mas necessários à garantia da potabilidade da água e correta eliminação do esgotamento sanitário. CAPÍTULO VI DOS SETORESDE USO COMERCIAL SEÇÃO I 32 32 DOS SETORES DE USO PREDOMINANTEMENTE COMERCIAL –SPC"
+    },
+    "SPC": {
+      "article": 52,
+      "sectors": [
+        "A-10",
+        "A-13",
+        "A-15",
+        "A-18",
+        "B-06",
+        "D-04",
+        "D-05",
+        "D-13"
+      ],
+      "rule_text": "Os lotes situados nos SPC terão área mínima de 750,00 m2 (setecentos e cinquenta metros quadrados), frente mínima de 15,00m (quinze metros), ficando sujeitos, quanto ao seu uso e ocupação, às seguintes condições: I - categorias de usos permitidos: a) residência plurifamiliar, com no mínimo 5 (cinco) pavimentos acima do nível médio da guia; b) condomínio horizontal de unidades residenciais, com no máximo de 03 (três) pavimentos acima do nível médio da guia e blocos máximo com 10 unidades; c) comércio e serviços; d) misto (residencial/comercial e ou serviços) com no mínimo 5 (cinco) pavimentos acima do nível médio da guia. II - coeficiente de aproveitamento: a) residência plurifamiliar, comércio, serviços e uso misto: 1. mínimo = 0,1 (um décimo); 2. básico = 4,0 (quatro); 3. máximo = 5,50 (cinco inteiros e cinquenta centésimos). b) condomínio horizontal de unidades residências: 1. mínimo = 0,1 (um décimo); 2. básico = 1,5 (um inteiro e cinco décimos); 3. máximo = 2,0 (dois). III - taxa de ocupação: a) residência plurifamiliar, comércio, serviços e uso misto = 65% (sessenta e cinco por cento); b) condomínio horizontal de unidades residenciais: 55% (cinquenta e cinco por cento). IV - recuos: a) residência plurifamiliar, comércio, serviços e uso misto: 1. de frente: 1.1. será calculado pela formula h/6 (altura do prédio dividido por seis), com o mínimo de 10,00m (dez metros) nos lotes de meio de quadra; 1.2. nos lotes de esquina, o recuo correspondente à via pública de menor importância, será calculado pela formula h/10 (altura do prédio dividido por dez) com o mínimo de 5,00m (cinco metros), obedecida sempre a taxa de ocupação de 65% (sessenta e cinco por cento), salvo restrição maior decorrente de normas contratuais e conveniais; 33 33 2. laterais: será calculado pela formula h/8 (altura do prédio dividido por oito), com o mínimo de 2,00m (dois metros) em ambos os lados; 3. de fundos: será calculado pela formula h/10 (altura do prédio dividido por dez), com o mínimo de 6,00m (seis metros), salvo se esse recuo coincidir com via pública, quando então será igual ao recuo de frente; b) condomínio horizontal de unidades residenciais: 1. de frente: 8,00m (oito metros); 2. laterais: 3,00m (três metros) em ambos os lados; 3. fundos: 5,00m (cinco metros); c) entre prédios distintos, blocos interligados ou qualquer vão iluminante ou ventilante entre eles: será calculado pela fórmula h/6 (altura do prédio dividido por seis), da menor altura, com o mínimo de 4,00m (quatro metros). §1 Os subsolos das residências plurifamiliares e de prédios comerciais ou mistos, destinados exclusivamente a estacionamentos de carros e respectivas dependências, como vestiários e instalações sanitárias, sem aproveitamento para qualquer atividade de permanência humana, observarão os seguintes recuos: I - frontal: 10,00m (dez metros), para lotes de meio de quadra e 5,00m (cinco metros) para o recuo correspondente à via pública de menor importância, nos lotes de esquina, salvo restrição maior decorrente de normas contratuais e conveniais; II - laterais e fundos: inexigíveis. §2 Os subsolos das residências plurifamiliares, comércio, serviços e uso misto poderão aflorar no máximo 7,00 m (sete metros) do perfil natural do terreno ao ponto mais alto do telhado, desconsiderado o muro de fechamento ou guarda–corpo; §3 As fachadas dos subsolos das residências plurifamiliares, comércio, serviços e uso misto, afloradas acima de 1,20m (um metro e vinte centímetros) do nível médio das guias, deverão receber tratamento arquitetônico adequado em observância à estética urbana, consistente no seguinte: I - no mínimo 50% da fachada, no sentido horizontal e vertical, deverá ser aterrada em forma de talude e ajardinado; II - o restante do afloramento deverá receber tratamento arquitetônico adequado, tanto no aspecto estético, quanto funcional. §4 Os subsolos dos condomínios horizontais de unidades residenciais, destinados exclusivamente a estacionamentos de carros e respectivas dependências, como vestiários e instalações sanitárias, sem aproveitamento para qualquer atividade de permanência humana, observarão os seguintes recuos: I - frontal: 8,00m (oito metros) para lotes de meio de quadra e 5,00m (cinco metros) para o recuo correspondente à via pública de menor importância, 34 34 nos lotes de esquina, salvo restrição maior decorrente de normas contratuais e conveniais; II - laterais e fundos: inexigíveis. §5 Os sobressolos das residências plurifamiliares, comércio, serviços e uso misto, destinados exclusivamente a estacionamento de carros e respectivas dependências, tais como hall de entrada, vestiários e instalações sanitárias, sem aproveitamento para qualquer atividade de permanência humana, observarão os seguintes recuos: I - frontal: 10,00m (dez metros), para lotes de meio de quadra e 5,00m (cinco metros) para o recuo correspondente a via pública de menor importância, nos lotes de esquina; II - laterais: 2,00m (dois metros); III - fundos: 6,00m (seis metros). §6 Os sobressolos dos condomínios horizontais de unidades residenciais, destinados exclusivamente a estacionamento de carros e respectivas dependências, tais como hall de entrada, vestiários e instalações sanitárias, sem aproveitamento para qualquer atividade de permanência humana, observarão os seguintes recuos: I - frontal: 8,00m (oito metros), II - laterais: 3,00m (três metros); III - fundos: 5,00m (cinco metros). §7 Os sobressolos poderão aflorar, no máximo 7,00m (sete metros) do perfil médio da guia, não sendo considerado na altura do prédio. SEÇÃO II DOS SETORES DE USO RESTRITIVO DE COMÉRCIO E SERVIÇO – SRCS"
+    },
+    "SRCS": {
+      "article": 54,
+      "sectors": [
+        "C-25",
+        "C-27",
+        "C-28",
+        "D-12"
+      ],
+      "rule_text": "Os lotes situados nos SRCS terão área mínima de 125,00m2 (cento e vinte e cinco metros quadrados), e frente mínima de 5,00 (cinco metros), ficando sujeitos, quanto ao seu uso e ocupação, às seguintes condições: I - categoria de uso permitido: comércio e serviço; II - coeficiente de aproveitamento: a) mínimo = 0,1 (um décimo); b) básico = 3,0 (três); c) máximo = 4,0 (quatro). 35 35 III - taxa de ocupação: 70% (setenta por cento); IV - recuos: a) de frente – será calculado pela fórmula h/6 (altura do prédio dividido por seis), com o mínimo de 5,00m (cinco metros); b) laterais – para os dois pavimentos acima do nível médio das guias e quando não houver pavimentos inferiores de uso de permanência humana, o recuo será 0(zero) ou no mínimo 2,00m (dois metros); para os demais casos e pavimentos, o recuo será calculado pela fórmula h/8 (altura do prédio dividido por oito), com o mínimo de 3,00 (três metros), em ambos os lados; c) de fundo – h/10 (altura do prédio dividido por dez), com o mínimo de 3,00m (três metros). SEÇÃO III DOS SETORES DE USO DE COMÉRCIO E SERVIÇO – SCS"
+    },
+    "SCS": {
+      "article": 56,
+      "sectors": [
+        "A-14",
+        "C-26",
+        "D-01"
+      ],
+      "rule_text": "Os lotes situados no SCS terão área mínima de 125,00m2 (cento e vinte e cinco metros quadrados), frente mínima de 5,00 (cinco metros), ficando sujeitos, quanto ao seu uso e ocupação, às seguintes condições: I - categoria de uso permitido: comércio, serviço e pequenas industrializações (M. E); II - coeficiente de aproveitamento: a) mínimo = 0,1 (um décimo); b) básico = 3,0 (três); c) máximo = 4,0 (quatro); III - taxa de ocupação: 100% (cem por cento); IV - recuos: sem restrições. Parágrafo único. Não se aplica ao setor D-01, as obrigações constantes do anexo XII desta lei complementar. SEÇÃO IV DOS SETORESDE USO PREDOMINANTEMENTE COMERCIAL E EMPRESARIAL – SCE"
+    },
+    "SCE": {
+      "article": 58,
+      "sectors": [
+        "A-08",
+        "A-23",
+        "A-25",
+        "A-26",
+        "B-03",
+        "B-10",
+        "B-18",
+        "C-07",
+        "C-08",
+        "C-24",
+        "C-32"
+      ],
+      "rule_text": "Os lotes situados nos SCE terão área mínima de 360,00 m2 (trezentos e sessenta metros quadrados), frente mínima de 12,00m (doze metros), ficando sujeitos, quanto ao seu uso e ocupação, às seguintes condições: I - categorias de usos permitidos: a) comércio e serviços; b) empresas de pequeno porte (EPP) e micro empresas (ME), enquadradas no artigo 74 desta lei complementar; c) condomínio horizontal de unidades residenciais, com no máximo de 03 (três) pavimentos acima do nível médio da guia e blocos máximo com 10 unidades; d) misto (residencial/ comercial e ou serviços). e) residência plurifamiliar, com no mínimo 5 (cinco) pavimentos acima do nível médio da guia, exceto no setor C-24, no qual esse número de pavimentos poderá ser reduzido, conforme normas contratuais. II - coeficiente de aproveitamento: a) empresas de pequeno porte (EPP) e micro empresas (ME): 1. mínimo = 0 (zero); 2. básico = 1,5 (um inteiro e cinco décimos); 3. máximo = 2,30 (dois inteiros e trinta centésimos). b) residência plurifamiliar, com no mínimo 5 (cinco) pavimentos acima do nível médio da guia, edifícios comerciais ou de prestação de serviços e uso misto (residência plurifamiliar com comércio ou serviços): 1. mínimo = 0,1 (um décimo); 2. básico = 4,0 (quatro); 3. máximo = 5,50 (cinco inteiros e cinquenta centésimos). c) condomínio horizontal de unidades residenciais: 1. mínimo = 0,1 (um décimo); 2. básico = 1,5 (um inteiro e cinco décimos); 3. máximo = 2,30 (dois inteiros e trinta centésimos). III - taxa de ocupação: a) comércio, serviços, empresas de pequeno porte (EPP) e micro empresas (ME) = 70% (setenta por cento); b) residência plurifamiliar e uso misto = 65% (sessenta e cinco por cento); c) condomínio horizontal de unidades residenciais: 45% (quarenta e cinco por cento). IV - recuos: a) comércio, serviços, empresas de pequeno porte (EPP) e micro empresas (ME) e uso misto: 1. de frente: h/6 (altura do prédio dividido por seis), com o mínimo de 6,00m (seis metros); 2. laterais: 2.1. para os três pavimentos acima do nível médio da guia e quando não houver pavimentos inferiores de uso de permanência humana, o recuo será 0 37 37 (zero) ou, no mínimo 2,00m (dois metros) e para os demais pavimentos, o recuo será calculado pela formula h/8 (altura do prédio dividido por oito), com o mínimo de 3,00m (três metros) em ambos os lados; 2.2. havendo pavimentos inferiores de uso de permanência humana, o recuo será calculado pela formula h/8 (altura do prédio dividido por oito), com o mínimo de 3,00m (três metros) em ambos os lados. 3. de fundos: h/10 (altura do prédio dividido por dez), com o mínimo de 3,00m (três metros); 4. entre prédios: entre prédios: será calculado pela fórmula h/6 (altura do prédio dividido por seis), da menor altura, com o mínimo de 4,00m (quatro metros). b) residência plurifamiliar, edifícios comerciais ou de prestação se serviços e uso misto (residência plurifamiliar com comercial ou serviços), com no mínimo 5 (cinco) pavimentos acima do nível médio da guia: 1. de frente: será calculado pela formula h/6 (altura do prédio dividido por seis), com o mínimo de 6,00m (seis metros), salvo maiores restrições estabelecidas por normas conveniais; 2. laterais: será calculado pela formula h/8 (altura do prédio dividido por oito), com o mínimo de 2,00m (dois metros) em ambos os lados; 3. de fundos: será calculado pela formula h/10 (altura do prédio dividido por dez), com o mínimo de 6,00m (seis metros); 4. entre prédios distintos, blocos interligados ou qualquer vão iluminante ou ventilante entre eles: será calculado pela fórmula h/6 (altura do prédio dividido por seis), da menor altura, com o mínimo de 4,00m (quatro metros). c) condomínio horizontal de unidades residenciais: 1. de frente: 8,00m (oito metros); 2. laterais: 3,00m (três metros) em ambos os lados; 3. fundos: 5,00m (cinco metros); 4. entre blocos: será calculado pela fórmula h/6 (altura do prédio dividido por seis), com o mínimo de 4,00m (quatro metros). §1 Os subsolos das residências plurifamiliares e de prédios comerciais, mistos, serviços, empresas de pequeno porte (EPP) e micro empresas (ME) destinados exclusivamente a estacionamentos de carros e respectivas dependências, como vestiários e instalações sanitárias, sem aproveitamento para qualquer atividade de permanência humana, observarão os seguintes recuos: I - frontal: 6,00m (seis metros); II - laterais e fundos: inexigíveis. §2 Os subsolos das residências plurifamiliares, comércio, serviços, misto, serviços, empresas de pequeno porte (EPP) e micro empresas (ME) poderão aflorar no máximo 7,00 m (sete metros) do perfil natural do terreno ao ponto mais alto do telhado, desconsiderado o muro de fechamento ou guarda-corpo. 38 38 §3 As fachadas dos subsolos das residências plurifamiliares, comércio, serviços, uso misto, serviços, empresas de pequeno porte (EPP), micro empresas (ME) afloradas acima de 1,20m (um metro e vinte centímetros) do nível médio das guias, deverão receber tratamento arquitetônico adequado em observância à estética urbana, consistente no seguinte: I - no mínimo 50% da fachada, no sentido horizontal e vertical, deverá ser aterrada em forma de talude e ajardinado; II - o restante do afloramento deverá receber tratamento arquitetônico adequado, tanto no aspecto estético, quanto funcional. §4 Os subsolos dos condomínios horizontais de unidades residenciais destinados exclusivamente a estacionamentos de carros e respectivas dependências, como vestiários e instalações sanitárias, sem aproveitamento para qualquer atividade de permanência humana, observarão os seguintes recuos: I - frontal: 8,00m (oito metros); II - laterais e fundos: inexigíveis. §5 Os sobressolos das residências plurifamiliares, comércio, serviços e uso misto, destinados exclusivamente a estacionamento de carros e respectivas dependências, tais como hall de entrada, vestiários e instalações sanitárias, sem aproveitamento para qualquer atividade de permanência humana, observarão os seguintes recuos: I - frontal: 6,00m (seis metros); II - laterais: 2,00m (dois metros); III - fundos: 6,00m (seis metros). §6 Os sobressolos dos condomínios horizontais de unidades residenciais, destinados exclusivamente a estacionamento de carros e respectivas dependências, tais como hall de entrada, vestiários e instalações sanitárias, sem aproveitamento para qualquer atividade de permanência humana, observarão os seguintes recuos: I - frontal: 8,00m (oito metros); II - laterais: 3,00m (três metros); III - fundos: 5,00m (cinco metros). §7 Os sobressolos poderão aflorar, no máximo 7,00m (sete metros) do perfil médio da guia, não sendo considerado na altura do prédio. CAPÍTULO VII DOS SETORES DE USO INDUSTRIAL SEÇÃO I 39 39 SETOR DE USO DIVERSIFICADO – SUD"
+    },
+    "SUD": {
+      "article": 60,
+      "sectors": [
+        "A-02",
+        "A-09",
+        "A-12",
+        "A-16",
+        "A-19",
+        "A-22",
+        "A-06",
+        "B-02",
+        "B-19",
+        "C-01",
+        "C-04",
+        "C-05",
+        "C-12",
+        "C-14",
+        "C-16",
+        "C-17",
+        "C-19",
+        "C-29",
+        "C-30",
+        "C-39",
+        "C-42",
+        "D-07",
+        "D-09"
+      ],
+      "rule_text": "Os lotes situados nos SUD terão área mínima de 1.000,00 m2 (mil metros quadrados), frente mínima de 20,00m (vinte metros), exceto o setor C-04, que poderá ter área mínima de 125,00 m2 (cento e vinte e cinco metros quadrados), frente mínima de 5,00m (cinco metros), ficando sujeitos, quanto ao seu uso e ocupação, às seguintes condições: I - categorias de usos permitidos: a) os setores C-01, C-04, C-12, C-14, C-16 e C-39, uso industrial, conforme listagem constante da Lei Estadual n° 1817, de 27 de outubro de 1978, bem como: depósitos, oficinas, garagens e afins, comércio e serviços, todos de médio e grande porte, uso residencial unifamiliar, exceto o setor C-04, que também será permitido o uso de residência bifamiliar. b) os setores A-02, A-06, A-09, A-12, A-16, A-19, A-22, B-02, C-05, C- 17, C-19, C-29, C-30, C-42, D-07 e D-09, uso industrial, comercial, prestação de serviços e demais usos especiais constantes da tabela do Artigo 72. II - coeficiente de aproveitamento: a) uso industrial: 1. para as quadras 5 e 6 e suas sub-quadras, do Alphaville – Centro Industrial e Empresarial: 1.1. mínimo = 0,1 (um décimo); 1.2. básico = 2,0 (dois); 1.3. máximo = 2,5 (dois inteiros e cinco décimos). 2. para o setor A-22 2.1. mínimo = 0,1 (um décimo); 2.2. básico = 0,8 (oito décimos); 2.3. máximo = 1,0 (um). 3. para os demais casos: 3.1. mínimo = 0,1 (um décimo); 3.2. básico = 1,2 (um inteiro e dois décimos); 3.3. máximo = 1,5 (um inteiro e cinco décimos). b) uso comercial e serviços: 1. para as quadras 5 e 6 e suas sub-quadras, do Alphaville – Centro Industrial e Empresarial: 1.1. mínimo = 0,1 (um décimo); 1.2. básico = 2,0 (dois); 1.3. máximo = 2,75 (dois inteiros e setenta e cinco centésimos). 2. para os demais casos: 2.1. mínimo = 0,1 (um décimo); 2.2. básico = 3,0 (três); 40 40 2.3. máximo = 4,4 (quatro inteiros e quarenta centésimos). 4,0 (quatro). c) uso residencial unifamiliar: 1. mínimo = 0,1 (um décimo); 2. básico = 1,0 (um); 3. máximo = 1,1 (um inteiro e um décimo). d) uso residencial bifamiliar: 1. mínimo = 0,1 (um décimo); 2. básico = 1,2 (um inteiro e dois décimos); 3. máximo = 1,5 (um inteiro e cinco décimos). III - taxa de ocupação: a) uso industrial: 1. para o setor A-22: 65% (sessenta e cinco por cento); 2. para os demais casos: 70% (setenta por cento). b) uso comércio e serviços: 1. para o setor A-22: 65% (sessenta e cinco por cento); 2. para os demais casos: 80% (oitenta por cento). c) uso residencial unifamiliar: 47,60% (quarenta e sete por cento e sessenta centésimos); d) uso residencial bifamiliar = 70% (setenta por cento); IV - recuos: a) uso industrial: 1. para as quadras 5 e 6 e suas sub-quadras, do Alphaville – Centro Industrial e Empresarial: 1.1. frente principal = 10,00m (dez metros); 1.2. frente secundária = 0 (zero); 1.2. lateral = 0 (zero); 1.3. fundos = 0 (zero). 2. para o setor A-22 2.1. de frente: será calculado pela fórmula h/6 (altura do prédio dividido por seis) com o mínimo de 10,00m (dez metros); 2.2. lateral: será calculado pela fórmula h/8 (altura do prédio dividido por oito), com o mínimo de 2,00m (dois metros), em ambos os lados; 2.3. fundos: será calculado pela fórmula h/10 (altura do prédio dividido por dez), com o mínimo de 3,00m (três metros); 2.4. entre prédios: será calculado pela fórmula h/6 (altura do prédio dividido por seis), da menor altura, com o mínimo de 4,00m (quatro metros). 3. para os demais setores: 3.1. de frente: será calculado pela fórmula h/6 (altura do prédio dividido por seis), com o mínimo de 6,00m (seis metros), podendo esse recuo mínimo, para os lotes regularmente aprovados e registrados até a data da publicação da Lei n 485, de 17 de outubro de 1984, dentro dos setores, C-01, C-05, C-14 e C- 16, cujos lotes tenham área inferior ao mínimo estabelecido, ser reduzido até o mínimo de 4,00m (quatro metros); 41 41 3.2. lateral: 3.2.1. 2,00m (dois metros) em um dos lados, para construção com até 2 (dois) pavimentos. 3.2.2. pela fórmula h/8 (altura do prédio dividido por oito), com o mínimo de 2,00m (dois metros), para os demais pavimentos, em ambos os lados, para os demais casos. 3.3. de fundos: h/10 (altura do prédio dividido por dez), com o mínimo de 3,00m (três metros); 3.4. entre prédios: entre prédios: será calculado pela fórmula h/6 (altura do prédio dividido por seis), da menor altura, com o mínimo de 4,00m (quatro metros). b) uso comercial e prestação de serviços: 1. para as quadras 5 e 6 e suas sub-quadras, do Alphaville – Centro Industrial e Empresarial: 1.1. frente principal = 10,00m (dez metros); 1.2. frente secundária = 0 (zero); 1.2. lateral = 0 (zero); 1.3. fundos = 0 (zero). 2. para o setor A-22 2.1. de frente: 2.1.1. será calculado pela fórmula h/6 (altura do prédio dividido por seis) com o mínimo de 12,00m (doze metros); 2.1.2. nos lotes de esquina, o recuo correspondente à via de menor importância ou via de acesso secundário ao prédio será calculado pela fórmula h/10 (altura do prédio dividido por dez), com o mínimo de 10,00m (dez metros). 2.2. lateral: será calculado pela fórmula h/8 (altura do prédio dividido por oito), com o mínimo de 3,00 (três metros) em ambos os lados; 2.3. fundos: será calculado pela fórmula h/10 (altura do prédio dividido por dez), com o mínimo 3,00m (três metros); 2.4. entre prédios: será calculado pela fórmula h/6 (altura do prédio dividido por seis), da menor altura, com o mínimo de 4,00m (quatro metros). 3. para os demais setores: 3.1. de frente: 3.1.1. será calculado pela fórmula h/6 (altura do prédio dividido por seis) com o mínimo de 5,00m (cinco metros), dispensado o recuo para os 2 (dois) primeiros pavimentos acima do nível médio da guia, cuja altura fica limitada à 7,00m (sete metros); 3.1.2. nos lotes de esquina, o recuo correspondente à via de menor importância ou via de acesso secundário ao prédio será calculado pela fórmula h/10 (altura do prédio dividido por dez), com o mínimo de 4,00m (quatro metros), salvo restrição maior decorrente de normas contratuais e conveniais. 3.2. lateral: 42 42 3.2.1. 2,00m (dois metros) em um dos lados, para construção com até 2 (dois) pavimentos; 3.2.2. para os demais pavimentos será calculado pela fórmula h/8 (altura do prédio dividido por oito), com o mínimo 2,00m (dois metros), em ambos os lados. 3.3. fundos: 3.3.1. 0 (zero) para as quadras 5 e 6 e suas sub-quadras, do Alphaville – Centro Industrial e Empresarial; 3.3.2. para os demais casos será calculado pela fórmula h/10 (altura do prédio dividido por dez), com o mínimo 3,00m (três metros). 3.4. entre prédios: será calculado pela fórmula h/6 (altura do prédio dividido por seis), da menor altura, com o mínimo de 4,00m (quatro metros). c) uso residencial unifamiliar: 1. de frente: 5,00m (cinco metros); 2. laterais: 1,50m (um metro e meio) em ambos os lados ou 2.50m (dois metros e meio) em uma delas; 3. fundos: 3,00m (três metros). d) residência unifamiliar ou bifamiliar: 1. de frente = 5,00m (cinco metros), podendo, nos lotes de esquina, o recuo correspondente à via pública de menor importância ser reduzido até o mínimo de 2,00m (dois metros), obedecida, sempre, a taxa de ocupação máxima de 70% (setenta por cento); 2. laterais: 0 (zero) 3. de fundo = 0 (zero). §1 Os subsolos do uso comercial e serviço, destinados exclusivamente a estacionamento de carros e respectivas dependências, como vestiários e instalações sanitárias, sem aproveitamento para qualquer atividade de permanência humana, observarão os seguintes recuos: I - frontal: a) para o setor A-22, 10,00 (dez metros); b) para os demais setores, 5,00m (cinco metros), para os lotes de meio de quadra e 4,00m (quatro metros) para o recuo correspondente à via pública de menor importância, nos lotes de esquina, salvo restrição maior decorrente de normas contratuais e conveniais. II - laterais e fundos: inexigíveis. §2º Os subsolos poderão aflorar, no máximo 7,00 m (sete metros) do perfil natural do terreno ao ponto mais alto do telhado, desconsiderado o muro de fechamento ou guarda-corpo. §3 As fachadas dos subsolos, afloradas acima de 1,20m (um metro e vinte centímetros) do nível médio das guias, deverão receber tratamento 43 43 arquitetônico adequado em observância à estética urbana, consistente no seguinte: I - no mínimo 50% da fachada, no sentido horizontal e vertical, deverá ser aterrado em forma de talude e ajardinado; II - o restante do afloramento deverá receber tratamento arquitetônico, adequado, tanto no aspecto estético, quanto funcional. §4 Os sobressolos do uso comercial e serviços, destinados exclusivamente a estacionamento de carros e respectivas dependências, tais como hall de entrada, vestiários e instalações sanitárias, sem aproveitamento para qualquer atividade de permanência humana, observarão os seguintes recuos: I - frontal: a) para o setor A-22: 12,00m (doze metros), para lotes de meio de quadra e 10,00m (dez metros) para o recuo correspondente a via pública de menor importância; b) para os demais setores: 5,00m (cinco metros), para lotes de meio de quadra e 4,00m (quatro metros) para o recuo correspondente a via pública de menor importância, salvo maiores restrição maior decorrente de normas contratuais e conveniais. II - laterais: a) para o setor A-22: 3,00m (três metros); b) para os demais setores: 2,00 (dois metros). III - fundos: 3,00m (três metros). §5 Os sobressolos poderão aflorar, no máximo 7,00m (sete metros) do perfil médio da guia, não sendo considerado na altura do prédio. SEÇÃO II DOS SETORES DE USO PREDOMINANTEMENTE INDUSTRIAL - SUPI-1"
+    },
+    "SUPI-1": {
+      "article": 62,
+      "sectors": [
+        "A-05",
+        "B-12",
+        "C-18",
+        "C-34",
+        "C-40",
+        "D-10"
+      ],
+      "rule_text": "Os lotes situados nos SUPI-1 terão área mínima de 1.000m2 (mil metros quadrados), frente mínima de 20,00 m (vinte metros), ficando sujeitos, quanto ao seu uso e ocupação, às seguintes restrições: I - categorias de usos permitidos: a) listagens constantes das Leis Estaduais N.º. 1.817, de 27 de outubro de 1978, e 2.952, de 15 de julho de 1981, para a subcategoria ZUPI-1; b) comércio, prestação de serviços, depósitos e pequenas oficinas; 44 44 c) no setor A-05, além do indicado nas alíneas “a” e “b”, demais usos, a saber: 1. esportivos: pistas de autódromo, kartódromo e autoramas, quadras poliesportivas, clubes esportivos, estádios e ginásios esportivos; 2. serviço de saúde: pronto-socorro, radiologia, laboratórios, ambulatórios, clínicas médicas e dentárias e demais usos correlatos, exceto internações; 3. recreativo ou sociais: tiro ao alvo, boliche, boates, bilhares e snookers, clubes e sedes; 4. culturais: cinema, teatro, auditórios, museus e centro de convenções. II - coeficiente de aproveitamento: a) indústrias de acordo com o disposto na Lei Estadual nº 1817, de 27 de outubro de 1978, para a ZUPI-1, depósitos e pequenas oficinas: 1. mínimo = 0,1 (um décimo); 2. básico = 0,8 (oito décimos); 3. máximo = 1,0 (um). b) comércio e prestação de serviços: 1. para o setor A-05: 1.1. mínimo = 0,1 (um décimo); 1.2. básico = 3,0 (três); 1.3. máximo = 4,40 (quatro inteiros e quarenta centésimos). 2. para o setor D-10: 2.1. mínimo = 0,1 (um décimo); 2.2. básico = 1,2 (um inteiro e dois décimos); 2.3. máximo = 1,5 (um inteiro e cinco décimos). 3. para os demais setores: 3.1. mínimo = 0,1 (um décimo); 3.2. básico = 1,5 (um inteiro e cinco décimos); 3.3. máximo = 2,20 (dois inteiros e vinte centésimos). c) usos esportivos, recreativos, sociais e culturais: 1. mínimo = 0,1 (um décimo); 2. básico = 1,2 (um inteiro e dois décimos); 3. máximo = 1,65 (um inteiro e sessenta e cinco centésimos). d) serviços de saúde: 1. mínimo = 0,1 (um décimo); 2. básico = 2,5 (dois inteiros e cinco décimos); 3. máximo = 3,30 (três inteiros e trinta centésimos). III - taxa de ocupação: a) indústrias, comércio e serviços, depósitos e pequenas oficinas: 70% (setenta por cento); b) serviços de saúde e usos esportivos, recreativos, sociais e culturais: 55% (cinquenta e cinco por cento). IV - recuos: 45 45 a) indústrias, serviços de saúde e usos esportivos, recreativos, sociais e culturais: 1. de frente: 1.1. no setor A-05: 10,00m (dez metros) ; 1.2. demais setores: 6,00m (seis metros). 2. laterais: 2,00m (dois metros) em ambos os lados; 3. de fundo: 3,00m (três metros). b) comércio e prestação de serviços: 1. de frente: 1.1. será calculado pela fórmula h/6 (altura do prédio dividido por seis), com o mínimo de 6,00 (seis metros); 1.2. nos lotes de esquina, o recuo correspondente à via pública de menor importância ou via de acesso secundário ao prédio será calculado pela fórmula h/10 (altura do prédio dividido por dez), com o mínimo de 5,00 (cinco metros). 2. laterais: serão calculados pela fórmula h/8 (altura do prédio dividido por oito), com o mínimo de 3,00 m (três metros) em ambos os lados; 3. fundos: será calculado pela fórmula h/10 (altura do prédio dividido por dez), com o mínimo de 3,00 (três metros); 4. entre prédios: será calculado pela fórmula h/6 (altura do prédio dividido por seis), da menor altura, com o mínimo de 4,00m (quatro metros). §1º Os subsolos do uso comercial e serviço, destinados exclusivamente a estacionamento de carros e respectivas dependências, como vestiários e instalações sanitárias, sem aproveitamento para qualquer atividade de permanência humana, observarão os seguintes recuos: I - frontal: 6,00 (seis metros) , para os lotes de meio de quadra e 5,00 (cinco metros) para o recuo correspondente à via pública de menor importância, nos lotes de esquina, salvo restrição maior decorrente de normas contratuais e conveniais; II - laterais e fundos: inexigíveis. §2º Os subsolos poderão aflorar no máximo 7,00m (sete metros) do perfil natural do terreno ao ponto mais alto do telhado, desconsiderado o muro de fechamento ou guarda-corpo. §3º As fachadas dos subsolos, afloradas acima de 1,20m (um metro e vinte centímetros) do nível médio das guias, deverão receber tratamento arquitetônico adequado em observância à estética urbana, consistente no seguinte: I - no mínimo 50% da fachada, no sentido horizontal e vertical, deverá ser aterrado em forma de talude e ajardinado; II - o restante do afloramento deverá receber tratamento arquitetônico adequado, tanto no aspecto estético, quanto funcional. 46 46 §4 Os sobressolos do uso comercial e serviço, destinados exclusivamente a estacionamento de carros e respectivas dependências, tais como hall de entrada, vestiários e instalações sanitárias, sem aproveitamento para qualquer atividade de permanência humana, observarão os seguintes recuos: I - frontal: 6,00 (seis metros), para os lotes de meio de quadra e 5,00 (cinco metros), para o recuo correspondente a via pública de menor importância, nos lotes de esquina, salvo restrição maior decorrente de normas contratuais e conveniais; II - laterais: 3,00m (três metros); III - fundos: 3,00m (três metros). §5 Os sobressolos poderão aflorar, no máximo 7,00m (sete metros) do perfil médio da guia, não sendo considerado na altura do prédio. §6º Para uso industrial no Setor A-05, nos lotes de esquina com área inferior ao estabelecido no artigo 62 o recuo correspondente à via pública de menor importância ou via de acesso secundário ao prédio, será reduzido a 6,00m (seis metros), salvo maior exigência estabelecida por normas contratuais/conveniais. §7º As usinas de concreto asfáltico ou atividades correlatas somente poderão se instalar em imóveis distantes a mais de 500,00m de raio das zonas residenciais e instituições de ensino. CAPÍTULO VIII DOS SETORES DE OUTROS USOS SEÇÃO I DO SETOR DE USO ESPECIAL – SUE"
+    },
+    "SUE": {
+      "article": 64,
+      "sectors": [
+        "B-09"
+      ],
+      "rule_text": "A normalização para o uso dos SUE dependerá de planejamento, que observará as diretrizes estabelecidas na Lei Complementar nº 150, de 10 de dezembro de 2004. SEÇÃO II DOS SETORES DE EXPLORAÇÃO MINERAL – SEM 47 47"
+    },
+    "SEM": {
+      "article": 65,
+      "sectors": [
+        "C-21"
+      ],
+      "rule_text": "Ficam considerados Setores de Exploração Mineral (SEM) as áreas situadas nos setores constantes da tabela XIV do anexo IV desta lei complementar, ficando sujeitas, quanto ao seu uso e ocupação, às seguintes condições: I - categoria de usos permitidos: mineração e atividades industriais e comerciais correlatas; II - coeficiente de aproveitamento: a) mínimo = 0,001 (um milésimo); b) básico = 0,004 (quatro milésimos); c) máximo = 0,005 (cinco milésimos). III - taxa de ocupação = 0,25% (zero vírgula vinte e cinco por cento); IV - recuos: a) de frente = 15,00m (quinze metros); b) laterais = 5,00m (cinco metros); c) fundos = 8,00m (oito metros). SEÇÃO III DOS SETORES DE USO DE PROTEÇÃO AMBIENTAL - SPA"
+    },
+    "SPA": {
+      "article": 66,
+      "sectors": [
+        "A-20",
+        "A-21",
+        "C-02",
+        "C-38",
+        "D-03"
+      ],
+      "rule_text": "Ficam considerados Setores de Uso de Proteção Ambiental as áreas situadas nos setores constantes da tabela XV do anexo IV desta lei complementar, ficando sujeitas, quanto ao seu uso e ocupação, às seguintes condições: I - categoria de usos permitidos: a) Usos inerentes ao funcionamento de Parques; b) Repartições sobre o Meio Ambiente; c) Administração Pública. II - índices urbanísticos: a critério da Administração. SEÇÃO IV DOS SETORES DE USO DE ATERRO SANITÁRIO – SAS"
+    },
+    "SAS": {
+      "article": 67,
+      "sectors": [
+        "C-20"
+      ],
+      "rule_text": "Fica considerado Setor de Uso de Aterro Sanitário a área situada no setor constante da tabela XVI do anexo IV desta lei complementar, ficando sujeitas, quanto ao seu uso e ocupação, às seguintes condições: I - categoria de usos permitidos: tratamento, disposição ou transbordo de resíduo sólidos urbanos de classe “II a” e “II b”, estabelecido pela N.B.R. 10.004 da A.B.N.T, e deposição de resíduos inertes e da construção civil, bem como serviços correlatos. II - índices urbanísticos: a critério da Administração. 48 48 SEÇÃO V DO SETOR DE USO INSTITUCIONAL ESPORTIVO PÚBLICO – SIEP"
+    },
+    "SIEP": {
+      "article": 68,
+      "sectors": [
+        "D-08"
+      ],
+      "rule_text": "Ficam considerados Setores de Uso Institucional Esportivo Público (SIEP) as áreas situadas nos setores constantes da tabela XVII do anexo IV desta lei complementar, ficando sujeitas, quanto ao seu uso e ocupação, às seguintes condições: I - categoria de usos permitidos: praças esportivas públicas com atividades correlatas. II - índices urbanísticos: a critério da Administração. SEÇÃO VI DO SETOR DE TRATAMENTO DE ESGOTOS E RESÍDUOS SÓLIDOS - STERS"
+    }
+  },
+  "sector_to_group": {
+    "A-04": "SER",
+    "A-11": "SER",
+    "B-13": "SER",
+    "B-15": "SER",
+    "C-23": "SER",
+    "C-22": "SRE",
+    "C-13": "SRM",
+    "A-01": "SRA",
+    "A-03": "SRA",
+    "A-24": "SRA",
+    "B-05": "SRA",
+    "B-07": "SRA",
+    "B-11": "SRA",
+    "B-14": "SRA",
+    "C-03": "SRA",
+    "C-10": "SRA",
+    "C-11": "SRA",
+    "C-15": "SRA",
+    "C-33": "SRA",
+    "C-35": "SRA",
+    "C-36": "SRA",
+    "C-37": "SRA",
+    "D-06": "SRA",
+    "D-11": "SRA",
+    "D-14": "SRA",
+    "D-15": "SRA",
+    "A-07": "SRR",
+    "A-17": "SRR",
+    "B-20": "SRR",
+    "C-06": "SRR",
+    "C-09": "SRR",
+    "C-31": "SRR",
+    "D-02": "SRR",
+    "B-16": "SCH",
+    "B-17": "SCH",
+    "C-41": "SCH",
+    "A-10": "SPC",
+    "A-13": "SPC",
+    "A-15": "SPC",
+    "A-18": "SPC",
+    "B-06": "SPC",
+    "D-04": "SPC",
+    "D-05": "SPC",
+    "D-13": "SPC",
+    "C-25": "SRCS",
+    "C-27": "SRCS",
+    "C-28": "SRCS",
+    "D-12": "SRCS",
+    "A-14": "SCS",
+    "C-26": "SCS",
+    "D-01": "SCS",
+    "A-08": "SCE",
+    "A-23": "SCE",
+    "A-25": "SCE",
+    "A-26": "SCE",
+    "B-03": "SCE",
+    "B-10": "SCE",
+    "B-18": "SCE",
+    "C-07": "SCE",
+    "C-08": "SCE",
+    "C-24": "SCE",
+    "C-32": "SCE",
+    "A-02": "SUD",
+    "A-09": "SUD",
+    "A-12": "SUD",
+    "A-16": "SUD",
+    "A-19": "SUD",
+    "A-22": "SUD",
+    "A-06": "SUD",
+    "B-02": "SUD",
+    "B-19": "SUD",
+    "C-01": "SUD",
+    "C-04": "SUD",
+    "C-05": "SUD",
+    "C-12": "SUD",
+    "C-14": "SUD",
+    "C-16": "SUD",
+    "C-17": "SUD",
+    "C-19": "SUD",
+    "C-29": "SUD",
+    "C-30": "SUD",
+    "C-39": "SUD",
+    "C-42": "SUD",
+    "D-07": "SUD",
+    "D-09": "SUD",
+    "A-05": "SUPI-1",
+    "B-12": "SUPI-1",
+    "C-18": "SUPI-1",
+    "C-34": "SUPI-1",
+    "C-40": "SUPI-1",
+    "D-10": "SUPI-1",
+    "B-09": "SUE",
+    "C-21": "SEM",
+    "A-20": "SPA",
+    "A-21": "SPA",
+    "C-02": "SPA",
+    "C-38": "SPA",
+    "D-03": "SPA",
+    "C-20": "SAS",
+    "D-08": "SIEP"
+  },
+  "caveat": "O enquadramento jurídico do código de setor é oficial. A aplicação automática a um ponto/lote depende de geometria espacial do setor validada independentemente."
+}
