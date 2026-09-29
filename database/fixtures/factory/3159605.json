@@ -1,0 +1,43 @@
+{
+  "municipality_ibge": "3159605",
+  "name": "Santa Rita do Sapucaí (fixture)",
+  "uf": "MG",
+  "status": "APPROVED",
+  "reviewed_by": "ci-fixture",
+  "reviewed_at": "2026-09-28",
+  "notes": "Synthetic test data. Not official limits.",
+  "layers": [
+    {
+      "role": "parcels",
+      "source_id": "test-fixture-municipal-gis",
+      "kind": "file",
+      "url": "parcels.geojson",
+      "license": "synthetic test data",
+      "fields": {
+        "upstream_key": "OBJECTID",
+        "fiscal_reference": "INSCRICAO",
+        "street": "LOGRADOURO",
+        "house_number": "NUMERO",
+        "neighborhood": "BAIRRO",
+        "land_area_m2": "AREA_TERRENO"
+      },
+      "attribute_allowlist": [
+        "QUADRA"
+      ],
+      "min_features": 10
+    },
+    {
+      "role": "zoning",
+      "source_id": "test-fixture-municipal-gis",
+      "kind": "file",
+      "url": "zones.geojson",
+      "license": "synthetic test data",
+      "fields": {
+        "upstream_key": "FID",
+        "zone_code": "SIGLA",
+        "zone_name": "NOME"
+      },
+      "min_features": 2
+    }
+  ]
+}

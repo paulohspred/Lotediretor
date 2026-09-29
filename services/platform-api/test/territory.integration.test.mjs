@@ -60,9 +60,9 @@ test("resolves a point to its municipality", { skip }, async () => {
 });
 
 test("a municipality without a parcel engine still resolves", { skip }, async () => {
-  const { status, body } = await get("/municipalities/resolve?lat=-22.25&lng=-45.7");
+  const { status, body } = await get("/municipalities/resolve?lat=-15.8&lng=-47.9");
   assert.equal(status, 200);
-  assert.equal(body.name, "Santa Rita do Sapucaí");
+  assert.equal(body.name, "Brasília");
   assert.equal(body.capabilities.parcel_resolver, false);
   assert.equal(body.capabilities.federal_context, true);
 });
@@ -117,7 +117,7 @@ test("coverage lists national, state and municipal sources", { skip }, async () 
 });
 
 test("a municipality with no catalogued local source says so", { skip }, async () => {
-  const { body } = await get("/municipalities/3159605/coverage");
+  const { body } = await get("/municipalities/5300108/coverage");
   assert.equal(body.summary.by_level.MUNICIPAL, 0);
   assert.equal(body.summary.municipal_sources_catalogued, false);
   assert.ok(body.summary.total_sources > 0);
@@ -149,4 +149,36 @@ test("point context outside Brazil never reaches the engine", { skip }, async ()
   assert.equal(body.code, "MUNICIPALITY_NOT_FOUND");
   assert.equal(engineCalls.length, before);
   assert.equal((await post("/context/point", { lat: "x", lng: 1 })).status, 400);
+});
+
+test("factory municipality resolves parcels from PostGIS", { skip }, async () => {
+  const detail = await get("/municipalities/3159605");
+  assert.equal(detail.body.capabilities.parcel_resolver, true);
+  assert.equal(detail.body.capabilities.parcel_source, "municipal_factory");
+
+  const { status, body } = await post("/parcel/resolve", {
+    municipality_ibge: "3159605", lat: -22.2595, lng: -45.7095,
+  });
+  assert.equal(status, 200);
+  assert.equal(body.found, true);
+  assert.equal(body.parcel.identifiers.primary.value, "01.02.000");
+  assert.equal(body.parcel.address.street, "Rua Teste");
+  const zoning = body.dossier.sections.find((s) => s.id === "zoning");
+  assert.match(zoning.items[0].label, /ZR1/);
+  const provenance = body.dossier.sections.find((s) => s.id === "provenance");
+  assert.ok(provenance.items.some((i) => /Fase 4/.test(i.value)));
+  // Personal fields present in the upstream file never reach the API.
+  assert.doesNotMatch(JSON.stringify(body), /PROPRIET/);
+});
+
+test("factory municipality: empty point and parcel search", { skip }, async () => {
+  const miss = await post("/parcel/resolve", {
+    municipality_ibge: "3159605", lat: -22.20, lng: -45.65,
+  });
+  assert.equal(miss.status, 200);
+  assert.equal(miss.body.found, false);
+  const search = await get("/parcel/search?municipality_ibge=3159605&q=01.02.00");
+  assert.equal(search.status, 200);
+  assert.ok(search.body.results.length > 0);
+  assert.equal(search.body.results[0].kind, "parcel");
 });

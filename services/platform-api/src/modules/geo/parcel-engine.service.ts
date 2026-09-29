@@ -3,7 +3,9 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
+  Optional,
 } from "@nestjs/common";
+import { FactoryParcelService } from "./factory-parcel.service.js";
 import {
   PARCEL_ENGINE_SLUG,
   parcelResolverAvailable,
@@ -247,6 +249,8 @@ export class ParcelEngineService {
   private readonly engineBase =
     process.env.PARCEL_ENGINE_BASE_URL ?? "http://127.0.0.1:8765";
 
+  constructor(@Optional() private readonly factory?: FactoryParcelService) {}
+
   private async resolveRaw(input: ParcelResolveInput): Promise<JsonObject> {
     const slug = parcelResolverAvailable(input.municipality_ibge)
       ? PARCEL_ENGINE_SLUG[input.municipality_ibge]
@@ -335,6 +339,13 @@ export class ParcelEngineService {
   }
 
   async search(input: ParcelSearchInput): Promise<JsonObject> {
+    if (!parcelResolverAvailable(input.municipality_ibge) && this.factory) {
+      const query = input.q?.trim() ?? "";
+      if (query.length >= 3 && query.length <= 80 && /^\d{7}$/.test(input.municipality_ibge)) {
+        const found = await this.factory.search(input.municipality_ibge, query);
+        if (found) return found;
+      }
+    }
     const slug = parcelResolverAvailable(input.municipality_ibge)
       ? PARCEL_ENGINE_SLUG[input.municipality_ibge]
       : undefined;
@@ -448,6 +459,18 @@ export class ParcelEngineService {
   }
 
   async resolve(input: ParcelResolveInput): Promise<JsonObject> {
+    if (
+      !parcelResolverAvailable(input.municipality_ibge) &&
+      this.factory &&
+      /^\d{7}$/.test(String(input.municipality_ibge)) &&
+      typeof input.lat === "number" &&
+      typeof input.lng === "number" &&
+      Number.isFinite(input.lat) &&
+      Number.isFinite(input.lng) &&
+      (await this.factory.hasParcels(input.municipality_ibge))
+    ) {
+      return this.factory.resolve(input.municipality_ibge, input.lat, input.lng);
+    }
     const raw = await this.resolveRaw(input);
     if (!raw.found) {
       return {

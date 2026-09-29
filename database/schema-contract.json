@@ -14,7 +14,8 @@
         "source",
         "connector",
         "snapshot",
-        "normalized_record"
+        "normalized_record",
+        "municipal_layer_load"
       ]
     },
     "ld_core": {
@@ -51,7 +52,9 @@
         "utility_context",
         "public_event",
         "imagery_asset",
-        "terrain_asset"
+        "terrain_asset",
+        "municipal_parcel",
+        "municipal_zone"
       ]
     },
     "ld_api": {

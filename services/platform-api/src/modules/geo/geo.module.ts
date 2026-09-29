@@ -13,6 +13,8 @@ import {
   ParcelResolveInput,
   ParcelSearchInput,
 } from "./parcel-engine.service.js";
+import { FactoryParcelService } from "./factory-parcel.service.js";
+import { PointContextModule } from "../context/point-context.module.js";
 
 @Controller()
 class ParcelController {
@@ -40,8 +42,9 @@ class ParcelController {
 }
 
 @Module({
+  imports: [PointContextModule],
   controllers: [ParcelController],
-  providers: [ParcelEngineService],
+  providers: [ParcelEngineService, FactoryParcelService],
   exports: [ParcelEngineService],
 })
 export class GeoModule {}

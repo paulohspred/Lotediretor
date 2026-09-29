@@ -19,6 +19,7 @@ type MunicipalityRow = {
   area_km2: string | null;
   mesh_edition: string;
   bbox: [number, number, number, number] | null;
+  factory_parcels: boolean;
 };
 
 type SourceRow = {
@@ -57,7 +58,12 @@ export class TerritoryService {
     SELECT m.ibge_code, m.name, s.uf, s.name AS state_name,
            m.area_km2::text AS area_km2, m.mesh_edition,
            ARRAY[ST_XMin(m.geom), ST_YMin(m.geom),
-                 ST_XMax(m.geom), ST_YMax(m.geom)] AS bbox
+                 ST_XMax(m.geom), ST_YMax(m.geom)] AS bbox,
+           EXISTS (
+             SELECT 1 FROM ld_catalog.municipal_layer_load l
+             WHERE l.ibge_code = m.ibge_code AND l.role = 'parcels'
+               AND l.is_current
+           ) AS factory_parcels
     FROM ld_core.municipality m
     JOIN ld_core.state s USING (uf_code)`;
 
@@ -71,7 +77,13 @@ export class TerritoryService {
       bbox: row.bbox,
       mesh_edition: row.mesh_edition,
       capabilities: {
-        parcel_resolver: parcelResolverAvailable(row.ibge_code),
+        parcel_resolver:
+          parcelResolverAvailable(row.ibge_code) || row.factory_parcels,
+        parcel_source: parcelResolverAvailable(row.ibge_code)
+          ? "city_engine"
+          : row.factory_parcels
+            ? "municipal_factory"
+            : null,
         federal_context: true,
       },
     };

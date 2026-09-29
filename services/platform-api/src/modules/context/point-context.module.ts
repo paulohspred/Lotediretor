@@ -128,5 +128,6 @@ class PointContextController {
   imports: [TerritoryModule],
   controllers: [PointContextController],
   providers: [PointContextService],
+  exports: [PointContextService],
 })
 export class PointContextModule {}
