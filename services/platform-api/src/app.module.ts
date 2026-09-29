@@ -11,6 +11,7 @@ import { GeoModule } from "./modules/geo/geo.module.js";
 import { TerritoryModule } from "./modules/territory/territory.module.js";
 import { PointContextModule } from "./modules/context/point-context.module.js";
 import { LegalModule } from "./modules/legal/legal.module.js";
+import { AiModule } from "./modules/ai/cidades.module.js";
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { LegalModule } from "./modules/legal/legal.module.js";
     TerritoryModule,
     PointContextModule,
     LegalModule,
+    AiModule,
     GeoModule,
   ],
 })
