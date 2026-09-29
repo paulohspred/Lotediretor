@@ -197,6 +197,7 @@ def main() -> int:
         "ibge_censo2022_setores",
         "jp_lotes",
         "jp_curvas_nivel_2022",
+        "barueri_risk_reference_points",
     }
     if status == 200 and tile_sources == expected_sources:
         ok("Martin source allowlist")
@@ -221,6 +222,30 @@ def main() -> int:
             fail(errors, "same-origin Martin MVT proxy")
     except Exception as exc:
         fail(errors, f"same-origin Martin MVT proxy {type(exc).__name__}")
+
+    # Barueri municipal GeoPixel WMS is exposed only through a closed same-origin allowlist.
+    bbox = "-5229789.677467992,-2702312.159380266,-5207525.779309338,-2685316.634736849"
+    wms_params = urllib.parse.urlencode({"layer": "eixo_logradouro", "bbox": bbox})
+    try:
+        with urllib.request.urlopen(WEB + "/api/barueri/wms?" + wms_params, timeout=30) as response:
+            data = response.read()
+            ctype = response.headers.get("content-type", "")
+        if response.status == 200 and "image/png" in ctype and data:
+            ok("Barueri GeoPixel WMS same-origin proxy")
+        else:
+            fail(errors, "Barueri GeoPixel WMS same-origin proxy")
+    except Exception as exc:
+        fail(errors, f"Barueri GeoPixel WMS same-origin proxy {type(exc).__name__}")
+
+    denied_params = urllib.parse.urlencode({"layer": "boletim_ocorrencia_seguranca_publica", "bbox": bbox})
+    try:
+        urllib.request.urlopen(WEB + "/api/barueri/wms?" + denied_params, timeout=10)
+        fail(errors, "Barueri WMS proxy rejected non-allowlisted layer")
+    except urllib.error.HTTPError as exc:
+        if exc.code == 404:
+            ok("Barueri WMS proxy rejects non-allowlisted layer")
+        else:
+            fail(errors, f"Barueri WMS proxy denied layer returned {exc.code}")
 
     try:
         urllib.request.urlopen(WEB + "/api/tiles/not_allowed/1/1/1", timeout=10)
