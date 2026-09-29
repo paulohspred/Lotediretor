@@ -4574,11 +4574,12 @@
       "scope": "municipal",
       "uf": "SP",
       "domain": "cadastre",
-      "source_type": "HTML",
-      "base_url": "https://portal.barueri.sp.gov.br/secretarias/secretaria-de-financas/consulta-cadastral",
+      "source_type": "HTML_FORM",
+      "base_url": "https://servicos.barueri.sp.gov.br/emissaocertidao/certidaocadastral.aspx",
       "access_class": "PUBLIC_QUERY_ONLY",
-      "verification_status": "VERIFIED_OFFICIAL_2026",
-      "notes": "Consulta cadastral oficial do município. Portal institucional informa que o SIAT gerencia cadastro de imóveis, cálculo do IPTU e taxa de incêndio. Sem camada espacial aberta verificada até esta auditoria."
+      "verification_status": "VERIFIED_LIVE_FORM_2026_09_28",
+      "notes": "Consulta cadastral oficial. Endpoint real resolvido no iframe municipal. O formulário exige dados do contribuinte/inscrição e CAPTCHA; não automatizar nem contornar CAPTCHA. Não há camada espacial aberta de lotes verificada.",
+      "integration_class": "PUBLIC_QUERY_ONLY"
     },
     {
       "id": "sp-barueri-iptu-online",
@@ -4586,11 +4587,12 @@
       "scope": "municipal",
       "uf": "SP",
       "domain": "fiscal",
-      "source_type": "HTML",
-      "base_url": "https://portal.barueri.sp.gov.br/cidadao/moradia/emissao-2-via-iptu",
+      "source_type": "HTML_FORM",
+      "base_url": "https://www.barueri.sp.gov.br/sistemas/2via/?tipo=1",
       "access_class": "PUBLIC_QUERY_ONLY",
-      "verification_status": "VERIFIED_OFFICIAL_2026",
-      "notes": "Serviço oficial de emissão de 2ª via de IPTU. Não tratado como bulk/open dataset. Integração automatizada somente se houver contrato público reproduzível e permitido; arquivos fornecidos pelo usuário podem ser materializados localmente com proveniência."
+      "verification_status": "VERIFIED_LIVE_FORM_2026_09_28",
+      "notes": "Emissão oficial de 2ª via do IPTU por número de inscrição do imóvel. É consulta transacional, não bulk/open dataset e não prova geometria cadastral. Não fazer scraping agressivo.",
+      "integration_class": "PUBLIC_QUERY_ONLY"
     },
     {
       "id": "sp-barueri-processos-urbanisticos",
@@ -4598,11 +4600,12 @@
       "scope": "municipal",
       "uf": "SP",
       "domain": "permits",
-      "source_type": "HTML",
-      "base_url": "https://portal.barueri.sp.gov.br/cidadao/moradia/consulta-processos-urbanisticos",
+      "source_type": "HTML_FORM",
+      "base_url": "https://www.barueri.sp.gov.br/sistemas/processoEngenharia/",
       "access_class": "PUBLIC_QUERY_ONLY",
-      "verification_status": "VERIFIED_OFFICIAL_2026",
-      "notes": "Consulta oficial de processos urbanísticos. Deve ser vinculada ao imóvel somente por identificador/endereçamento compatível; não inferir licença específica por mera proximidade textual."
+      "verification_status": "VERIFIED_LIVE_CAPTCHA_2026_09_28",
+      "notes": "Consulta oficial legada de processos urbanísticos por protocolo e CPF/CNPJ com CAPTCHA. Não automatizar CAPTCHA. Não associar alvará/licença a lote por texto/endereço sem identificador documental compatível.",
+      "integration_class": "PUBLIC_QUERY_ONLY"
     },
     {
       "id": "sp-barueri-zoneamento-prc-2023",
@@ -4610,11 +4613,12 @@
       "scope": "municipal",
       "uf": "SP",
       "domain": "planning",
-      "source_type": "PDF",
+      "source_type": "DOWNLOADABLE_PDF_VECTOR",
       "base_url": "https://portal.barueri.sp.gov.br/cidadao/moradia/mapa-zoneamento",
       "access_class": "PUBLIC_QUERY_ONLY",
-      "verification_status": "VERIFIED_OFFICIAL_2026",
-      "notes": "Página oficial da Lei de Parcelamento, Uso e Ocupação do Solo. Publica LC 565/2023 e PRC_COMPLETA_2023. A PRC oficial é PDF vetorial AutoCAD, escala 1:5.000, SIRGAS 2000 / UTM; não é GeoPDF georreferenciado, portanto ainda não é usada para point-in-polygon automático."
+      "verification_status": "VERIFIED_OFFICIAL_VECTOR_PDF_NON_GEOPDF_2026_09_28",
+      "notes": "LC 565/2023 e PRC_COMPLETA_2023 oficiais. PRC é PDF vetorial com conteúdo CAD e referência SIRGAS 2000 / UTM, mas não GeoPDF pronto. Não fazer point-in-polygon nem encaixe visual sem transformação espacial verificável.",
+      "integration_class": "DOWNLOADABLE_DATASET"
     },
     {
       "id": "sp-campinas-spatial-data",
@@ -5308,7 +5312,16 @@
       "access_class": "PUBLIC_QUERY_ONLY",
       "verification_status": "VERIFIED_QUERY_PRIVACY_CONTROLS",
       "notes": "Consulta de IPTU e Planta de Valores por CCI. Consulta de CCI usa CPF/CNPJ como controle de acesso e não deve ser automatizada para descoberta de imóveis. Resolve Palmas documenta revisão cadastral, alvará/habite-se e vínculo com matrícula/cadastro municipal."
-    }
-  ],
-  "as_of": "2026-09-28"
-}
+    },
+    {
+      "id": "sp-barueri-valor-venal-online",
+      "authority": "Prefeitura Municipal de Barueri · Secretaria de Finanças",
+      "scope": "municipal",
+      "municipality_ibge": "3505708",
+      "uf": "SP",
+      "domain": [
+        "fiscal",
+        "assessed_value"
+      ],
+      "source_type": "HTML_FORM",
+      "base_url": "https://servicos.barueri.sp.gov.br/emissaocertidao
