@@ -7,7 +7,9 @@ import { AppModule } from "./app.module.js";
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
-    new FastifyAdapter({ trustProxy: true }),
+    // Only local reverse proxies (Caddy, the BFFs) are trusted for X-Forwarded-For;
+    // the client address is the rightmost untrusted hop, so it cannot be spoofed.
+    new FastifyAdapter({ trustProxy: process.env.TRUST_PROXY ?? "loopback" }),
   );
   app.enableShutdownHooks();
   // Coarse per-IP protection; per-user quotas (e.g. AI) are enforced in services.

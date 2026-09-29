@@ -42,8 +42,8 @@ after(async () => {
   idp?.close();
 });
 
-async function token(sub, { roles = [], amr = [] } = {}) {
-  return new SignJWT({ email: `${sub}@example.com`, name: `Admin ${sub}`, realm_access: { roles }, amr })
+async function token(sub, { roles = [], amr = [], extra = {} } = {}) {
+  return new SignJWT({ email: `${sub}@example.com`, name: `Admin ${sub}`, realm_access: { roles }, amr, ...extra })
     .setProtectedHeader({ alg: "RS256", kid: "k1" })
     .setIssuer(issuer).setAudience("lotediretor-api").setSubject(`${sub}-${run}`)
     .setIssuedAt().setExpirationTime("5m").sign(key);
@@ -68,6 +68,10 @@ test("admin requires the platform-admin role and MFA", { skip }, async () => {
   const noMfa = await call("/admin/overview", await token("a", { roles: ["platform-admin"] }));
   assert.equal(noMfa.status, 403);
   assert.equal(noMfa.body.code, "MFA_REQUIRED");
+  const stringClaim = await call("/admin/overview", await token("a", { roles: ["platform-admin"], extra: { ld_mfa: "true" } }));
+  assert.equal(stringClaim.status, 403, "only a boolean true MFA claim counts");
+  const viaClaim = await call("/admin/overview", await token("a", { roles: ["platform-admin"], extra: { ld_mfa: true } }));
+  assert.equal(viaClaim.status, 200, "Keycloak admin-client hardcoded MFA claim");
   const ok = await call("/admin/overview", await token("a", { roles: ["platform-admin"], amr: ["pwd", "otp"] }));
   assert.equal(ok.status, 200);
   assert.ok(ok.body.municipalities >= 1);
@@ -76,9 +80,10 @@ test("admin requires the platform-admin role and MFA", { skip }, async () => {
 
 test("rule review: requires a note, records event and audit, changes effective rules", { skip }, async () => {
   const tok = await token("rev", { roles: ["platform-admin"], amr: ["otp"] });
-  const queue = await call("/admin/rules?ibge=3505708&zone=SER", tok);
+  const queue = await call("/admin/rules?ibge=3505708", tok);
   assert.equal(queue.status, 200);
-  const rule = queue.body.items.find((r) => r.parameter === "RECUO_FRONTAL_M");
+  // Any pending rule (keeps the test re-runnable on the same database).
+  const rule = queue.body.items.find((r) => r.zone_code !== "SRE");
   assert.ok(rule.provision_text.length > 20);
 
   const short = await call(`/admin/rules/${rule.rule_id}/review`, tok, {
@@ -92,7 +97,7 @@ test("rule review: requires a note, records event and audit, changes effective r
   assert.equal(done.status, 201);
   assert.equal(done.body.status, "CONFIRMED");
 
-  const effective = await call("/legal/rules?ibge=3505708&zone=A-04");
+  const effective = await call(`/legal/rules?ibge=3505708&zone=${rule.zone_code}`);
   assert.ok(effective.body.rules.some((r) => r.rule_id === rule.rule_id && r.status === "CONFIRMED"));
 
   const audit = await call("/admin/audit", tok);

@@ -187,6 +187,26 @@ jobs:
         env:
           NEXT_TELEMETRY_DISABLED: "1"
 
+  site-web:
+    name: Public site (Next.js)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/site-web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: apps/site-web/package-lock.json
+      - run: npm ci --no-audit --no-fund
+      - run: npx tsc --noEmit
+      - run: npm run lint
+      - run: npm run build
+        env:
+          NEXT_TELEMETRY_DISABLED: "1"
+
   legacy-static-client:
     name: Legacy static client (until migrated)
     runs-on: ubuntu-latest

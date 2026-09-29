@@ -26,6 +26,8 @@ export type AuthConfig = {
   jwksUrl?: string;
   mfaAmr: string[];
   mfaAcr: string[];
+  /** Boolean claim set only by an IdP client whose flow always requires OTP. */
+  mfaClaim: string;
 };
 
 export function authConfigFromEnv(): AuthConfig | null {
@@ -40,6 +42,7 @@ export function authConfigFromEnv(): AuthConfig | null {
     jwksUrl: process.env.OIDC_JWKS_URL,
     mfaAmr: list(process.env.OIDC_MFA_AMR, "otp,totp,webauthn,hwk,mfa"),
     mfaAcr: list(process.env.OIDC_MFA_ACR, "mfa,2,urn:lotediretor:mfa"),
+    mfaClaim: process.env.OIDC_MFA_CLAIM ?? "ld_mfa",
   };
 }
 
@@ -115,7 +118,8 @@ export class TokenVerifier {
       roles: [...new Set([...realmRoles, ...clientRoles])],
       mfa:
         amr.some((m) => this.config!.mfaAmr.includes(m)) ||
-        this.config.mfaAcr.includes(acr),
+        this.config.mfaAcr.includes(acr) ||
+        payload[this.config.mfaClaim] === true,
       claims: payload,
     };
   }
