@@ -21,6 +21,8 @@ export type MapLayerSpec = {
   sourceLayer?: string;
   lineColor?: string;
   lineWidth?: number;
+  renderType?: "line" | "circle";
+  circleRadius?: number;
   minZoom?: number;
   maxZoom?: number;
   defaultActive?: boolean;
@@ -90,8 +92,89 @@ const SP_RASTER =
   "https://raster.geosampa.prefeitura.sp.gov.br/geoserver/geoportal/wms";
 const BH_WMS = "https://bhmap.pbh.gov.br/v2/api/idebhgeo/wms";
 const JP_WMS = "https://filipeia.joaopessoa.pb.gov.br/geoserver/wms";
+const BARUERI_WMS_PROXY = "/api/barueri/wms";
+function barueriWms(layer: string): string {
+  return BARUERI_WMS_PROXY + "?layer=" + encodeURIComponent(layer) + "&bbox={bbox-epsg-3857}";
+}
 
 const layers: MapLayerSpec[] = [
+  {
+    id: "barueri-street-network",
+    cityIbge: "3505708",
+    label: "Eixos de logradouros · GeoPixel",
+    description: "Malha viária municipal publicada no WMS oficial de gestão territorial.",
+    category: "infrastructure",
+    sourceType: "raster",
+    tiles: [barueriWms("eixo_logradouro")],
+    opacity: 0.72,
+    minZoom: 12,
+    attribution: "Prefeitura de Barueri · GeoPixel",
+  },
+  {
+    id: "barueri-transpetro-pipeline",
+    cityIbge: "3505708",
+    label: "Faixa de dutos Transpetro · GeoPixel",
+    description: "Camada municipal de referência da faixa de dutos. A presença da camada não substitui levantamento, faixa de domínio ou anuência do operador.",
+    category: "infrastructure",
+    sourceType: "raster",
+    tiles: [barueriWms("faixa_de_dutos_transpetro_edif")],
+    opacity: 0.72,
+    minZoom: 12,
+    attribution: "Prefeitura de Barueri · GeoPixel",
+  },
+  {
+    id: "barueri-public-works",
+    cityIbge: "3505708",
+    label: "Obras municipais · GeoPixel",
+    description: "Camada de obras publicada no WMS municipal. É contexto territorial e não é associada automaticamente ao lote por proximidade.",
+    category: "infrastructure",
+    sourceType: "raster",
+    tiles: [barueriWms("obras_edif")],
+    opacity: 0.7,
+    minZoom: 12,
+    attribution: "Prefeitura de Barueri · GeoPixel",
+  },
+  {
+    id: "barueri-tic-oeste",
+    cityIbge: "3505708",
+    label: "TIC Oeste · anteprojeto",
+    description: "Anteprojeto territorial publicado no WMS municipal; não representa obra concluída.",
+    category: "infrastructure",
+    sourceType: "raster",
+    tiles: [barueriWms("tic_oeste_anteprojeto_edif")],
+    opacity: 0.72,
+    minZoom: 11,
+    attribution: "Prefeitura de Barueri · GeoPixel",
+  },
+  {
+    id: "barueri-environmental-licensing",
+    cityIbge: "3505708",
+    label: "Licenciamento ambiental · GeoPixel",
+    description: "Camada municipal de registros de licenciamento. Não inferimos licença vigente do lote por mera sobreposição visual ou proximidade.",
+    category: "environment",
+    sourceType: "raster",
+    tiles: [barueriWms("licenciamento")],
+    opacity: 0.7,
+    minZoom: 12,
+    attribution: "Prefeitura de Barueri · GeoPixel",
+  },
+
+  {
+    id: "barueri-risk-reference-points",
+    cityIbge: "3505708",
+    label: "Setores de risco · pontos de referência",
+    description: "248 coordenadas UTM publicadas no Plano Municipal de Adaptação e Resiliência Climática 2025. São pontos de referência dos setores, não polígonos de risco.",
+    category: "risk",
+    sourceType: "vector",
+    sourceLayer: "barueri_risk_reference_points",
+    tiles: ["/api/tiles/barueri_risk_reference_points/{z}/{x}/{y}"],
+    opacity: 0.78,
+    renderType: "circle",
+    circleRadius: 4,
+    minZoom: 12,
+    attribution: "Prefeitura de Barueri · SEMA / Instituto Geológico",
+  },
+
   {
     id: "ibge-sectors-2022",
     label: "Setores censitários 2022",
