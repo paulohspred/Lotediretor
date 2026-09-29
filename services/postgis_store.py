@@ -10,7 +10,10 @@ from datetime import datetime, timezone
 import psycopg2
 from psycopg2.extras import Json
 
-DB_DSN = "dbname=lotediretor user=sentinelx host=/var/run/postgresql"
+DB_DSN = os.environ.get(
+    "LOTEDIRETOR_DB_DSN",
+    "dbname=lotediretor user=sentinelx host=/var/run/postgresql",
+)
 RUNTIME_SOURCE_ID = "ld-runtime-public-dossier"
 ENGINE_VERSION = os.getenv(
     "LOTEDIRETOR_ENGINE_VERSION",

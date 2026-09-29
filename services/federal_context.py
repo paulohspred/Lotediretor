@@ -6,6 +6,7 @@ sources. Calls use closed public-field allowlists and fail soft.
 """
 from __future__ import annotations
 
+import os
 import gzip
 import json
 import math
@@ -23,7 +24,10 @@ from shapely.geometry import Point, shape
 from shapely.ops import transform as shapely_transform
 
 
-DB_DSN = "dbname=lotediretor user=sentinelx host=/var/run/postgresql"
+DB_DSN = os.environ.get(
+    "LOTEDIRETOR_DB_DSN",
+    "dbname=lotediretor user=sentinelx host=/var/run/postgresql",
+)
 ANA_BASE = "https://www.snirh.gov.br/arcgis/rest/services/INDE/Camadas/MapServer"
 ICMBIO_WFS = "https://geoservicos.inde.gov.br/geoserver/ICMBio/ows"
 IBGE_AGGREGATES = "https://servicodados.ibge.gov.br/api/v3/agregados"

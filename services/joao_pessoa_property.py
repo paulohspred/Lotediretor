@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+import os
 import json
 import re
 import urllib.parse
@@ -17,7 +18,10 @@ from psycopg2.extras import RealDictCursor
 from shapely.geometry import shape, Point, LineString
 
 ROOT = Path("/srv/lotediretor/app")
-DB_DSN = "dbname=lotediretor user=sentinelx host=/var/run/postgresql"
+DB_DSN = os.environ.get(
+    "LOTEDIRETOR_DB_DSN",
+    "dbname=lotediretor user=sentinelx host=/var/run/postgresql",
+)
 BOUNDS = (-34.98, -7.25, -34.78, -7.04)
 FILIPEIA_WMS = "https://filipeia.joaopessoa.pb.gov.br/geoserver/wms"
 FILIPEIA_WFS = "https://filipeia.joaopessoa.pb.gov.br/geoserver/wfs"

@@ -259,11 +259,38 @@ export class ParcelEngineService {
         message: "Município ainda não habilitado no Parcel Resolver.",
       });
     }
-    if (!Number.isFinite(input.lat) || !Number.isFinite(input.lng)) {
+    if (
+      typeof input.lat !== "number" ||
+      typeof input.lng !== "number" ||
+      !Number.isFinite(input.lat) ||
+      !Number.isFinite(input.lng) ||
+      Math.abs(input.lat) > 90 ||
+      Math.abs(input.lng) > 180
+    ) {
       throw new BadRequestException({
         code: "INVALID_COORDINATE",
         message: "Latitude e longitude válidas são obrigatórias.",
       });
+    }
+
+    // The engine only resolves current data. Refuse historical dates instead
+    // of silently answering with today's rules (Blueprint §8: data-base).
+    if (input.analysis_date !== undefined && input.analysis_date !== null) {
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(String(input.analysis_date))) {
+        throw new BadRequestException({
+          code: "INVALID_ANALYSIS_DATE",
+          message: "Use a data-base no formato AAAA-MM-DD.",
+        });
+      }
+      const today = new Date().toISOString().slice(0, 10);
+      if (input.analysis_date !== today) {
+        throw new BadRequestException({
+          code: "HISTORICAL_ANALYSIS_NOT_SUPPORTED",
+          message:
+            "Análise em data-base histórica ainda não está disponível; " +
+            "o resultado refletiria as regras vigentes hoje.",
+        });
+      }
     }
 
     const params = new URLSearchParams({
@@ -276,7 +303,7 @@ export class ParcelEngineService {
     try {
       response = await fetch(url, {
         headers: { Accept: "application/json" },
-        signal: AbortSignal.timeout(180_000),
+        signal: AbortSignal.timeout(110_000),
       });
     } catch {
       throw new BadGatewayException({
@@ -287,6 +314,17 @@ export class ParcelEngineService {
     }
 
     const body = object(await response.json().catch(() => ({})));
+    // "No parcel at this point" is a valid answer, not an engine failure.
+    if (response.status === 404 && body.error === "parcel_not_found") {
+      return { found: false };
+    }
+    if (response.status === 400) {
+      throw new BadRequestException({
+        code: "POINT_OUTSIDE_MUNICIPALITY",
+        message:
+          "O ponto informado está fora da área atendida para este município.",
+      });
+    }
     if (!response.ok) {
       throw new BadGatewayException({
         code: "PARCEL_ENGINE_ERROR",
@@ -411,6 +449,20 @@ export class ParcelEngineService {
 
   async resolve(input: ParcelResolveInput): Promise<JsonObject> {
     const raw = await this.resolveRaw(input);
+    if (!raw.found) {
+      return {
+        found: false,
+        parcel: null,
+        dossier: null,
+        analysis: {
+          run_id: null,
+          audit_available: false,
+          municipality_ibge: input.municipality_ibge,
+          lat: input.lat,
+          lng: input.lng,
+        },
+      };
+    }
     const feature = object(raw.feature);
     const properties = object(feature.properties);
     const report = object(raw.report);
@@ -464,6 +516,11 @@ export class ParcelEngineService {
       analysis: {
         run_id: text(persistence.analysis_run_id),
         audit_available: Boolean(text(persistence.analysis_run_id)),
+        persistence_status: text(persistence.status) ?? "unknown",
+        audit_warning:
+          text(persistence.status) === "failed"
+            ? "A trilha de auditoria desta análise não pôde ser registrada."
+            : null,
         lineage_status:
           text(persistence.lineage_status) === "SOURCE_SNAPSHOTS_COMPLETE"
             ? "Snapshots individuais por fonte"
@@ -471,7 +528,8 @@ export class ParcelEngineService {
         municipality_ibge: input.municipality_ibge,
         lat: input.lat,
         lng: input.lng,
-        analysis_date: input.analysis_date ?? null,
+        analysis_date:
+          input.analysis_date ?? new Date().toISOString().slice(0, 10),
       },
     };
   }

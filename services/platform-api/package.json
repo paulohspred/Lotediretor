@@ -8,7 +8,9 @@
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "start": "node dist/main.js",
-    "dev": "node --loader ts-node/esm src/main.ts"
+    "dev": "node --loader ts-node/esm src/main.ts",
+    "test": "npm run build && node --test test/*.test.mjs",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
     "@nestjs/common": "12.1.1",

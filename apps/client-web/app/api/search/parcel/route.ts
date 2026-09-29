@@ -7,7 +7,14 @@ const PLATFORM_API_URL =
 
 export async function GET(request: NextRequest) {
   const q = request.nextUrl.searchParams.get("q")?.trim() ?? "";
-  const ibge = request.nextUrl.searchParams.get("ibge") ?? "3550308";
+  const ibge = request.nextUrl.searchParams.get("ibge") ?? "";
+
+  if (!/^\d{7}$/.test(ibge)) {
+    return NextResponse.json(
+      { results: [], warning: "Informe o código IBGE do município." },
+      { status: 400 },
+    );
+  }
 
   if (q.length < 3 || q.length > 80) {
     return NextResponse.json({ results: [] });

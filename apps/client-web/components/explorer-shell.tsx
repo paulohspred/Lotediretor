@@ -71,6 +71,8 @@ type ParcelPayload = {
     run_id?: string | null;
     audit_available?: boolean;
     lineage_status?: string | null;
+    persistence_status?: string;
+    audit_warning?: string | null;
     municipality_ibge?: string;
     lat?: number;
     lng?: number;
@@ -568,6 +570,11 @@ export function ExplorerShell() {
                     )}
                 </div>
 
+                {payload?.analysis?.audit_warning && (
+                  <div className="audit-card audit-card--warning" role="alert">
+                    <strong>{payload.analysis.audit_warning}</strong>
+                  </div>
+                )}
                 {payload?.analysis?.audit_available && (
                   <div className="audit-card">
                     <div>

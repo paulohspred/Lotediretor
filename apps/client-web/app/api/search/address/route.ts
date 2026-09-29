@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { cityByIbge } from "@/lib/cities";
+import { findCity } from "@/lib/cities";
 
 export const runtime = "nodejs";
 
@@ -18,7 +18,13 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ results: [] });
   }
 
-  const city = cityByIbge(ibge);
+  const city = findCity(ibge);
+  if (!city) {
+    return NextResponse.json(
+      { results: [], warning: "Município não atendido." },
+      { status: 400 },
+    );
+  }
   const params = new URLSearchParams({
     street: q,
     city: city.name,

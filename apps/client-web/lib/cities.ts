@@ -33,6 +33,15 @@ export const CITIES: CityOption[] = [
   { ibge: "2507507", name: "João Pessoa", uf: "PB", center: [-34.8631, -7.1153], zoom: 12, parcelSupported: true },
 ];
 
+export function findCity(ibge: string): CityOption | undefined {
+  return CITIES.find((city) => city.ibge === ibge);
+}
+
+/**
+ * Only for UI state that was already initialised from CITIES. Never use it to
+ * interpret untrusted input: an unknown IBGE code must not silently become
+ * São Paulo. Use findCity() and reject unknown codes instead.
+ */
 export function cityByIbge(ibge: string): CityOption {
-  return CITIES.find((city) => city.ibge === ibge) ?? CITIES[0];
+  return findCity(ibge) ?? CITIES[0];
 }

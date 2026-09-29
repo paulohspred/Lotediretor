@@ -36,3 +36,11 @@ development.env
 
 # broccoli-debug
 /DEBUG/
+
+# Python / TS build artifacts
+__pycache__/
+*.pyc
+*.tsbuildinfo
+node_modules/
+.next/
+dist/

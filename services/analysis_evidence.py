@@ -3,9 +3,13 @@ from __future__ import annotations
 
 from uuid import UUID
 
+import os
 import psycopg2
 
-DB_DSN = "dbname=lotediretor user=sentinelx host=/var/run/postgresql"
+DB_DSN = os.environ.get(
+    "LOTEDIRETOR_DB_DSN",
+    "dbname=lotediretor user=sentinelx host=/var/run/postgresql",
+)
 
 HUMAN_AUTHORITY = {
     "3550308": "Prefeitura de São Paulo",
