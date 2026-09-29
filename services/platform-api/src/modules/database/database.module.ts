@@ -1,5 +1,6 @@
 import {
   Global,
+  HttpException,
   Inject,
   Injectable,
   Module,
@@ -9,6 +10,11 @@ import {
 import pg from "pg";
 
 export const PG_POOL = Symbol("PG_POOL");
+
+export type TxQuery = <R extends pg.QueryResultRow>(
+  sql: string,
+  params?: unknown[],
+) => Promise<R[]>;
 
 /**
  * Connection string for the platform database. Accepts a standard URL
@@ -50,6 +56,46 @@ export class Database implements OnApplicationShutdown {
         message: "Base territorial temporariamente indisponível.",
         retryable: true,
       });
+    }
+  }
+
+  /**
+   * Run statements in one transaction with the tenant set for row-level
+   * security (ld.org_id). Tenant data must only be touched through here.
+   */
+  async withOrg<T>(orgId: string, fn: (q: TxQuery) => Promise<T>): Promise<T> {
+    return this.transaction(fn, orgId);
+  }
+
+  /** Transaction without tenant context (non-RLS tables only). */
+  async transaction<T>(fn: (q: TxQuery) => Promise<T>, orgId = ""): Promise<T> {
+    if (!this.pool) {
+      throw new ServiceUnavailableException({
+        code: "DATABASE_NOT_CONFIGURED",
+        message: "Base indisponível.",
+        retryable: true,
+      });
+    }
+    const client = await this.pool.connect();
+    try {
+      await client.query("BEGIN");
+      await client.query("SELECT set_config('ld.org_id', $1, true)", [orgId]);
+      const result = await fn(async <R extends pg.QueryResultRow>(sql: string, params: unknown[] = []) =>
+        (await client.query<R>(sql, params)).rows,
+      );
+      await client.query("COMMIT");
+      return result;
+    } catch (error) {
+      await client.query("ROLLBACK").catch(() => undefined);
+      if (error instanceof HttpException) throw error;
+      console.error("tenant transaction failed", error);
+      throw new ServiceUnavailableException({
+        code: "DATABASE_ERROR",
+        message: "Operação indisponível no momento.",
+        retryable: true,
+      });
+    } finally {
+      client.release();
     }
   }
 

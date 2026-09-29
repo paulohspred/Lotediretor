@@ -105,7 +105,9 @@ jobs:
           --health-timeout 5s --health-retries 20
     env:
       LOTEDIRETOR_DB_DSN: postgresql://postgres:ci@localhost:5432/lotediretor
-      TEST_DATABASE_URL: postgresql://postgres:ci@localhost:5432/lotediretor
+      # API tests run as the least-privilege runtime role so RLS and grants
+      # are exercised exactly as in production.
+      TEST_DATABASE_URL: postgresql://sentinelx:ci@localhost:5432/lotediretor
     defaults:
       run:
         working-directory: services/platform-api
@@ -122,6 +124,7 @@ jobs:
       - name: Prepare database (migrations, sample mesh, registry, factory fixture)
         working-directory: .
         run: |
+          psql "$LOTEDIRETOR_DB_DSN" -v ON_ERROR_STOP=1 -qc "CREATE ROLE sentinelx LOGIN PASSWORD 'ci'"
           python3 tools/db/migrate.py
           psql "$LOTEDIRETOR_DB_DSN" -v ON_ERROR_STOP=1 -q -f database/fixtures/ibge_municipios_sample.sql
           psql "$LOTEDIRETOR_DB_DSN" -v ON_ERROR_STOP=1 -q -v mesh_edition=fixture -v snapshot_id= -v min_count=4 -f database/loaders/promote_ibge_municipalities.sql
