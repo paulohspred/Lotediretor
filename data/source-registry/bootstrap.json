@@ -222,7 +222,11 @@
       "base_url": "https://www.snirh.gov.br/arcgis/rest/services/INDE/Camadas/MapServer",
       "access_class": "OPEN_REUSABLE",
       "verification_status": "LIVE_PROPERTY_CONTEXT_2026",
-      "notes": "Consulta pontual integrada para macro/meso/microrregião hidrográfica. Bacia/divisão hidrográfica não é risco de inundação."
+      "notes": "Consulta pontual integrada para macro/meso/microrregião hidrográfica. Bacia/divisão hidrográfica não é risco de inundação.",
+      "phase6_resources": [
+        "https://www.snirh.gov.br/arcgis/rest/services/SPR/BHO2017_50K_TRECHODRENAGEM/FeatureServer/0",
+        "https://www.snirh.gov.br/arcgis/rest/services/SPR/BHO2017_50K_AREADRENAGEM/FeatureServer/0"
+      ]
     },
     {
       "id": "br-anac-aerodromes",
@@ -308,7 +312,12 @@
       "license": "ODbL",
       "access_class": "OPEN_REUSABLE",
       "verification_status": "VERIFIED",
-      "notes": "Linhas de transmissão e subestações, incluindo faixa de servidão e medições/cálculos de campos elétricos e magnéticos."
+      "notes": "Linhas de transmissão e subestações, incluindo faixa de servidão e medições/cálculos de campos elétricos e magnéticos.",
+      "base_url": "https://dadosabertos.aneel.gov.br/dataset/gcem-gestao-de-informacoes-de-campos-eletromagneticos",
+      "phase6_resources": [
+        "https://dadosabertos.aneel.gov.br/dataset/f8258ef8-1b0d-4dc2-a5db-f3de743d6608/resource/883aaff9-f475-4ac7-b308-25cc272e4fe5/download/gcem-linha-transmissao.csv",
+        "https://dadosabertos.aneel.gov.br/dataset/f8258ef8-1b0d-4dc2-a5db-f3de743d6608/resource/a59f9b7a-3f1b-4781-991a-78d5deda01f1/download/gcem-subestacao.csv"
+      ]
     },
     {
       "id": "br-aneel-open-data",
@@ -383,12 +392,16 @@
       "discovery_url": "https://dadosabertos.anm.gov.br/SIGMINE/",
       "access_class": "OPEN_REUSABLE",
       "verification_status": "VERIFIED",
-      "notes": "Diretório oficial ANM; contém BRASIL.zip, arquivos por UF e conjuntos SIGMINE. Endereço oficial mudou para dadosabertos.anm.gov.br em 05/02/2026.",
+      "notes": "SIGMINE oficial. A Fase 6 usa o FeatureServer oficial para processos minerários ativos em EPSG:4674; o diretório de downloads permanece como fonte de referência. Nenhum dado de titular é mantido.",
       "formats": [
         "SHP/ZIP",
         "KMZ",
         "ODS"
-      ]
+      ],
+      "arcgis_url": "https://geo.anm.gov.br/arcgis/rest/services/SIGMINE/dados_anm/FeatureServer/0",
+      "base_url": "https://dadosabertos.anm.gov.br/SIGMINE/PROCESSOS_MINERARIOS/BRASIL.zip",
+      "phase6_resource_url": "https://dadosabertos.anm.gov.br/SIGMINE/PROCESSOS_MINERARIOS/BRASIL.zip",
+      "update_frequency": "daily"
     },
     {
       "id": "br-anp-geospatial",
@@ -627,7 +640,11 @@
         "SHP"
       ],
       "access_class": "OPEN_REUSABLE",
-      "verification_status": "VERIFIED"
+      "verification_status": "VERIFIED",
+      "license": "Creative Commons Atribuição",
+      "notes": "Recurso oficial CNUC 2025_08: shapefile ZIP das UCs com registro ativo; portal informa atualização em 03/09/2025.",
+      "base_url": "https://dados.mma.gov.br/dataset/44b6dc8a-dc82-4a84-8d95-1b0da7c85dac/resource/6ba9a557-87e8-4882-acb7-b3e0f0ea192d/download/shp_cnuc_2025_08.zip",
+      "phase6_resource_url": "https://dados.mma.gov.br/dataset/44b6dc8a-dc82-4a84-8d95-1b0da7c85dac/resource/6ba9a557-87e8-4882-acb7-b3e0f0ea192d/download/shp_cnuc_2025_08.zip"
     },
     {
       "id": "br-dados-gov-api",
@@ -748,7 +765,8 @@
       "access_class": "OPEN_REUSABLE",
       "verification_status": "LIVE_WFS_PROPERTY_CONTEXT_2026",
       "base_url": "https://geoserver.funai.gov.br/geoserver/ows",
-      "notes": "WFS oficial operacional. LoteDiretor consulta Funai:tis_poligonais por bbox reduzida e confirma a incidência localmente pela geometria. A incidência territorial requer interpretação jurídica própria e não identifica titularidade privada."
+      "notes": "WFS oficial operacional. LoteDiretor consulta Funai:tis_poligonais por bbox reduzida e confirma a incidência localmente pela geometria. A incidência territorial requer interpretação jurídica própria e não identifica titularidade privada.",
+      "license": "Reprodução permitida com citação da fonte, salvo exceções indicadas pela FUNAI"
     },
     {
       "id": "br-gov360-historical-snapshots",
@@ -1133,7 +1151,15 @@
       "source_type": "portal_api_download",
       "discovery_url": "https://terrabrasilis.dpi.inpe.br/",
       "access_class": "OPEN_REUSABLE",
-      "verification_status": "VERIFIED"
+      "verification_status": "VERIFIED",
+      "notes": "TerraBrasilis publica downloads oficiais de PRODES e DETER por produto/bioma. A licença e a data do produto são registradas por snapshot; arquivos grandes são carregados explicitamente, sem inventar cobertura quando não baixados.",
+      "base_url": "https://terrabrasilis.dpi.inpe.br/downloads/",
+      "formats": [
+        "GeoPackage",
+        "SHP-ZIP",
+        "GeoTIFF"
+      ],
+      "phase6_download_url": "https://terrabrasilis.dpi.inpe.br/downloads/"
     },
     {
       "id": "br-interlegis-sapl",
@@ -1167,7 +1193,10 @@
       "base_url": "https://geoserver.iphan.gov.br/geoserver/",
       "access_class": "PUBLIC_QUERY_ONLY",
       "verification_status": "VERIFIED",
-      "notes": "IPHAN informa que dados geoespaciais de sítios arqueológicos do SICG podem ser acessados e baixados diretamente no GeoServer. Revisar licença por camada."
+      "notes": "IPHAN informa que dados geoespaciais de sítios arqueológicos do SICG podem ser acessados e baixados diretamente no GeoServer. Revisar licença por camada.",
+      "discovery_url": "https://www.gov.br/iphan/pt-br/patrimonio-cultural/patrimonio-arqueologico/cadastro-de-sitios-arqueologicos",
+      "phase6_wfs_url": "https://geoserver.iphan.gov.br/geoserver/SICG/ows",
+      "phase6_type_name": "SICG:Bem_Protecao"
     },
     {
       "id": "br-lexml-sru",
@@ -1429,7 +1458,8 @@
       "base_url": "https://geoportal.sgb.gov.br/server/rest/services",
       "access_class": "PUBLIC_QUERY_ONLY",
       "verification_status": "LIVE_PROPERTY_CONTEXT_2026",
-      "notes": "ArcGIS REST oficial operacional. LoteDiretor usa gestaoterritorial/risco e gestaoterritorial/inundacao como complemento federal parcelar; Base_Suscet_v2 é tratada apenas como cobertura/metadado municipal, não como risco do lote."
+      "notes": "ArcGIS REST oficial operacional. LoteDiretor usa gestaoterritorial/risco e gestaoterritorial/inundacao como complemento federal parcelar; Base_Suscet_v2 é tratada apenas como cobertura/metadado municipal, não como risco do lote.",
+      "phase6_risk_url": "https://geoportal.sgb.gov.br/server/rest/services/gestaoterritorial/risco/FeatureServer/0"
     },
     {
       "id": "br-sgb-geosgb",

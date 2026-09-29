@@ -34,6 +34,20 @@ const LOAD_META = `
   JOIN ld_catalog.snapshot sn ON sn.snapshot_id = l.snapshot_id
   JOIN ld_catalog.source src ON src.source_id = l.source_id`;
 
+const RESTRICTION_THEME_LABELS: Record<string, string> = {
+  INDIGENOUS_LAND: "Terra indígena",
+  CONSERVATION_UNIT: "Unidade de conservação",
+  MINING_PROCESS: "Processo minerário",
+  HYDROGRAPHY: "Hidrografia",
+  HYDROGRAPHIC_BASIN: "Bacia hidrográfica",
+  DEFORESTATION: "PRODES/DETER",
+  TRANSMISSION_LINE: "Linha de transmissão",
+  SUBSTATION: "Subestação",
+  CULTURAL_HERITAGE: "Patrimônio cultural",
+  GEOLOGY: "Geologia",
+  GEOLOGICAL_RISK: "Risco geológico",
+};
+
 function pct(ratio: number): string {
   return `${Math.round(ratio * 1000) / 10}%`.replace(".", ",");
 }
@@ -163,6 +177,61 @@ export class FactoryParcelService {
       federal.unavailable = ["Contexto federal (indisponível nesta consulta)"];
     }
 
+    const restrictionRows = await this.db.query<{
+      layer_key: string;
+      theme: string;
+      authority: string;
+      source_url: string;
+      source_updated_at: string | null;
+      loaded_at: string | null;
+      upstream_key: string;
+      label: string | null;
+      category: string | null;
+      intersects: boolean;
+      distance_m: number;
+    }>(
+      `SELECT layer_key, theme, authority, source_url, source_updated_at, loaded_at,
+              upstream_key, label, category, intersects, distance_m
+       FROM ld_api.restrictions_for_geometry(
+         ST_SetSRID(ST_GeomFromGeoJSON($1), 4674), 5000
+       )`,
+      [JSON.stringify(parcel.geometry)],
+    );
+    const restrictionItems = restrictionRows.map((r) => ({
+      label: [
+        RESTRICTION_THEME_LABELS[r.theme] ?? r.theme,
+        r.label ?? r.upstream_key,
+        r.category,
+      ].filter(Boolean).join(" · "),
+      value:
+        `${r.intersects ? "Intersecta o lote" : `A ${Math.round(Number(r.distance_m) * 10) / 10} m do lote`}. ` +
+        `Fonte: ${r.authority}. Carga: ${r.loaded_at ? dateBr(r.loaded_at) : "não informada"}` +
+        (r.source_updated_at ? `. Atualização da fonte: ${dateBr(r.source_updated_at)}` : ""),
+    }));
+    const federalSections = (federal.sections as Array<Record<string, unknown>>)
+      .filter((section) => section.id !== "restrictions");
+    if (restrictionItems.length === 0) {
+      const [state] = await this.db.query<{ active: number; unavailable: number }>(
+        `SELECT count(*) FILTER (WHERE status = 'ACTIVE')::int AS active,
+                count(*) FILTER (WHERE status <> 'ACTIVE')::int AS unavailable
+         FROM ld_core.restriction_layer`,
+      );
+      restrictionItems.push({
+        label: "Restrições nacionais",
+        value: Number(state?.unavailable ?? 0) > 0
+          ? "Sem conclusão completa: há camadas nacionais ainda não carregadas ou indisponíveis."
+          : Number(state?.active ?? 0) > 0
+            ? "Nenhuma feição das camadas nacionais ativas foi encontrada até 5 km do lote."
+            : "Camadas nacionais ainda não carregadas.",
+      });
+    }
+    federalSections.unshift({
+      id: "restrictions",
+      title: "Restrições nacionais",
+      type: "DETAIL",
+      items: restrictionItems,
+    });
+
     const declared = parcel.land_area_m2 === null ? null : Number(parcel.land_area_m2);
     const computed = Number(parcel.computed_area_m2);
     const identity = [
@@ -237,7 +306,7 @@ export class FactoryParcelService {
           { id: "identity", title: "Identificação cadastral", order: 1, type: "DETAIL", items: identity },
           { id: "zoning", title: "Zoneamento municipal", order: 2, type: "DETAIL", items: zoning },
           ...(parameters ? [parameters.section] : []),
-          ...federal.sections.map((s, i) => ({ ...(s as object), order: 10 + i })),
+          ...federalSections.map((s, i) => ({ ...s, order: 10 + i })),
           { id: "provenance", title: "Fontes e limitações", order: 99, type: "DETAIL", items: provenance },
         ],
       },

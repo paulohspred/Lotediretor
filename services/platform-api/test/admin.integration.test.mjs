@@ -78,6 +78,18 @@ test("admin requires the platform-admin role and MFA", { skip }, async () => {
   assert.ok(ok.body.rules_by_status.CANDIDATE > 0);
 });
 
+test("coverage exposes national layer freshness", { skip }, async () => {
+  const tok = await token("coverage", { roles: ["platform-admin"], amr: ["otp"] });
+  const result = await call("/admin/coverage", tok);
+  assert.equal(result.status, 200);
+  assert.ok(Array.isArray(result.body.national_layers));
+  const fixture = result.body.national_layers.find((l) => l.layer_key === "fixture_restriction");
+  assert.ok(fixture);
+  assert.equal(fixture.status, "ACTIVE");
+  assert.equal(fixture.feature_count, "2");
+  assert.ok(fixture.loaded_at);
+});
+
 test("rule review: requires a note, records event and audit, changes effective rules", { skip }, async () => {
   const tok = await token("rev", { roles: ["platform-admin"], amr: ["otp"] });
   const queue = await call("/admin/rules?ibge=3505708", tok);

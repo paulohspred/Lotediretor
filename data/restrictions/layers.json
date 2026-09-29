@@ -1,0 +1,328 @@
+{
+  "layers": [
+    {
+      "layer_key": "funai_indigenous_lands",
+      "source_id": "br-funai-geospatial",
+      "theme": "INDIGENOUS_LAND",
+      "authority": "FUNAI",
+      "source_url": "https://geoserver.funai.gov.br/geoserver/Funai/ows?maxFeatures=10000&outputFormat=SHAPE-ZIP&request=GetFeature&service=WFS&typeName=Funai%3Atis_poligonais&version=1.0.0",
+      "source_format": "SHP-ZIP",
+      "license": "Reprodução permitida com citação da fonte, conforme página oficial FUNAI",
+      "mode": "download",
+      "label_fields": [
+        "terrai_nom"
+      ],
+      "category_fields": [
+        "fase_ti",
+        "modalidade"
+      ],
+      "min_features": 100,
+      "attribute_allowlist": [
+        "gid",
+        "terrai_cod",
+        "terrai_nom",
+        "etnia_nome",
+        "municipio_",
+        "uf_sigla",
+        "superficie",
+        "fase_ti",
+        "modalidade",
+        "faixa_fron",
+        "data_atual",
+        "epsg"
+      ],
+      "key_fields": [
+        "terrai_cod",
+        "gid"
+      ],
+      "source_encoding": "ISO-8859-1",
+      "referer": "https://www.gov.br/funai/pt-br/atuacao/terras-indigenas/geoprocessamento-e-mapas"
+    },
+    {
+      "layer_key": "cnuc_conservation_units",
+      "source_id": "br-cnuc",
+      "theme": "CONSERVATION_UNIT",
+      "authority": "MMA / CNUC",
+      "source_url": "https://dados.mma.gov.br/dataset/44b6dc8a-dc82-4a84-8d95-1b0da7c85dac/resource/6ba9a557-87e8-4882-acb7-b3e0f0ea192d/download/shp_cnuc_2025_08.zip",
+      "source_format": "SHP-ZIP",
+      "license": "Creative Commons Atribuição",
+      "mode": "download",
+      "label_fields": [
+        "nome_uc"
+      ],
+      "category_fields": [
+        "categoria",
+        "grupo"
+      ],
+      "min_features": 100,
+      "attribute_allowlist": [
+        "gml_id",
+        "docleg_id",
+        "uc_id",
+        "cd_cnuc",
+        "wdpa_pid",
+        "nome_uc",
+        "cria_ano",
+        "cria_ato",
+        "pl_manejo",
+        "ha_total",
+        "esfera",
+        "uf",
+        "municipio",
+        "org_gestor",
+        "grupo",
+        "categoria",
+        "cat_iucn",
+        "situacao",
+        "limite"
+      ],
+      "key_fields": [
+        "cd_cnuc",
+        "uc_id",
+        "gml_id"
+      ],
+      "layer_name": "cnuc_2025_08",
+      "source_updated_at": "2025-09-03T00:00:00Z"
+    },
+    {
+      "layer_key": "anm_mining_processes",
+      "source_id": "br-anm-sigmine-open-data",
+      "theme": "MINING_PROCESS",
+      "authority": "Agência Nacional de Mineração",
+      "source_url": "https://dadosabertos.anm.gov.br/SIGMINE/PROCESSOS_MINERARIOS/BRASIL.zip",
+      "source_format": "SHP-ZIP",
+      "license": "Dados abertos ANM; atribuir Agência Nacional de Mineração",
+      "mode": "download",
+      "label_fields": [
+        "PROCESSO"
+      ],
+      "category_fields": [
+        "FASE"
+      ],
+      "min_features": 1000,
+      "attribute_allowlist": [
+        "PROCESSO",
+        "NUMERO",
+        "ANO",
+        "AREA_HA",
+        "ID",
+        "FASE",
+        "ULT_EVENTO",
+        "SUBS",
+        "USO",
+        "UF",
+        "DSProcesso"
+      ],
+      "key_fields": [
+        "PROCESSO",
+        "ID"
+      ],
+      "retain_raw": false,
+      "notes": "A coluna NOME não é ingerida. O arquivo bruto só é hasheado para o snapshot e não é retido localmente."
+    },
+    {
+      "layer_key": "ana_hydrography_bho2017",
+      "source_id": "br-ana-snirh-inde",
+      "theme": "HYDROGRAPHY",
+      "authority": "Agência Nacional de Águas e Saneamento Básico",
+      "source_url": "https://www.snirh.gov.br/arcgis/rest/services/SPR/BHO2017_50K_TRECHODRENAGEM/FeatureServer/0",
+      "source_format": "ArcGIS FeatureServer",
+      "license": "Dados abertos ANA/SNIRH",
+      "mode": "arcgis",
+      "label_fields": [
+        "NORIOCOMP",
+        "NOORIGINAL",
+        "COCURSODAG"
+      ],
+      "category_fields": [
+        "DEDOMINIAL"
+      ],
+      "min_features": 1000,
+      "attribute_allowlist": [
+        "OBJECTID",
+        "ID",
+        "COTRECHO",
+        "COCURSODAG",
+        "COBACIA",
+        "NOGENERICO",
+        "NOESPECIF",
+        "NORIOCOMP",
+        "NOORIGINAL",
+        "DEDOMINIAL",
+        "DSVERSAO"
+      ],
+      "key_fields": [
+        "ID",
+        "COTRECHO",
+        "OBJECTID"
+      ]
+    },
+    {
+      "layer_key": "ana_hydrographic_basins_bho2017",
+      "source_id": "br-ana-snirh-inde",
+      "theme": "HYDROGRAPHIC_BASIN",
+      "authority": "Agência Nacional de Águas e Saneamento Básico",
+      "source_url": "https://www.snirh.gov.br/arcgis/rest/services/SPR/BHO2017_50K_AREADRENAGEM/FeatureServer/0",
+      "source_format": "ArcGIS FeatureServer",
+      "license": "Dados abertos ANA/SNIRH",
+      "mode": "arcgis",
+      "label_fields": [
+        "COBACIA",
+        "COCURSODAG"
+      ],
+      "category_fields": [
+        "DSVERSAO"
+      ],
+      "min_features": 1000,
+      "attribute_allowlist": [
+        "OBJECTID",
+        "IDBACIA",
+        "COTRECHO",
+        "COCURSODAG",
+        "COBACIA",
+        "NUORDEMCDA",
+        "NUNIVOTTO",
+        "DSVERSAO"
+      ],
+      "key_fields": [
+        "IDBACIA",
+        "OBJECTID"
+      ]
+    },
+    {
+      "layer_key": "inpe_prodes",
+      "source_id": "br-inpe-terrabrasilis",
+      "theme": "DEFORESTATION",
+      "authority": "INPE / TerraBrasilis",
+      "source_url": "https://terrabrasilis.dpi.inpe.br/downloads/",
+      "source_format": "GeoPackage",
+      "license": "Dados oficiais TerraBrasilis; licença conforme metadado do produto",
+      "mode": "manual_official_file",
+      "notes": "PRODES completo é publicado por bioma e pode ultrapassar 1 GB; informe --file com o GeoPackage oficial baixado da página."
+    },
+    {
+      "layer_key": "inpe_deter",
+      "source_id": "br-inpe-terrabrasilis",
+      "theme": "DEFORESTATION",
+      "authority": "INPE / TerraBrasilis",
+      "source_url": "https://terrabrasilis.dpi.inpe.br/downloads/",
+      "source_format": "SHP-ZIP",
+      "license": "Dados oficiais TerraBrasilis; licença conforme metadado do produto",
+      "mode": "manual_official_file",
+      "notes": "DETER é publicado por bioma; carregue o arquivo oficial correspondente com --file."
+    },
+    {
+      "layer_key": "aneel_transmission_lines",
+      "source_id": "br-aneel-gcem",
+      "theme": "TRANSMISSION_LINE",
+      "authority": "ANEEL",
+      "source_url": "https://dadosabertos.aneel.gov.br/dataset/f8258ef8-1b0d-4dc2-a5db-f3de743d6608/resource/883aaff9-f475-4ac7-b308-25cc272e4fe5/download/gcem-linha-transmissao.csv",
+      "source_format": "CSV",
+      "license": "ODbL",
+      "mode": "metadata_only",
+      "notes": "CSV oficial GCEM não será convertido em geometria sem coordenadas/traçado verificáveis.",
+      "source_updated_at": "2026-09-01T05:28:00Z"
+    },
+    {
+      "layer_key": "aneel_substations",
+      "source_id": "br-aneel-gcem",
+      "theme": "SUBSTATION",
+      "authority": "ANEEL",
+      "source_url": "https://dadosabertos.aneel.gov.br/dataset/f8258ef8-1b0d-4dc2-a5db-f3de743d6608/resource/a59f9b7a-3f1b-4781-991a-78d5deda01f1/download/gcem-subestacao.csv",
+      "source_format": "CSV",
+      "license": "ODbL",
+      "mode": "metadata_only",
+      "notes": "CSV oficial GCEM é snapshotado, mas não recebe geometria inventada.",
+      "source_updated_at": "2026-09-01T05:28:00Z"
+    },
+    {
+      "layer_key": "iphan_protected_assets",
+      "source_id": "br-iphan-geoserver",
+      "theme": "CULTURAL_HERITAGE",
+      "authority": "IPHAN",
+      "source_url": "https://geoserver.iphan.gov.br/geoserver/SICG/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=SICG%3ABem_Protecao&propertyName=ponto%2Cid_bem%2Cidentificacao_bem%2Cco_iphan%2Ccodigo_iphan%2Cds_tipo_protecao%2Cds_condicao_protecao%2Cdt_cadastro&outputFormat=application%2Fjson",
+      "source_format": "WFS GeoJSON",
+      "license": "Revisar licença por camada SICG",
+      "mode": "download",
+      "label_fields": [
+        "identificacao_bem",
+        "codigo_iphan"
+      ],
+      "category_fields": [
+        "ds_tipo_protecao",
+        "ds_condicao_protecao"
+      ],
+      "min_features": 100,
+      "attribute_allowlist": [
+        "id_bem",
+        "identificacao_bem",
+        "co_iphan",
+        "codigo_iphan",
+        "ds_natureza",
+        "ds_classificacao",
+        "ds_tipo_bem",
+        "id_protecao_bem",
+        "ds_tipo_protecao",
+        "ds_condicao_protecao",
+        "dt_cadastro"
+      ],
+      "key_fields": [
+        "id_protecao_bem",
+        "id_bem",
+        "codigo_iphan"
+      ]
+    },
+    {
+      "layer_key": "sgb_geological_risk",
+      "source_id": "br-sgb-arcgis",
+      "theme": "GEOLOGICAL_RISK",
+      "authority": "Serviço Geológico do Brasil",
+      "source_url": "https://geoportal.sgb.gov.br/server/rest/services/gestaoterritorial/risco/FeatureServer/0",
+      "source_format": "ArcGIS FeatureServer",
+      "license": "Dados públicos SGB; licença conforme metadado da camada",
+      "mode": "arcgis",
+      "label_fields": [
+        "local",
+        "num_setor"
+      ],
+      "category_fields": [
+        "grau_risco",
+        "tipolo_g1"
+      ],
+      "min_features": 1,
+      "attribute_allowlist": [
+        "objectid",
+        "uf",
+        "munic",
+        "cd_geocmu",
+        "num_setor",
+        "data_setor",
+        "local",
+        "tipolo_g1",
+        "tipolo_e1",
+        "cobrade_01",
+        "grau_vulne",
+        "grau_risco",
+        "num_edif",
+        "num_domi",
+        "num_pess",
+        "orgao_exec"
+      ],
+      "key_fields": [
+        "objectid",
+        "num_setor"
+      ]
+    },
+    {
+      "layer_key": "sgb_geology",
+      "source_id": "br-sgb-geosgb",
+      "theme": "GEOLOGY",
+      "authority": "Serviço Geológico do Brasil",
+      "source_url": "https://geosgb.sgb.gov.br/downloads/",
+      "source_format": "SHP-ZIP",
+      "license": "Conforme metadado GeoSGB",
+      "mode": "manual_official_file",
+      "notes": "Carga nacional de geologia exige arquivo vetorial oficial selecionado no GeoSGB; não usar PDF como geometria."
+    }
+  ]
+}

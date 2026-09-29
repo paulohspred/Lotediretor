@@ -8,6 +8,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 import federal_context  # noqa: E402
 import point_context  # noqa: E402
+import restriction_context  # noqa: E402
 
 
 class PointContextTest(unittest.TestCase):
@@ -24,10 +25,13 @@ class PointContextTest(unittest.TestCase):
             }
 
         self._orig = federal_context.load
+        self._orig_restrictions = restriction_context.query_geometry
         federal_context.load = fake_load
+        restriction_context.query_geometry = lambda geometry: {"hits": [], "unavailable": []}
 
     def tearDown(self):
         federal_context.load = self._orig
+        restriction_context.query_geometry = self._orig_restrictions
 
     def test_rejects_points_outside_brazil_and_bad_codes(self):
         for lat, lng, ibge in [(40.7, -74.0, "3550308"), (-10, -50, "123"),

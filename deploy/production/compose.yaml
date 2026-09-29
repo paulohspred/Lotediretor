@@ -69,6 +69,7 @@ services:
       # Connector specs written by discover.py persist in the checkout.
       - ../../data/connectors/municipal:/srv/lotediretor/app/data/connectors/municipal
       - ${TOOLS_INBOX_DIR:-/srv/lotediretor/inbox}:/inbox:ro
+      - ${RESTRICTION_SNAPSHOT_DIR:-/srv/lotediretor/snapshots/restrictions}:/var/cache/lotediretor/restrictions
     depends_on:
       postgres: { condition: service_healthy }
     restart: "no"
