@@ -24,3 +24,9 @@ postgres:
       srid: 4674
       geometry_column: geom
       geometry_type: MULTILINESTRING
+    barueri_risk_reference_points:
+      schema: ld_stage
+      table: barueri_risk_reference_points
+      srid: 4674
+      geometry_column: geom
+      geometry_type: POINT
