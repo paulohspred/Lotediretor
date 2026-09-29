@@ -450,6 +450,15 @@ export function ExplorerShell() {
                 <a href={city.officialIptuUrl} target="_blank" rel="noreferrer">
                   Serviços oficiais de IPTU
                 </a>
+                <a href={city.officialCadastreUrl} target="_blank" rel="noreferrer">
+                  Consulta cadastral oficial
+                </a>
+                <a href={city.officialValueUrl} target="_blank" rel="noreferrer">
+                  Certidão oficial de valor venal
+                </a>
+                <a href={city.officialPermitsUrl} target="_blank" rel="noreferrer">
+                  Aprova Digital · licenciamento urbanístico
+                </a>
                 <p className="muted">
                   O mapa permanece neutro. Não atribuímos geometria de lote sem
                   fonte cadastral espacial verificável.
