@@ -55,6 +55,10 @@ export function ExplorerMap({
   useEffect(() => {
     if (!container.current || mapRef.current) return;
 
+    // Worker published by scripts/copy-maplibre-worker.mjs (prebuild/predev).
+    maplibregl.setWorkerUrl(
+      `/vendor/maplibre/${maplibregl.getVersion()}/maplibre-gl-worker.mjs`,
+    );
     const map = new maplibregl.Map({
       container: container.current,
       style: "https://tiles.openfreemap.org/styles/liberty",
