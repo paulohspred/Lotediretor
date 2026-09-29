@@ -42,7 +42,7 @@ def main() -> int:
 
         for view in schema.get("views", []):
             pattern = re.compile(
-                rf"create\s+view\s+(?:if\s+not\s+exists\s+)?{re.escape(schema_name)}\.{re.escape(view)}\s+as",
+                rf"create\s+(?:or\s+replace\s+)?view\s+(?:if\s+not\s+exists\s+)?{re.escape(schema_name)}\.{re.escape(view)}\s+as",
                 re.IGNORECASE,
             )
             if not pattern.search(sql):
