@@ -10,6 +10,7 @@ import math
 import re
 
 import federal_context
+import restriction_context
 
 BUFFER_HALF_SIDE_M = 25.0
 # Brazil's extent with margin (continental + oceanic islands).
@@ -17,6 +18,8 @@ BRAZIL_BOUNDS = (-74.5, -34.5, -28.0, 6.0)  # min_lng, min_lat, max_lng, max_lat
 _IBGE = re.compile(r"^[0-9]{7}$")
 
 SECTIONS = (
+    ("restrictions", "Restrições nacionais",
+     restriction_context.report_values),
     ("territorial", "Contexto territorial e socioeconômico",
      federal_context.territorial_report_values),
     ("environment", "Meio ambiente, rural e risco",
@@ -72,12 +75,20 @@ def build(lat: float, lng: float, municipality_ibge: str) -> dict:
     validate(lat, lng, municipality_ibge)
     area = analysis_square(lat, lng)
     context = federal_context.load(lat, lng, municipality_ibge, area)
+    try:
+        restrictions = restriction_context.query_geometry(area)
+    except Exception:
+        restrictions = {"hits": [], "unavailable": [{"layer_key": "national_restrictions", "status": "SOURCE_UNAVAILABLE"}]}
     sections = []
     for section_id, title, fn in SECTIONS:
-        items = fn(context)
+        items = fn(restrictions if section_id == "restrictions" else context)
         if items:
             sections.append({"id": section_id, "title": title, "items": items})
     errors = context.get("query_errors") or {}
+    restriction_unavailable = [
+        f"{item.get('layer_key')} ({item.get('status')})"
+        for item in restrictions.get("unavailable") or []
+    ]
     return {
         "found": True,
         "mode": "POINT_CONTEXT",
@@ -94,7 +105,7 @@ def build(lat: float, lng: float, municipality_ibge: str) -> dict:
         },
         "sections": sections,
         "unavailable_sources": sorted(
-            SOURCE_LABELS.get(key, key) for key in errors
+            [SOURCE_LABELS.get(key, key) for key in errors] + restriction_unavailable
         ),
         "queried_at": context.get("queried_at"),
         "interpretation": context.get("interpretation"),

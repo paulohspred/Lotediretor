@@ -272,6 +272,16 @@ export class AdminService {
        ORDER BY m.name`,
     );
   }
+
+  nationalCoverage() {
+    return this.db.query(
+      `SELECT layer_key, theme, authority, source_url, source_format, license,
+              status, feature_count::bigint::text AS feature_count,
+              source_updated_at, loaded_at, notes
+       FROM ld_core.restriction_layer
+       ORDER BY theme, layer_key`,
+    );
+  }
 }
 
 @Controller("admin")
@@ -355,8 +365,12 @@ class AdminController {
   }
 
   @Get("coverage")
-  coverage() {
-    return this.admin.coverage().then((items) => ({ items }));
+  async coverage() {
+    const [items, national_layers] = await Promise.all([
+      this.admin.coverage(),
+      this.admin.nationalCoverage(),
+    ]);
+    return { items, national_layers };
   }
 }
 
