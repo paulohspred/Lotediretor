@@ -7,6 +7,9 @@ export type CityOption = {
   parcelSupported?: boolean;
   officialZoningUrl?: string;
   officialIptuUrl?: string;
+  officialCadastreUrl?: string;
+  officialValueUrl?: string;
+  officialPermitsUrl?: string;
 };
 
 export const CITIES: CityOption[] = [
@@ -19,7 +22,10 @@ export const CITIES: CityOption[] = [
     zoom: 13,
     parcelSupported: false,
     officialZoningUrl: "https://portal.barueri.sp.gov.br/cidadao/moradia/mapa-zoneamento",
-    officialIptuUrl: "https://portal.barueri.sp.gov.br/cidadao/moradia/emissao-2-via-iptu",
+    officialIptuUrl: "https://www.barueri.sp.gov.br/sistemas/2via/?tipo=1",
+    officialCadastreUrl: "https://servicos.barueri.sp.gov.br/emissaocertidao/certidaocadastral.aspx",
+    officialValueUrl: "https://servicos.barueri.sp.gov.br/emissaocertidao/CertidaoVenal.aspx",
+    officialPermitsUrl: "https://barueri.aprova.com.br/",
   },
   { ibge: "2611606", name: "Recife", uf: "PE", center: [-34.8842, -8.0543], zoom: 12, parcelSupported: true },
   { ibge: "3304557", name: "Rio de Janeiro", uf: "RJ", center: [-43.1729, -22.9068], zoom: 11.5, parcelSupported: true },
