@@ -70,6 +70,14 @@
           "private_on_demand_fields": []
         },
         {
+          "section_id": "territorial_context",
+          "status": "READY",
+          "matrix_statuses": {},
+          "unresolved_items": [],
+          "query_only_fields": [],
+          "private_on_demand_fields": []
+        },
+        {
           "section_id": "building_existing",
           "status": "REPORTABLE_WITH_LIMITATIONS",
           "matrix_statuses": {
@@ -349,7 +357,7 @@
           "section_id": "registry_due_diligence",
           "status": "REPORTABLE_WITH_LIMITATIONS",
           "matrix_statuses": {
-            "registry reference": "PRIVATE_ON_DEMAND"
+            "registry reference": "PARTIAL"
           },
           "unresolved_items": [
             {
@@ -410,6 +418,14 @@
               "item": "parcel geometry/fiscal area reconciliation"
             }
           ],
+          "query_only_fields": [],
+          "private_on_demand_fields": []
+        },
+        {
+          "section_id": "territorial_context",
+          "status": "READY",
+          "matrix_statuses": {},
+          "unresolved_items": [],
           "query_only_fields": [],
           "private_on_demand_fields": []
         },
@@ -700,6 +716,14 @@
           "private_on_demand_fields": []
         },
         {
+          "section_id": "territorial_context",
+          "status": "READY",
+          "matrix_statuses": {},
+          "unresolved_items": [],
+          "query_only_fields": [],
+          "private_on_demand_fields": []
+        },
+        {
           "section_id": "building_existing",
           "status": "READY",
           "matrix_statuses": {
@@ -838,9 +862,9 @@
         },
         {
           "section_id": "environment_risk_heritage",
-          "status": "READY",
+          "status": "REPORTABLE_WITH_LIMITATIONS",
           "matrix_statuses": {
-            "environment": "READY",
+            "environment": "PARTIAL",
             "risk": "READY",
             "heritage": "READY"
           },
@@ -924,7 +948,7 @@
           "status": "REPORTABLE_WITH_LIMITATIONS",
           "matrix_statuses": {
             "imagery": "PARTIAL",
-            "terrain": "PARTIAL",
+            "terrain": "READY",
             "historical data": "PARTIAL"
           },
           "unresolved_items": [
@@ -1035,6 +1059,14 @@
               "item": "license per dataset"
             }
           ],
+          "query_only_fields": [],
+          "private_on_demand_fields": []
+        },
+        {
+          "section_id": "territorial_context",
+          "status": "READY",
+          "matrix_statuses": {},
+          "unresolved_items": [],
           "query_only_fields": [],
           "private_on_demand_fields": []
         },
@@ -1156,9 +1188,9 @@
         },
         {
           "section_id": "environment_risk_heritage",
-          "status": "REPORTABLE_WITH_LIMITATIONS",
+          "status": "READY",
           "matrix_statuses": {
-            "environment": "PARTIAL",
+            "environment": "READY",
             "risk": "READY",
             "heritage": "READY"
           },
@@ -1188,7 +1220,7 @@
             "water/sewer": "PARTIAL",
             "drainage": "PARTIAL",
             "telecom": "PARTIAL",
-            "transport": "PARTIAL"
+            "transport": "READY"
           },
           "unresolved_items": [
             {
@@ -1357,10 +1389,18 @@
           "private_on_demand_fields": []
         },
         {
+          "section_id": "territorial_context",
+          "status": "READY",
+          "matrix_statuses": {},
+          "unresolved_items": [],
+          "query_only_fields": [],
+          "private_on_demand_fields": []
+        },
+        {
           "section_id": "building_existing",
           "status": "REPORTABLE_WITH_LIMITATIONS",
           "matrix_statuses": {
-            "building": "QUERY_ONLY"
+            "building": "PARTIAL"
           },
           "unresolved_items": [
             {

@@ -6,6 +6,7 @@
     "OPEN_REUSABLE",
     "PUBLIC_QUERY_ONLY",
     "AUTHENTICATED_PUBLIC",
+    "AUTHENTICATED_INSTITUTIONAL",
     "RESTRICTED_PERSONAL",
     "PAID_ON_DEMAND",
     "USER_PRIVATE",
@@ -1253,9 +1254,10 @@
       ],
       "source_type": "authenticated_web_service",
       "base_url": "https://registradores.onr.org.br/",
-      "access_class": "PRIVATE_AUTHORIZED",
+      "access_class": "PAID_ON_DEMAND",
       "verification_status": "AUTHENTICATED_PRIVATE_ON_DEMAND",
-      "notes": "Certidões, matrícula atualizada e demais atos registrais dependem de fluxo legítimo/autorizado. LoteDiretor não indexa proprietários nem contorna autenticação."
+      "notes": "Certidões, matrícula atualizada e demais atos registrais dependem de fluxo legítimo/autorizado. LoteDiretor não indexa proprietários nem contorna autenticação.",
+      "access_class_original": "PRIVATE_AUTHORIZED"
     },
     {
       "id": "br-onr-technical-interoperability",
@@ -1574,9 +1576,10 @@
       ],
       "source_type": "government_integration",
       "discovery_url": "https://www.gov.br/receitafederal/pt-br/assuntos/sinter",
-      "access_class": "GOVERNMENT_AUTHORIZED",
+      "access_class": "AUTHENTICATED_INSTITUTIONAL",
       "verification_status": "AUTHENTICATED_GOVERNMENT_INTEGRATION",
-      "notes": "Barramento/interoperabilidade cadastral destinado a integrações autorizadas. Não tratado como API pública anônima de consulta parcelar."
+      "notes": "Barramento/interoperabilidade cadastral destinado a integrações autorizadas. Não tratado como API pública anônima de consulta parcelar.",
+      "access_class_original": "GOVERNMENT_AUTHORIZED"
     },
     {
       "id": "br-spu-geoportal",
@@ -2894,11 +2897,17 @@
       "authority": "Prefeitura de João Pessoa / Plano Diretor",
       "scope": "João Pessoa/PB",
       "source_type": "municipal_legislation",
-      "endpoint": "https://planodiretor.joaopessoa.pb.gov.br/legislacaovigente/",
       "access_class": "OPEN_REUSABLE",
       "license": null,
       "temporal_coverage": "2024-current",
-      "notes": "Current municipal legislation index. LoteDiretor structures occupancy parameters from LC 169/2024's substitute Annex IV for LC 166/2024 and keeps the coastal-height exception explicit."
+      "notes": "Current municipal legislation index. LoteDiretor structures occupancy parameters from LC 169/2024's substitute Annex IV for LC 166/2024 and keeps the coastal-height exception explicit.",
+      "domain": [
+        "law",
+        "plan_director",
+        "zoning"
+      ],
+      "verification_status": "VERIFIED_ENDPOINT_LICENSE_REVIEW",
+      "base_url": "https://planodiretor.joaopessoa.pb.gov.br/legislacaovigente/"
     },
     {
       "id": "pb-joao-pessoa-official-gazette",
@@ -2923,11 +2932,17 @@
       "authority": "Prefeitura de João Pessoa / Plano Diretor",
       "scope": "João Pessoa/PB",
       "source_type": "municipal_legislation",
-      "endpoint": "https://planodiretor.joaopessoa.pb.gov.br/legislacaovigente/",
       "access_class": "OPEN_REUSABLE",
       "license": null,
       "temporal_coverage": "2024-current",
-      "notes": "Plano Diretor source for macrozone basic/max floor-area indices, including art. 50 values."
+      "notes": "Plano Diretor source for macrozone basic/max floor-area indices, including art. 50 values.",
+      "domain": [
+        "law",
+        "plan_director",
+        "zoning"
+      ],
+      "verification_status": "VERIFIED_ENDPOINT_LICENSE_REVIEW",
+      "base_url": "https://planodiretor.joaopessoa.pb.gov.br/legislacaovigente/"
     },
     {
       "id": "pb-joao-pessoa-processo-online",
@@ -3001,11 +3016,16 @@
       "authority": "Tribunal de Justiça da Paraíba",
       "scope": "João Pessoa/PB",
       "source_type": "judicial_status_reference",
-      "endpoint": "https://www.tjpb.jus.br/w/decis%C3%A3o-do-tjpb-mant%C3%A9m-proibi%C3%A7%C3%A3o-da-constru%C3%A7%C3%A3o-de-espig%C3%B5es-na-orla",
       "access_class": "OPEN_REUSABLE",
       "license": null,
       "temporal_coverage": "2026-01-21",
-      "notes": "Public TJPB status reference: LUOS maintained except article 62. Used only to prevent presenting article 62 coastal-height values as current."
+      "notes": "Public TJPB status reference: LUOS maintained except article 62. Used only to prevent presenting article 62 coastal-height values as current.",
+      "domain": [
+        "law",
+        "legal_status"
+      ],
+      "verification_status": "VERIFIED_ENDPOINT_LICENSE_REVIEW",
+      "base_url": "https://www.tjpb.jus.br/w/decis%C3%A3o-do-tjpb-mant%C3%A9m-proibi%C3%A7%C3%A3o-da-constru%C3%A7%C3%A3o-de-espig%C3%B5es-na-orla"
     },
     {
       "id": "pe-apac-arcgis",
@@ -3117,22 +3137,32 @@
       "authority": "Prefeitura do Recife / ESIG",
       "scope": "Recife/PE",
       "source_type": "municipal_geospatial_service",
-      "endpoint": "https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Planejamento/BASES_BAIRRO_FACEQUADRA_LOGRADOURO_LOTE/FeatureServer/7",
       "access_class": "PUBLIC_QUERY_ONLY",
       "license": null,
       "temporal_coverage": "current service",
-      "notes": "Official parcel-linked 3D building layer. LoteDiretor queries by exact DSQFL with a closed field allowlist and exposes geometry plus MDT/MDE/MDS elevation attributes as cartographic context."
+      "notes": "Official parcel-linked 3D building layer. LoteDiretor queries by exact DSQFL with a closed field allowlist and exposes geometry plus MDT/MDE/MDS elevation attributes as cartographic context.",
+      "domain": [
+        "buildings",
+        "geospatial"
+      ],
+      "verification_status": "VERIFIED_ENDPOINT_LICENSE_REVIEW",
+      "base_url": "https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Planejamento/BASES_BAIRRO_FACEQUADRA_LOGRADOURO_LOTE/FeatureServer/7"
     },
     {
       "id": "pe-recife-esig-mdt-declividade-2_5m",
       "authority": "Prefeitura do Recife / ESIG",
       "scope": "Recife/PE",
       "source_type": "municipal_raster_map_service",
-      "endpoint": "https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Hosted/RGB_MDT_2_5MTS_DECLIVIDADE_tif/MapServer",
       "access_class": "PUBLIC_QUERY_ONLY",
       "license": null,
       "temporal_coverage": null,
-      "notes": "Official cached 2.5 m MDT-derived slope visualization is available as map tiles. ArcGIS identify did not return numeric raster values in validation, so LoteDiretor uses it only as visual slope context and does not infer parcel elevations from colors."
+      "notes": "Official cached 2.5 m MDT-derived slope visualization is available as map tiles. ArcGIS identify did not return numeric raster values in validation, so LoteDiretor uses it only as visual slope context and does not infer parcel elevations from colors.",
+      "domain": [
+        "terrain",
+        "geospatial"
+      ],
+      "verification_status": "VERIFIED_ENDPOINT_LICENSE_REVIEW",
+      "base_url": "https://esigportal2.recife.pe.gov.br/arcgis/rest/services/Hosted/RGB_MDT_2_5MTS_DECLIVIDADE_tif/MapServer"
     },
     {
       "id": "pe-recife-financas-lotes",
@@ -4573,7 +4603,9 @@
       "authority": "Prefeitura Municipal de Barueri · Secretaria de Finanças",
       "scope": "municipal",
       "uf": "SP",
-      "domain": "cadastre",
+      "domain": [
+        "cadastre"
+      ],
       "source_type": "HTML_FORM",
       "base_url": "https://servicos.barueri.sp.gov.br/emissaocertidao/certidaocadastral.aspx",
       "access_class": "PUBLIC_QUERY_ONLY",
@@ -4586,7 +4618,9 @@
       "authority": "Prefeitura Municipal de Barueri · Secretaria de Finanças",
       "scope": "municipal",
       "uf": "SP",
-      "domain": "fiscal",
+      "domain": [
+        "fiscal"
+      ],
       "source_type": "HTML_FORM",
       "base_url": "https://www.barueri.sp.gov.br/sistemas/2via/?tipo=1",
       "access_class": "PUBLIC_QUERY_ONLY",
@@ -4599,7 +4633,9 @@
       "authority": "Prefeitura Municipal de Barueri · Secretaria de Planejamento e Urbanismo",
       "scope": "municipal",
       "uf": "SP",
-      "domain": "permits",
+      "domain": [
+        "permits"
+      ],
       "source_type": "HTML_FORM",
       "base_url": "https://www.barueri.sp.gov.br/sistemas/processoEngenharia/",
       "access_class": "PUBLIC_QUERY_ONLY",
@@ -4612,7 +4648,9 @@
       "authority": "Prefeitura Municipal de Barueri · Secretaria de Planejamento e Urbanismo",
       "scope": "municipal",
       "uf": "SP",
-      "domain": "planning",
+      "domain": [
+        "planning"
+      ],
       "source_type": "DOWNLOADABLE_PDF_VECTOR",
       "base_url": "https://portal.barueri.sp.gov.br/cidadao/moradia/mapa-zoneamento",
       "access_class": "PUBLIC_QUERY_ONLY",
@@ -5345,10 +5383,11 @@
       "source_type": "WEB_APPLICATION",
       "base_url": "https://barueri.aprova.com.br/",
       "discovery_url": "https://portal.barueri.sp.gov.br/secretarias/secretaria-planejamento-urbanismo/aprovadigitalbarueri",
-      "access_class": "AUTHENTICATED_PRIVATE",
+      "access_class": "AUTHENTICATED_PUBLIC",
       "integration_class": "AUTHENTICATED_PRIVATE",
       "verification_status": "VERIFIED_IN_OPERATION_2026_09_28",
-      "notes": "Plataforma de licenciamento urbanístico em operação em 2026. Abrange alvarás, Habite-se, certidões, parcelamento e fiscalização. Processos vinculados ao usuário/imóvel dependem de conta; não contornar autenticação. Não inferir licença por endereço."
+      "notes": "Plataforma de licenciamento urbanístico em operação em 2026. Abrange alvarás, Habite-se, certidões, parcelamento e fiscalização. Processos vinculados ao usuário/imóvel dependem de conta; não contornar autenticação. Não inferir licença por endereço.",
+      "access_class_original": "AUTHENTICATED_PRIVATE"
     },
     {
       "id": "sp-barueri-pgv",
