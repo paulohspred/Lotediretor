@@ -5324,4 +5324,207 @@
         "assessed_value"
       ],
       "source_type": "HTML_FORM",
-      "base_url": "https://servicos.barueri.sp.gov.br/emissaocertidao
+      "base_url": "https://servicos.barueri.sp.gov.br/emissaocertidao/CertidaoVenal.aspx",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "integration_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_LIVE_CAPTCHA_2026_09_28",
+      "notes": "Certidão oficial de valor venal por exercício e inscrição. CAPTCHA presente; não automatizar/contornar. Valor venal não deve ser inventado quando a consulta não for possível."
+    },
+    {
+      "id": "sp-barueri-aprova-digital",
+      "authority": "Prefeitura Municipal de Barueri · Secretaria de Planejamento e Urbanismo",
+      "scope": "municipal",
+      "municipality_ibge": "3505708",
+      "uf": "SP",
+      "domain": [
+        "permits",
+        "certificates",
+        "parceling",
+        "urban_processes"
+      ],
+      "source_type": "WEB_APPLICATION",
+      "base_url": "https://barueri.aprova.com.br/",
+      "discovery_url": "https://portal.barueri.sp.gov.br/secretarias/secretaria-planejamento-urbanismo/aprovadigitalbarueri",
+      "access_class": "AUTHENTICATED_PRIVATE",
+      "integration_class": "AUTHENTICATED_PRIVATE",
+      "verification_status": "VERIFIED_IN_OPERATION_2026_09_28",
+      "notes": "Plataforma de licenciamento urbanístico em operação em 2026. Abrange alvarás, Habite-se, certidões, parcelamento e fiscalização. Processos vinculados ao usuário/imóvel dependem de conta; não contornar autenticação. Não inferir licença por endereço."
+    },
+    {
+      "id": "sp-barueri-pgv",
+      "authority": "Prefeitura Municipal de Barueri · Secretaria de Finanças",
+      "scope": "municipal",
+      "municipality_ibge": "3505708",
+      "uf": "SP",
+      "domain": [
+        "fiscal",
+        "land_value",
+        "generic_value_map"
+      ],
+      "source_type": "PUBLIC_DOCUMENT_PORTAL",
+      "base_url": "https://portal.barueri.sp.gov.br/secretarias/secretaria-de-financas",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "integration_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_DISCOVERY_2026_09_28",
+      "notes": "A Secretaria de Finanças publica acesso à Planta Genérica de Valores. Nesta auditoria não foi confirmado dataset geoespacial aberto/reutilizável; manter como referência documental até localizar arquivo/endpoint reproduzível."
+    },
+    {
+      "id": "sp-barueri-environmental-indicators",
+      "authority": "Prefeitura Municipal de Barueri · Secretaria de Recursos Naturais e Meio Ambiente",
+      "scope": "municipal",
+      "municipality_ibge": "3505708",
+      "uf": "SP",
+      "domain": [
+        "environment",
+        "drainage",
+        "water",
+        "sewer",
+        "urban_trees",
+        "environmental_licensing"
+      ],
+      "source_type": "POWERBI_PORTAL",
+      "base_url": "https://portal.barueri.sp.gov.br/cidadao/secretaria-recursos-naturais-meio-ambiente/indicadores",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "integration_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PUBLIC_DASHBOARDS_2026_09_28",
+      "notes": "Painéis oficiais de água, esgoto, arborização, drenagem/manejo de águas pluviais, fiscalização/licenciamento e outros indicadores. Indicadores agregados não equivalem a incidência ou capacidade no lote."
+    },
+    {
+      "id": "sp-barueri-environmental-licensing-publications",
+      "authority": "Prefeitura Municipal de Barueri · Secretaria de Recursos Naturais e Meio Ambiente",
+      "scope": "municipal",
+      "municipality_ibge": "3505708",
+      "uf": "SP",
+      "domain": [
+        "environmental_licensing",
+        "native_vegetation",
+        "app"
+      ],
+      "source_type": "PUBLIC_DOCUMENT_PORTAL",
+      "base_url": "https://portal.barueri.sp.gov.br/cidadao/secretaria-recursos-naturais-meio-ambiente/relatorio-licenciamento",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "integration_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PUBLICATIONS_2026_09_28",
+      "notes": "Publicações de licenciamento/fiscalização ambiental e intervenções em vegetação nativa/APP. Só vincular ao imóvel com identificador ou geometria documental confiável; texto/endereço isolado não prova incidência."
+    },
+    {
+      "id": "sp-barueri-mobility-plan-kmz",
+      "authority": "Prefeitura Municipal de Barueri · Secretaria de Mobilidade Urbana",
+      "scope": "municipal",
+      "municipality_ibge": "3505708",
+      "uf": "SP",
+      "domain": [
+        "mobility",
+        "roads",
+        "transport",
+        "cycling"
+      ],
+      "source_type": "DOWNLOAD_PORTAL",
+      "base_url": "https://portal.barueri.sp.gov.br/secretarias/mobilidade-urbana/plano-mobilidade-",
+      "formats": [
+        "PDF",
+        "KMZ"
+      ],
+      "access_class": "OPEN_REUSABLE",
+      "integration_class": "DOWNLOADABLE_DATASET",
+      "verification_status": "VERIFIED_KMZ_DOWNLOAD_DISCOVERY_2026_09_28",
+      "notes": "Plano de Mobilidade publica produtos, cadernos de mapas e arquivos vetoriais dos mapas (KMZ). A geometria deve ser auditada por camada, data, CRS e semântica antes de integração parcelar."
+    },
+    {
+      "id": "sp-barueri-mobility-yearbooks",
+      "authority": "Prefeitura Municipal de Barueri · Secretaria de Mobilidade Urbana",
+      "scope": "municipal",
+      "municipality_ibge": "3505708",
+      "uf": "SP",
+      "domain": [
+        "mobility",
+        "traffic",
+        "transport"
+      ],
+      "source_type": "PUBLIC_DOCUMENT_PORTAL",
+      "base_url": "https://portal.barueri.sp.gov.br/secretarias/mobilidade-urbana/anuarios",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "integration_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_2022_2025_PUBLICATIONS_2026_09_28",
+      "notes": "Anuários municipais 2022–2025. Úteis como contexto municipal; não usar como geometria ou dado parcelar sem anexo espacial explícito."
+    },
+    {
+      "id": "sp-barueri-solarbpm-public-service",
+      "authority": "Prefeitura Municipal de Barueri",
+      "scope": "municipal",
+      "municipality_ibge": "3505708",
+      "uf": "SP",
+      "domain": [
+        "public_processes",
+        "service_requests"
+      ],
+      "source_type": "WEB_APPLICATION",
+      "base_url": "https://solarbpm.barueri.sp.gov.br/atendimento/",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "integration_class": "PUBLIC_QUERY_ONLY",
+      "verification_status": "VERIFIED_PUBLIC_PORTAL_2026_09_28",
+      "notes": "Portal Solar BPM expõe consulta de processos e solicitação de serviços; dados individualizados podem depender de autenticação. Não correlacionar processo a lote sem chave documental confiável."
+    },
+    {
+      "id": "sp-barueri-climate-risk-2025",
+      "authority": "Prefeitura Municipal de Barueri · Secretaria de Recursos Naturais e Meio Ambiente",
+      "scope": "municipal",
+      "municipality_ibge": "3505708",
+      "uf": "SP",
+      "domain": [
+        "risk",
+        "flood",
+        "landslide",
+        "erosion",
+        "climate_resilience"
+      ],
+      "source_type": "DOWNLOADABLE_DATASET",
+      "base_url": "https://portal.barueri.sp.gov.br/arquivos/sites/sm/2025/Plano_de_Adaptacao_e_Resiliencia_Climatica_rev1.pdf",
+      "access_class": "OPEN_REUSABLE",
+      "integration_class": "DOWNLOADABLE_DATASET",
+      "verification_status": "MATERIALIZED_REFERENCE_POINTS_2026_09_28",
+      "notes": "Plano municipal oficial de 2025. Tabela 9 reproduz o levantamento do Instituto Geológico (2020) com 248 setores: 175 escorregamento, 72 inundação e 1 solapamento, incluindo coordenadas UTM SIRGAS 2000 / zona 23S e área publicada. LoteDiretor materializa somente o ponto derivado da coordenada publicada; não converte a área tabular em polígono e não afirma incidência no lote por proximidade."
+    },
+    {
+      "id": "sp-barueri-geopixel-wms",
+      "authority": "Prefeitura Municipal de Barueri · plataforma GeoPixel Cidades",
+      "scope": "municipal",
+      "municipality_ibge": "3505708",
+      "uf": "SP",
+      "domain": [
+        "roads",
+        "infrastructure",
+        "public_works",
+        "environmental_licensing",
+        "urban_management"
+      ],
+      "source_type": "WMS",
+      "base_url": "https://barueri.geopixel.com.br/geoserver-barueri/barueri/wms",
+      "discovery_url": "https://barueri.geopixel.com.br/geopixelcidades-barueri/login.html",
+      "access_class": "PUBLIC_QUERY_ONLY",
+      "integration_class": "LIVE_WMS",
+      "verification_status": "LIVE_WMS_2026_09_28",
+      "notes": "GetCapabilities WMS 1.3.0 respondeu HTTP 200 e publicou 96 camadas. WFS retorna explicitamente 'Service WFS is disabled'. O config atual da aplicação informa accessAnonymous=false, portanto LoteDiretor não força login anônimo. Integração limitada por allowlist às camadas eixo_logradouro, faixa_de_dutos_transpetro_edif, obras_edif, tic_oeste_anteprojeto_edif e licenciamento. Camadas com bbox incoerente, como lotes_reurb/new_arie, não são integradas até correção/verificação."
+    },
+    {
+      "id": "sp-barueri-lpuos-lc565-2023",
+      "authority": "Prefeitura Municipal de Barueri · Secretaria de Planejamento e Urbanismo",
+      "scope": "municipal",
+      "municipality_ibge": "3505708",
+      "uf": "SP",
+      "domain": [
+        "zoning",
+        "land_use",
+        "building_parameters",
+        "parceling"
+      ],
+      "source_type": "PDF_LEGAL_TEXT",
+      "base_url": "https://portal.barueri.sp.gov.br/arquivos/sites/spcu/2024/Lei_Complementar_565_2023_juridico.pdf",
+      "access_class": "OPEN_REUSABLE",
+      "integration_class": "DOWNLOADABLE_DATASET",
+      "verification_status": "MATERIALIZED_LEGAL_RULE_CATALOG_2026_09_28",
+      "notes": "LC 565/2023 materializada como catálogo normativo: 100 códigos de setor em 17 classes, vinculados ao artigo de regras. O catálogo jurídico não resolve espacialmente o setor; aplicação automática depende de geometria validada."
+    }
+  ],
+  "as_of": "2026-09-28"
+}
