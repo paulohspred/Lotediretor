@@ -19,8 +19,10 @@ STATUSES = {"DRAFT", "APPROVED", "SUSPENDED"}
 ROLE_FIELDS = {
     "parcels": {
         "required": {"upstream_key"},
-        "optional": {"fiscal_reference", "street", "house_number",
-                     "neighborhood", "land_area_m2"},
+        "optional": {"fiscal_reference", "cib", "sector", "block", "lot", "unit",
+                     "postal_code", "street", "house_number", "neighborhood",
+                     "land_area_m2", "built_area_m2", "frontage_m",
+                     "cadastral_use", "cadastral_status"},
     },
     "zoning": {
         "required": {"upstream_key", "zone_code"},

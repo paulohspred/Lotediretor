@@ -95,11 +95,27 @@ class HarvestTest(unittest.TestCase):
         self.assertGreaterEqual(history, 2)
 
         row = self.query(
-            "SELECT fiscal_reference, land_area_m2::text, attributes::text "
+            "SELECT fiscal_reference, cib, sector, block, lot, unit, postal_code, "
+            "land_area_m2::text, built_area_m2::text, frontage_m::text, "
+            "cadastral_use, cadastral_status, attributes::text, parcel_id "
             "FROM ld_api.municipal_parcel_at('3159605', -45.7095, -22.2595)")[0]
         self.assertEqual(row[0], "01.02.000")
-        self.assertEqual(row[1], "360.50")
-        self.assertNotIn("PROPRIET", row[2])
+        self.assertEqual(row[1], "CIB-0001")
+        self.assertEqual(row[2:7], ("01", "12", "01", "001", "37540-000"))
+        self.assertEqual(row[7:10], ("360.50", "120.25", "12.00"))
+        self.assertEqual(row[10:12], ("RESIDENCIAL", "ATIVO"))
+        self.assertNotIn("PROPRIET", row[12])
+        prov = self.query(
+            "SELECT field_name, upstream_field FROM ld_domain.municipal_parcel_field_provenance "
+            "WHERE parcel_id=%s ORDER BY field_name", (row[13],))
+        self.assertIn(("cib", "CIB"), prov)
+        self.assertIn(("built_area_m2", "AREA_CONSTRUIDA"), prov)
+        by_cib = self.query(
+            "SELECT cib, matched_field FROM ld_api.municipal_parcel_search('3159605','CIB-0001',10)")
+        self.assertEqual(by_cib[0], ("CIB-0001", "CIB"))
+        by_inscricao = self.query(
+            "SELECT fiscal_reference, matched_field FROM ld_api.municipal_parcel_search('3159605','01.02.000',10)")
+        self.assertEqual(by_inscricao[0], ("01.02.000", "INSCRICAO"))
         zones = self.query(
             "SELECT zone_code FROM ld_api.municipal_zones_for('3159605', "
             "(SELECT geom FROM ld_api.municipal_parcel_at('3159605', -45.7095, -22.2595)))")

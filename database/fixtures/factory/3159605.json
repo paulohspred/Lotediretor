@@ -19,11 +19,19 @@
         "street": "LOGRADOURO",
         "house_number": "NUMERO",
         "neighborhood": "BAIRRO",
-        "land_area_m2": "AREA_TERRENO"
+        "land_area_m2": "AREA_TERRENO",
+        "cib": "CIB",
+        "sector": "SETOR",
+        "block": "QUADRA",
+        "lot": "LOTE",
+        "unit": "UNIDADE",
+        "postal_code": "CEP",
+        "built_area_m2": "AREA_CONSTRUIDA",
+        "frontage_m": "TESTADA",
+        "cadastral_use": "USO",
+        "cadastral_status": "SITUACAO"
       },
-      "attribute_allowlist": [
-        "QUADRA"
-      ],
+      "attribute_allowlist": [],
       "min_features": 10
     },
     {

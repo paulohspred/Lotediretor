@@ -193,16 +193,47 @@ def promote(cur, spec: dict, layer: dict, table: str, spec_sha: str, url: str | 
         cur.execute(
             sql.SQL(
                 """INSERT INTO ld_domain.municipal_parcel
-                       (load_id, ibge_code, upstream_key, fiscal_reference, street,
-                        house_number, neighborhood, land_area_m2, attributes, geom)
-                   SELECT %s, %s, upstream_key, {fr}, {st}, {hn}, {nb}, {la},
-                          {attrs}, norm_geom
+                       (load_id, ibge_code, upstream_key, fiscal_reference, cib,
+                        sector, block, lot, unit, postal_code, street, house_number,
+                        neighborhood, land_area_m2, built_area_m2, frontage_m,
+                        cadastral_use, cadastral_status, attributes, geom)
+                   SELECT %s, %s, upstream_key, {fr}, {cib}, {sector}, {block},
+                          {lot}, {unit}, {postal}, {st}, {hn}, {nb}, {la}, {ba},
+                          {frontage}, {cuse}, {cstatus}, {attrs}, norm_geom
                    FROM fx_norm"""
-            ).format(fr=opt("fiscal_reference"), st=opt("street"),
-                     hn=opt("house_number"), nb=opt("neighborhood"),
-                     la=opt("land_area_m2", "numeric"), attrs=attrs),
+            ).format(
+                fr=opt("fiscal_reference"), cib=opt("cib"),
+                sector=opt("sector"), block=opt("block"), lot=opt("lot"),
+                unit=opt("unit"), postal=opt("postal_code"),
+                st=opt("street"), hn=opt("house_number"), nb=opt("neighborhood"),
+                la=opt("land_area_m2", "numeric"), ba=opt("built_area_m2", "numeric"),
+                frontage=opt("frontage_m", "numeric"), cuse=opt("cadastral_use"),
+                cstatus=opt("cadastral_status"), attrs=attrs
+            ),
             (load_id, ibge),
         )
+
+        provenance_fields = [
+            name for name in (
+                "fiscal_reference", "cib", "sector", "block", "lot", "unit",
+                "postal_code", "street", "house_number", "neighborhood",
+                "land_area_m2", "built_area_m2", "frontage_m",
+                "cadastral_use", "cadastral_status"
+            ) if name in f
+        ]
+        for canonical in provenance_fields:
+            cur.execute(
+                """INSERT INTO ld_domain.municipal_parcel_field_provenance
+                     (parcel_id, field_name, source_id, snapshot_id, observed_at,
+                      confidence, upstream_field)
+                   SELECT p.parcel_id, %s, %s, %s, sn.captured_at, 1.000, %s
+                   FROM ld_domain.municipal_parcel p
+                   JOIN ld_catalog.snapshot sn ON sn.snapshot_id = %s
+                   WHERE p.load_id = %s
+                   ON CONFLICT (parcel_id, field_name) DO NOTHING""",
+                (canonical, layer["source_id"], snapshot_id, f[canonical],
+                 snapshot_id, load_id),
+            )
     else:
         cur.execute(
             sql.SQL(

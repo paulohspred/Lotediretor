@@ -36,10 +36,20 @@ ROLE_NAME_HINTS = {
 FIELD_HINTS = {
     "upstream_key": re.compile(r"^(objectid|fid|gid|id)$", re.I),
     "fiscal_reference": re.compile(r"(inscri|insc_|sql|cod_?imov|cadastr|indic_fiscal|ctm)", re.I),
+    "cib": re.compile(r"(^cib$|codigo_?imobiliario|cod_?imobiliario)", re.I),
+    "sector": re.compile(r"(^setor$|sector)", re.I),
+    "block": re.compile(r"(^quadra$|block)", re.I),
+    "lot": re.compile(r"(^lote$|lot$)", re.I),
+    "unit": re.compile(r"(unidade|unit)", re.I),
+    "postal_code": re.compile(r"(^cep$|postal)", re.I),
     "street": re.compile(r"(logradouro|endereco|rua|nm_log)", re.I),
     "house_number": re.compile(r"^(numero|num|nr|n_porta|numero_predial)$", re.I),
     "neighborhood": re.compile(r"(bairro)", re.I),
     "land_area_m2": re.compile(r"(area_?terr|area_?lote|area_m2|shape_area)", re.I),
+    "built_area_m2": re.compile(r"(area_?constr|area_?edif|built_?area)", re.I),
+    "frontage_m": re.compile(r"(testada|frontage|frente_?m)", re.I),
+    "cadastral_use": re.compile(r"(^uso$|uso_?imovel|uso_?predominante)", re.I),
+    "cadastral_status": re.compile(r"(situacao|status_?cadastr)", re.I),
     "zone_code": re.compile(r"^(sigla|zona|cod_?zona|zoneamento|zone)$", re.I),
     "zone_name": re.compile(r"(nome|descri|nm_zona)", re.I),
 }
@@ -136,8 +146,10 @@ def score(layer: dict, role: str) -> int:
 
 
 def guess_fields(layer: dict, role: str) -> dict:
-    keys = (["upstream_key", "fiscal_reference", "street", "house_number",
-             "neighborhood", "land_area_m2"] if role == "parcels"
+    keys = (["upstream_key", "fiscal_reference", "cib", "sector", "block",
+             "lot", "unit", "postal_code", "street", "house_number",
+             "neighborhood", "land_area_m2", "built_area_m2", "frontage_m",
+             "cadastral_use", "cadastral_status"] if role == "parcels"
             else ["upstream_key", "zone_code", "zone_name"])
     mapping = {}
     for key in keys:

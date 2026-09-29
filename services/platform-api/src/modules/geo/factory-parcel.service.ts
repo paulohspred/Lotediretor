@@ -6,10 +6,20 @@ import { LegalService } from "../legal/legal.module.js";
 type ParcelRow = {
   upstream_key: string;
   fiscal_reference: string | null;
+  cib: string | null;
+  sector: string | null;
+  block: string | null;
+  lot: string | null;
+  unit: string | null;
+  postal_code: string | null;
   street: string | null;
   house_number: string | null;
   neighborhood: string | null;
   land_area_m2: string | null;
+  built_area_m2: string | null;
+  frontage_m: string | null;
+  cadastral_use: string | null;
+  cadastral_status: string | null;
   attributes: Record<string, unknown>;
   geometry: unknown;
   computed_area_m2: string;
@@ -85,26 +95,15 @@ export class FactoryParcelService {
     if (!(await this.hasParcels(ibge))) return null;
     const rows = await this.db.query<{
       fiscal_reference: string | null;
+      cib: string | null;
       street: string | null;
       house_number: string | null;
       lat: number;
       lng: number;
+      matched_field: string;
     }>(
-      `WITH k AS (
-         SELECT replace(replace(replace(ld_api.search_key($2),
-                '\\', '\\\\'), '%', '\\%'), '_', '\\_') AS key
-       )
-       SELECT p.fiscal_reference, p.street, p.house_number,
-              ST_Y(ST_PointOnSurface(p.geom)) AS lat,
-              ST_X(ST_PointOnSurface(p.geom)) AS lng
-       FROM ld_domain.municipal_parcel p
-       JOIN ld_catalog.municipal_layer_load l USING (load_id), k
-       WHERE l.is_current AND p.ibge_code = $1
-         AND (ld_api.search_key(p.fiscal_reference) LIKE k.key || '%'
-              OR ld_api.search_key(coalesce(p.street, '') || ' ' ||
-                                   coalesce(p.house_number, '')) LIKE '%' || k.key || '%')
-       ORDER BY p.fiscal_reference NULLS LAST
-       LIMIT 10`,
+      `SELECT fiscal_reference, cib, street, house_number, lat, lng, matched_field
+       FROM ld_api.municipal_parcel_search($1, $2, 10)`,
       [ibge, q],
     );
     return {
@@ -114,14 +113,20 @@ export class FactoryParcelService {
           : null;
         return {
           kind: "parcel",
-          display_name: [address, row.fiscal_reference && `Cadastro ${row.fiscal_reference}`]
-            .filter(Boolean)
-            .join(" · "),
+          display_name: [
+            address,
+            row.cib && `CIB ${row.cib}`,
+            row.fiscal_reference && `Inscrição ${row.fiscal_reference}`,
+          ].filter(Boolean).join(" · "),
           lat: row.lat,
           lng: row.lng,
-          primary_reference: { label: "Referência cadastral", value: row.fiscal_reference },
-          secondary_reference: null,
-          matched_by: null,
+          primary_reference: row.cib
+            ? { label: "CIB", value: row.cib }
+            : { label: "Inscrição imobiliária", value: row.fiscal_reference },
+          secondary_reference: row.cib && row.fiscal_reference
+            ? { label: "Inscrição imobiliária", value: row.fiscal_reference }
+            : null,
+          matched_by: { type: row.matched_field, value: q },
         };
       }),
     };
@@ -136,8 +141,10 @@ export class FactoryParcelService {
     }
 
     const parcels = await this.db.query<ParcelRow>(
-      `SELECT p.upstream_key, p.fiscal_reference, p.street, p.house_number,
-              p.neighborhood, p.land_area_m2::text, p.attributes,
+      `SELECT p.upstream_key, p.fiscal_reference, p.cib, p.sector, p.block,
+              p.lot, p.unit, p.postal_code, p.street, p.house_number,
+              p.neighborhood, p.land_area_m2::text, p.built_area_m2::text,
+              p.frontage_m::text, p.cadastral_use, p.cadastral_status, p.attributes,
               ST_AsGeoJSON(p.geom)::json AS geometry,
               round(ST_Area(p.geom::geography)::numeric, 2)::text AS computed_area_m2,
               src.source_id, src.authority, src.license, sn.captured_at,
@@ -235,10 +242,20 @@ export class FactoryParcelService {
     const declared = parcel.land_area_m2 === null ? null : Number(parcel.land_area_m2);
     const computed = Number(parcel.computed_area_m2);
     const identity = [
-      { label: "Referência cadastral", value: parcel.fiscal_reference },
+      { label: "CIB", value: parcel.cib },
+      { label: "Inscrição imobiliária", value: parcel.fiscal_reference },
+      { label: "Setor", value: parcel.sector },
+      { label: "Quadra", value: parcel.block },
+      { label: "Lote", value: parcel.lot },
+      { label: "Unidade", value: parcel.unit },
+      { label: "CEP", value: parcel.postal_code },
       { label: "Identificador na camada municipal", value: parcel.upstream_key },
       { label: "Bairro", value: parcel.neighborhood },
       { label: "Área do terreno (cadastro municipal)", value: declared, unit: "m²" },
+      { label: "Área construída", value: parcel.built_area_m2 === null ? null : Number(parcel.built_area_m2), unit: "m²" },
+      { label: "Testada", value: parcel.frontage_m === null ? null : Number(parcel.frontage_m), unit: "m" },
+      { label: "Uso cadastral", value: parcel.cadastral_use },
+      { label: "Situação cadastral", value: parcel.cadastral_status },
       { label: "Área calculada da geometria (geodésica)", value: computed, unit: "m²" },
       ...Object.entries(parcel.attributes ?? {}).map(([k, v]) => ({
         label: `Atributo municipal · ${k}`,
@@ -291,14 +308,22 @@ export class FactoryParcelService {
           complement: null,
         },
         identifiers: {
-          primary: { label: "Referência cadastral", value: parcel.fiscal_reference },
+          primary: parcel.cib
+            ? { label: "CIB", value: parcel.cib }
+            : { label: "Inscrição imobiliária", value: parcel.fiscal_reference },
           fiscal_registration: parcel.fiscal_reference,
-          real_estate_code: null,
+          real_estate_code: parcel.cib,
+          sector: parcel.sector,
+          block: parcel.block,
+          lot: parcel.lot,
+          unit: parcel.unit,
         },
+        postal_code: parcel.postal_code,
         land_area_m2: declared ?? computed,
-        built_area_m2: null,
-        use: null,
-        cadastral_status: null,
+        built_area_m2: parcel.built_area_m2 === null ? null : Number(parcel.built_area_m2),
+        frontage_m: parcel.frontage_m === null ? null : Number(parcel.frontage_m),
+        use: parcel.cadastral_use,
+        cadastral_status: parcel.cadastral_status,
       },
       dossier: {
         title: "Dossiê do imóvel",

@@ -537,7 +537,7 @@ export function ExplorerShell({ initialPoint = null, canSave = false }: Explorer
             <span>Buscar imóvel</span>
             <input
               aria-label="Busca global"
-              placeholder="Rua, número, inscrição ou código cadastral"
+              placeholder="Rua, número, CIB ou inscrição imobiliária"
               value={query}
               onChange={(event) => setQuery(event.target.value)}
             />
@@ -778,7 +778,7 @@ export function ExplorerShell({ initialPoint = null, canSave = false }: Explorer
                   )}
                   {cib && (
                     <div>
-                      <span>Código imobiliário</span>
+                      <span>CIB</span>
                       <strong>{cib}</strong>
                     </div>
                   )}
